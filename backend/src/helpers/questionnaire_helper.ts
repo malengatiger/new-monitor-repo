@@ -1,8 +1,8 @@
-import { Question } from "./../models/section";
+import { Question } from "../models/interfaces";
 import Questionnaire from "../models/questionnaire";
 import Organization from "../models/organization";
 import Country from "../models/country";
-import { Section } from "../models/section";
+import { Section } from "../models/interfaces";
 
 export class QuestionnaireHelper {
   public static async addQuestionnaire(

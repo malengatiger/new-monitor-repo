@@ -9,7 +9,7 @@ import {
   Typegoose,
 } from "typegoose";
 import Settlement from "./settlement";
-import { Question } from "./section";
+import { Question } from "./interfaces";
 
 class Questionnaire extends Typegoose {
   @staticMethod

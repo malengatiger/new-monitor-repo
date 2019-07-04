@@ -6,7 +6,7 @@ import {
   instanceMethod,
 } from "typegoose";
 import Settlement from "./settlement";
-import { Question, Section } from "./section";
+import { Question, Section } from "./interfaces";
 
 class QuestionnaireResponse extends Typegoose {
  
