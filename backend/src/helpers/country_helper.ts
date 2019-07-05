@@ -22,16 +22,14 @@ export class CountryHelper {
     if (!countryCode) {
       countryCode = "TBD";
     }
-    if (name === "South Africa") {
-      countryCode = "ZA";
-    }
+   
     const CountryModel = new Country().getModelForClass(Country);
     const u = new CountryModel({
       countryCode,
       name,
     });
     const m = await u.save();
-    m.countryID = m.id;
+    m.countryId = m.id;
     await m.save();
     return m;
   }
@@ -61,7 +59,7 @@ export class CityHelper {
   public static async addCity(
     name: string,
     provinceName: string,
-    countryID: string,
+    countryId: string,
     countryName: string,
     latitude: number,
     longitude: number,
@@ -73,7 +71,7 @@ export class CityHelper {
     };
     
     const u = new cityModel({
-      countryID,
+      countryId,
       countryName,
       latitude,
       longitude,
@@ -82,17 +80,17 @@ export class CityHelper {
       provinceName,
     });
     const m = await u.save();
-    m.cityID = m.id;
-    await m.save();
-    console.log(`\n\n🌀  🌀  🌀  CityHelper: city added:   🍀   ${name} \n`);
+    m.cityId = m.id;
+    const z = await m.save();
+    console.log(`\n\n🌀🌀🌀  CityHelper: city added:   🍀   ${name} \n`);
 
-    return m;
+    return z;
   }
 
-  public static async getCities(countryID: string): Promise<any> {
+  public static async getCities(countryId: string): Promise<any> {
     console.log(`\n🌀🌀🌀🌀  CountryHelper:  😡  getCities ....   🌀🌀🌀 `);
     const CityModel = new City().getModelForClass(City);
-    const list = await CityModel.find({ countryID });
+    const list = await CityModel.find({ countryId });
     console.log(
       `😡  😡  😡  😡  😡  Done reading cities ....found:  ${list.length}`,
     );

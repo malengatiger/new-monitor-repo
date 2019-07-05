@@ -27,15 +27,11 @@ __decorate([
 __decorate([
     typegoose_1.prop({ required: true, index: true, trim: true }),
     __metadata("design:type", String)
-], City.prototype, "countryID", void 0);
+], City.prototype, "countryId", void 0);
 __decorate([
-    typegoose_1.prop({ required: true, index: true, trim: true }),
+    typegoose_1.prop({ index: true, trim: true }),
     __metadata("design:type", String)
-], City.prototype, "cityID", void 0);
-__decorate([
-    typegoose_1.prop({ trim: true }),
-    __metadata("design:type", String)
-], City.prototype, "distance", void 0);
+], City.prototype, "cityId", void 0);
 __decorate([
     typegoose_1.prop({ required: true, index: true, trim: true }),
     __metadata("design:type", String)

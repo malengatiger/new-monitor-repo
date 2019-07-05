@@ -45,10 +45,11 @@ class Organization extends Typegoose {
   public email?: string;
 
   @prop({ required: true, default: "ZA" })
-  public countryCode?: string;
+  public countryName?: string;
 
   @prop({ required: true, unique: true, index: true, trim: true })
   public countryId?: string;
+  
   @prop({ required: true, unique: true, index: true, trim: true })
   public organizationId?: string;
   //

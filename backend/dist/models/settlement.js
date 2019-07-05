@@ -21,6 +21,10 @@ class Settlement extends typegoose_1.Typegoose {
             settlementId);
         return this.findOne({ settlementId });
     }
+    updatePopulation(population) {
+        this.population = population;
+        this.save();
+    }
     updateEmail(email) {
         this.email = email;
         this.save();
@@ -47,13 +51,13 @@ __decorate([
     __metadata("design:type", String)
 ], Settlement.prototype, "countryID", void 0);
 __decorate([
-    typegoose_1.prop({ required: true, trim: true }),
+    typegoose_1.prop({ trim: true }),
     __metadata("design:type", String)
 ], Settlement.prototype, "settlementId", void 0);
 __decorate([
-    typegoose_1.prop({ required: true }),
-    __metadata("design:type", Object)
-], Settlement.prototype, "position", void 0);
+    typegoose_1.prop({ required: true, default: [] }),
+    __metadata("design:type", Array)
+], Settlement.prototype, "polygon", void 0);
 __decorate([
     typegoose_1.prop({ required: true, default: [] }),
     __metadata("design:type", Array)
@@ -63,9 +67,19 @@ __decorate([
     __metadata("design:type", String)
 ], Settlement.prototype, "countryName", void 0);
 __decorate([
+    typegoose_1.prop({ required: true, default: 0 }),
+    __metadata("design:type", Number)
+], Settlement.prototype, "population", void 0);
+__decorate([
     typegoose_1.prop({ required: true, default: new Date().toISOString() }),
     __metadata("design:type", String)
 ], Settlement.prototype, "created", void 0);
+__decorate([
+    typegoose_1.instanceMethod,
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number]),
+    __metadata("design:returntype", void 0)
+], Settlement.prototype, "updatePopulation", null);
 __decorate([
     typegoose_1.instanceMethod,
     __metadata("design:type", Function),

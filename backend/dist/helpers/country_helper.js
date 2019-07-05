@@ -27,16 +27,13 @@ class CountryHelper {
             if (!countryCode) {
                 countryCode = "TBD";
             }
-            if (name === "South Africa") {
-                countryCode = "ZA";
-            }
             const CountryModel = new country_1.default().getModelForClass(country_1.default);
             const u = new CountryModel({
                 countryCode,
                 name,
             });
             const m = yield u.save();
-            m.countryID = m.id;
+            m.countryId = m.id;
             yield m.save();
             return m;
         });
@@ -61,7 +58,7 @@ class CityHelper {
             console.log(`operationType: 👽 👽 👽  ${event.operationType},  City in stream:   🍀   🍀  ${event.fullDocument.name} 🍎  _id: ${event.fullDocument._id} 🍎 `);
         });
     }
-    static addCity(name, provinceName, countryID, countryName, latitude, longitude) {
+    static addCity(name, provinceName, countryId, countryName, latitude, longitude) {
         return __awaiter(this, void 0, void 0, function* () {
             const cityModel = new city_1.default().getModelForClass(city_1.default);
             const position = {
@@ -69,7 +66,7 @@ class CityHelper {
                 type: "Point",
             };
             const u = new cityModel({
-                countryID,
+                countryId,
                 countryName,
                 latitude,
                 longitude,
@@ -78,17 +75,17 @@ class CityHelper {
                 provinceName,
             });
             const m = yield u.save();
-            m.cityID = m.id;
-            yield m.save();
-            console.log(`\n\n🌀  🌀  🌀  CityHelper: city added:   🍀   ${name} \n`);
-            return m;
+            m.cityId = m.id;
+            const z = yield m.save();
+            console.log(`\n\n🌀🌀🌀  CityHelper: city added:   🍀   ${name} \n`);
+            return z;
         });
     }
-    static getCities(countryID) {
+    static getCities(countryId) {
         return __awaiter(this, void 0, void 0, function* () {
             console.log(`\n🌀🌀🌀🌀  CountryHelper:  😡  getCities ....   🌀🌀🌀 `);
             const CityModel = new city_1.default().getModelForClass(city_1.default);
-            const list = yield CityModel.find({ countryID });
+            const list = yield CityModel.find({ countryId });
             console.log(`😡  😡  😡  😡  😡  Done reading cities ....found:  ${list.length}`);
             return list;
         });

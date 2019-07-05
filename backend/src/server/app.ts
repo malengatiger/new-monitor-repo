@@ -8,18 +8,18 @@ const password = process.env.MONGODB_PASSWORD || "aubrey3";
 const user = process.env.MONGODB_USER || "aubs";
 const appName = "Monitor MongoDB API";
 const mongoConnection = `mongodb+srv://${user}:${password}@ar001-1xhdt.mongodb.net/monitordb?retryWrites=true`;
-// import MongoListeners from "./listeners";
 
 console.log(
   `\n🧡 💛   Monitor MongoDB API ... ☘️  starting  ☘️  ${new Date().toISOString()}   🧡 💛\n`,
 );
+
 mongoose
   .connect(mongoConnection, {
     useNewUrlParser: true,
   })
   .then((client) => {
     console.log(
-      `\n🔆🔆🔆🔆🔆🔆  Mongo connected ... 🔆🔆🔆  💛  ${new Date()}  💛 💛`,
+      `\n🔆🔆🔆🔆🔆🔆  Monitor Mongo connected ... 🔆🔆🔆  💛  ${new Date()}  💛 💛`,
     );
     console.log(
       `\n🍎🍎  ${appName} :: database:  ☘️  client version: ${
@@ -27,7 +27,7 @@ mongoose
       }  ☘️  is OK   🍎🍎 `,
     );
     console.log(
-      `🍎🍎🍎  MongoDB config ...${JSON.stringify(
+      `🍎🍎🍎  Monitor MongoDB config ...${JSON.stringify(
         mongoose.connection.config,
       )}`,
     );
@@ -42,11 +42,20 @@ mongoose
 //
 import { app } from "./server";
 import MongoListeners from "./listeners";
+import OrgExpressRoutes from "../routes/org_routes";
+import SettlementExpressRoutes from "../routes/settlement_routes";
+import UserExpressRoutes from "../routes/user_routes";
+import CountryExpressRoutes from "../routes/country_routes";
 
 class MonitorApp {
   public app: express.Application;
   public port: string;
   public appRoutes: AppExpressRoutes = new AppExpressRoutes();
+  public orgRoutes: OrgExpressRoutes = new OrgExpressRoutes();
+  public stlmRoutes: SettlementExpressRoutes = new SettlementExpressRoutes();
+  public userRoutes: UserExpressRoutes = new UserExpressRoutes();
+  public countryRoutes: CountryExpressRoutes = new CountryExpressRoutes();
+
   
   constructor() {
     console.log(`\n🦀 🦀  🥦 Inside MonitorWebAPI constructor ...`);
@@ -55,6 +64,10 @@ class MonitorApp {
     this.initializeMiddleware();
     
     this.appRoutes.routes(this.app);
+    this.orgRoutes.routes(this.app);
+    this.stlmRoutes.routes(this.app);
+    this.userRoutes.routes(this.app);
+    this.countryRoutes.routes(this.app);
     
 
     console.log(

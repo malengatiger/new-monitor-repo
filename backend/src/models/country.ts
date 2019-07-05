@@ -33,11 +33,11 @@ class Country extends Typegoose {
   @prop({ required: true, index: true, trim: true, unique: true })
   public name?: string;
 
-  @prop({ required: true, default: "ZA" })
+  @prop({ required: true, default: "TBD" })
   public countryCode?: string;
 
-  @prop({ required: true, unique: true, index: true, trim: true })
-  public countryID?: string;
+  @prop({ unique: true, index: true, trim: true })
+  public countryId?: string;
   //
   @prop({ required: true, default: new Date().toISOString() })
   public created?: string;

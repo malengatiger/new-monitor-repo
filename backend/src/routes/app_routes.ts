@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import Util from "../server/util";
+import Migrator from "../migration/migrator";
 
 export class AppExpressRoutes {
   public routes(app: any): void {
@@ -21,6 +22,21 @@ export class AppExpressRoutes {
       res.status(200).json({
         message: `🔆🔆🔆 SoldierBoy, aka HDA Monitor pinged !!! 💙 IBM Cloud is UP! 💙 GCP is UP! 💙  Azure is UP! 💙 ${new Date()}  💙  ${new Date().toISOString()}  🔆 🔆 🔆 🔆 🔆 `,
       });
+    });
+    app.route("/migrator").get((req: Request, res: Response) => {
+      console.log(
+        `\n\n💦  HDA Monitor Migrator requested! ... 💦 💦 💦 💦 💦 💦  ${new Date().toISOString()}`,
+      );
+      try {
+        Migrator.start();
+        const msg = `🔆🔆🔆 Migrator started ... 💙💙 check mongo database for data after a bit💙💙 ${new Date().toISOString()}  🔆 🔆 🔆 🔆 🔆 `;
+        console.log(msg);
+        res.status(200).json({
+        message: msg,
+      });
+      } catch (e) {
+        Util.sendError(res, e, 'Migrator failed');
+      }
     });
   }
 }

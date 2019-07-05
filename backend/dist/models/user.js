@@ -17,14 +17,19 @@ var UserType;
     UserType["Executive"] = "Executive";
     UserType["Monitor"] = "Monitor";
     UserType["Citizen"] = "Citizen";
+    UserType["OrgUser"] = "OrgUser";
 })(UserType || (UserType = {}));
 class User extends typegoose_1.Typegoose {
     //
-    static findByUserID(userID) {
-        return this.findOne({ userID });
+    static findByUserId(userId) {
+        return this.findOne({ userId });
     }
     static findByUserType(userType) {
         return this.find({ userType });
+    }
+    //
+    static findByOrganization(organizationId) {
+        return this.find({ organizationId });
     }
 }
 __decorate([
@@ -46,11 +51,11 @@ __decorate([
 __decorate([
     typegoose_1.prop({ index: true, trim: true }),
     __metadata("design:type", String)
-], User.prototype, "userID", void 0);
+], User.prototype, "userId", void 0);
 __decorate([
-    typegoose_1.prop({ trim: true }),
+    typegoose_1.prop({ required: true, trim: true }),
     __metadata("design:type", String)
-], User.prototype, "associationID", void 0);
+], User.prototype, "organizationId", void 0);
 __decorate([
     typegoose_1.prop({ trim: true }),
     __metadata("design:type", String)
@@ -62,11 +67,7 @@ __decorate([
 __decorate([
     typegoose_1.prop({ trim: true }),
     __metadata("design:type", String)
-], User.prototype, "countryID", void 0);
-__decorate([
-    typegoose_1.prop({ trim: true }),
-    __metadata("design:type", String)
-], User.prototype, "associationName", void 0);
+], User.prototype, "countryId", void 0);
 __decorate([
     typegoose_1.prop({ required: true }),
     __metadata("design:type", String)
@@ -80,12 +81,18 @@ __decorate([
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
-], User, "findByUserID", null);
+], User, "findByUserId", null);
 __decorate([
     typegoose_1.staticMethod,
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
 ], User, "findByUserType", null);
+__decorate([
+    typegoose_1.staticMethod,
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", void 0)
+], User, "findByOrganization", null);
 exports.default = User;
 //# sourceMappingURL=user.js.map

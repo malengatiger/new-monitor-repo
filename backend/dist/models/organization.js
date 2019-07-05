@@ -35,7 +35,7 @@ __decorate([
 __decorate([
     typegoose_1.prop({ required: true, default: "ZA" }),
     __metadata("design:type", String)
-], Organization.prototype, "countryCode", void 0);
+], Organization.prototype, "countryName", void 0);
 __decorate([
     typegoose_1.prop({ required: true, unique: true, index: true, trim: true }),
     __metadata("design:type", String)

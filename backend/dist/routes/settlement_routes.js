@@ -20,7 +20,7 @@ class SettlementExpressRoutes {
             console.log(`\n\n💦  POST: /addSettlement requested .... 💦 💦 💦 💦 💦 💦  ${new Date().toISOString()}`);
             console.log(req.body);
             try {
-                const result = yield settlement_helper_1.SettlementHelper.addSettlement(req.body.settlementName, req.body.email, req.body.cellphone, req.body.countryID, req.body.countryName);
+                const result = yield settlement_helper_1.SettlementHelper.addSettlement(req.body.settlementName, req.body.email, req.body.cellphone, req.body.countryID, req.body.countryName, req.body.polygon, parseInt(req.body.population));
                 res.status(200).json(result);
             }
             catch (err) {

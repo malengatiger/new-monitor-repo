@@ -42,23 +42,31 @@ class Settlement extends Typegoose {
   public cellphone?: string;
 
   @prop({ required: true, trim: true })
-  public countryID?: string;
+  public countryID!: string;
   //
-  @prop({ required: true, trim: true })
+  @prop({ trim: true })
   public settlementId!: string;
   //
-  @prop({ required: true })
-  public position!: Position;
+  @prop({ required: true, default: [] })
+  public polygon!: Position[];
   //
   @prop({ required: true, default: [] })
-  public nearestCities!: City[];
+  public nearestCities!: any[];
   //
   @prop({ required: true })
-  public countryName?: string;
+  public countryName!: string;
+  //
+   @prop({ required: true, default: 0 })
+  public population!: number;
   //
   @prop({ required: true, default: new Date().toISOString() })
   public created?: string;
 
+  @instanceMethod
+  public updatePopulation(this: InstanceType<Settlement>, population: number) {
+    this.population = population;
+    this.save();
+  }
   @instanceMethod
   public updateEmail(this: InstanceType<Settlement>, email: string) {
     this.email = email;

@@ -19,16 +19,15 @@ const password = process.env.MONGODB_PASSWORD || "aubrey3";
 const user = process.env.MONGODB_USER || "aubs";
 const appName = "Monitor MongoDB API";
 const mongoConnection = `mongodb+srv://${user}:${password}@ar001-1xhdt.mongodb.net/monitordb?retryWrites=true`;
-// import MongoListeners from "./listeners";
 console.log(`\n🧡 💛   Monitor MongoDB API ... ☘️  starting  ☘️  ${new Date().toISOString()}   🧡 💛\n`);
 mongoose_1.default
     .connect(mongoConnection, {
     useNewUrlParser: true,
 })
     .then((client) => {
-    console.log(`\n🔆🔆🔆🔆🔆🔆  Mongo connected ... 🔆🔆🔆  💛  ${new Date()}  💛 💛`);
+    console.log(`\n🔆🔆🔆🔆🔆🔆  Monitor Mongo connected ... 🔆🔆🔆  💛  ${new Date()}  💛 💛`);
     console.log(`\n🍎🍎  ${appName} :: database:  ☘️  client version: ${client.version}  ☘️  is OK   🍎🍎 `);
-    console.log(`🍎🍎🍎  MongoDB config ...${JSON.stringify(mongoose_1.default.connection.config)}`);
+    console.log(`🍎🍎🍎  Monitor MongoDB config ...${JSON.stringify(mongoose_1.default.connection.config)}`);
     listeners_1.default.listen(client);
     console.log(`🍎🍎🍎  MongoDB collections listened to ...`);
     console.log(mongoose_1.default.connection.collections);
@@ -39,14 +38,26 @@ mongoose_1.default
 //
 const server_1 = require("./server");
 const listeners_1 = __importDefault(require("./listeners"));
+const org_routes_1 = __importDefault(require("../routes/org_routes"));
+const settlement_routes_1 = __importDefault(require("../routes/settlement_routes"));
+const user_routes_1 = __importDefault(require("../routes/user_routes"));
+const country_routes_1 = __importDefault(require("../routes/country_routes"));
 class MonitorApp {
     constructor() {
         this.appRoutes = new app_routes_1.AppExpressRoutes();
+        this.orgRoutes = new org_routes_1.default();
+        this.stlmRoutes = new settlement_routes_1.default();
+        this.userRoutes = new user_routes_1.default();
+        this.countryRoutes = new country_routes_1.default();
         console.log(`\n🦀 🦀  🥦 Inside MonitorWebAPI constructor ...`);
         this.app = server_1.app;
         this.port = port;
         this.initializeMiddleware();
         this.appRoutes.routes(this.app);
+        this.orgRoutes.routes(this.app);
+        this.stlmRoutes.routes(this.app);
+        this.userRoutes.routes(this.app);
+        this.countryRoutes.routes(this.app);
         console.log(`\n🦀 🦀  🥦  MonitorWebAPI constructor : 🥦🥦🥦 Completed setting up express routes `);
     }
     initializeMiddleware() {

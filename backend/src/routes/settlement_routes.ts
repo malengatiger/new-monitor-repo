@@ -20,6 +20,8 @@ export class SettlementExpressRoutes {
           req.body.cellphone,
           req.body.countryID,
           req.body.countryName,
+          req.body.polygon,
+          parseInt(req.body.population),
         );
         res.status(200).json(result);
       } catch (err) {

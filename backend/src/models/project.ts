@@ -27,11 +27,11 @@ class Project extends Typegoose {
   @prop({ required: true, trim: true })
   public organizationName!: string;
   //
-  @prop({ trim: true })
-  public settlementId?: string;
+  @prop({ required: true, default: [] })
+  public settlements?: any[];
   //
-  @prop({ trim: true })
-  public settlementName?: string;
+  @prop({ required: true, default: [] })
+  public nearestCities?: any[];
   
   @prop({ required: false })
   public position?: Position;

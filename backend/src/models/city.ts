@@ -14,13 +14,10 @@ class City extends Typegoose {
   public provinceName?: string;
   
   @prop({ required: true, index: true, trim: true })
-  public countryID?: string;
+  public countryId!: string;
 
-  @prop({ required: true, index: true, trim: true })
-  public cityID?: string;
-  //
-  @prop({ trim: true })
-  public distance?: string;
+  @prop({ index: true, trim: true })
+  public cityId?: string;
   //
   @prop({ required: true, index: true, trim: true })
   public countryName?: string;

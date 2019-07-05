@@ -1,7 +1,4 @@
 import {
-  arrayProp,
-  instanceMethod,
-  InstanceType,
   ModelType,
   prop,
   Ref,
@@ -15,16 +12,17 @@ enum UserType {
   Executive = "Executive",
   Monitor = "Monitor",
   Citizen = "Citizen",
+  OrgUser = "OrgUser",
 }
 class User extends Typegoose {
 
   //
   @staticMethod
-  public static findByUserID(
+  public static findByUserId(
     this: ModelType<User> & typeof User,
-    userID: string,
+    userId: string,
   ) {
-    return this.findOne({ userID });
+    return this.findOne({ userId });
   }
   @staticMethod
   public static findByUserType(
@@ -32,6 +30,14 @@ class User extends Typegoose {
     userType: string,
   ) {
     return this.find({ userType });
+  }
+  //
+  @staticMethod
+  public static findByOrganization(
+    this: ModelType<User> & typeof User,
+    organizationId: string,
+  ) {
+    return this.find({ organizationId });
   }
   //
   @prop({ required: true, trim: true })
@@ -47,10 +53,10 @@ class User extends Typegoose {
   public lastName!: string;
   //
   @prop({ index: true, trim: true })
-  public userID!: string;
+  public userId!: string;
   //
-  @prop({ trim: true })
-  public associationID?: string;
+  @prop({ required: true, trim: true })
+  public organizationId?: string;
   //
   @prop({ trim: true })
   public fcmToken?: string;
@@ -59,11 +65,8 @@ class User extends Typegoose {
   public gender?: string;
   //
   @prop({ trim: true })
-  public countryID?: string;
-  //
-  @prop({ trim: true })
-  public associationName?: string;
-  //
+  public countryId?: string;
+  
   @prop({ required: true })
   public userType!: UserType;
   //

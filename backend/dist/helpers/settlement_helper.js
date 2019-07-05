@@ -12,9 +12,16 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const settlement_1 = __importDefault(require("../models/settlement"));
+const position_1 = __importDefault(require("../models/position"));
 class SettlementHelper {
-    static addSettlement(settlementName, email, cellphone, countryID, countryName) {
+    static addSettlement(settlementName, email, cellphone, countryID, countryName, polygon, population) {
         return __awaiter(this, void 0, void 0, function* () {
+            const positions = [];
+            for (const p of polygon) {
+                const pos = new position_1.default();
+                pos.coordinates = [p.longitude, p.latitude];
+                positions.push(pos);
+            }
             const settlementModel = new settlement_1.default().getModelForClass(settlement_1.default);
             const settlement = new settlementModel({
                 settlementName,
@@ -22,11 +29,13 @@ class SettlementHelper {
                 countryID,
                 countryName,
                 email,
+                polygon: positions,
+                population,
             });
             const m = yield settlement.save();
             m.settlementId = m.id;
             yield m.save();
-            console.log(`\n\n💙💚💛   SettlementHelper: Yebo Gogo!!!! - MongoDB has saved ${settlementName} !!!!!  💙💚💛`);
+            console.log(`\n\n💙💚💛  SettlementHelper: Yebo Gogo!!!! - MongoDB has saved ${settlementName} !!!!!  💙💚💛`);
             console.log(m);
             return m;
         });
