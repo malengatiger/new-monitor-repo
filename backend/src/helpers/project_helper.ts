@@ -1,6 +1,7 @@
 
 import Project from "../models/project";
 import Settlement from "../models/settlement";
+import Position from "../models/position";
 
 export class ProjectHelper {
   public static async onProjectAdded(event: any) {
@@ -49,6 +50,76 @@ export class ProjectHelper {
     const u: any = await ProjectModel.findByProjectId(projectId).exec();
     await u.addPositions(projectId, positions);
     return u;
+  }
+  public static async addProjectPhoto(
+    projectId: string,
+    url: string,
+    comment: string,
+    latitude: number,
+    longitude: number,
+    userId: string,
+  ): Promise<any> {
+    const projectModel = new Project().getModelForClass(Project);
+    const u: any = await projectModel.findByProjectId(projectId).exec();
+    const  position  = new Position();
+    position.coordinates = [longitude, latitude];
+    await u.photoUrls.push({
+      url,
+      comment,
+      position,
+      userId,
+    });
+    await u.save();
+    return {
+      message: `Photo added to project`,
+    };
+  }
+   public static async addProjectVideo(
+    projectId: string,
+    url: string,
+    comment: string,
+    latitude: number,
+    longitude: number,
+    userId: string,
+  ): Promise<any> {
+    const projectModel = new Project().getModelForClass(Project);
+    const u: any = await projectModel.findByProjectId(projectId).exec();
+    const  position  = new Position();
+    position.coordinates = [longitude, latitude];
+    await u.videoUrls.push({
+      url,
+      comment,
+      position,
+      userId,
+    });
+    await u.save();
+    return {
+      message: `Video added to project`,
+    };
+  }
+
+    public static async addProjectRating(
+    projectId: string,
+    rating: number,
+    comment: string,
+    latitude: number,
+    longitude: number,
+    userId: string,
+  ): Promise<any> {
+    const projectModel = new Project().getModelForClass(Project);
+    const u: any = await projectModel.findByProjectId(projectId).exec();
+    const  position  = new Position();
+    position.coordinates = [longitude, latitude];
+    await u.ratings.push({
+      rating,
+      comment,
+      position,
+      userId,
+    });
+    await u.save();
+    return {
+      message: `Rating added to project`,
+    };
   }
 
   public static async findAllProjects(): Promise<any> {

@@ -49,6 +49,39 @@ class ProjectExpressRoutes {
                 util_1.default.sendError(res, err, "addPositionsToProject failed");
             }
         }));
+        app.route("/addProjectPhoto").post((req, res) => __awaiter(this, void 0, void 0, function* () {
+            console.log(`\n\n💦  POST: /addProjectPhoto requested .... 💦 💦 💦 💦 💦 💦  ${new Date().toISOString()}`);
+            console.log(req.body);
+            try {
+                const result = yield project_helper_1.ProjectHelper.addProjectPhoto(req.body.projectId, req.body.url, req.body.comment, req.body.latitude, req.body.longitude, req.body.userId);
+                res.status(200).json(result);
+            }
+            catch (err) {
+                util_1.default.sendError(res, err, "addProjectPhoto failed");
+            }
+        }));
+        app.route("/addProjectVideo").post((req, res) => __awaiter(this, void 0, void 0, function* () {
+            console.log(`\n\n💦  POST: /addProjectVideo requested .... 💦 💦 💦 💦 💦 💦  ${new Date().toISOString()}`);
+            console.log(req.body);
+            try {
+                const result = yield project_helper_1.ProjectHelper.addProjectVideo(req.body.projectId, req.body.url, req.body.comment, req.body.latitude, req.body.longitude, req.body.userId);
+                res.status(200).json(result);
+            }
+            catch (err) {
+                util_1.default.sendError(res, err, "addProjectVideo failed");
+            }
+        }));
+        app.route("/addProjectRating").post((req, res) => __awaiter(this, void 0, void 0, function* () {
+            console.log(`\n\n💦  POST: /addProjectRating requested .... 💦 💦 💦 💦 💦 💦  ${new Date().toISOString()}`);
+            console.log(req.body);
+            try {
+                const result = yield project_helper_1.ProjectHelper.addProjectRating(req.body.projectId, req.body.rating, req.body.comment, req.body.latitude, req.body.longitude, req.body.userId);
+                res.status(200).json(result);
+            }
+            catch (err) {
+                util_1.default.sendError(res, err, "addProjectRating failed");
+            }
+        }));
         app.route("/findAllProjects").post((req, res) => __awaiter(this, void 0, void 0, function* () {
             console.log(`\n\n💦  POST: /findAllProjects requested .... 💦 💦 💦 💦 💦 💦  ${new Date().toISOString()}`);
             try {

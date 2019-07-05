@@ -12,6 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const project_1 = __importDefault(require("../models/project"));
+const position_1 = __importDefault(require("../models/position"));
 class ProjectHelper {
     static onProjectAdded(event) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -49,6 +50,60 @@ class ProjectHelper {
             const u = yield ProjectModel.findByProjectId(projectId).exec();
             yield u.addPositions(projectId, positions);
             return u;
+        });
+    }
+    static addProjectPhoto(projectId, url, comment, latitude, longitude, userId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const projectModel = new project_1.default().getModelForClass(project_1.default);
+            const u = yield projectModel.findByProjectId(projectId).exec();
+            const position = new position_1.default();
+            position.coordinates = [longitude, latitude];
+            yield u.photoUrls.push({
+                url,
+                comment,
+                position,
+                userId,
+            });
+            yield u.save();
+            return {
+                message: `Photo added to project`,
+            };
+        });
+    }
+    static addProjectVideo(projectId, url, comment, latitude, longitude, userId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const projectModel = new project_1.default().getModelForClass(project_1.default);
+            const u = yield projectModel.findByProjectId(projectId).exec();
+            const position = new position_1.default();
+            position.coordinates = [longitude, latitude];
+            yield u.videoUrls.push({
+                url,
+                comment,
+                position,
+                userId,
+            });
+            yield u.save();
+            return {
+                message: `Video added to project`,
+            };
+        });
+    }
+    static addProjectRating(projectId, rating, comment, latitude, longitude, userId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const projectModel = new project_1.default().getModelForClass(project_1.default);
+            const u = yield projectModel.findByProjectId(projectId).exec();
+            const position = new position_1.default();
+            position.coordinates = [longitude, latitude];
+            yield u.ratings.push({
+                rating,
+                comment,
+                position,
+                userId,
+            });
+            yield u.save();
+            return {
+                message: `Rating added to project`,
+            };
         });
     }
     static findAllProjects() {
