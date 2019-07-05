@@ -46,6 +46,7 @@ import OrgExpressRoutes from "../routes/org_routes";
 import SettlementExpressRoutes from "../routes/settlement_routes";
 import UserExpressRoutes from "../routes/user_routes";
 import CountryExpressRoutes from "../routes/country_routes";
+import QuestionnaireExpressRoutes from "../routes/questionnaire_routes";
 
 class MonitorApp {
   public app: express.Application;
@@ -55,6 +56,8 @@ class MonitorApp {
   public stlmRoutes: SettlementExpressRoutes = new SettlementExpressRoutes();
   public userRoutes: UserExpressRoutes = new UserExpressRoutes();
   public countryRoutes: CountryExpressRoutes = new CountryExpressRoutes();
+  public questRoutes: QuestionnaireExpressRoutes = new QuestionnaireExpressRoutes();
+
 
   
   constructor() {
@@ -68,6 +71,7 @@ class MonitorApp {
     this.stlmRoutes.routes(this.app);
     this.userRoutes.routes(this.app);
     this.countryRoutes.routes(this.app);
+    this.questRoutes.routes(this.app);
     
 
     console.log(

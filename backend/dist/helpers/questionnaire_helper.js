@@ -14,7 +14,33 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const questionnaire_1 = __importDefault(require("../models/questionnaire"));
 const organization_1 = __importDefault(require("../models/organization"));
 const country_1 = __importDefault(require("../models/country"));
+const questionnaire_response_1 = __importDefault(require("../models/questionnaire_response"));
 class QuestionnaireHelper {
+    static addQuestionnaireResponse(questionnaireId, respondentId, userId, sections) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const questModel = new questionnaire_response_1.default().getModelForClass(questionnaire_response_1.default);
+            const list = [];
+            for (const sec of sections) {
+                const mSec = {
+                    sectionNumber: sec.sectionNumber,
+                    title: sec.title,
+                    description: sec.description,
+                    questions: this.getQuestions(sec),
+                };
+                list.push(mSec);
+            }
+            const quest = new questModel({
+                questionnaireId,
+                respondentId,
+                sections: list,
+                userId,
+            });
+            const m = yield quest.save();
+            m.questionnaireResponseId = m.id;
+            yield m.save();
+            console.log(`\n\n💙💚💛   QuestionnaireHelper: Yebo Gogo!!!! - MongoDB has saved ${questionnaireId} questionnaire response!!!!!  💙💚💛`);
+        });
+    }
     static addQuestionnaire(name, title, description, countryId, organizationId, sections) {
         return __awaiter(this, void 0, void 0, function* () {
             const questModel = new questionnaire_1.default().getModelForClass(questionnaire_1.default);
@@ -68,6 +94,15 @@ class QuestionnaireHelper {
             return list;
         });
     }
+    static getQuestionnairesByOrganization(organizationId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            console.log(` 🌀 getQuestionnairesByOrganization ....   🌀  🌀  🌀 `);
+            const QuestionnaireModel = new questionnaire_1.default().getModelForClass(questionnaire_1.default);
+            const list = yield QuestionnaireModel.findByOrganization(organizationId);
+            console.log(list);
+            return list;
+        });
+    }
     static onQuestionnaireAdded(event) {
         return __awaiter(this, void 0, void 0, function* () {
             console.log(`onQuestionnaireAdded event has occured .... 👽 👽 👽`);
@@ -75,12 +110,37 @@ class QuestionnaireHelper {
             console.log(`operationType: 👽 👽 👽  ${event.operationType},   🍎 `);
         });
     }
+    static onQuestionnaireResponseAdded(event) {
+        return __awaiter(this, void 0, void 0, function* () {
+            console.log(`onQuestionnaireResponseAdded event has occured .... 👽 👽 👽`);
+            console.log(event);
+            console.log(`operationType: 👽 👽 👽  ${event.operationType},   🍎 `);
+        });
+    }
+    static getQuestionnaireResponses(questionnaireId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            console.log(` 🌀 getQuestionnaireResponses ....   🌀  🌀  🌀 `);
+            const QuestionnaireModel = new questionnaire_response_1.default().getModelForClass(questionnaire_response_1.default);
+            const list = yield QuestionnaireModel.findByQuestionnaire(questionnaireId);
+            console.log(list);
+            return list;
+        });
+    }
+    static getQuestionnaireResponsesBySettlement(settlementId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            console.log(` 🌀 getQuestionnaireResponsesBySettlement ....   🌀  🌀  🌀 `);
+            const QuestionnaireModel = new questionnaire_response_1.default().getModelForClass(questionnaire_response_1.default);
+            const list = yield QuestionnaireModel.findBySettlement(settlementId);
+            console.log(list);
+            return list;
+        });
+    }
     static getQuestions(sec) {
         const list = [];
         sec.questions.forEach((q) => {
             const qm = {
                 text: q.text,
-                answers: [],
+                answers: q.answers,
                 choices: q.choices,
                 questionType: q.questionType,
             };

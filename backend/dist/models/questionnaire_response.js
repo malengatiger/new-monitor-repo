@@ -15,7 +15,7 @@ class QuestionnaireResponse extends typegoose_1.Typegoose {
         return this.find({ questionnaireId });
     }
     static findBySettlement(settlementId) {
-        return this.find({ settlementId });
+        return this.find({ 'settlements.settlementId': settlementId });
     }
     static findByRespondent(respondentId) {
         return this.find({ respondentId });
@@ -41,13 +41,13 @@ __decorate([
     __metadata("design:type", String)
 ], QuestionnaireResponse.prototype, "respondentId", void 0);
 __decorate([
-    typegoose_1.prop({ required: true, index: true }),
+    typegoose_1.prop({ index: true }),
     __metadata("design:type", String)
-], QuestionnaireResponse.prototype, "settlementId", void 0);
+], QuestionnaireResponse.prototype, "questionnaireResponseId", void 0);
 __decorate([
-    typegoose_1.prop({ required: true }),
-    __metadata("design:type", String)
-], QuestionnaireResponse.prototype, "settlementName", void 0);
+    typegoose_1.prop({ required: true, default: [] }),
+    __metadata("design:type", Array)
+], QuestionnaireResponse.prototype, "settlements", void 0);
 __decorate([
     typegoose_1.prop({ required: true, default: new Date().toISOString() }),
     __metadata("design:type", String)

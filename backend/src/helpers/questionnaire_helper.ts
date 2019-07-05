@@ -3,8 +3,41 @@ import Questionnaire from "../models/questionnaire";
 import Organization from "../models/organization";
 import Country from "../models/country";
 import { Section } from "../models/interfaces";
+import QuestionnaireResponse from "../models/questionnaire_response";
 
 export class QuestionnaireHelper {
+  public static async addQuestionnaireResponse(
+    questionnaireId: string,
+    respondentId: string,
+    userId: string,
+    sections: any[],
+  ) {
+    const questModel = new QuestionnaireResponse().getModelForClass(
+      QuestionnaireResponse,
+    );
+    const list: Section[] = [];
+    for (const sec of sections) {
+      const mSec: Section = {
+        sectionNumber: sec.sectionNumber,
+        title: sec.title,
+        description: sec.description,
+        questions: this.getQuestions(sec),
+      };
+      list.push(mSec);
+    }
+    const quest = new questModel({
+      questionnaireId,
+      respondentId,
+      sections: list,
+      userId,
+    });
+    const m = await quest.save();
+    m.questionnaireResponseId = m.id;
+    await m.save();
+    console.log(
+      `\n\n💙💚💛   QuestionnaireHelper: Yebo Gogo!!!! - MongoDB has saved ${questionnaireId} questionnaire response!!!!!  💙💚💛`,
+    );
+  }
   public static async addQuestionnaire(
     name: string,
     title: string,
@@ -66,11 +99,50 @@ export class QuestionnaireHelper {
     console.log(list);
     return list;
   }
+  public static async getQuestionnairesByOrganization(
+    organizationId: string,
+  ): Promise<any> {
+    console.log(` 🌀 getQuestionnairesByOrganization ....   🌀  🌀  🌀 `);
+    const QuestionnaireModel = new Questionnaire().getModelForClass(
+      Questionnaire,
+    );
+    const list = await QuestionnaireModel.findByOrganization(organizationId);
+    console.log(list);
+    return list;
+  }
 
   public static async onQuestionnaireAdded(event: any) {
     console.log(`onQuestionnaireAdded event has occured .... 👽 👽 👽`);
     console.log(event);
+    console.log(`operationType: 👽👽👽  ${event.operationType},   🍎 `);
+  }
+  public static async onQuestionnaireResponseAdded(event: any) {
+    console.log(`onQuestionnaireResponseAdded event has occured .... 👽 👽 👽`);
+    console.log(event);
     console.log(`operationType: 👽 👽 👽  ${event.operationType},   🍎 `);
+  }
+
+  public static async getQuestionnaireResponses(
+    questionnaireId: string,
+  ): Promise<any> {
+    console.log(` 🌀 getQuestionnaireResponses ....   🌀  🌀  🌀 `);
+    const QuestionnaireModel = new QuestionnaireResponse().getModelForClass(
+      QuestionnaireResponse,
+    );
+    const list = await QuestionnaireModel.findByQuestionnaire(questionnaireId);
+    console.log(list);
+    return list;
+  }
+  public static async getQuestionnaireResponsesBySettlement(
+    settlementId: string,
+  ): Promise<any> {
+    console.log(` 🌀 getQuestionnaireResponsesBySettlement ....   🌀  🌀  🌀 `);
+    const QuestionnaireModel = new QuestionnaireResponse().getModelForClass(
+      QuestionnaireResponse,
+    );
+    const list = await QuestionnaireModel.findBySettlement(settlementId);
+    console.log(list);
+    return list;
   }
 
   private static getQuestions(sec: any) {
@@ -78,7 +150,7 @@ export class QuestionnaireHelper {
     sec.questions.forEach((q: any) => {
       const qm: Question = {
         text: q.text,
-        answers: [],
+        answers: q.answers,
         choices: q.choices,
         questionType: q.questionType,
       };
