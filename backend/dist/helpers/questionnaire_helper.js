@@ -107,7 +107,7 @@ class QuestionnaireHelper {
         return __awaiter(this, void 0, void 0, function* () {
             console.log(`onQuestionnaireAdded event has occured .... 👽 👽 👽`);
             console.log(event);
-            console.log(`operationType: 👽 👽 👽  ${event.operationType},   🍎 `);
+            console.log(`operationType: 👽👽👽  ${event.operationType},   🍎 `);
         });
     }
     static onQuestionnaireResponseAdded(event) {

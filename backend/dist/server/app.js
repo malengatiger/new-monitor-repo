@@ -43,6 +43,7 @@ const settlement_routes_1 = __importDefault(require("../routes/settlement_routes
 const user_routes_1 = __importDefault(require("../routes/user_routes"));
 const country_routes_1 = __importDefault(require("../routes/country_routes"));
 const questionnaire_routes_1 = __importDefault(require("../routes/questionnaire_routes"));
+const project_routes_1 = __importDefault(require("../routes/project_routes"));
 class MonitorApp {
     constructor() {
         this.appRoutes = new app_routes_1.AppExpressRoutes();
@@ -51,6 +52,7 @@ class MonitorApp {
         this.userRoutes = new user_routes_1.default();
         this.countryRoutes = new country_routes_1.default();
         this.questRoutes = new questionnaire_routes_1.default();
+        this.projectRoutes = new project_routes_1.default();
         console.log(`\n🦀 🦀  🥦 Inside MonitorWebAPI constructor ...`);
         this.app = server_1.app;
         this.port = port;
@@ -61,6 +63,7 @@ class MonitorApp {
         this.userRoutes.routes(this.app);
         this.countryRoutes.routes(this.app);
         this.questRoutes.routes(this.app);
+        this.projectRoutes.routes(this.app);
         console.log(`\n🦀 🦀  🥦  MonitorWebAPI constructor : 🥦🥦🥦 Completed setting up express routes `);
     }
     initializeMiddleware() {

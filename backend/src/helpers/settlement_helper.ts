@@ -12,7 +12,6 @@ export class SettlementHelper {
     population: number,
   ): Promise<any> {
 
-
     const positions: Position[] = [];
     for (const p of polygon) {
       const pos = new Position();
