@@ -6,7 +6,7 @@ export class UserHelper {
     console.log(
       `operationType: 👽 👽 👽  ${
         event.operationType
-      },  User in stream:   🍀 🍎 `,
+      },  User in stream:   🍀🍎 `,
     );
   }
   public static async addUser(
@@ -42,10 +42,16 @@ export class UserHelper {
     const list = await UserModel.find();
     return list;
   }
-  public static async findByUser(UserId: string): Promise<any> {
+  public static async findByUser(userId: string): Promise<any> {
     console.log(` 🌀 findByUser ....   🌀  🌀  🌀 `);
     const UserModel = new User().getModelForClass(User);
-    const list = await UserModel.findByUserId(UserId);
+    const list = await UserModel.findByUserId(userId);
+    return list;
+  }
+  public static async findByUid(uid: string): Promise<any> {
+    console.log(` 🌀 findByUid ....   🌀  🌀  🌀 `);
+    const UserModel = new User().getModelForClass(User);
+    const list = await UserModel.findByUid(uid);
     return list;
   }
   public static async findByOrganization(organizationId: string): Promise<any> {

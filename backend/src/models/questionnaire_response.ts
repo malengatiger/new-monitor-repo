@@ -53,9 +53,9 @@ class QuestionnaireResponse extends Typegoose {
   @prop({ index: true })
   public questionnaireResponseId?: string;
   //
-  @prop({ required: true, default: [] })
-  public settlements!: any[];
-  //
+  // @prop({ required: true, default: [] })
+  // public settlements!: any[];
+  // //
   @prop({ required: true, default: new Date().toISOString() })
   public created?: string;
   //

@@ -42,9 +42,9 @@ export class UserExpressRoutes {
         Util.sendError(res, err, "findAllUsers failed");
       }
     });
-    app.route("/findByOrganization").post(async (req: Request, res: Response) => {
+    app.route("/findUsersByOrganization").post(async (req: Request, res: Response) => {
       console.log(
-        `\n\n💦  POST: /findByOrganization requested .... 💦 💦 💦 💦 💦 💦  ${new Date().toISOString()}`,
+        `\n\n💦  POST: /findUsersByOrganization requested .... 💦 💦 💦 💦 💦 💦  ${new Date().toISOString()}`,
       );
       try {
         const result = await UserHelper.findByOrganization(
@@ -52,7 +52,20 @@ export class UserExpressRoutes {
         );
         res.status(200).json(result);
       } catch (err) {
-        Util.sendError(res, err, "findByCountry failed");
+        Util.sendError(res, err, "findUsersByOrganization failed");
+      }
+    });
+    app.route("/findUserByUid").post(async (req: Request, res: Response) => {
+      console.log(
+        `\n\n💦  POST: /findUserByUid requested .... 💦 💦 💦 💦 💦 💦  ${new Date().toISOString()}`,
+      );
+      try {
+        const result = await UserHelper.findByUid(
+          req.body.uid,
+        );
+        res.status(200).json(result);
+      } catch (err) {
+        Util.sendError(res, err, "findUserByUid failed");
       }
     });
   }

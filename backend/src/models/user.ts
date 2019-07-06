@@ -25,6 +25,13 @@ class User extends Typegoose {
     return this.findOne({ userId });
   }
   @staticMethod
+  public static findByUid(
+    this: ModelType<User> & typeof User,
+    uid: string,
+  ) {
+    return this.findOne({ uid });
+  }
+  @staticMethod
   public static findByUserType(
     this: ModelType<User> & typeof User,
     userType: string,
@@ -48,6 +55,9 @@ class User extends Typegoose {
   //
   @prop({ trim: true })
   public cellphone!: string;
+  //
+  @prop({ trim: true })
+  public uid!: string;
   //
   @prop({ required: true, trim: true })
   public lastName!: string;

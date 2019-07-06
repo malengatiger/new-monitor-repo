@@ -9,7 +9,7 @@ import {
   Typegoose,
 } from "typegoose";
 import Settlement from "./settlement";
-import { Question } from "./interfaces";
+import { Question, Section } from "./interfaces";
 
 class Questionnaire extends Typegoose {
   @staticMethod
@@ -49,7 +49,7 @@ class Questionnaire extends Typegoose {
   }
   //
   @prop({ required: true, default: [] })
-  public questions!: Question[];
+  public sections!: Section[];
   //
   @prop({ required: true, index: true, trim: true, unique: true })
   public name?: string;

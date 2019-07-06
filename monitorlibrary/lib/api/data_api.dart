@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:monitorlibrary/data/user.dart';
 
 class DataAPI {
   static const Map<String, String> headers = {
@@ -13,6 +14,29 @@ class DataAPI {
 //  static const URL = 'https://dancermx.azurewebsites.net/';
 //  static const URL = 'https://dancer3033a1.eu-gb.cf.appdomain.cloud/';
 
+  static Future<User> addUser(User user) async{
+
+    Map bag = user.toJson();
+    try {
+      var result = await _callWebAPIPost(URL + 'addUser', bag);
+      return User.fromJson(result);
+    } catch (e) {
+      print(e);
+      throw e;
+    }
+  }
+  static Future<User> getUserByUid(String uid) async{
+    Map bag = {
+      'uid': uid,
+    };
+    try {
+      var result = await _callWebAPIPost(URL + 'findUserByUid', bag);
+      return User.fromJson(result);
+    } catch (e) {
+      print(e);
+      throw e;
+    }
+  }
   static Future hello() async {
     var result = await _callWebAPIGet(URL);
     debugPrint('DancerAPI: 🔴 🔴 🔴 hello: $result');
