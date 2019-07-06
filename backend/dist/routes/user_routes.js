@@ -20,7 +20,7 @@ class UserExpressRoutes {
             console.log(`\n\n💦  POST: /addUser requested .... 💦 💦 💦 💦 💦 💦  ${new Date().toISOString()}`);
             console.log(req.body);
             try {
-                const result = yield user_helper_1.UserHelper.addUser(req.body.firstName, req.body.lastName, req.body.email, req.body.cellphone, req.body.userType, req.body.gender, req.body.countryID, req.body.countryName);
+                const result = yield user_helper_1.UserHelper.addUser(req.body.organizationId, req.body.organizationName, req.body.firstName, req.body.lastName, req.body.email, req.body.cellphone, req.body.userType, req.body.gender, req.body.countryID, req.body.countryName);
                 res.status(200).json(result);
             }
             catch (err) {
@@ -37,14 +37,34 @@ class UserExpressRoutes {
                 util_1.default.sendError(res, err, "findAllUsers failed");
             }
         }));
-        app.route("/findByOrganization").post((req, res) => __awaiter(this, void 0, void 0, function* () {
-            console.log(`\n\n💦  POST: /findByOrganization requested .... 💦 💦 💦 💦 💦 💦  ${new Date().toISOString()}`);
+        app.route("/findUsersByOrganization").post((req, res) => __awaiter(this, void 0, void 0, function* () {
+            console.log(`\n\n💦  POST: /findUsersByOrganization requested .... 💦 💦 💦 💦 💦 💦  ${new Date().toISOString()}`);
             try {
                 const result = yield user_helper_1.UserHelper.findByOrganization(req.body.countryId);
                 res.status(200).json(result);
             }
             catch (err) {
-                util_1.default.sendError(res, err, "findByCountry failed");
+                util_1.default.sendError(res, err, "findUsersByOrganization failed");
+            }
+        }));
+        app.route("/findUserByUid").post((req, res) => __awaiter(this, void 0, void 0, function* () {
+            console.log(`\n\n💦  POST: /findUserByUid requested .... 💦 💦 💦 💦 💦 💦  ${new Date().toISOString()}`);
+            try {
+                const result = yield user_helper_1.UserHelper.findByUid(req.body.uid);
+                res.status(200).json(result);
+            }
+            catch (err) {
+                util_1.default.sendError(res, err, "findUserByUid failed");
+            }
+        }));
+        app.route("/findUserByEmail").post((req, res) => __awaiter(this, void 0, void 0, function* () {
+            console.log(`\n\n💦  POST: /findUserByEmail requested .... 💦 💦 💦 💦 💦 💦  ${new Date().toISOString()}`);
+            try {
+                const result = yield user_helper_1.UserHelper.findByEmail(req.body.email);
+                res.status(200).json(result);
+            }
+            catch (err) {
+                util_1.default.sendError(res, err, "findUserByEmail failed");
             }
         }));
     }

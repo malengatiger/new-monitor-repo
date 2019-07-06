@@ -10,6 +10,8 @@ export class UserHelper {
     );
   }
   public static async addUser(
+    organizationId: string,
+    organizationName:  string,
     firstName: string,
     lastName: string,
     email: string,
@@ -29,6 +31,8 @@ export class UserHelper {
       gender,
       countryId,
       countryName,
+      organizationName,
+      organizationId,
     });
     const m = await u.save();
     m.userId = m.id;
@@ -52,6 +56,12 @@ export class UserHelper {
     console.log(` 🌀 findByUid ....   🌀  🌀  🌀 `);
     const UserModel = new User().getModelForClass(User);
     const list = await UserModel.findByUid(uid);
+    return list;
+  }
+  public static async findByEmail(email: string): Promise<any> {
+    console.log(` 🌀 findByEmail ....   🌀  🌀  🌀 `);
+    const UserModel = new User().getModelForClass(User);
+    const list = await UserModel.findByEmail(email);
     return list;
   }
   public static async findByOrganization(organizationId: string): Promise<any> {

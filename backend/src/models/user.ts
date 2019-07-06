@@ -18,6 +18,13 @@ class User extends Typegoose {
 
   //
   @staticMethod
+  public static findByEmail(
+    this: ModelType<User> & typeof User,
+    email: string,
+  ) {
+    return this.findOne({ email });
+  }
+  @staticMethod
   public static findByUserId(
     this: ModelType<User> & typeof User,
     userId: string,
@@ -50,7 +57,7 @@ class User extends Typegoose {
   @prop({ required: true, trim: true })
   public firstName!: string;
   //
-  @prop({ required: true, trim: true })
+  @prop({ unique: true, index: true, required: true, trim: true })
   public email!: string;
   //
   @prop({ trim: true })
@@ -66,7 +73,10 @@ class User extends Typegoose {
   public userId!: string;
   //
   @prop({ required: true, trim: true })
-  public organizationId?: string;
+  public organizationId!: string;
+  //
+  @prop({ required: true, trim: true })
+  public organizationName!: string;
   //
   @prop({ trim: true })
   public fcmToken?: string;

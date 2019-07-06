@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:monitorlibrary/data/user.dart';
+import 'package:monitorlibrary/functions.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Prefs {
@@ -12,7 +13,8 @@ class Prefs {
     var jx = json.encode(jsonx);
     prefs.setString('user', jx);
     debugPrint(
-        "🌽 🌽 🌽 Prefs.association  SAVED: 🌽 ${user.email}");
+        "🌽 🌽 🌽 Prefs.saveUser  SAVED: 🌽 ${user.email}");
+    prettyPrint(jsonx, " 🏈 Saved User in Prefs  🏈");
     return null;
   }
 
@@ -26,6 +28,7 @@ class Prefs {
     var user = new User.fromJson(jx);
     debugPrint(
         "🌽 🌽 🌽 Prefs.getUser 🧩  ${user.email} retrieved");
+    prettyPrint(user.toJson(), " 🏈 Saved User retrieved from Prefs   🏈");
     return user;
   }
 

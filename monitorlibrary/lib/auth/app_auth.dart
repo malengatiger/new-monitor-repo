@@ -31,7 +31,7 @@ class AppAuth {
        throw e;
      });
      if (fbUser != null) {
-       var user = await DataAPI.getUserByUid(fbUser.uid);
+       var user = await DataAPI.findUserByEmail(fbUser.email);
        await Prefs.saveUser(user);
      }
    }

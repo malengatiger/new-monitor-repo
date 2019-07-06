@@ -20,7 +20,7 @@ class OrgExpressRoutes {
             console.log(`\n\n💦  POST: /addOrganization requested .... 💦 💦 💦 💦 💦 💦  ${new Date().toISOString()}`);
             console.log(req.body);
             try {
-                const result = yield org_helper_1.OrganizationHelper.addOrganization(req.body.name, req.body.email, req.body.countryID, req.body.countryName);
+                const result = yield org_helper_1.OrganizationHelper.addOrganization(req.body.name, req.body.email, req.body.countryId, req.body.countryName);
                 res.status(200).json(result);
             }
             catch (err) {

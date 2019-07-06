@@ -17,7 +17,7 @@ export class OrgExpressRoutes {
         const result = await OrganizationHelper.addOrganization(
           req.body.name,
           req.body.email,
-          req.body.countryID,
+          req.body.countryId,
           req.body.countryName,
          
         );

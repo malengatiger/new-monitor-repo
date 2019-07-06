@@ -30,7 +30,7 @@ class Questionnaire extends typegoose_1.Typegoose {
 __decorate([
     typegoose_1.prop({ required: true, default: [] }),
     __metadata("design:type", Array)
-], Questionnaire.prototype, "questions", void 0);
+], Questionnaire.prototype, "sections", void 0);
 __decorate([
     typegoose_1.prop({ required: true, index: true, trim: true, unique: true }),
     __metadata("design:type", String)

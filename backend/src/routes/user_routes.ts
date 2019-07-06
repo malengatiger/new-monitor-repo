@@ -15,6 +15,8 @@ export class UserExpressRoutes {
       console.log(req.body);
       try {
         const result = await UserHelper.addUser(
+          req.body.organizationId,
+          req.body.organizationName,
           req.body.firstName,
           req.body.lastName,
           req.body.email,
@@ -66,6 +68,19 @@ export class UserExpressRoutes {
         res.status(200).json(result);
       } catch (err) {
         Util.sendError(res, err, "findUserByUid failed");
+      }
+    });
+    app.route("/findUserByEmail").post(async (req: Request, res: Response) => {
+      console.log(
+        `\n\n💦  POST: /findUserByEmail requested .... 💦 💦 💦 💦 💦 💦  ${new Date().toISOString()}`,
+      );
+      try {
+        const result = await UserHelper.findByEmail(
+          req.body.email,
+        );
+        res.status(200).json(result);
+      } catch (err) {
+        Util.sendError(res, err, "findUserByEmail failed");
       }
     });
   }

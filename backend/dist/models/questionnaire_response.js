@@ -45,10 +45,6 @@ __decorate([
     __metadata("design:type", String)
 ], QuestionnaireResponse.prototype, "questionnaireResponseId", void 0);
 __decorate([
-    typegoose_1.prop({ required: true, default: [] }),
-    __metadata("design:type", Array)
-], QuestionnaireResponse.prototype, "settlements", void 0);
-__decorate([
     typegoose_1.prop({ required: true, default: new Date().toISOString() }),
     __metadata("design:type", String)
 ], QuestionnaireResponse.prototype, "created", void 0);

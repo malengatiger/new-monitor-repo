@@ -15,10 +15,10 @@ const user_1 = __importDefault(require("../models/user"));
 class UserHelper {
     static onUserAdded(event) {
         return __awaiter(this, void 0, void 0, function* () {
-            console.log(`operationType: 👽 👽 👽  ${event.operationType},  User in stream:   🍀 🍎 `);
+            console.log(`operationType: 👽 👽 👽  ${event.operationType},  User in stream:   🍀🍎 `);
         });
     }
-    static addUser(firstName, lastName, email, cellphone, userType, gender, countryId, countryName) {
+    static addUser(organizationId, organizationName, firstName, lastName, email, cellphone, userType, gender, countryId, countryName) {
         return __awaiter(this, void 0, void 0, function* () {
             const UserModel = new user_1.default().getModelForClass(user_1.default);
             const u = new UserModel({
@@ -30,6 +30,8 @@ class UserHelper {
                 gender,
                 countryId,
                 countryName,
+                organizationName,
+                organizationId,
             });
             const m = yield u.save();
             m.userId = m.id;
@@ -45,11 +47,27 @@ class UserHelper {
             return list;
         });
     }
-    static findByUser(UserId) {
+    static findByUser(userId) {
         return __awaiter(this, void 0, void 0, function* () {
             console.log(` 🌀 findByUser ....   🌀  🌀  🌀 `);
             const UserModel = new user_1.default().getModelForClass(user_1.default);
-            const list = yield UserModel.findByUserId(UserId);
+            const list = yield UserModel.findByUserId(userId);
+            return list;
+        });
+    }
+    static findByUid(uid) {
+        return __awaiter(this, void 0, void 0, function* () {
+            console.log(` 🌀 findByUid ....   🌀  🌀  🌀 `);
+            const UserModel = new user_1.default().getModelForClass(user_1.default);
+            const list = yield UserModel.findByUid(uid);
+            return list;
+        });
+    }
+    static findByEmail(email) {
+        return __awaiter(this, void 0, void 0, function* () {
+            console.log(` 🌀 findByEmail ....   🌀  🌀  🌀 `);
+            const UserModel = new user_1.default().getModelForClass(user_1.default);
+            const list = yield UserModel.findByEmail(email);
             return list;
         });
     }

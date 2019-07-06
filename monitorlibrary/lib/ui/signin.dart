@@ -10,69 +10,99 @@ class SignIn extends StatefulWidget {
 
 class _SignInState extends State<SignIn> implements SnackBarListener {
   GlobalKey<ScaffoldState> _key = GlobalKey();
+  bool isBusy = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _key,
       appBar: AppBar(
-        title: Text('Sign In'),
+        title: Text('Digital Monitor Platform'),
+        backgroundColor: Colors.brown[400],
         bottom: PreferredSize(
           preferredSize: Size.fromHeight(80),
           child: Column(),
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(12.0),
-        child: Card(
-          elevation: 4,
-          child: Column(
-            children: <Widget>[
-              Text(
-                'Sign in',
-                style: Styles.blackBoldLarge,
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              TextField(
-                onChanged: _onEmailChanged,
-                keyboardType: TextInputType.emailAddress,
-                decoration: InputDecoration(
-                  hintText: 'Enter  email address',
-                ),
-              ),
-              SizedBox(
-                height: 8,
-              ),
-              TextField(
-                onChanged: _onPasswordChanged,
-                keyboardType: TextInputType.text,
-                obscureText: true,
-                decoration: InputDecoration(
-                  hintText: 'Enter password',
-                ),
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              RaisedButton(
-                onPressed: _signIn,
-                color: Colors.pink[700],
-                child: Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: Text(
-                    'Submit',
-                    style: Styles.whiteSmall,
-                  ),
-                ),
-              ),
-            ],
+      backgroundColor: Colors.brown[100],
+      body: isBusy? Center(
+        child: Container(
+          height: 60, width: 60,
+          child: CircularProgressIndicator(
+            strokeWidth: 24,
+            backgroundColor: Colors.teal[800],
           ),
         ),
+      ) : ListView(
+        children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: Card(
+              elevation: 4,
+              child: Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: Column(
+                  children: <Widget>[
+                    SizedBox(
+                      height: 40,
+                    ),
+                    Text(
+                      'Sign in',
+                      style: Styles.blackBoldLarge,
+                    ),
+                    SizedBox(
+                      height: 40,
+                    ),
+                    TextField(
+                      onChanged: _onEmailChanged,
+                      keyboardType: TextInputType.emailAddress,
+                      controller: emailCntr,
+                      decoration: InputDecoration(
+                        hintText: 'Enter  email address',
+                      ),
+                    ),
+                    SizedBox(
+                      height: 12,
+                    ),
+                    TextField(
+                      onChanged: _onPasswordChanged,
+                      keyboardType: TextInputType.text,
+                      obscureText: true,
+                      controller: pswdCntr,
+                      decoration: InputDecoration(
+                        hintText: 'Enter password',
+                      ),
+                    ),
+                    SizedBox(
+                      height: 60,
+                    ),
+                    RaisedButton(
+                      onPressed: _signIn,
+                      color: Colors.pink[700],
+                      elevation: 8,
+                      child: Padding(
+                        padding: const EdgeInsets.all(20.0),
+                        child: Text(
+                          'Submit Sign in credentials',
+                          style: Styles.whiteSmall,
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 60,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
 
-  String email, password;
+  TextEditingController emailCntr  = TextEditingController();
+  TextEditingController pswdCntr  = TextEditingController();
+  String email = '', password = '';
   void _onEmailChanged(String value) {
     email = value;
     print(email);
@@ -82,21 +112,27 @@ class _SignInState extends State<SignIn> implements SnackBarListener {
     if (email.isEmpty || password.isEmpty) {
       AppSnackbar.showErrorSnackbar(
           scaffoldKey: _key,
-          message: "Data missing",
+          message: "Credentials missing or invalid",
           actionLabel: 'Error',
           listener: this);
       return;
     }
-    AppSnackbar.showSnackbarWithProgressIndicator(
-        scaffoldKey: _key,
-        message: "Signing in ...",
-        textColor: Colors.white,
-        backgroundColor: Colors.black);
+//    AppSnackbar.showSnackbarWithProgressIndicator(
+//        scaffoldKey: _key,
+//        message: "Signing in ...",
+//        textColor: Colors.white,
+//        backgroundColor: Colors.black);
 
+    setState(() {
+      isBusy = true;
+    });
     try {
       await AppAuth.signIn(email: email, password: password);
       Navigator.pop(context);
     } catch (e) {
+      setState(() {
+        isBusy = false;
+      });
       AppSnackbar.showErrorSnackbar(
           scaffoldKey: _key,
           message: e.message,

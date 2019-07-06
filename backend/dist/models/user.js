@@ -21,8 +21,14 @@ var UserType;
 })(UserType || (UserType = {}));
 class User extends typegoose_1.Typegoose {
     //
+    static findByEmail(email) {
+        return this.findOne({ email });
+    }
     static findByUserId(userId) {
         return this.findOne({ userId });
+    }
+    static findByUid(uid) {
+        return this.findOne({ uid });
     }
     static findByUserType(userType) {
         return this.find({ userType });
@@ -37,13 +43,17 @@ __decorate([
     __metadata("design:type", String)
 ], User.prototype, "firstName", void 0);
 __decorate([
-    typegoose_1.prop({ required: true, trim: true }),
+    typegoose_1.prop({ unique: true, index: true, required: true, trim: true }),
     __metadata("design:type", String)
 ], User.prototype, "email", void 0);
 __decorate([
     typegoose_1.prop({ trim: true }),
     __metadata("design:type", String)
 ], User.prototype, "cellphone", void 0);
+__decorate([
+    typegoose_1.prop({ trim: true }),
+    __metadata("design:type", String)
+], User.prototype, "uid", void 0);
 __decorate([
     typegoose_1.prop({ required: true, trim: true }),
     __metadata("design:type", String)
@@ -56,6 +66,10 @@ __decorate([
     typegoose_1.prop({ required: true, trim: true }),
     __metadata("design:type", String)
 ], User.prototype, "organizationId", void 0);
+__decorate([
+    typegoose_1.prop({ required: true, trim: true }),
+    __metadata("design:type", String)
+], User.prototype, "organizationName", void 0);
 __decorate([
     typegoose_1.prop({ trim: true }),
     __metadata("design:type", String)
@@ -81,7 +95,19 @@ __decorate([
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
+], User, "findByEmail", null);
+__decorate([
+    typegoose_1.staticMethod,
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", void 0)
 ], User, "findByUserId", null);
+__decorate([
+    typegoose_1.staticMethod,
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", void 0)
+], User, "findByUid", null);
 __decorate([
     typegoose_1.staticMethod,
     __metadata("design:type", Function),

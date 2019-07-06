@@ -41,7 +41,7 @@ __decorate([
     __metadata("design:type", String)
 ], Organization.prototype, "countryId", void 0);
 __decorate([
-    typegoose_1.prop({ required: true, unique: true, index: true, trim: true }),
+    typegoose_1.prop({ unique: true, index: true, trim: true }),
     __metadata("design:type", String)
 ], Organization.prototype, "organizationId", void 0);
 __decorate([

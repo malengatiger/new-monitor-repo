@@ -1,7 +1,4 @@
 import {
-  arrayProp,
-  instanceMethod,
-  InstanceType,
   ModelType,
   prop,
   Ref,
@@ -49,8 +46,8 @@ class Organization extends Typegoose {
 
   @prop({ required: true, unique: true, index: true, trim: true })
   public countryId?: string;
-  
-  @prop({ required: true, unique: true, index: true, trim: true })
+
+  @prop({ unique: true, index: true, trim: true })
   public organizationId?: string;
   //
   @prop({ required: true, default: new Date().toISOString() })

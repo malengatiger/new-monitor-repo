@@ -9,7 +9,7 @@ class DataAPI {
     'Content-type': 'application/json',
     'Accept': 'application/json',
   };
-  static const URL = 'http://192.168.86.239:3000/';
+  static const URL = 'http://192.168.86.239:8000/';
 //  static const URL = 'https://dancer3033a1.eu-gb.cf.appdomain.cloud/';
 //  static const URL = 'https://dancermx.azurewebsites.net/';
 //  static const URL = 'https://dancer3033a1.eu-gb.cf.appdomain.cloud/';
@@ -25,7 +25,19 @@ class DataAPI {
       throw e;
     }
   }
-  static Future<User> getUserByUid(String uid) async{
+  static Future<User> findUserByEmail(String email) async{
+    Map bag = {
+      'email': email,
+    };
+    try {
+      var result = await _callWebAPIPost(URL + 'findUserByEmail', bag);
+      return User.fromJson(result);
+    } catch (e) {
+      print(e);
+      throw e;
+    }
+  }
+  static Future<User> findUserByUid(String uid) async{
     Map bag = {
       'uid': uid,
     };

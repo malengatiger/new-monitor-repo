@@ -71,6 +71,18 @@ __decorate([
     __metadata("design:type", Number)
 ], Settlement.prototype, "population", void 0);
 __decorate([
+    typegoose_1.prop({ required: true, default: [] }),
+    __metadata("design:type", Array)
+], Settlement.prototype, "photoUrls", void 0);
+__decorate([
+    typegoose_1.prop({ required: true, default: [] }),
+    __metadata("design:type", Array)
+], Settlement.prototype, "videoUrls", void 0);
+__decorate([
+    typegoose_1.prop({ required: true, default: [] }),
+    __metadata("design:type", Array)
+], Settlement.prototype, "ratings", void 0);
+__decorate([
     typegoose_1.prop({ required: true, default: new Date().toISOString() }),
     __metadata("design:type", String)
 ], Settlement.prototype, "created", void 0);
