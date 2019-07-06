@@ -7,6 +7,7 @@ import {
   Typegoose,
 } from "typegoose";
 import City from "./city";
+import { Content, RatingContent } from "./interfaces";
 
 class Settlement extends Typegoose {
   @staticMethod
@@ -58,6 +59,15 @@ class Settlement extends Typegoose {
   //
    @prop({ required: true, default: 0 })
   public population!: number;
+  //
+   @prop({ required: true, default: [] })
+  public photoUrls!: Content[];
+  //
+  @prop({ required: true, default: [] })
+  public videoUrls!: Content[];
+  //
+  @prop({ required: true, default: [] })
+  public ratings!: RatingContent[];
   //
   @prop({ required: true, default: new Date().toISOString() })
   public created?: string;

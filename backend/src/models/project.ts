@@ -56,17 +56,14 @@ class Project extends Typegoose {
   @prop({ required: true, default: [] })
   public nearestCities?: any[];
   
-  @prop({ required: false })
-  public position?: Position;
+  @prop({ required: true, default: [] })
+  public positions?: Position[];
   //
   @prop({ required: true, default: [] })
   public photoUrls!: Content[];
   //
   @prop({ required: true, default: [] })
   public videoUrls!: Content[];
-  //
-  @prop({ required: true, default: [] })
-  public comments!: Content[];
   //
   @prop({ required: true, default: [] })
   public ratings!: RatingContent[];
