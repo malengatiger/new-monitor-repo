@@ -6,12 +6,11 @@ export class SettlementHelper {
     settlementName: string,
     email: string,
     cellphone: string,
-    countryID: string,
+    countryId: string,
     countryName: string,
     polygon: any[],
     population: number,
   ): Promise<any> {
-
     const positions: Position[] = [];
     for (const p of polygon) {
       const pos = new Position();
@@ -22,7 +21,7 @@ export class SettlementHelper {
     const settlement = new settlementModel({
       settlementName,
       cellphone,
-      countryID,
+      countryId,
       countryName,
       email,
       polygon: positions,
@@ -45,6 +44,40 @@ export class SettlementHelper {
     const list = await settlementModel.find();
     console.log(list);
     return list;
+  }
+  public static async findSettlementsByCountry(
+    countryId: string,
+  ): Promise<any> {
+    console.log(` 🌀 findSettlementsByCountry ....   🌀  🌀  🌀 `);
+    const settlementModel = new Settlement().getModelForClass(Settlement);
+    const list = await settlementModel.findSettlementsByCountry(countryId);
+    console.log(list);
+    return list;
+  }
+  public static async addToPolygon(
+    settlementId: string,
+    latitude: number,
+    longitude: number,
+  ): Promise<any> {
+    console.log(`🌀 addToPolygon ....   🌀🌀🌀`);
+    const settlementModel = new Settlement().getModelForClass(Settlement);
+    const sett = await settlementModel.findBySettlementId(settlementId).exec();
+
+    if (sett) {
+      sett.polygon.push({
+        type: "Point",
+        coordinates: [longitude, latitude],
+      });
+      console.log(sett);
+      const mm = await sett.save();
+      const msg = `📌 📌 📌 Point  added to polygon ${mm}`;
+      console.log(msg);
+      return {
+        message: msg,
+      };
+    } else {
+      throw new Error(`Settlement not  found`);
+    }
   }
 
   public static async onSettlementAdded(event: any) {

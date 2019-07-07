@@ -1,11 +1,10 @@
 import 'package:meta/meta.dart';
 
 class Country {
-  String name, countryId, countryCode, countryName;
+  String name, countryId, countryCode;
   int population;
   Country(
       {@required this.name,
-        this.countryName,
         this.population,
         @required this.countryCode});
 
@@ -13,7 +12,6 @@ class Country {
     this.name = data['name'];
     this.countryId = data['countryId'];
     this.countryCode = data['countryCode'];
-    this.countryName = data['countryName'];
     this.population = data['population'];
   }
   Map<String, dynamic> toJson() {
@@ -21,7 +19,6 @@ class Country {
       'name': name,
       'countryId': countryId,
       'countryCode': countryCode,
-      'countryName': countryName,
       'population': population,
     };
     return map;

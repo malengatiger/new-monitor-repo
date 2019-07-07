@@ -14,7 +14,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const settlement_1 = __importDefault(require("../models/settlement"));
 const position_1 = __importDefault(require("../models/position"));
 class SettlementHelper {
-    static addSettlement(settlementName, email, cellphone, countryID, countryName, polygon, population) {
+    static addSettlement(settlementName, email, cellphone, countryId, countryName, polygon, population) {
         return __awaiter(this, void 0, void 0, function* () {
             const positions = [];
             for (const p of polygon) {
@@ -26,7 +26,7 @@ class SettlementHelper {
             const settlement = new settlementModel({
                 settlementName,
                 cellphone,
-                countryID,
+                countryId,
                 countryName,
                 email,
                 polygon: positions,
@@ -47,6 +47,40 @@ class SettlementHelper {
             const list = yield settlementModel.find();
             console.log(list);
             return list;
+        });
+    }
+    static findSettlementsByCountry(countryId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            console.log(` 🌀 findSettlementsByCountry ....   🌀  🌀  🌀 `);
+            const settlementModel = new settlement_1.default().getModelForClass(settlement_1.default);
+            const list = yield settlementModel.findSettlementsByCountry(countryId);
+            console.log(list);
+            return list;
+        });
+    }
+    static addToPolygon(settlementId, latitude, longitude) {
+        return __awaiter(this, void 0, void 0, function* () {
+            console.log(`🌀 addToPolygon ....   🌀🌀🌀`);
+            const settlementModel = new settlement_1.default().getModelForClass(settlement_1.default);
+            const sett = yield settlementModel.findBySettlementId(settlementId).exec();
+            const pos = new position_1.default();
+            pos.coordinates = [longitude, latitude];
+            if (sett) {
+                sett.polygon.push({
+                    type: 'Point',
+                    coordinates: [longitude, latitude],
+                });
+                console.log(sett);
+                const mm = yield sett.save();
+                const msg = `📌 📌 📌 Point  added to polygon ${mm}`;
+                console.log(msg);
+                return {
+                    message: msg,
+                };
+            }
+            else {
+                throw new Error(`Settlement not  found`);
+            }
         });
     }
     static onSettlementAdded(event) {

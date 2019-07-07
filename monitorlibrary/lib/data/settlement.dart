@@ -21,7 +21,7 @@ class Settlement {
       this.created,
       this.population,
       this.nearestCities,
-      @required this.settlementId});
+      this.settlementId});
 
   Settlement.fromJson(Map data) {
     this.settlementName = data['settlementName'];
@@ -32,11 +32,41 @@ class Settlement {
     this.settlementId = data['settlementId'];
     this.created = data['created'];
     this.population = data['population'];
-    this.polygon = data['polygon'];
-    this.photoUrls = data['photoUrls'];
-    this.videoUrls = data['videoUrls'];
-    this.ratings = data['ratings'];
-    this.nearestCities = data['nearestCities'];
+    this.polygon = List();
+    if (data['polygon'] != null) {
+      List list = data['polygon'];
+      list.forEach((p) {
+        this.polygon.add(Position.fromJson(p));
+      });
+    }
+    this.photoUrls = List();
+    if (data['photoUrls'] != null) {
+      List list = data['photoUrls'];
+      list.forEach((p) {
+        this.photoUrls.add(Content.fromJson(p));
+      });
+    }
+    this.videoUrls = List();
+    if (data['videoUrls'] != null) {
+      List list = data['videoUrls'];
+      list.forEach((p) {
+        this.videoUrls.add(Content.fromJson(p));
+      });
+    }
+    this.ratings = List();
+    if (data['ratings'] != null) {
+      List list = data['ratings'];
+      list.forEach((p) {
+        this.ratings.add(RatingContent.fromJson(p));
+      });
+    }
+    this.nearestCities = List();
+    if (data['nearestCities'] != null) {
+      List list = data['nearestCities'];
+      list.forEach((p) {
+        this.nearestCities.add(City.fromJson(p));
+      });
+    }
   }
   Map<String, dynamic> toJson() {
     List mPolygon = List();

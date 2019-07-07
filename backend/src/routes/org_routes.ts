@@ -51,6 +51,19 @@ export class OrgExpressRoutes {
         Util.sendError(res, err, "findByCountry failed");
       }
     });
+    app.route("/findOrgByOrganizationId").post(async (req: Request, res: Response) => {
+      console.log(
+        `\n\n💦  POST: /findOrgByOrganizationId requested .... 💦 💦 💦 💦 💦 💦  ${new Date().toISOString()}`,
+      );
+      try {
+        const result = await OrganizationHelper.findByOrganization(
+          req.body.organizationId,
+        );
+        res.status(200).json(result);
+      } catch (err) {
+        Util.sendError(res, err, "findOrgByOrganizationId failed");
+      }
+    });
   }
 }
 export default OrgExpressRoutes;

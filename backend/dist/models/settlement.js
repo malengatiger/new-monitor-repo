@@ -8,8 +8,12 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const typegoose_1 = require("typegoose");
+const position_1 = __importDefault(require("./position"));
 class Settlement extends typegoose_1.Typegoose {
     static findByName(settlementName) {
         console.log("#####  🥦  🥦  🥦 Finding Settlement by name:  💦  💦  💦  :: 🥦 " +
@@ -21,6 +25,12 @@ class Settlement extends typegoose_1.Typegoose {
             settlementId);
         return this.findOne({ settlementId });
     }
+    //
+    static findSettlementsByCountry(countryId) {
+        console.log("#####  🥦  🥦  🥦 Finding Settlement by country:  💦  💦  💦  :: 🥦 " +
+            countryId);
+        return this.find({ countryId });
+    }
     updatePopulation(population) {
         this.population = population;
         this.save();
@@ -31,6 +41,12 @@ class Settlement extends typegoose_1.Typegoose {
     }
     updateCellphone(cellphone) {
         this.cellphone = cellphone;
+        this.save();
+    }
+    addToPolygon(latitude, longitude) {
+        const pos = new position_1.default();
+        pos.coordinates = [longitude, latitude];
+        this.polygon.push(pos);
         this.save();
     }
 }
@@ -49,7 +65,7 @@ __decorate([
 __decorate([
     typegoose_1.prop({ required: true, trim: true }),
     __metadata("design:type", String)
-], Settlement.prototype, "countryID", void 0);
+], Settlement.prototype, "countryId", void 0);
 __decorate([
     typegoose_1.prop({ trim: true }),
     __metadata("design:type", String)
@@ -105,6 +121,12 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], Settlement.prototype, "updateCellphone", null);
 __decorate([
+    typegoose_1.instanceMethod,
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number, Number]),
+    __metadata("design:returntype", void 0)
+], Settlement.prototype, "addToPolygon", null);
+__decorate([
     typegoose_1.staticMethod,
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
@@ -116,5 +138,11 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
 ], Settlement, "findBySettlementId", null);
+__decorate([
+    typegoose_1.staticMethod,
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", void 0)
+], Settlement, "findSettlementsByCountry", null);
 exports.default = Settlement;
 //# sourceMappingURL=settlement.js.map

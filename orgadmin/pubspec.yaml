@@ -21,3 +21,38 @@ dev_dependencies:
 flutter:
 
   uses-material-design: true
+  assets:
+    - assets/fincash.jpg
+    - assets/fin3.jpeg
+    - assets/computers.png
+    - assets/condominium.png
+    - assets/taxi.png
+    - assets/red_square.png
+    - assets/black_square.png
+    - assets/green_square.png
+    - assets/pin.png
+    - assets/pin_red.png
+    - assets/bus.png
+    - assets/number_1.png
+    #    - files/routes.json
+    #    - files/cities.json
+    #    - files/landmarks.json
+  fonts:
+    - family: Raleway
+      fonts:
+        - asset: fonts/Raleway-Regular.ttf
+        - asset: fonts/Raleway-Italic.ttf
+        - asset: fonts/Raleway-ExtraBold.ttf
+        - asset: fonts/Raleway-Bold.ttf
+    - family: RobotoMono
+      fonts:
+        - asset: fonts/Roboto-Regular.ttf
+        - asset: fonts/Roboto-Bold.ttf
+    - family: Rubik
+      fonts:
+        - asset: fonts/Rubik-Regular.ttf
+        - asset: fonts/Rubik-Bold.ttf
+        - asset: fonts/Rubik-Black.ttf
+        - asset: fonts/Rubik-Light.ttf
+        - asset: fonts/Rubik-Italic.ttf
+        - asset: fonts/Rubik-Medium.ttf

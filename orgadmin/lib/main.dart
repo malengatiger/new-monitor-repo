@@ -16,6 +16,7 @@ import 'package:monitorlibrary/functions.dart';
 import 'package:monitorlibrary/slide_right.dart';
 import 'package:monitorlibrary/auth/app_auth.dart';
 import 'package:monitorlibrary/ui/signin.dart';
+import 'package:orgadmin/ui/settlements.dart';
 
 void main() => runApp(MyApp());
 
@@ -28,6 +29,11 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: _title,
       debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        fontFamily: 'Raleway',
+        primaryColor: Colors.teal,
+        accentColor: Colors.amber
+      ),
       home: MyStatefulWidget(),
     );
   }
@@ -54,12 +60,29 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
       style: optionStyle,
     ),
     Text(
-      'History',
+      'Monitors',
       style: optionStyle,
     ),
   ];
 
   void _onItemTapped(int index) {
+    switch(index) {
+      case 0:
+        Navigator.push(context, SlideRightRoute(
+          widget: SettlementList(),
+        ));
+        break;
+      case 1:
+//        Navigator.push(context, SlideRightRoute(
+//          widget: SettlementList(),
+//        ));
+        break;
+      case 2:
+//        Navigator.push(context, SlideRightRoute(
+//          widget: SettlementList(),
+//        ));
+        break;
+    }
     setState(() {
       _selectedIndex = index;
     });
@@ -71,7 +94,6 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
     _checkUser();
   }
 
-  Future _getOrg() async {}
   User user;
   Future _checkUser() async {
     var isOK = await AppAuth.isUserSignedIn();
@@ -143,8 +165,8 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
             title: Text('Questionnaires'),
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.school),
-            title: Text('History'),
+            icon: Icon(Icons.people),
+            title: Text('Monitors'),
           ),
         ],
         currentIndex: _selectedIndex,

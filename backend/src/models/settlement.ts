@@ -8,6 +8,7 @@ import {
 } from "typegoose";
 import City from "./city";
 import { Content, RatingContent } from "./interfaces";
+import Position from "./position";
 
 class Settlement extends Typegoose {
   @staticMethod
@@ -32,6 +33,18 @@ class Settlement extends Typegoose {
     );
     return this.findOne({ settlementId });
   }
+  //
+  @staticMethod
+  public static findSettlementsByCountry(
+    this: ModelType<Settlement> & typeof Settlement,
+    countryId: string,
+  ) {
+    console.log(
+      "#####  🥦  🥦  🥦 Finding Settlement by country:  💦  💦  💦  :: 🥦 " +
+        countryId,
+    );
+    return this.find({ countryId });
+  }
 
   @prop({ required: true, unique: true, trim: true })
   public settlementName?: string;
@@ -43,13 +56,13 @@ class Settlement extends Typegoose {
   public cellphone?: string;
 
   @prop({ required: true, trim: true })
-  public countryID!: string;
+  public countryId!: string;
   //
   @prop({ trim: true })
   public settlementId!: string;
   //
   @prop({ required: true, default: [] })
-  public polygon!: Position[];
+  public polygon!: any[];
   //
   @prop({ required: true, default: [] })
   public nearestCities!: any[];
@@ -85,6 +98,14 @@ class Settlement extends Typegoose {
   @instanceMethod
   public updateCellphone(this: InstanceType<Settlement>, cellphone: string) {
     this.cellphone = cellphone;
+    this.save();
+  }
+  @instanceMethod
+  public addToPolygon(this: InstanceType<Settlement>, 
+                      latitude: number, longitude: number) {
+    const pos = new Position();
+    pos.coordinates = [longitude, latitude];
+    this.polygon.push(pos);
     this.save();
   }
 }

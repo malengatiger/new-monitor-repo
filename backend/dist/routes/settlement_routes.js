@@ -20,11 +20,32 @@ class SettlementExpressRoutes {
             console.log(`\n\n💦  POST: /addSettlement requested .... 💦 💦 💦 💦 💦 💦  ${new Date().toISOString()}`);
             console.log(req.body);
             try {
-                const result = yield settlement_helper_1.SettlementHelper.addSettlement(req.body.settlementName, req.body.email, req.body.cellphone, req.body.countryID, req.body.countryName, req.body.polygon, parseInt(req.body.population));
+                const result = yield settlement_helper_1.SettlementHelper.addSettlement(req.body.settlementName, req.body.email, req.body.cellphone, req.body.countryId, req.body.countryName, req.body.polygon, parseInt(req.body.population));
                 res.status(200).json(result);
             }
             catch (err) {
                 util_1.default.sendError(res, err, "addSettlement failed");
+            }
+        }));
+        app.route("/addPointToPolygon").post((req, res) => __awaiter(this, void 0, void 0, function* () {
+            console.log(`\n\n💦  POST: /addPointToPolygon requested .... 💦 💦 💦 💦 💦 💦  ${new Date().toISOString()}`);
+            console.log(req.body);
+            try {
+                const result = yield settlement_helper_1.SettlementHelper.addToPolygon(req.body.settlementId, parseFloat(req.body.latitude), parseFloat(req.body.longitude));
+                res.status(200).json(result);
+            }
+            catch (err) {
+                util_1.default.sendError(res, err, "addPointToPolygon failed");
+            }
+        }));
+        app.route("/findSettlementsByCountry").post((req, res) => __awaiter(this, void 0, void 0, function* () {
+            console.log(`\n\n💦  POST: /findSettlementsByCountry requested .... 💦 💦 💦 💦 💦 💦  ${new Date().toISOString()}`);
+            try {
+                const result = yield settlement_helper_1.SettlementHelper.findSettlementsByCountry(req.body.countryId);
+                res.status(200).json(result);
+            }
+            catch (err) {
+                util_1.default.sendError(res, err, "findSettlementsByCountry failed");
             }
         }));
         app.route("/getSettlements").post((req, res) => __awaiter(this, void 0, void 0, function* () {

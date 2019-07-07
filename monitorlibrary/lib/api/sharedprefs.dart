@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
+import 'package:monitorlibrary/data/country.dart';
 import 'package:monitorlibrary/data/user.dart';
 import 'package:monitorlibrary/functions.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -30,6 +31,31 @@ class Prefs {
         "🌽 🌽 🌽 Prefs.getUser 🧩  ${user.email} retrieved");
     prettyPrint(user.toJson(), " 🏈 Saved User retrieved from Prefs   🏈");
     return user;
+  }
+  static Future saveCountry(Country country) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    Map jsonx = country.toJson();
+    var jx = json.encode(jsonx);
+    prefs.setString('country', jx);
+    debugPrint(
+        "🌽 🌽 🌽 Prefs.saveCountry  SAVED: 🌽 ${country.name}");
+    prettyPrint(jsonx, " 🏈 Saved Country in Prefs  🏈");
+    return null;
+  }
+
+  static Future<Country> getCountry() async {
+    var prefs = await SharedPreferences.getInstance();
+    var string = prefs.getString('country');
+    if (string == null) {
+      return null;
+    }
+    var jx = json.decode(string);
+    var cntry = new Country.fromJson(jx);
+    debugPrint(
+        "🌽 🌽 🌽 Prefs.getCountry 🧩  ${cntry.name} retrieved");
+    prettyPrint(cntry.toJson(), " 🏈 Saved Country retrieved from Prefs   🏈");
+    return cntry;
   }
 
   static Future saveMinutes(int minutes) async {
