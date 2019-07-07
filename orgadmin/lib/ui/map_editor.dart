@@ -23,20 +23,26 @@ class _MapEditorState extends State<MapEditor> implements SnackBarListener {
   Completer<GoogleMapController> _completer = Completer();
   GoogleMapController _mapController;
   Position position;
-  CameraPosition _cameraPosition = CameraPosition(
-    target: LatLng(-27.7, 25.7),
-    zoom: 14.0,
-  );
+  CameraPosition _cameraPosition;
   MapType mapType;
   Set<Marker> _markersForMap = Set();
   @override
   void initState() {
     super.initState();
+    print('📯📯 polygon has 📯 ${widget.settlement.polygon.length} points. 📯 if > 2 must draw polygon');
     _getLocation();
+    _setPoints();
+    _setMarkers();
   }
 
   _getLocation() async {
     position = await adminBloc.getCurrentLocation();
+    print('💠💠💠 setting new camera position  💠💠💠 after getting current location ${position.coordinates}');
+    _cameraPosition = CameraPosition(
+      target: LatLng(position.coordinates[1], position.coordinates[0]),
+      zoom: 12.0,
+    );
+
     setState(() {});
   }
 
@@ -46,6 +52,10 @@ class _MapEditorState extends State<MapEditor> implements SnackBarListener {
       key: _key,
       appBar: AppBar(
         title: Text('Settlement Map Editor'),
+        actions: <Widget>[
+          IconButton(icon: Icon(Icons.create_new_folder),
+          onPressed: _drawPolygon,),
+        ],
         bottom: PreferredSize(
           preferredSize: Size.fromHeight(60),
           child: Column(
@@ -63,10 +73,12 @@ class _MapEditorState extends State<MapEditor> implements SnackBarListener {
       ),
       body: Stack(
         children: <Widget>[
+          _cameraPosition == null? Container() :
           GoogleMap(
               initialCameraPosition: _cameraPosition,
               mapType: mapType == null ? MapType.hybrid : mapType,
               markers: _markersForMap,
+              polygons: polygons,
               myLocationEnabled: true,
               compassEnabled: true,
               zoomGesturesEnabled: true,
@@ -79,19 +91,20 @@ class _MapEditorState extends State<MapEditor> implements SnackBarListener {
                     '🔆🔆🔆🔆🔆🔆 onMapCreated ... markersMap ...  🔆🔆🔆🔆');
                 _completer.complete(mapController);
                 _mapController = mapController;
-                _markSomething();
+                if (points.isEmpty) {
+                  print('No points in polygon ... 🌍 🌍 🌍  try to place map at current location');
+                } else {
+                  if (points.length < 3) {
+                    _setMarkers();
+                  } else {
+                    _setMarkers();
+                    _drawPolygon();
+                  }
+                }
               }),
         ],
       ),
     );
-  }
-
-  _markSomething() async {
-    debugPrint('mark something ......... map not showing up');
-    if (position != null) {
-      var latLng = LatLng(position.coordinates[1], position.coordinates[0]);
-      _mapController.animateCamera(CameraUpdate.newLatLngZoom(latLng, 14));
-    }
   }
 
   LatLng latLng;
@@ -154,20 +167,9 @@ class _MapEditorState extends State<MapEditor> implements SnackBarListener {
   _addPointToPolygon() async {
     print('🔸🔸🔸 _addPointToPolygon: $latLng');
     Navigator.pop(context);
-    var marker = Marker(
-        onTap: () {
-          debugPrint('marker tapped!! ❤️ 🧡 💛 :latLng: $latLng ');
-        },
-        icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueOrange),
-        markerId: MarkerId(DateTime.now().toIso8601String()),
-        position: LatLng(latLng.latitude, latLng.longitude),
-        infoWindow: InfoWindow(
-            title: '${DateTime.now().toIso8601String()}',
-            snippet: 'Point in Settlement Polygon',
-            onTap: () {
-              debugPrint(' 🧩 🧩 🧩 infoWindow tapped  🧩 🧩 🧩 ');
-            }));
-    _markersForMap.add(marker);
+    _placeNewMarker();
+    points.add(latLng);
+    _setMarkers();
     setState(() {});
 
     AppSnackbar.showSnackbarWithProgressIndicator(
@@ -192,6 +194,86 @@ class _MapEditorState extends State<MapEditor> implements SnackBarListener {
     }
   }
 
+  void _placeNewMarker() {
+    var marker = Marker(
+        onTap: () {
+          debugPrint('marker tapped!! ❤️ 🧡 💛 :latLng: $latLng ');
+        },
+        icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueOrange),
+        markerId: MarkerId(DateTime.now().toIso8601String()),
+        position: LatLng(latLng.latitude, latLng.longitude),
+        infoWindow: InfoWindow(
+            title: '${DateTime.now().toIso8601String()}',
+            snippet: 'Point in Settlement Polygon',
+            onTap: () {
+              debugPrint(' 🧩 🧩 🧩 infoWindow tapped  🧩 🧩 🧩 ');
+            }));
+    _markersForMap.add(marker);
+    if (_mapController != null) {
+      //_mapController.animateCamera(CameraUpdate.newLatLngZoom(latLng, 12));
+      _mapController.moveCamera(CameraUpdate.newLatLngZoom(latLng, 12));
+      setState(() {
+
+      });
+    }
+  }
+
+  void _setMarkers() {
+    _markersForMap.clear();
+    if (points.isEmpty) return;
+    debugPrint('Setting  🏮 🏮 ${points.length} 🏮 🏮 markers on map');
+    points.forEach((p) {
+      var marker = Marker(
+          onTap: () {
+            debugPrint('marker tapped!! ❤️ 🧡 💛 :latLng: $latLng ');
+          },
+          icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueOrange),
+          markerId: MarkerId(DateTime.now().toIso8601String()),
+          position: LatLng(p.latitude, p.longitude),
+          infoWindow: InfoWindow(
+              title: '${DateTime.now().toIso8601String()}',
+              snippet: 'Point in Settlement Polygon',
+              onTap: () {
+                debugPrint(' 🧩 🧩 🧩 infoWindow tapped  🧩 🧩 🧩 ');
+              }));
+      _markersForMap.add(marker);
+    });
+    if (_mapController != null) {
+      _mapController.animateCamera(CameraUpdate.newLatLngZoom(points[0], 14));
+      setState(() {
+
+      });
+    }
+
+  }
+
+  List<LatLng> points = List();
+  Set<Polygon> polygons = Set();
+
+  _drawPolygon() {
+    if (points.isEmpty) return;
+    debugPrint('Drawing polygon from  🏮 🏮 ${points.length} 🏮 🏮 points');
+    polygons.clear();
+    var pol = Polygon(
+        polygonId: PolygonId('${DateTime.now().microsecondsSinceEpoch}'),
+        points: points,
+        geodesic: true,
+        strokeColor: Colors.yellow,
+        fillColor: Colors.transparent);
+    polygons.add(pol);
+    setState(() {
+
+    });
+    var latLng = points[0];
+    if (_mapController != null)
+    _mapController.animateCamera(CameraUpdate.newLatLngZoom(latLng, 14));
+  }
+
+  _setPoints() {
+    widget.settlement.polygon.forEach((p) {
+      points.add(LatLng(p.coordinates[1], p.coordinates[0]));
+    });
+  }
   @override
   onActionPressed(int action) {
     // TODO: implement onActionPressed

@@ -59,25 +59,36 @@ export class SettlementHelper {
     latitude: number,
     longitude: number,
   ): Promise<any> {
-    console.log(`🌀 addToPolygon ....   🌀🌀🌀`);
+    console.log(`🌀 SettlementHelper: addToPolygon ....   🌀🌀🌀`);
     const settlementModel = new Settlement().getModelForClass(Settlement);
-    const sett = await settlementModel.findBySettlementId(settlementId).exec();
+    // const sett = await settlementModel.findBySettlementId(settlementId).exec();
 
-    if (sett) {
-      sett.polygon.push({
+    const position = {
         type: "Point",
         coordinates: [longitude, latitude],
-      });
-      console.log(sett);
-      const mm = await sett.save();
-      const msg = `📌 📌 📌 Point  added to polygon ${mm}`;
-      console.log(msg);
-      return {
+      };
+    settlementModel.findOneAndUpdate(
+        { _id: settlementId },
+        { $push: { polygon: position } },
+        () => (error: any, success: any) => {
+          if (error) {
+            console.log(`🔆🔆🔆🔆🔆🔆 error has occured`);
+            console.error(error);
+          } else {
+            console.log(`🥦🥦🥦🥦🥦🥦 success has occured`);
+            console.log(success);
+          }
+        },
+      );
+      // await sett.addToPolygon(latitude, longitude);
+    const msg = `📌 📌 📌 Point added to polygon, maybe: ${new Date().toISOString()} `;
+    console.log(msg);
+    return {
         message: msg,
       };
-    } else {
-      throw new Error(`Settlement not  found`);
-    }
+    // } else {
+    //   throw new Error(`Settlement not  found`);
+    // }
   }
 
   public static async onSettlementAdded(event: any) {

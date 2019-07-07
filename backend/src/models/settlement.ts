@@ -100,14 +100,7 @@ class Settlement extends Typegoose {
     this.cellphone = cellphone;
     this.save();
   }
-  @instanceMethod
-  public addToPolygon(this: InstanceType<Settlement>, 
-                      latitude: number, longitude: number) {
-    const pos = new Position();
-    pos.coordinates = [longitude, latitude];
-    this.polygon.push(pos);
-    this.save();
-  }
+  
 }
 
 export default Settlement;

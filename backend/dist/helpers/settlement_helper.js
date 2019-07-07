@@ -62,25 +62,30 @@ class SettlementHelper {
         return __awaiter(this, void 0, void 0, function* () {
             console.log(`🌀 addToPolygon ....   🌀🌀🌀`);
             const settlementModel = new settlement_1.default().getModelForClass(settlement_1.default);
-            const sett = yield settlementModel.findBySettlementId(settlementId).exec();
-            const pos = new position_1.default();
-            pos.coordinates = [longitude, latitude];
-            if (sett) {
-                sett.polygon.push({
-                    type: 'Point',
-                    coordinates: [longitude, latitude],
-                });
-                console.log(sett);
-                const mm = yield sett.save();
-                const msg = `📌 📌 📌 Point  added to polygon ${mm}`;
-                console.log(msg);
-                return {
-                    message: msg,
-                };
-            }
-            else {
-                throw new Error(`Settlement not  found`);
-            }
+            // const sett = await settlementModel.findBySettlementId(settlementId).exec();
+            const position = {
+                type: "Point",
+                coordinates: [longitude, latitude],
+            };
+            settlementModel.findOneAndUpdate({ _id: settlementId }, { $push: { polygon: position } }, () => (error, success) => {
+                if (error) {
+                    console.log(`🔆🔆🔆🔆🔆🔆 error has occured`);
+                    console.error(error);
+                }
+                else {
+                    console.log(`🥦🥦🥦🥦🥦🥦 success has occured`);
+                    console.log(success);
+                }
+            });
+            // await sett.addToPolygon(latitude, longitude);
+            const msg = `📌 📌 📌 Point added to polygon, maybe: ${new Date().toISOString()} `;
+            console.log(msg);
+            return {
+                message: msg,
+            };
+            // } else {
+            //   throw new Error(`Settlement not  found`);
+            // }
         });
     }
     static onSettlementAdded(event) {
