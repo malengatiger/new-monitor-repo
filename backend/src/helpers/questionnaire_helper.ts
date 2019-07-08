@@ -39,7 +39,6 @@ export class QuestionnaireHelper {
     );
   }
   public static async addQuestionnaire(
-    name: string,
     title: string,
     description: string,
     countryId: string,
@@ -72,11 +71,11 @@ export class QuestionnaireHelper {
       list.push(mSec);
     }
     const quest = new questModel({
-      name,
       title,
       description,
       countryId,
       organizationId,
+      organizationName: org.name,
       countryName: cntry.name,
       sections: list,
     });
@@ -87,6 +86,30 @@ export class QuestionnaireHelper {
       `\n\n💙💚💛   QuestionnaireHelper: Yebo Gogo!!!! - MongoDB has saved ${name} ${title}!!!!!  💙💚💛`,
     );
 
+    console.log(m);
+    return m;
+  }
+  public static async addQuestionnaireSection(
+    questionnaireId: string,
+    section: any,
+  ): Promise<any> {
+    console.log(` 🌀 addQuestionnaireSection ....   🌀  🌀  🌀 `);
+    const model = new Questionnaire().getModelForClass(Questionnaire);
+
+    const m = await model.findOneAndUpdate(
+      { _id: questionnaireId },
+      { $push: { sections: section } },
+      () => (error: any, success: any) => {
+        if (error) {
+          console.log(`🔆🔆🔆🔆🔆🔆 error has occured`);
+          console.error(error);
+        } else {
+          console.log(`🥦🥦🥦🥦🥦🥦 success has occured`);
+          console.log(success);
+        }
+      },
+    );
+    console.log(`🥦🥦🥦🥦🥦🥦 success has occured, section added? maybe?`);
     console.log(m);
     return m;
   }

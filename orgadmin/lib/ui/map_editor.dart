@@ -53,8 +53,10 @@ class _MapEditorState extends State<MapEditor> implements SnackBarListener {
       appBar: AppBar(
         title: Text('Settlement Map Editor'),
         actions: <Widget>[
+          IconButton(icon: Icon(Icons.cancel),
+          onPressed: _confirmRemovePolygons,),
           IconButton(icon: Icon(Icons.create_new_folder),
-          onPressed: _drawPolygon,),
+            onPressed: _drawPolygon,),
         ],
         bottom: PreferredSize(
           preferredSize: Size.fromHeight(60),
@@ -209,13 +211,13 @@ class _MapEditorState extends State<MapEditor> implements SnackBarListener {
               debugPrint(' 🧩 🧩 🧩 infoWindow tapped  🧩 🧩 🧩 ');
             }));
     _markersForMap.add(marker);
-    if (_mapController != null) {
-      //_mapController.animateCamera(CameraUpdate.newLatLngZoom(latLng, 12));
-      _mapController.moveCamera(CameraUpdate.newLatLngZoom(latLng, 12));
-      setState(() {
-
-      });
-    }
+//    if (_mapController != null) {
+//      //_mapController.animateCamera(CameraUpdate.newLatLngZoom(latLng, 12));
+//      _mapController.moveCamera(CameraUpdate.newLatLngZoom(latLng, 12));
+//      setState(() {
+//
+//      });
+//    }
   }
 
   void _setMarkers() {
@@ -278,5 +280,66 @@ class _MapEditorState extends State<MapEditor> implements SnackBarListener {
   onActionPressed(int action) {
     // TODO: implement onActionPressed
     return null;
+  }
+
+  void _confirmRemovePolygons() {
+
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (_) => new AlertDialog(
+          title: new Text(
+            "Confirm Delete",
+            style: Styles.blackBoldLarge,
+          ),
+          content: Container(
+            height: 40.0,
+            child: Column(
+              children: <Widget>[
+                Text(
+                  widget.settlement == null
+                      ? ''
+                      : widget.settlement.settlementName,
+                  style: Styles.blackSmall,
+                ),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            FlatButton(
+              child: Text(
+                'NO',
+                style: TextStyle(color: Colors.grey),
+              ),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+            Padding(
+              padding: const EdgeInsets.only(bottom: 20.0),
+              child: RaisedButton(
+                onPressed: () {
+                  print('🍏 onPressed');
+                  points.clear();
+                  _markersForMap.clear();
+                  polygons.clear();
+                  setState(() {
+
+                  });
+                },
+                elevation: 4.0,
+                color: Colors.pink.shade700,
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Text(
+                    'Add to Polygon',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ));
+
   }
 }

@@ -16,6 +16,7 @@ import 'package:monitorlibrary/functions.dart';
 import 'package:monitorlibrary/slide_right.dart';
 import 'package:monitorlibrary/auth/app_auth.dart';
 import 'package:monitorlibrary/ui/signin.dart';
+import 'package:orgadmin/ui/questionnaire/questionnaire_editor.dart';
 import 'package:orgadmin/ui/settlements.dart';
 
 void main() => runApp(MyApp());
@@ -32,7 +33,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         fontFamily: 'Raleway',
         primaryColor: Colors.teal,
-        accentColor: Colors.amber
+        accentColor: Colors.pink
       ),
       home: MyStatefulWidget(),
     );
@@ -56,7 +57,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
       style: optionStyle,
     ),
     Text(
-      'Questionnaires',
+      'Questionnaire',
       style: optionStyle,
     ),
     Text(
@@ -73,9 +74,9 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
         ));
         break;
       case 1:
-//        Navigator.push(context, SlideRightRoute(
-//          widget: SettlementList(),
-//        ));
+        Navigator.push(context, SlideRightRoute(
+          widget: QuestionnaireEditor(),
+        ));
         break;
       case 2:
 //        Navigator.push(context, SlideRightRoute(
@@ -161,8 +162,8 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
             title: Text('Settlements'),
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.business),
-            title: Text('Questionnaires'),
+            icon: Icon(Icons.create),
+            title: Text('Questionnaire'),
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.people),

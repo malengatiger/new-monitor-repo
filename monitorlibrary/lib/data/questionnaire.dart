@@ -16,7 +16,13 @@ class Questionnaire {
   Questionnaire.fromJson(Map data) {
     this.title = data['title'];
     this.organizationId = data['organizationId'];
-    this.sections = data['sections'];
+    this.sections = List();
+    if ( data['sections'] != null) {
+      List list =  data['sections'];
+      list.forEach((m) {
+        this.sections.add(Section.fromJson(m));
+      });
+    }
     this.description = data['description'];
     this.organizationName = data['organizationName'];
     this.countryId = data['countryId'];

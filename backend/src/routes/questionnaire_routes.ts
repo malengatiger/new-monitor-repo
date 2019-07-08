@@ -15,16 +15,30 @@ export class QuestionnaireExpressRoutes {
       console.log(req.body);
       try {
         const result = await QuestionnaireHelper.addQuestionnaire(
-          req.body.name,
           req.body.title,
           req.body.description,
-          req.body.countryID,
+          req.body.countryId,
           req.body.organizationId,
           req.body.sections,
         );
         res.status(200).json(result);
       } catch (err) {
         Util.sendError(res, err, "addQuestionnaire failed");
+      }
+    });
+    app.route("/addQuestionnaireSection").post(async (req: Request, res: Response) => {
+      console.log(
+        `\n\n💦  POST: /addQuestionnaireSection requested .... 💦 💦 💦 💦 💦 💦  ${new Date().toISOString()}`,
+      );
+      console.log(req.body);
+      try {
+        const result = await QuestionnaireHelper.addQuestionnaireSection(
+          req.body.questionnaireId,
+          req.body.section,
+        );
+        res.status(200).json(result);
+      } catch (err) {
+        Util.sendError(res, err, "addQuestionnaireSection failed");
       }
     });
     app.route("/addQuestionnaireResponse").post(async (req: Request, res: Response) => {

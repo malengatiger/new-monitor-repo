@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:monitorlibrary/data/country.dart';
+import 'package:monitorlibrary/data/questionnaire.dart';
 import 'package:monitorlibrary/data/user.dart';
 import 'package:monitorlibrary/functions.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -55,6 +56,34 @@ class Prefs {
     debugPrint(
         "🌽 🌽 🌽 Prefs.getCountry 🧩  ${cntry.name} retrieved");
     prettyPrint(cntry.toJson(), " 🏈 Saved Country retrieved from Prefs   🏈");
+    return cntry;
+  }
+
+  static Future saveQuestionnaire(Questionnaire questionnaire) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    Map jsonx = questionnaire.toJson();
+    print(jsonx);
+    var jx = json.encode(jsonx);
+    prefs.setString('questionnaire', jx);
+    debugPrint(
+        "\n\n🌽 🌽 🌽 Prefs.questionnaire  SAVED: 🌽 ${questionnaire.name}");
+    prettyPrint(jsonx, " 🏈 Saved questionnaire in Prefs  🏈");
+    print('\n\n............................................................ 👽 👽 👽 !!');
+    return null;
+  }
+
+  static Future<Questionnaire> getQuestionnaire() async {
+    var prefs = await SharedPreferences.getInstance();
+    var string = prefs.getString('questionnaire');
+    if (string == null) {
+      return null;
+    }
+    var jx = json.decode(string);
+    var cntry = new Questionnaire.fromJson(jx);
+    debugPrint(
+        "🌽 🌽 🌽 Prefs.questionnaire 🧩  ${cntry.title} retrieved");
+    prettyPrint(cntry.toJson(), " 🏈 Saved questionnaire retrieved from Prefs   🏈");
     return cntry;
   }
 

@@ -3,6 +3,7 @@ import 'package:monitorlibrary/data/settlement.dart';
 import 'package:monitorlibrary/functions.dart';
 import 'package:monitorlibrary/slide_right.dart';
 import 'package:orgadmin/ui/map_editor.dart';
+import 'package:orgadmin/ui/questionnaire/questionnaire_editor.dart';
 
 class SettlementDetail extends StatefulWidget {
   final Settlement settlement;
@@ -36,7 +37,7 @@ class _SettlementDetailState extends State<SettlementDetail> {
         title: Text('Settlement Details'),
         elevation: 8.0,
         bottom: PreferredSize(
-          preferredSize: Size.fromHeight(60),
+          preferredSize: Size.fromHeight(50),
           child: Column(
             children: <Widget>[
               Text(
@@ -53,9 +54,9 @@ class _SettlementDetailState extends State<SettlementDetail> {
         padding: const EdgeInsets.all(8.0),
         child: ListView(
           children: <Widget>[
-            SizedBox(height: 20,),
+            SizedBox(height: 8,),
             new Basics(settlement: settlmnt,),
-            SizedBox(height: 12,),
+            SizedBox(height: 8,),
             Card(
               elevation: 4,
               child: Center(
@@ -66,12 +67,12 @@ class _SettlementDetailState extends State<SettlementDetail> {
                       style: Styles.blackBoldLarge,),
                     SizedBox(height: 8,),
                     Text('Questionnaires'),
-                    SizedBox(height: 20,)
+                    SizedBox(height: 8,)
                   ],
                 ),
               ),
             ),
-            SizedBox(height: 20,),
+            SizedBox(height: 8,),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
@@ -183,6 +184,9 @@ class _SettlementDetailState extends State<SettlementDetail> {
     switch(value) {
       case 0:
         print('Questionnaire Nav  tapped');
+        Navigator.push(context, SlideRightRoute(
+          widget: QuestionnaireEditor(),
+        ));
         break;
       case 1:
         print('Project Nav  tapped');

@@ -27,11 +27,12 @@ dependencies:
   flutter_google_places: ^0.2.2
   intl: ^0.15.8
   http: ^0.12.0+2
-  google_maps_flutter: ^0.5.16
+  google_maps_flutter: ^0.5.19+2
   vibration: 1.0.2
   google_maps_webservice: ^0.0.14
   autocomplete_textfield: ^1.6.6
   mongodb_mobile: ^0.0.7
+  grouped_buttons: ^1.0.4
 
 dev_dependencies:
   flutter_test:

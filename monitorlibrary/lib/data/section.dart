@@ -4,8 +4,9 @@ import 'package:monitorlibrary/data/question.dart';
 import 'content.dart';
 
 class Section {
-  String title, sectionNumber, description;
+  String title, description;
   List<Question> questions;
+  String sectionNumber;
 
   Section(
       {this.title,
@@ -16,7 +17,13 @@ class Section {
   Section.fromJson(Map data) {
     this.title = data['title'];
     this.sectionNumber = data['sectionNumber'];
-    this.questions = data['questions'];
+    this.questions = List();
+    if (data['questions'] != null) {
+      List  list = data['questions'];
+      list.forEach((m) {
+        this.questions.add(Question.fromJson(m));
+      });
+    }
     this.description = data['description'];
 
   }

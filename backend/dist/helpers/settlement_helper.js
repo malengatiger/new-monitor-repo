@@ -60,7 +60,7 @@ class SettlementHelper {
     }
     static addToPolygon(settlementId, latitude, longitude) {
         return __awaiter(this, void 0, void 0, function* () {
-            console.log(`🌀 addToPolygon ....   🌀🌀🌀`);
+            console.log(`🌀 SettlementHelper: addToPolygon ....   🌀🌀🌀`);
             const settlementModel = new settlement_1.default().getModelForClass(settlement_1.default);
             // const sett = await settlementModel.findBySettlementId(settlementId).exec();
             const position = {

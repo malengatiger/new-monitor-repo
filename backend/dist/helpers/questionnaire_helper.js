@@ -41,7 +41,7 @@ class QuestionnaireHelper {
             console.log(`\n\n💙💚💛   QuestionnaireHelper: Yebo Gogo!!!! - MongoDB has saved ${questionnaireId} questionnaire response!!!!!  💙💚💛`);
         });
     }
-    static addQuestionnaire(name, title, description, countryId, organizationId, sections) {
+    static addQuestionnaire(title, description, countryId, organizationId, sections) {
         return __awaiter(this, void 0, void 0, function* () {
             const questModel = new questionnaire_1.default().getModelForClass(questionnaire_1.default);
             const orgModel = new organization_1.default().getModelForClass(organization_1.default);
@@ -69,11 +69,11 @@ class QuestionnaireHelper {
                 list.push(mSec);
             }
             const quest = new questModel({
-                name,
                 title,
                 description,
                 countryId,
                 organizationId,
+                organizationName: org.name,
                 countryName: cntry.name,
                 sections: list,
             });
@@ -81,6 +81,25 @@ class QuestionnaireHelper {
             m.questionnaireId = m.id;
             yield m.save();
             console.log(`\n\n💙💚💛   QuestionnaireHelper: Yebo Gogo!!!! - MongoDB has saved ${name} ${title}!!!!!  💙💚💛`);
+            console.log(m);
+            return m;
+        });
+    }
+    static addQuestionnaireSection(questionnaireId, section) {
+        return __awaiter(this, void 0, void 0, function* () {
+            console.log(` 🌀 addQuestionnaireSection ....   🌀  🌀  🌀 `);
+            const model = new questionnaire_1.default().getModelForClass(questionnaire_1.default);
+            const m = yield model.findOneAndUpdate({ _id: questionnaireId }, { $push: { sections: section } }, () => (error, success) => {
+                if (error) {
+                    console.log(`🔆🔆🔆🔆🔆🔆 error has occured`);
+                    console.error(error);
+                }
+                else {
+                    console.log(`🥦🥦🥦🥦🥦🥦 success has occured`);
+                    console.log(success);
+                }
+            });
+            console.log(`🥦🥦🥦🥦🥦🥦 success has occured, section added? maybe?`);
             console.log(m);
             return m;
         });

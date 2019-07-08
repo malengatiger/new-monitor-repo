@@ -6,6 +6,7 @@ import 'package:monitorlibrary/data/country.dart';
 import 'package:monitorlibrary/data/organization.dart';
 import 'package:monitorlibrary/data/project.dart';
 import 'package:monitorlibrary/data/questionnaire.dart';
+import 'package:monitorlibrary/data/section.dart';
 import 'package:monitorlibrary/data/settlement.dart';
 import 'package:monitorlibrary/data/user.dart';
 
@@ -68,6 +69,21 @@ class DataAPI {
     };
     try {
       var result = await _callWebAPIPost(URL + 'addPointToPolygon', bag);
+      return result;
+    } catch (e) {
+      print(e);
+      throw e;
+    }
+  }
+  static Future addQuestionnaireSection({@required String questionnaireId,
+    @required Section section}) async {
+    Map bag = {
+      'questionnaireId': questionnaireId,
+      'section': section.toJson(),
+
+    };
+    try {
+      var result = await _callWebAPIPost(URL + 'addQuestionnaireSection', bag);
       return result;
     } catch (e) {
       print(e);

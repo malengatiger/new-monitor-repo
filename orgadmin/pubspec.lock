@@ -116,6 +116,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.0.14"
+  grouped_buttons:
+    dependency: transitive
+    description:
+      name: grouped_buttons
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.4"
   http:
     dependency: transitive
     description:

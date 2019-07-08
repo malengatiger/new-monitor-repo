@@ -20,11 +20,22 @@ class QuestionnaireExpressRoutes {
             console.log(`\n\n💦  POST: /addQuestionnaire requested .... 💦 💦 💦 💦 💦 💦  ${new Date().toISOString()}`);
             console.log(req.body);
             try {
-                const result = yield questionnaire_helper_1.QuestionnaireHelper.addQuestionnaire(req.body.name, req.body.title, req.body.description, req.body.countryID, req.body.organizationId, req.body.sections);
+                const result = yield questionnaire_helper_1.QuestionnaireHelper.addQuestionnaire(req.body.title, req.body.description, req.body.countryId, req.body.organizationId, req.body.sections);
                 res.status(200).json(result);
             }
             catch (err) {
                 util_1.default.sendError(res, err, "addQuestionnaire failed");
+            }
+        }));
+        app.route("/addQuestionnaireSection").post((req, res) => __awaiter(this, void 0, void 0, function* () {
+            console.log(`\n\n💦  POST: /addQuestionnaireSection requested .... 💦 💦 💦 💦 💦 💦  ${new Date().toISOString()}`);
+            console.log(req.body);
+            try {
+                const result = yield questionnaire_helper_1.QuestionnaireHelper.addQuestionnaireSection(req.body.questionnaireId, req.body.section);
+                res.status(200).json(result);
+            }
+            catch (err) {
+                util_1.default.sendError(res, err, "addQuestionnaireSection failed");
             }
         }));
         app.route("/addQuestionnaireResponse").post((req, res) => __awaiter(this, void 0, void 0, function* () {

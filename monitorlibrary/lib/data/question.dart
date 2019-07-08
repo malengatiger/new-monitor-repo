@@ -6,7 +6,7 @@ import 'answer.dart';
 class Question {
   String text, created;
   List<Answer> answers;
-  QuestionType questionType;
+  String questionType;
   List<String> choices;
 
   Question(
@@ -18,9 +18,23 @@ class Question {
   Question.fromJson(Map data) {
     this.text = data['text'];
     this.created = data['created'];
-    this.choices = data['choices'];
-    this.questionType = data['questionType'];
-    this.answers = data['answers'];
+    this.choices = List();
+    if (data['choices'] != null) {
+      List  list = data['choices'];
+      list.forEach((m) {
+        this.choices.add(m);
+      });
+    }
+      this.questionType = data['questionType'];
+
+
+    this.answers = List();
+    if (data['answers'] != null) {
+      List  list = data['answers'];
+      list.forEach((m) {
+        this.answers.add(Answer.fromJson(m));
+      });
+    }
 
   }
   Map<String, dynamic> toJson() {

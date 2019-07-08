@@ -34,10 +34,6 @@ __decorate([
 __decorate([
     typegoose_1.prop({ required: true, index: true, trim: true, unique: true }),
     __metadata("design:type", String)
-], Questionnaire.prototype, "name", void 0);
-__decorate([
-    typegoose_1.prop({ required: true }),
-    __metadata("design:type", String)
 ], Questionnaire.prototype, "title", void 0);
 __decorate([
     typegoose_1.prop({ required: true }),
