@@ -133,9 +133,9 @@ export class ProjectExpressRoutes {
         Util.sendError(res, err, "findAllProjects failed");
       }
     });
-    app.route("/findByOrganization").post(async (req: Request, res: Response) => {
+    app.route("/findProjectsByOrganization").post(async (req: Request, res: Response) => {
       console.log(
-        `\n\n💦  POST: /findByOrganization requested .... 💦 💦 💦 💦 💦 💦  ${new Date().toISOString()}`,
+        `\n\n💦  POST: /findProjectsByOrganization requested .... 💦 💦 💦 💦 💦 💦  ${new Date().toISOString()}`,
       );
       try {
         const result = await ProjectHelper.findByOrganization(

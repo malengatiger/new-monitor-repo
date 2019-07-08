@@ -92,8 +92,8 @@ class ProjectExpressRoutes {
                 util_1.default.sendError(res, err, "findAllProjects failed");
             }
         }));
-        app.route("/findByOrganization").post((req, res) => __awaiter(this, void 0, void 0, function* () {
-            console.log(`\n\n💦  POST: /findByOrganization requested .... 💦 💦 💦 💦 💦 💦  ${new Date().toISOString()}`);
+        app.route("/findProjectsByOrganization").post((req, res) => __awaiter(this, void 0, void 0, function* () {
+            console.log(`\n\n💦  POST: /findProjectsByOrganization requested .... 💦 💦 💦 💦 💦 💦  ${new Date().toISOString()}`);
             try {
                 const result = yield project_helper_1.ProjectHelper.findByOrganization(req.body.organizationId);
                 res.status(200).json(result);

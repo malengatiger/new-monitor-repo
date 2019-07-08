@@ -40,7 +40,7 @@ class UserExpressRoutes {
         app.route("/findUsersByOrganization").post((req, res) => __awaiter(this, void 0, void 0, function* () {
             console.log(`\n\n💦  POST: /findUsersByOrganization requested .... 💦 💦 💦 💦 💦 💦  ${new Date().toISOString()}`);
             try {
-                const result = yield user_helper_1.UserHelper.findByOrganization(req.body.countryId);
+                const result = yield user_helper_1.UserHelper.findByOrganization(req.body.organizationId);
                 res.status(200).json(result);
             }
             catch (err) {

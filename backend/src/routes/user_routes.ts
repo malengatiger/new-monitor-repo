@@ -50,7 +50,7 @@ export class UserExpressRoutes {
       );
       try {
         const result = await UserHelper.findByOrganization(
-          req.body.countryId,
+          req.body.organizationId,
         );
         res.status(200).json(result);
       } catch (err) {
