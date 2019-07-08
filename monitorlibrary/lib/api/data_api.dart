@@ -9,6 +9,7 @@ import 'package:monitorlibrary/data/questionnaire.dart';
 import 'package:monitorlibrary/data/section.dart';
 import 'package:monitorlibrary/data/settlement.dart';
 import 'package:monitorlibrary/data/user.dart';
+import 'package:monitorlibrary/functions.dart';
 
 class DataAPI {
   static const Map<String, String> headers = {
@@ -126,6 +127,7 @@ class DataAPI {
   static Future<Questionnaire> addQuestionnaire(
       Questionnaire questionnaire) async {
     Map bag = questionnaire.toJson();
+    prettyPrint(bag, 'DataAPI  💦 💦 💦 addQuestionnaire: 🔆🔆 Sending to web api ......');
     try {
       var result = await _callWebAPIPost(URL + 'addQuestionnaire', bag);
       return Questionnaire.fromJson(result);

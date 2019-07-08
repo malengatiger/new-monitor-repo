@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:monitorlibrary/api/data_api.dart';
 import 'package:monitorlibrary/api/sharedprefs.dart';
+import 'package:monitorlibrary/auth/app_auth.dart';
 import 'package:monitorlibrary/data/country.dart';
 import 'package:monitorlibrary/data/position.dart';
 import 'package:monitorlibrary/data/section.dart';
@@ -26,11 +27,15 @@ class AdminBloc {
       StreamController.broadcast();
   StreamController<Questionnaire> _activeQuestionnaireController =
   StreamController.broadcast();
+  StreamController<User> _activeUserController =
+  StreamController.broadcast();
 
   Stream get settlementStream => _settController.stream;
   Stream get questionnaireStream => _questController.stream;
   Stream get projectStream => _projController.stream;
   Stream get countryStream => _cntryController.stream;
+  Stream get activeUserStream => _activeUserController.stream;
+  Stream get usersStream => _userController.stream;
   Stream get activeQuestionnaireStream  => _activeQuestionnaireController.stream;
 
   StreamController<List<User>> _userController = StreamController.broadcast();
@@ -43,14 +48,24 @@ class AdminBloc {
   AdminBloc() {
     checkPermission();
     _setActiveQuestionnaire();
+    setActiveUser();
   }
 
+  setActiveUser() async {
+
+    var user =  await Prefs.getUser();
+    if (user != null) {
+      debugPrint('setting active user .... 🤟🤟');
+      _activeUserController.sink.add(user);
+    }
+  }
   _setActiveQuestionnaire() async {
     var q = await Prefs.getQuestionnaire();
     if (q !=  null) {
       updateActiveQuestionnaire(q);
     }
   }
+
   updateActiveQuestionnaire(Questionnaire q) {
     _activeQuestionnaireController.sink.add(q);
     print('🍅 🍅 🍅 🍅 active questionnaire has been set');
@@ -166,10 +181,11 @@ class AdminBloc {
     var res = await DataAPI.addQuestionnaire(quest);
     _questionnaires.add(res);
     _questController.sink.add(_questionnaires);
+
     var user = await Prefs.getUser();
     if (user != null) {
       await getQuestionnairesByOrganization(user.organizationId);
-      print('🤟🤟🤟 Org questionnaires refreshed 🌹');
+      print('🤟🤟🤟 Org questionnaires refreshed after 🤟 successfull addition to DB 🌹');
     }
   }
 
@@ -204,6 +220,7 @@ class AdminBloc {
     return _users;
   }
 
+
   Future addProject(Project project) async {
     var res = await DataAPI.addProject(project);
     _projects.add(res);
@@ -217,5 +234,6 @@ class AdminBloc {
     _userController.close();
     _cntryController.close();
     _activeQuestionnaireController.close();
+    _activeUserController.close();
   }
 }

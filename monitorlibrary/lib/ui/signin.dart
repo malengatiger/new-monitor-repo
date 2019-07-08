@@ -117,18 +117,12 @@ class _SignInState extends State<SignIn> implements SnackBarListener {
           listener: this);
       return;
     }
-//    AppSnackbar.showSnackbarWithProgressIndicator(
-//        scaffoldKey: _key,
-//        message: "Signing in ...",
-//        textColor: Colors.white,
-//        backgroundColor: Colors.black);
-
     setState(() {
       isBusy = true;
     });
     try {
-      await AppAuth.signIn(email: email, password: password);
-      Navigator.pop(context);
+      var user =  await AppAuth.signIn(email: email, password: password);
+      Navigator.pop(context, user);
     } catch (e) {
       setState(() {
         isBusy = false;

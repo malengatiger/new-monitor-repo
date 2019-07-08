@@ -72,7 +72,6 @@ class Prefs {
     print('\n\n............................................................ 👽 👽 👽 !!');
     return null;
   }
-
   static Future<Questionnaire> getQuestionnaire() async {
     var prefs = await SharedPreferences.getInstance();
     var string = prefs.getString('questionnaire');
@@ -85,6 +84,12 @@ class Prefs {
         "🌽 🌽 🌽 Prefs.questionnaire 🧩  ${cntry.title} retrieved");
     prettyPrint(cntry.toJson(), " 🏈 Saved questionnaire retrieved from Prefs   🏈");
     return cntry;
+  }
+  static void removeQuestionnaire() async {
+    var prefs = await SharedPreferences.getInstance();
+    prefs.remove('questionnaire');
+    debugPrint(
+        "🌽 🌽 🌽 Prefs.removeQuestionnaire 🧩 REMOVED. KAPUT!!");
   }
 
   static Future saveMinutes(int minutes) async {

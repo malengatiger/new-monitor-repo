@@ -5,8 +5,8 @@ import 'package:monitorlibrary/data/settlement.dart';
 import 'package:monitorlibrary/functions.dart';
 import 'package:monitorlibrary/slide_right.dart';
 import 'package:orgadmin/admin_bloc.dart';
-import 'package:orgadmin/ui/settlement_detail.dart';
-import 'package:orgadmin/ui/settlement_editor.dart';
+import 'package:orgadmin/ui/settlement/settlement_detail.dart';
+import 'package:orgadmin/ui/settlement/settlement_editor.dart';
 
 class SettlementList extends StatefulWidget {
   @override

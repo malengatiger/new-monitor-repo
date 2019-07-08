@@ -213,19 +213,22 @@ class _QuestionnaireEditorState extends State<QuestionnaireEditor>
   String title, description;
   int numberOfSections = 1;
 
-  void _onTitle(String value) {
+  void _onTitle(String value) async {
     title = value;
-    print(value);
+    questionnaire.title = title;
+    await Prefs.saveQuestionnaire(questionnaire);
+    adminBloc.updateActiveQuestionnaire(questionnaire);
   }
 
-  void _onDescription(String value) {
+  void _onDescription(String value) async{
     description = value;
-    print(value);
+    questionnaire.description = description;
+    await Prefs.saveQuestionnaire(questionnaire);
+    adminBloc.updateActiveQuestionnaire(questionnaire);
   }
 
   void _onSections(String value) {
     numberOfSections = int.parse(value);
-    print(value);
   }
 
   bool isBusy = false;
@@ -301,7 +304,6 @@ class _QuestionnaireEditorState extends State<QuestionnaireEditor>
 
   @override
   onActionPressed(int action) {
-    // TODO: implement onActionPressed
     return null;
   }
   void _writeQuestionnaireToDatabase() async {
@@ -309,13 +311,18 @@ class _QuestionnaireEditorState extends State<QuestionnaireEditor>
     setState(() {
       isBusy = true;
     });
+    debugPrint('\n\n🦠 🦠 🦠 🦠 About to add  questionnaire to DB: 🦠 🦠 🦠 🦠 🦠 ');
+    prettyPrint(questionnaire.toJson(), '... 🍎 🍎 🍎 about add this questionnaire to Mongo: 🍎 ');
     try {
       await adminBloc.addQuestionnaire(questionnaire);
+      debugPrint(' 😍  😍  😍  remove active 💦 questionnaire from prefs after good write  😍 ');
+      Prefs.removeQuestionnaire();
       setState(() {
         isBusy = false;
       });
       Navigator.pop(context);
     } catch (e) {
+      print(e);
       _showErrorSnack(e.message);
     }
   }

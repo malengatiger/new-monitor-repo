@@ -80,7 +80,7 @@ class QuestionnaireHelper {
             const m = yield quest.save();
             m.questionnaireId = m.id;
             yield m.save();
-            console.log(`\n\n💙💚💛   QuestionnaireHelper: Yebo Gogo!!!! - MongoDB has saved ${name} ${title}!!!!!  💙💚💛`);
+            console.log(`\n\n💙💚💛QuestionnaireHelper: MongoDB questionnaire saved: ${title}!!!!!  💙💚💛`);
             console.log(m);
             return m;
         });

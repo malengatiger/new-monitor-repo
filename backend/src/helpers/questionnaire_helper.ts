@@ -83,7 +83,7 @@ export class QuestionnaireHelper {
     m.questionnaireId = m.id;
     await m.save();
     console.log(
-      `\n\n💙💚💛   QuestionnaireHelper: Yebo Gogo!!!! - MongoDB has saved ${name} ${title}!!!!!  💙💚💛`,
+      `\n\n💙💚💛QuestionnaireHelper: MongoDB questionnaire saved: ${title}!!!!!  💙💚💛`,
     );
 
     console.log(m);

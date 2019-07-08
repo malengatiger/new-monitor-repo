@@ -8,7 +8,8 @@ import 'package:monitorlibrary/functions.dart';
 import 'package:monitorlibrary/snack.dart';
 import 'package:orgadmin/admin_bloc.dart';
 
-import 'countries.dart';
+import '../countries.dart';
+
 
 class SettlementEditor extends StatefulWidget {
   @override

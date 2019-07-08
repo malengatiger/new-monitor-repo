@@ -34,6 +34,7 @@ flutter:
     - assets/pin_red.png
     - assets/bus.png
     - assets/number_1.png
+    - assets/hda.png
     #    - files/routes.json
     #    - files/cities.json
     #    - files/landmarks.json

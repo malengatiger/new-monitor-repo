@@ -22,6 +22,10 @@ class AppAuth {
     if (fbUser != null) {
       var mUser =  await DataAPI.addUser(user);
       await Prefs.saveUser(mUser);
+      var countries  = await DataAPI.getCountries();
+      if (countries.isNotEmpty) {
+        await Prefs.saveCountry(countries.elementAt(0));
+      }
     }
    }
    static Future signIn({String email, String password})  async {
@@ -33,6 +37,15 @@ class AppAuth {
      if (fbUser != null) {
        var user = await DataAPI.findUserByEmail(fbUser.email);
        await Prefs.saveUser(user);
+       var countries  = await DataAPI.getCountries();
+       if (countries.isNotEmpty) {
+         await Prefs.saveCountry(countries.elementAt(0));
+       }
+       return user;
      }
+   }
+
+   static Future getCountry() async {
+
    }
 }
