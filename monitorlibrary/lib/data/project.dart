@@ -7,7 +7,7 @@ import 'package:monitorlibrary/data/settlement.dart';
 import 'city.dart';
 
 class Project {
-  String name, countryId, projectId, description, organizationId, created;
+  String name, projectId, description, organizationId, created;
   String organizationName;
   List<City> nearestCities;
   List<Position> positions;
@@ -16,7 +16,6 @@ class Project {
   List<Settlement> settlements;
   Project(
       {@required this.name,
-      @required this.countryId,
       @required this.description,
       this.organizationId,
       this.settlements,
@@ -30,19 +29,57 @@ class Project {
 
   Project.fromJson(Map data) {
     this.name = data['name'];
-    this.countryId = data['countryId'];
     this.projectId = data['projectId'];
     this.description = data['description'];
     this.organizationId = data['organizationId'];
     this.projectId = data['projectId'];
     this.created = data['created'];
     this.organizationName = data['organizationName'];
-    this.settlements = data['settlements'];
-    this.nearestCities = data['nearestCities'];
-    this.photoUrls = data['photoUrls'];
-    this.videoUrls = data['videoUrls'];
-    this.ratings = data['ratings'];
-    this.positions = data['positions'];
+
+    this.settlements = [];
+    if (data['settlements'] != null) {
+      List list = data['settlements'];
+      list.forEach((m) {
+        this.settlements.add(Settlement.fromJson(m));
+      });
+    }
+
+    this.nearestCities = [];
+    if (data['nearestCities'] != null) {
+      List list = data['nearestCities'];
+      list.forEach((m) {
+        this.nearestCities.add(City.fromJson(m));
+      });
+    }
+    this.positions = [];
+    if (data['positions'] != null) {
+      List list = data['positions'];
+      list.forEach((m) {
+        this.positions.add(Position.fromJson(m));
+      });
+    }
+    this.photoUrls = [];
+    if (data['photoUrls'] != null) {
+      List list = data['photoUrls'];
+      list.forEach((m) {
+        this.photoUrls.add(Content.fromJson(m));
+      });
+    }
+    this.videoUrls = [];
+    if (data['videoUrls'] != null) {
+      List list = data['videoUrls'];
+      list.forEach((m) {
+        this.videoUrls.add(Content.fromJson(m));
+      });
+    }
+    this.ratings = [];
+    if (data['ratings'] != null) {
+      List list = data['ratings'];
+      list.forEach((m) {
+        this.ratings.add(RatingContent.fromJson(m));
+      });
+    }
+
   }
   Map<String, dynamic> toJson() {
     List mPositions = List();
@@ -83,7 +120,6 @@ class Project {
     }
     Map<String, dynamic> map = {
       'name': name,
-      'countryId': countryId,
       'projectId': projectId,
       'description': description,
       'organizationId': organizationId,

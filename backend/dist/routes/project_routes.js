@@ -31,18 +31,18 @@ class ProjectExpressRoutes {
             console.log(`\n\n💦  POST: /addSettlementToProject requested .... 💦 💦 💦 💦 💦 💦  ${new Date().toISOString()}`);
             console.log(req.body);
             try {
-                const result = yield project_helper_1.ProjectHelper.addSettlementToProject(req.body.projectId, req.body.settlementId);
+                const result = yield project_helper_1.ProjectHelper.addSettlementToProject(req.body.projectId, req.body.settlementId, req.body.settlementName);
                 res.status(200).json(result);
             }
             catch (err) {
                 util_1.default.sendError(res, err, "addSettlementToProject failed");
             }
         }));
-        app.route("/addPositionsToProject").post((req, res) => __awaiter(this, void 0, void 0, function* () {
-            console.log(`\n\n💦  POST: /addPositionsToProject requested .... 💦 💦 💦 💦 💦 💦  ${new Date().toISOString()}`);
+        app.route("/addPositionToProject").post((req, res) => __awaiter(this, void 0, void 0, function* () {
+            console.log(`\n\n💦  POST: /addPositionToProject requested .... 💦 💦 💦 💦 💦 💦  ${new Date().toISOString()}`);
             console.log(req.body);
             try {
-                const result = yield project_helper_1.ProjectHelper.addPositionsToProject(req.body.projectId, req.body.positions);
+                const result = yield project_helper_1.ProjectHelper.addPositionToProject(req.body.projectId, req.body.latitude, req.body.longitude);
                 res.status(200).json(result);
             }
             catch (err) {
@@ -53,7 +53,7 @@ class ProjectExpressRoutes {
             console.log(`\n\n💦  POST: /addProjectPhoto requested .... 💦 💦 💦 💦 💦 💦  ${new Date().toISOString()}`);
             console.log(req.body);
             try {
-                const result = yield project_helper_1.ProjectHelper.addProjectPhoto(req.body.projectId, req.body.url, req.body.comment, req.body.latitude, req.body.longitude, req.body.userId);
+                const result = yield project_helper_1.ProjectHelper.addProjectPhoto(req.body.projectId, req.body.url, req.body.latitude, req.body.longitude, req.body.userId);
                 res.status(200).json(result);
             }
             catch (err) {

@@ -36,38 +36,70 @@ class ProjectHelper {
             return m;
         });
     }
-    static addSettlementToProject(projectId, settlementId) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const ProjectModel = new project_1.default().getModelForClass(project_1.default);
-            const u = yield ProjectModel.findByProjectId(projectId).exec();
-            yield u.addSettlement(projectId, settlementId);
-            return u;
-        });
-    }
-    static addPositionsToProject(projectId, positions) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const ProjectModel = new project_1.default().getModelForClass(project_1.default);
-            const u = yield ProjectModel.findByProjectId(projectId).exec();
-            yield u.addPositions(projectId, positions);
-            return u;
-        });
-    }
-    static addProjectPhoto(projectId, url, comment, latitude, longitude, userId) {
+    static addSettlementToProject(projectId, settlementId, settlementName) {
         return __awaiter(this, void 0, void 0, function* () {
             const projectModel = new project_1.default().getModelForClass(project_1.default);
+            const m = {
+                settlementId,
+                settlementName,
+            };
+            projectModel.findOneAndUpdate({ _id: projectId }, { $push: { settlements: m } }, () => (error, success) => {
+                if (error) {
+                    console.log(`🔆🔆🔆🔆🔆🔆 error has occured`);
+                    console.error(error);
+                }
+                else {
+                    console.log(`🥦🥦🥦🥦🥦🥦 success has occured`);
+                    console.log(success);
+                }
+            });
             const u = yield projectModel.findByProjectId(projectId).exec();
+            return u;
+        });
+    }
+    static addPositionToProject(projectId, latitude, longitude) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const projectModel = new project_1.default().getModelForClass(project_1.default);
             const position = new position_1.default();
             position.coordinates = [longitude, latitude];
-            yield u.photoUrls.push({
-                url,
-                comment,
-                position,
-                userId,
+            projectModel.findOneAndUpdate({ _id: projectId }, { $push: { positions: position } }, () => (error, success) => {
+                if (error) {
+                    console.log(`🔆🔆🔆🔆🔆🔆 error has occured`);
+                    console.error(error);
+                }
+                else {
+                    console.log(`🥦🥦🥦🥦🥦🥦 success has occured`);
+                    console.log(success);
+                }
             });
-            yield u.save();
-            return {
-                message: `Photo added to project`,
+            const u = yield projectModel.findByProjectId(projectId).exec();
+            return u;
+            return u;
+        });
+    }
+    static addProjectPhoto(projectId, url, latitude, longitude, userId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const projectModel = new project_1.default().getModelForClass(project_1.default);
+            const position = new position_1.default();
+            position.coordinates = [longitude, latitude];
+            const m = {
+                url,
+                position,
+                created: new Date().toISOString(),
+                userId,
             };
+            projectModel.findOneAndUpdate({ _id: projectId }, { $push: { photoUrls: m } }, () => (error, success) => {
+                if (error) {
+                    console.log(`🔆🔆🔆🔆🔆🔆 error has occured`);
+                    console.error(error);
+                }
+                else {
+                    console.log(`🥦🥦🥦🥦🥦🥦 success has occured`);
+                    console.log(success);
+                }
+            });
+            const u = yield projectModel.findByProjectId(projectId).exec();
+            return u;
         });
     }
     static addProjectVideo(projectId, url, comment, latitude, longitude, userId) {
@@ -76,13 +108,22 @@ class ProjectHelper {
             const u = yield projectModel.findByProjectId(projectId).exec();
             const position = new position_1.default();
             position.coordinates = [longitude, latitude];
-            yield u.videoUrls.push({
+            const m = {
                 url,
-                comment,
                 position,
                 userId,
+                comment,
+            };
+            projectModel.findOneAndUpdate({ _id: projectId }, { $push: { videoUrls: m } }, () => (error, success) => {
+                if (error) {
+                    console.log(`🔆🔆🔆🔆🔆🔆 error has occured`);
+                    console.error(error);
+                }
+                else {
+                    console.log(`🥦🥦🥦🥦🥦🥦 success has occured`);
+                    console.log(success);
+                }
             });
-            yield u.save();
             return {
                 message: `Video added to project`,
             };
@@ -94,13 +135,23 @@ class ProjectHelper {
             const u = yield projectModel.findByProjectId(projectId).exec();
             const position = new position_1.default();
             position.coordinates = [longitude, latitude];
-            yield u.ratings.push({
+            const m = {
                 rating,
-                comment,
+                created: new Date().toISOString(),
                 position,
                 userId,
+                comment,
+            };
+            projectModel.findOneAndUpdate({ _id: projectId }, { $push: { ratings: m } }, () => (error, success) => {
+                if (error) {
+                    console.log(`🔆🔆🔆🔆🔆🔆 error has occured`);
+                    console.error(error);
+                }
+                else {
+                    console.log(`🥦🥦🥦🥦🥦🥦 success has occured`);
+                    console.log(success);
+                }
             });
-            yield u.save();
             return {
                 message: `Rating added to project`,
             };

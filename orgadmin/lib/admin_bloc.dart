@@ -171,9 +171,9 @@ class AdminBloc {
     _settController.sink.add(_settlements);
     print(
         'adminBloc:  🧩 🧩 🧩 _settController.sink.added 🏈 🏈 ${_settlements.length} settlements  ');
-    _settlements.forEach((s) {
-      prettyPrint(s.toJson(), '🍏 🍏 🍏 SETTLEMENT 🍏 🍏 ');
-    });
+//    _settlements.forEach((s) {
+//      prettyPrint(s.toJson(), '🍏 🍏 🍏 SETTLEMENT 🍏 🍏 ');
+//    });
     return _settlements;
   }
 
@@ -220,11 +220,21 @@ class AdminBloc {
     return _users;
   }
 
+  Future<List<Project>> findProjectsByOrganization(String organizationId) async {
+    _projects.clear();
+    var res = await DataAPI.findProjectsByOrganization(organizationId);
+    _projects.addAll(res);
+    _projController.sink.add(_projects);
+    return _projects;
+  }
 
-  Future addProject(Project project) async {
+
+  Future<Project> addProject(Project project) async {
     var res = await DataAPI.addProject(project);
+    debugPrint('🎽 🎽 🎽 Bloc: addProject: Project adding to stream ...');
     _projects.add(res);
     _projController.sink.add(_projects);
+    return res;
   }
 
   close() {

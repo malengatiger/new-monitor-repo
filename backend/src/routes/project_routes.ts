@@ -37,6 +37,7 @@ export class ProjectExpressRoutes {
         const result = await ProjectHelper.addSettlementToProject(
           req.body.projectId,
           req.body.settlementId,
+          req.body.settlementName,
          
         );
         res.status(200).json(result);
@@ -44,15 +45,16 @@ export class ProjectExpressRoutes {
         Util.sendError(res, err, "addSettlementToProject failed");
       }
     });
-    app.route("/addPositionsToProject").post(async (req: Request, res: Response) => {
+    app.route("/addPositionToProject").post(async (req: Request, res: Response) => {
       console.log(
-        `\n\n💦  POST: /addPositionsToProject requested .... 💦 💦 💦 💦 💦 💦  ${new Date().toISOString()}`,
+        `\n\n💦  POST: /addPositionToProject requested .... 💦 💦 💦 💦 💦 💦  ${new Date().toISOString()}`,
       );
       console.log(req.body);
       try {
-        const result = await ProjectHelper.addPositionsToProject(
+        const result = await ProjectHelper.addPositionToProject(
           req.body.projectId,
-          req.body.positions,
+          req.body.latitude,
+          req.body.longitude,
          
         );
         res.status(200).json(result);
@@ -70,7 +72,6 @@ export class ProjectExpressRoutes {
         const result = await ProjectHelper.addProjectPhoto(
           req.body.projectId,
           req.body.url,
-          req.body.comment,
           req.body.latitude,
           req.body.longitude,
           req.body.userId,

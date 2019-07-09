@@ -270,6 +270,7 @@ class _QuestionnaireEditorState extends State<QuestionnaireEditor>
           sectionNumber: '${i + 1}',
           title: 'Section ${i + 1} Title',
         );
+        questionnaire.sections = [];
         questionnaire.sections.add(sec);
       }
     } else {

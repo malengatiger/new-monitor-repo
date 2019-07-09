@@ -22,7 +22,11 @@ import 'package:monitorlibrary/slide_right.dart';
 import 'package:monitorlibrary/auth/app_auth.dart';
 import 'package:monitorlibrary/ui/signin.dart';
 import 'package:orgadmin/admin_bloc.dart';
+import 'package:orgadmin/ui/project/project_editor.dart';
+import 'package:orgadmin/ui/project/project_list.dart';
+import 'package:orgadmin/ui/questionnaire/questionare_list.dart';
 import 'package:orgadmin/ui/questionnaire/questionnaire_editor.dart';
+import 'package:orgadmin/ui/settlement/settlement_editor.dart';
 import 'package:orgadmin/ui/settlement/settlements.dart';
 
 void main() => runApp(MyApp());
@@ -37,10 +41,9 @@ class MyApp extends StatelessWidget {
       title: _title,
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        fontFamily: 'Raleway',
-        primaryColor: Colors.teal,
-        accentColor: Colors.pink
-      ),
+          fontFamily: 'Raleway',
+          primaryColor: Colors.teal,
+          accentColor: Colors.pink),
       home: MyStatefulWidget(),
     );
   }
@@ -53,45 +56,29 @@ class MyStatefulWidget extends StatefulWidget {
   _MyStatefulWidgetState createState() => _MyStatefulWidgetState();
 }
 
-class _MyStatefulWidgetState extends State<MyStatefulWidget> {
+class _MyStatefulWidgetState extends State<MyStatefulWidget> implements ProjectListener {
   int _selectedIndex = 0;
-  static const TextStyle optionStyle =
-      TextStyle(fontSize: 36, fontWeight: FontWeight.w900);
-  static const List<Widget> _widgetOptions = <Widget>[
-    Text(
-      'Settlement',
-      style: optionStyle,
-    ),
-    Text(
-      'Questionnaire',
-      style: optionStyle,
-    ),
-    Text(
-      'Monitor',
-      style: optionStyle,
-    ),
-    Text(
-      'Project',
-      style: optionStyle,
-    ),
-  ];
 
   void _onItemTapped(int index) {
-    switch(index) {
+    switch (index) {
       case 0:
-        Navigator.push(context, SlideRightRoute(
-          widget: SettlementList(),
-        ));
+        Navigator.push(
+            context,
+            SlideRightRoute(
+              widget: SettlementEditor(),
+            ));
         break;
       case 1:
-        Navigator.push(context, SlideRightRoute(
-          widget: QuestionnaireEditor(),
-        ));
+        Navigator.push(
+            context,
+            SlideRightRoute(
+              widget: QuestionnaireEditor(),
+            ));
         break;
       case 2:
-//        Navigator.push(context, SlideRightRoute(
-//          widget: SettlementList(),
-//        ));
+        Navigator.push(context, SlideRightRoute(
+          widget: ProjectEditor(),
+        ));
         break;
     }
     setState(() {
@@ -109,7 +96,8 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   Future _checkUser() async {
     var isOK = await AppAuth.isUserSignedIn();
     if (!isOK) {
-      user = await  Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) {
+      user = await Navigator.push(context,
+          MaterialPageRoute(builder: (BuildContext context) {
         return SignIn();
       }));
       print('🤟🤟🤟🤟🤟🤟🤟🤟 User returned from signIn');
@@ -127,178 +115,245 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<User>(
-      stream: adminBloc.activeUserStream,
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          user = snapshot.data;
-        }
-        return Scaffold(
-          appBar: AppBar(
-            title: Text(
-              user == null ? 'Digital Monitor Platform' : user.organizationName,
-              style: Styles.whiteBoldMedium,
-            ),
-
-            bottom: PreferredSize(
-              preferredSize: Size.fromHeight(120),
-              child: Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: Column(
-                  children: <Widget>[
-                    Row(
-                      children: <Widget>[
-                        Text(
-                          user == null
-                              ? 'Administrator'
-                              : '${user.firstName} ${user.lastName}',
-                          style: Styles.blackBoldMedium,
-                        ),
-                      ],
-                    ),
-                    Row(
-                      children: <Widget>[
-                        Text(
-                          user == null
-                              ? 'Administrator'
-                              : '${user.userType} ',
-                          style: Styles.whiteSmall,
-                        ),
-                      ],
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left:8.0, right: 24),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
+        stream: adminBloc.activeUserStream,
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            user = snapshot.data;
+          }
+          return Scaffold(
+            appBar: AppBar(
+              title: Text(
+                user == null
+                    ? 'Digital Monitor Platform'
+                    : user.organizationName,
+                style: Styles.whiteBoldMedium,
+              ),
+              bottom: PreferredSize(
+                preferredSize: Size.fromHeight(120),
+                child: Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Column(
+                    children: <Widget>[
+                      Row(
                         children: <Widget>[
-                          IconButton(icon: Icon(Icons.refresh, color: Colors.white,),
-                            onPressed: _getData,)
+                          Text(
+                            user == null
+                                ? 'Administrator'
+                                : '${user.firstName} ${user.lastName}',
+                            style: Styles.blackBoldMedium,
+                          ),
                         ],
                       ),
-                    ),
+                      Row(
+                        children: <Widget>[
+                          Text(
+                            user == null
+                                ? 'Administrator'
+                                : '${user.userType} ',
+                            style: Styles.whiteSmall,
+                          ),
+                        ],
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 8.0, right: 24),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: <Widget>[
+                            IconButton(
+                              icon: Icon(
+                                Icons.refresh,
+                                color: Colors.white,
+                              ),
+                              onPressed: _getData,
+                            )
+                          ],
+                        ),
+                      ),
 //                    SizedBox(height: 8,),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),
-          ),
-          backgroundColor: Colors.brown[50],
-          body: Stack(
-            children: <Widget>[
-              Positioned(
-                left: 28, top: 20,
-                child: Image.asset('assets/hda.png', width: 48, height: 48, fit: BoxFit.fill,),
-              ),
-              ListView(
-                children: <Widget>[
-                  SizedBox(height: 80,),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: <Widget>[
-                      Container(
-                        height: 100, width: 160,
-                        child: Card(
-                          elevation: 4,
-                          child: Center(
-                            child: Column(
-                              children: <Widget>[
-                                SizedBox(height: 8,),
-                                Text('${getFormattedNumber(settlements, context)}',
-                                  style: Styles.purpleBoldLarge,),
-                                SizedBox(height: 8,),
-                                Text('Settlements'),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                      Container(
-                        height: 100, width: 160,
-                        child: Card(
-                          elevation: 4,
-                          child: Center(
-                            child: Column(
-                              children: <Widget>[
-                                SizedBox(height: 8,),
-                                Text('${getFormattedNumber(projects, context)}',
-                                  style: Styles.tealBoldLarge,),
-                                SizedBox(height: 8,),
-                                Text('Projects'),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
+            backgroundColor: Colors.brown[50],
+            body: Stack(
+              children: <Widget>[
+                Positioned(
+                  left: 28,
+                  top: 20,
+                  child: Image.asset(
+                    'assets/hda.png',
+                    width: 48,
+                    height: 48,
+                    fit: BoxFit.fill,
                   ),
-                  SizedBox(height: 8,),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: <Widget>[
-                      Container(
-                        height: 100, width: 160,
-                        child: Card(
-                          elevation: 4,
-                          child: Center(
-                            child: Column(
-                              children: <Widget>[
-                                SizedBox(height: 8,),
-                                Text('${getFormattedNumber(questionnaires, context)}',
-                                  style: Styles.pinkBoldLarge,),
-                                SizedBox(height: 8,),
-                                Text('Questionnaires'),
-                              ],
+                ),
+                ListView(
+                  children: <Widget>[
+                    SizedBox(
+                      height: 80,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: <Widget>[
+                        Container(
+                          height: 100,
+                          width: 160,
+                          child: GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  SlideRightRoute(
+                                    widget: SettlementList(),
+                                  ));
+                            },
+                            child: Card(
+                              elevation: 4,
+                              child: Center(
+                                child: Column(
+                                  children: <Widget>[
+                                    SizedBox(
+                                      height: 8,
+                                    ),
+                                    Text(
+                                      '${getFormattedNumber(settlements, context)}',
+                                      style: Styles.purpleBoldLarge,
+                                    ),
+                                    SizedBox(
+                                      height: 8,
+                                    ),
+                                    Text('Settlements'),
+                                  ],
+                                ),
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                      Container(
-                        height: 100, width: 160,
-                        child: Card(
-                          elevation: 4,
-                          child: Center(
-                            child: Column(
-                              children: <Widget>[
-                                SizedBox(height: 8,),
-                                Text('${getFormattedNumber(users, context)}',
-                                  style: Styles.blueBoldLarge,),
-                                SizedBox(height: 8,),
-                                Text('Users'),
-                              ],
+                        Container(
+                          height: 100,
+                          width: 160,
+                          child: GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  SlideRightRoute(
+                                    widget: ProjectList(this),
+                                  ));
+                            },
+                            child: Card(
+                              elevation: 4,
+                              child: Center(
+                                child: Column(
+                                  children: <Widget>[
+                                    SizedBox(
+                                      height: 8,
+                                    ),
+                                    Text(
+                                      '${getFormattedNumber(projects, context)}',
+                                      style: Styles.tealBoldLarge,
+                                    ),
+                                    SizedBox(
+                                      height: 8,
+                                    ),
+                                    Text('Projects'),
+                                  ],
+                                ),
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ],
-          ),
-          bottomNavigationBar: BottomNavigationBar(
-            items: const <BottomNavigationBarItem>[
-              BottomNavigationBarItem(
-                icon: Icon(Icons.home),
-                title: Text('Settlement'),
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.create),
-                title: Text('Questionnaire'),
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.apps),
-                title: Text('Project'),
-              ),
-            ],
-            currentIndex: _selectedIndex,
-            selectedItemColor: Colors.pink[800],
-            onTap: _onItemTapped,
-          ),
-        );
-      }
-    );
+                      ],
+                    ),
+                    SizedBox(
+                      height: 8,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: <Widget>[
+                        Container(
+                          height: 100,
+                          width: 160,
+                          child: GestureDetector(
+                            onTap: () {
+                              Navigator.push(context,
+                                  SlideRightRoute(widget: QuestionnaireList()));
+                            },
+                            child: Card(
+                              elevation: 4,
+                              child: Center(
+                                child: Column(
+                                  children: <Widget>[
+                                    SizedBox(
+                                      height: 8,
+                                    ),
+                                    Text(
+                                      '${getFormattedNumber(questionnaires, context)}',
+                                      style: Styles.pinkBoldLarge,
+                                    ),
+                                    SizedBox(
+                                      height: 8,
+                                    ),
+                                    Text('Questionnaires'),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        Container(
+                          height: 100,
+                          width: 160,
+                          child: Card(
+                            elevation: 4,
+                            child: Center(
+                              child: Column(
+                                children: <Widget>[
+                                  SizedBox(
+                                    height: 8,
+                                  ),
+                                  Text(
+                                    '${getFormattedNumber(users, context)}',
+                                    style: Styles.blueBoldLarge,
+                                  ),
+                                  SizedBox(
+                                    height: 8,
+                                  ),
+                                  Text('Users'),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ],
+            ),
+            bottomNavigationBar: BottomNavigationBar(
+              items: const <BottomNavigationBarItem>[
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.home),
+                  title: Text('Settlement'),
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.create),
+                  title: Text('Questionnaire'),
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.apps),
+                  title: Text('Project'),
+                ),
+              ],
+              currentIndex: _selectedIndex,
+              selectedItemColor: Colors.pink[800],
+              onTap: _onItemTapped,
+            ),
+          );
+        });
   }
 
-  int settlements  = 0;
+  int settlements = 0;
   int questionnaires = 0;
   int projects = 0;
   int users = 0;
@@ -329,33 +384,47 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
         projects = data.length;
       });
     });
-
   }
+
   void _getData() async {
-    print('💊 💊 💊 get all settlements in country 📡  all org questionnaires 🎡  all org users +'
+    print(
+        '💊 💊 💊 get all settlements in country 📡  all org questionnaires 🎡  all org users +'
         ' 💈 all org  projects');
     var country = await Prefs.getCountry();
     if (country != null) {
       var list = await adminBloc.findSettlementsByCountry(country.countryId);
       settlements = list.length;
-    }  else {
+    } else {
       print('country is NULL');
     }
     if (user != null) {
       var list = await adminBloc.findUsersByOrganization(user.organizationId);
       users = list.length;
-      var list2 = await adminBloc.getQuestionnairesByOrganization(user.organizationId);
+      var list2 =
+          await adminBloc.getQuestionnairesByOrganization(user.organizationId);
       questionnaires = list2.length;
+      var list3 =
+          await adminBloc.findProjectsByOrganization(user.organizationId);
+      projects = list3.length;
     }
-    print('🐳🐳 settlements: $settlements  🐳🐳 questionnaires: $questionnaires  🐳🐳 users: $users 🐳🐳 projects: $projects');
-    setState(() {
-
-    });
+    print(
+        '🐳🐳 settlements: $settlements  🐳🐳 questionnaires: $questionnaires  🐳🐳 users: $users 🐳🐳 projects: $projects');
+    setState(() {});
   }
+
   void _cancel() {
     settSub.cancel();
     questSub.cancel();
     userSub.cancel();
     projSub.cancel();
+  }
+
+  @override
+  onProjectSelected(Project project) {
+    debugPrint('Main:  🤕 🤕 onProjectSelected: 🍑 project has  been selected');
+    prettyPrint(project.toJson(),'🍑 🍑 🍑  SELECTED PROJECT');
+    Navigator.push(context, SlideRightRoute(
+      widget: ProjectEditor(project: project,),
+    ));
   }
 }
