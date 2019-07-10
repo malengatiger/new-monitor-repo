@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:monitorlibrary/api/data_api.dart';
 import 'package:monitorlibrary/api/sharedprefs.dart';
 import 'package:monitorlibrary/data/project.dart';
 import 'package:monitorlibrary/data/user.dart';
 import 'package:monitorlibrary/functions.dart';
-import 'package:orgadmin/admin_bloc.dart';
 
 abstract class ProjectListener {
   onProjectSelected(Project project);
@@ -33,7 +33,7 @@ class _ProjectListState extends State<ProjectList> {
     setState(() {
       isBusy = true;
     });
-    projects = await adminBloc.findProjectsByOrganization(user.organizationId);
+    projects = await DataAPI.findProjectsByOrganization(user.organizationId);
 
     setState(() {
       isBusy = false;

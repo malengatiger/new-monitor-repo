@@ -6,7 +6,7 @@ import 'package:monitorlibrary/data/position.dart';
 import 'package:monitorlibrary/data/settlement.dart';
 import 'package:monitorlibrary/functions.dart';
 import 'package:monitorlibrary/snack.dart';
-import 'package:orgadmin/admin_bloc.dart';
+import 'package:monitorlibrary/bloc/admin_bloc.dart';
 
 class MapEditor extends StatefulWidget {
   final Settlement settlement;
@@ -36,7 +36,7 @@ class _MapEditorState extends State<MapEditor> implements SnackBarListener {
   }
 
   _getLocation() async {
-    position = await adminBloc.getCurrentLocation();
+    position = await bloc.getCurrentLocation();
     print('💠💠💠 setting new camera position  💠💠💠 after getting current location ${position.coordinates}');
     _cameraPosition = CameraPosition(
       target: LatLng(position.coordinates[1], position.coordinates[0]),
@@ -181,7 +181,7 @@ class _MapEditorState extends State<MapEditor> implements SnackBarListener {
         backgroundColor: Colors.black);
 
     try {
-      var res = await adminBloc.addToPolygon(
+      var res = await bloc.addToPolygon(
           settlementId: widget.settlement.settlementId,
           latitude: latLng.latitude,
           longitude: latLng.longitude);

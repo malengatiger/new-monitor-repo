@@ -5,7 +5,7 @@ import 'package:monitorlibrary/data/questionnaire.dart';
 import 'package:monitorlibrary/data/section.dart';
 import 'package:monitorlibrary/functions.dart';
 import 'package:monitorlibrary/slide_right.dart';
-import 'package:orgadmin/admin_bloc.dart';
+import 'package:monitorlibrary/bloc/admin_bloc.dart';
 import 'package:orgadmin/ui/questionnaire/question_editor.dart';
 
 class SectionEditor extends StatefulWidget {
@@ -80,7 +80,7 @@ class _SectionEditorState extends State<SectionEditor> implements SectionFormLis
     prettyPrint(section.toJson(), ' 🥬🥬🥬 Section just received,  🥬  check if section is in  questionnaire already');
     prettyPrint(widget.questionnaire.toJson(), 'Questionnaire, 🍪🍪🍪 check if section updated');
     await Prefs.saveQuestionnaire(widget.questionnaire);
-    adminBloc.updateActiveQuestionnaire(widget.questionnaire);
+    bloc.updateActiveQuestionnaire(widget.questionnaire);
   }
 
 

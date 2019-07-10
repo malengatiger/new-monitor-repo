@@ -5,8 +5,8 @@ import 'package:monitorlibrary/data/user.dart';
 import 'package:monitorlibrary/functions.dart';
 import 'package:monitorlibrary/slide_right.dart';
 import 'package:monitorlibrary/snack.dart';
-import 'package:orgadmin/admin_bloc.dart';
-import 'package:orgadmin/ui/camera/camera_ui.dart';
+import 'package:monitorlibrary/bloc/admin_bloc.dart';
+import 'package:monitorlibrary/camera/camera_ui.dart';
 
 class ProjectEditor extends StatefulWidget {
   final Project project;
@@ -187,7 +187,7 @@ class _ProjectEditorState extends State<ProjectEditor>
       return;
     }
     try {
-      mProject = await adminBloc.addProject(mProject);
+      mProject = await bloc.addProject(mProject);
       prettyPrint(mProject.toJson(), '🍉 PROJECT added to database. 🍉 🍉 🍉 check projectId');
     } catch (e) {
       print(e);

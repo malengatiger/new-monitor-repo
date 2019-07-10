@@ -85,6 +85,17 @@ class DataAPI {
     }
   }
 
+  static Future<Settlement> updateSettlement(Settlement settlement) async {
+    Map bag = settlement.toJson();
+    try {
+      var result = await _callWebAPIPost(URL + 'updateSettlement', bag);
+      return Settlement.fromJson(result);
+    } catch (e) {
+      print(e);
+      throw e;
+    }
+  }
+
   static Future<Settlement> addSettlement(Settlement settlement) async {
     Map bag = settlement.toJson();
     try {

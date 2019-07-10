@@ -30,7 +30,7 @@ class _SettlementDetailState extends State<SettlementDetail> {
 
   @override
   Widget build(BuildContext context) {
-    var settlmnt = widget.settlement;
+    var settlement = widget.settlement;
     return Scaffold(
       key: _key,
       appBar: AppBar(
@@ -41,7 +41,7 @@ class _SettlementDetailState extends State<SettlementDetail> {
           child: Column(
             children: <Widget>[
               Text(
-                '${settlmnt.settlementName}',
+                '${settlement.settlementName}',
                 style: Styles.blackBoldMedium,
               ),
               SizedBox(height: 20,)
@@ -55,7 +55,7 @@ class _SettlementDetailState extends State<SettlementDetail> {
         child: ListView(
           children: <Widget>[
             SizedBox(height: 8,),
-            new Basics(settlement: settlmnt,),
+            new Basics(settlement: settlement,),
             SizedBox(height: 8,),
             Card(
               elevation: 4,
@@ -63,7 +63,7 @@ class _SettlementDetailState extends State<SettlementDetail> {
                 child: Column(
                   children: <Widget>[
                     SizedBox(height: 8,),
-                    Text('${getFormattedNumber(settlmnt.photoUrls.length, context)}',
+                    Text('${getFormattedNumber(settlement.photoUrls.length, context)}',
                       style: Styles.blackBoldLarge,),
                     SizedBox(height: 8,),
                     Text('Questionnaires'),
@@ -84,7 +84,7 @@ class _SettlementDetailState extends State<SettlementDetail> {
                       child: Column(
                         children: <Widget>[
                           SizedBox(height: 8,),
-                          Text('${getFormattedNumber(settlmnt.photoUrls.length, context)}',
+                          Text('${getFormattedNumber(settlement.photoUrls.length, context)}',
                           style: Styles.purpleBoldLarge,),
                           SizedBox(height: 8,),
                           Text('Photos'),
@@ -101,7 +101,7 @@ class _SettlementDetailState extends State<SettlementDetail> {
                       child: Column(
                         children: <Widget>[
                           SizedBox(height: 8,),
-                          Text('${getFormattedNumber(settlmnt.photoUrls.length, context)}',
+                          Text('${getFormattedNumber(settlement.photoUrls.length, context)}',
                             style: Styles.tealBoldLarge,),
                           SizedBox(height: 8,),
                           Text('Videos'),
@@ -124,7 +124,7 @@ class _SettlementDetailState extends State<SettlementDetail> {
                       child: Column(
                         children: <Widget>[
                           SizedBox(height: 8,),
-                          Text('${getFormattedNumber(settlmnt.ratings.length, context)}',
+                          Text('${getFormattedNumber(settlement.ratings.length, context)}',
                             style: Styles.pinkBoldLarge,),
                           SizedBox(height: 8,),
                           Text('Ratings'),
@@ -141,7 +141,7 @@ class _SettlementDetailState extends State<SettlementDetail> {
                       child: Column(
                         children: <Widget>[
                           SizedBox(height: 8,),
-                          Text('${getFormattedNumber(settlmnt.ratings.length, context)}',
+                          Text('${getFormattedNumber(settlement.ratings.length, context)}',
                             style: Styles.blueBoldLarge,),
                           SizedBox(height: 8,),
                           Text('Projects'),

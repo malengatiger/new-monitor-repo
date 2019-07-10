@@ -6,12 +6,16 @@ import 'package:monitorlibrary/data/settlement.dart';
 import 'package:monitorlibrary/data/user.dart';
 import 'package:monitorlibrary/functions.dart';
 import 'package:monitorlibrary/snack.dart';
-import 'package:orgadmin/admin_bloc.dart';
+import 'package:monitorlibrary/bloc/admin_bloc.dart';
 
-import '../countries.dart';
+import 'package:monitorlibrary/ui/countries.dart';
 
 
 class SettlementEditor extends StatefulWidget {
+  final Settlement settlement;
+
+  SettlementEditor({this.settlement});
+
   @override
   _SettlementEditorState createState() => _SettlementEditorState();
 }
@@ -24,13 +28,21 @@ class _SettlementEditorState extends State<SettlementEditor>
   TextEditingController cellCntrl = TextEditingController();
   TextEditingController popCntrl = TextEditingController();
   bool isBusy = false;
-  AdminBloc bloc = AdminBloc();
+  GeneralBloc bloc = GeneralBloc();
   User user;
   List<Country> countries = List();
+  Settlement settlement;
 
   @override
   void initState() {
     super.initState();
+    if (widget.settlement != null) {
+      nameCntrl.text  = widget.settlement.settlementName;
+      emailCntrl.text  = widget.settlement.email;
+      cellCntrl.text  = widget.settlement.email;
+      popCntrl.text  = '${widget.settlement.population}';
+      settlement = widget.settlement;
+    }
     _getData();
   }
 
@@ -190,14 +202,22 @@ class _SettlementEditorState extends State<SettlementEditor>
 
     try {
       assert(_country != null);
-      var sett = Settlement(
-        settlementName: name,
-        email: email,
-        countryId: _country.countryId,
-        countryName: _country.name,
-        population: pop,
-      );
-      await bloc.addSettlement(sett);
+      if (settlement == null) {
+        settlement = Settlement(
+          countryId: _country.countryId,
+          countryName: _country.name,
+          settlementName: name,
+          population: pop,
+          email: email,
+        );
+        await bloc.addSettlement(settlement);
+      } else {
+        settlement.settlementName =  name;
+        settlement.population = pop;
+        settlement.email = email;
+        await bloc.updateSettlement(settlement);
+      }
+
       setState(() {
         isBusy = false;
       });

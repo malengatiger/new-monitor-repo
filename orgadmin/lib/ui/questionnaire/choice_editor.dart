@@ -3,7 +3,7 @@ import 'package:monitorlibrary/api/sharedprefs.dart';
 import 'package:monitorlibrary/data/question.dart';
 import 'package:monitorlibrary/data/questionnaire.dart';
 import 'package:monitorlibrary/functions.dart';
-import 'package:orgadmin/admin_bloc.dart';
+import 'package:monitorlibrary/bloc/admin_bloc.dart';
 
 class ChoiceEditor extends StatefulWidget {
   final Question question;
@@ -101,7 +101,7 @@ class _ChoiceEditorState extends State<ChoiceEditor>
     });
 
     await Prefs.saveQuestionnaire(widget.questionnaire);
-    adminBloc.updateActiveQuestionnaire(widget.questionnaire);
+    bloc.updateActiveQuestionnaire(widget.questionnaire);
   }
 }
 

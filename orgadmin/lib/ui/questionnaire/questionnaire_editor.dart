@@ -9,7 +9,7 @@ import 'package:monitorlibrary/data/user.dart';
 import 'package:monitorlibrary/functions.dart';
 import 'package:monitorlibrary/slide_right.dart';
 import 'package:monitorlibrary/snack.dart';
-import 'package:orgadmin/admin_bloc.dart';
+import 'package:monitorlibrary/bloc/admin_bloc.dart';
 import 'package:orgadmin/ui/questionnaire/section_editor.dart';
 
 class QuestionnaireEditor extends StatefulWidget {
@@ -53,7 +53,7 @@ class _QuestionnaireEditorState extends State<QuestionnaireEditor>
   }
 
   _subscribe() {
-    subscription = adminBloc.activeQuestionnaireStream.listen((snapshot) {
+    subscription = bloc.activeQuestionnaireStream.listen((snapshot) {
       debugPrint('🛳 🛳 🛳 subscription listener fired, 🎽 active questionnaire arrived: ${snapshot}');
         setState(() {
           questionnaire = snapshot;
@@ -217,14 +217,14 @@ class _QuestionnaireEditorState extends State<QuestionnaireEditor>
     title = value;
     questionnaire.title = title;
     await Prefs.saveQuestionnaire(questionnaire);
-    adminBloc.updateActiveQuestionnaire(questionnaire);
+    bloc.updateActiveQuestionnaire(questionnaire);
   }
 
   void _onDescription(String value) async{
     description = value;
     questionnaire.description = description;
     await Prefs.saveQuestionnaire(questionnaire);
-    adminBloc.updateActiveQuestionnaire(questionnaire);
+    bloc.updateActiveQuestionnaire(questionnaire);
   }
 
   void _onSections(String value) {
@@ -292,7 +292,7 @@ class _QuestionnaireEditorState extends State<QuestionnaireEditor>
     });
 
     await Prefs.saveQuestionnaire(questionnaire);
-    adminBloc.updateActiveQuestionnaire(questionnaire);
+    bloc.updateActiveQuestionnaire(questionnaire);
     Navigator.push(context, SlideRightRoute(
       widget: SectionEditor(questionnaire),
     ));
@@ -315,7 +315,7 @@ class _QuestionnaireEditorState extends State<QuestionnaireEditor>
     debugPrint('\n\n🦠 🦠 🦠 🦠 About to add  questionnaire to DB: 🦠 🦠 🦠 🦠 🦠 ');
     prettyPrint(questionnaire.toJson(), '... 🍎 🍎 🍎 about add this questionnaire to Mongo: 🍎 ');
     try {
-      await adminBloc.addQuestionnaire(questionnaire);
+      await bloc.addQuestionnaire(questionnaire);
       debugPrint(' 😍  😍  😍  remove active 💦 questionnaire from prefs after good write  😍 ');
       Prefs.removeQuestionnaire();
       setState(() {

@@ -89,7 +89,7 @@ class _FileUploaderState extends State<FileUploader> implements UploadListener {
           projectId: widget.project.projectId);
       debugPrint('🖲🖲🖲🖲🖲🖲  Uploader, check project photo : 🖲🖲🖲🖲');
       prettyPrint(p.toJson(), '🖲🖲🖲🖲🖲🖲 RESULT  PROJECT: 🖲🖲🖲🖲🖲🖲');
-      return p;
+      Navigator.pop(context);
     } catch (e) {
       throw Exception('Permission denied');
     }
@@ -104,7 +104,9 @@ class _FileUploaderState extends State<FileUploader> implements UploadListener {
   @override
   onProgress(int byteCnt, int transferred) {
     debugPrint('🍏🍏🍏  bytesTransferred: $byteCnt of $transferred 🍏🍏 ');
-    totalByteCount = byteCnt ~/ 1024;
-    bytesTransferred = transferred ~/ 1024;
+    setState(() {
+      totalByteCount = byteCnt ~/ 1024;
+      bytesTransferred = transferred ~/ 1024;
+    });
   }
 }

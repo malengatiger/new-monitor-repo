@@ -21,13 +21,15 @@ import 'package:monitorlibrary/functions.dart';
 import 'package:monitorlibrary/slide_right.dart';
 import 'package:monitorlibrary/auth/app_auth.dart';
 import 'package:monitorlibrary/ui/signin.dart';
-import 'package:orgadmin/admin_bloc.dart';
+import 'package:monitorlibrary/bloc/admin_bloc.dart';
+import 'package:orgadmin/ui/project/project_detail.dart';
 import 'package:orgadmin/ui/project/project_editor.dart';
-import 'package:orgadmin/ui/project/project_list.dart';
-import 'package:orgadmin/ui/questionnaire/questionare_list.dart';
+import 'package:monitorlibrary/ui/project_list.dart';
+import 'package:monitorlibrary/ui/questionare_list.dart';
 import 'package:orgadmin/ui/questionnaire/questionnaire_editor.dart';
+import 'package:orgadmin/ui/settlement/settlement_detail.dart';
 import 'package:orgadmin/ui/settlement/settlement_editor.dart';
-import 'package:orgadmin/ui/settlement/settlements.dart';
+import 'package:monitorlibrary/ui/settlement_list.dart';
 
 void main() => runApp(MyApp());
 
@@ -44,19 +46,19 @@ class MyApp extends StatelessWidget {
           fontFamily: 'Raleway',
           primaryColor: Colors.teal,
           accentColor: Colors.pink),
-      home: MyStatefulWidget(),
+      home: Dashboard(),
     );
   }
 }
 
-class MyStatefulWidget extends StatefulWidget {
-  MyStatefulWidget({Key key}) : super(key: key);
+class Dashboard extends StatefulWidget {
+  Dashboard({Key key}) : super(key: key);
 
   @override
-  _MyStatefulWidgetState createState() => _MyStatefulWidgetState();
+  _DashboardState createState() => _DashboardState();
 }
 
-class _MyStatefulWidgetState extends State<MyStatefulWidget> implements ProjectListener {
+class _DashboardState extends State<Dashboard> implements ProjectListener, SettlementListener,  QuestionnaireListener {
   int _selectedIndex = 0;
 
   void _onItemTapped(int index) {
@@ -102,7 +104,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> implements ProjectL
       }));
       print('🤟🤟🤟🤟🤟🤟🤟🤟 User returned from signIn');
       prettyPrint(user.toJson(), "User returned  🤟🤟🤟🤟🤟🤟🤟");
-      adminBloc.setActiveUser();
+      bloc.setActiveUser();
     }
     user = await Prefs.getUser();
     if (user != null) {
@@ -115,7 +117,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> implements ProjectL
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<User>(
-        stream: adminBloc.activeUserStream,
+        stream: bloc.activeUserStream,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             user = snapshot.data;
@@ -204,7 +206,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> implements ProjectL
                               Navigator.push(
                                   context,
                                   SlideRightRoute(
-                                    widget: SettlementList(),
+                                    widget: SettlementList(this),
                                   ));
                             },
                             child: Card(
@@ -276,7 +278,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> implements ProjectL
                           child: GestureDetector(
                             onTap: () {
                               Navigator.push(context,
-                                  SlideRightRoute(widget: QuestionnaireList()));
+                                  SlideRightRoute(widget: QuestionnaireList(this)));
                             },
                             child: Card(
                               elevation: 4,
@@ -364,22 +366,22 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> implements ProjectL
   StreamSubscription<List<Project>> projSub;
   void _subscribe() async {
     debugPrint('🏈 🏈 subscribe to data streams ...');
-    settSub = adminBloc.settlementStream.listen((data) {
+    settSub = bloc.settlementStream.listen((data) {
       setState(() {
         settlements = data.length;
       });
     });
-    questSub = adminBloc.questionnaireStream.listen((data) {
+    questSub = bloc.questionnaireStream.listen((data) {
       setState(() {
         questionnaires = data.length;
       });
     });
-    userSub = adminBloc.usersStream.listen((data) {
+    userSub = bloc.usersStream.listen((data) {
       setState(() {
         users = data.length;
       });
     });
-    projSub = adminBloc.projectStream.listen((data) {
+    projSub = bloc.projectStream.listen((data) {
       setState(() {
         projects = data.length;
       });
@@ -391,20 +393,26 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> implements ProjectL
         '💊 💊 💊 get all settlements in country 📡  all org questionnaires 🎡  all org users +'
         ' 💈 all org  projects');
     var country = await Prefs.getCountry();
+    if  (country ==  null) {
+      var countries = await bloc.getCountries();
+      if (countries.isNotEmpty)  {
+        country =  countries.elementAt(0);
+      }
+    }
     if (country != null) {
-      var list = await adminBloc.findSettlementsByCountry(country.countryId);
+      var list = await bloc.findSettlementsByCountry(country.countryId);
       settlements = list.length;
     } else {
-      print('country is NULL');
+      print('😈😈😈😈😈😈 country is NULL 😈😈😈😈  WTF???');
     }
     if (user != null) {
-      var list = await adminBloc.findUsersByOrganization(user.organizationId);
+      var list = await bloc.findUsersByOrganization(user.organizationId);
       users = list.length;
       var list2 =
-          await adminBloc.getQuestionnairesByOrganization(user.organizationId);
+          await bloc.getQuestionnairesByOrganization(user.organizationId);
       questionnaires = list2.length;
       var list3 =
-          await adminBloc.findProjectsByOrganization(user.organizationId);
+          await bloc.findProjectsByOrganization(user.organizationId);
       projects = list3.length;
     }
     print(
@@ -412,7 +420,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> implements ProjectL
     setState(() {});
   }
 
-  void _cancel() {
+  void cancel() {
     settSub.cancel();
     questSub.cancel();
     userSub.cancel();
@@ -424,7 +432,25 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> implements ProjectL
     debugPrint('Main:  🤕 🤕 onProjectSelected: 🍑 project has  been selected');
     prettyPrint(project.toJson(),'🍑 🍑 🍑  SELECTED PROJECT');
     Navigator.push(context, SlideRightRoute(
-      widget: ProjectEditor(project: project,),
+      widget: ProjectDetail(project,),
+    ));
+  }
+
+  @override
+  onSettlementSelected(Settlement settlement) {
+    debugPrint('Main:  🤕 🤕 onSettlementSelected: 🍑 settlement has  been selected');
+    prettyPrint(settlement.toJson(),'🍑 🍑 🍑  SELECTED SETTLEMENT');
+    Navigator.push(context, SlideRightRoute(
+      widget: SettlementDetail(settlement,),
+    ));
+  }
+
+  @override
+  onQuestionnaireSelected(Questionnaire questionnaire) {
+    debugPrint('Main:  🤕 🤕 onQuestionnaireSelected: 🍑 questionnaire has  been selected');
+    prettyPrint(questionnaire.toJson(),'🍑 🍑 🍑  SELECTED QUESTIONNAIRE');
+    Navigator.push(context, SlideRightRoute(
+      widget: QuestionnaireEditor(questionnaire: questionnaire,),
     ));
   }
 }

@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:monitorlibrary/api/data_api.dart';
 import 'package:monitorlibrary/api/sharedprefs.dart';
+import 'package:monitorlibrary/bloc/admin_bloc.dart';
 import 'package:monitorlibrary/data/questionnaire.dart';
 import 'package:monitorlibrary/data/user.dart';
 import 'package:monitorlibrary/functions.dart';
 
-import '../monitor_bloc.dart';
-
 class QuestionnaireList extends StatefulWidget {
+  final QuestionnaireListener listener;
+
+  QuestionnaireList(this.listener);
+
   @override
   _QuestionnaireListState createState() => _QuestionnaireListState();
 }
@@ -28,7 +32,7 @@ class _QuestionnaireListState extends State<QuestionnaireList> {
     user = await Prefs.getUser();
     if (user != null) {
       questionnaires =
-          await monBloc.getQuestionnairesByOrganization(user.organizationId);
+          await DataAPI.getQuestionnairesByOrganization(user.organizationId);
     }
     setState(() {
       isBusy = false;
@@ -38,7 +42,7 @@ class _QuestionnaireListState extends State<QuestionnaireList> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<List<Questionnaire>>(
-        stream: monBloc.questionnaireStream,
+        stream: bloc.questionnaireStream,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             questionnaires = snapshot.data;
@@ -111,48 +115,52 @@ class _QuestionnaireListState extends State<QuestionnaireList> {
                     itemBuilder: (BuildContext context, int index) {
                       return Padding(
                         padding: const EdgeInsets.only(left: 8.0, right: 8),
-                        child: Card(
-                          elevation: 4,
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Column(
-                              children: <Widget>[
-                                Row(
-                                  children: <Widget>[
-                                    Icon(Icons.apps,  color: getRandomColor(),),
-                                    SizedBox(
-                                      width: 8,
-                                    ),
-                                    Expanded(
-                                      child: Container(
-                                        child: Text(
-                                          '${questionnaires.elementAt(index).title}',
-                                          style: Styles.blackBoldSmall,
-                                          overflow: TextOverflow.clip,
+                        child: GestureDetector(
+                          onTap: () {
+                            widget.listener.onQuestionnaireSelected(questionnaires.elementAt(index));
+                          },
+                          child: Card(
+                            elevation: 4,
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Column(
+                                children: <Widget>[
+                                  Row(
+                                    children: <Widget>[
+                                      Icon(Icons.apps,  color: getRandomColor(),),
+                                      SizedBox(
+                                        width: 8,
+                                      ),
+                                      Expanded(
+                                        child: Container(
+                                          child: Text(
+                                            '${questionnaires.elementAt(index).title}',
+                                            style: Styles.blackBoldSmall,
+                                            overflow: TextOverflow.clip,
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                  ],
-                                ),
-                                SizedBox(
-                                  height: 4,
-                                ),
-                                Row(
-                                  children: <Widget>[
-                                    SizedBox(
-                                      width: 32,
-                                    ),
-                                    Expanded(
-                                      child: Container(
-                                        child: Text(
-                                          '${questionnaires.elementAt(index).description}',
-                                          style: Styles.blackSmall,
-                                          overflow: TextOverflow.clip,
+                                    ],
+                                  ),
+                                  SizedBox(
+                                    height: 4,
+                                  ),
+                                  Row(
+                                    children: <Widget>[
+                                      SizedBox(
+                                        width: 32,
+                                      ),
+                                      Expanded(
+                                        child: Container(
+                                          child: Text(
+                                            '${questionnaires.elementAt(index).description}',
+                                            style: Styles.blackSmall,
+                                            overflow: TextOverflow.clip,
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                  ],
-                                ),
+                                    ],
+                                  ),
 //                              ListTile(
 //                                leading: Icon(Icons.apps),
 //                                title: Text(
@@ -162,7 +170,8 @@ class _QuestionnaireListState extends State<QuestionnaireList> {
 //                                subtitle: Text(
 //                                    '${questionnaires.elementAt(index).description}'),
 //                              ),
-                              ],
+                                ],
+                              ),
                             ),
                           ),
                         ),
@@ -172,4 +181,8 @@ class _QuestionnaireListState extends State<QuestionnaireList> {
           );
         });
   }
+}
+
+abstract class  QuestionnaireListener {
+  onQuestionnaireSelected(Questionnaire questionnaire);
 }

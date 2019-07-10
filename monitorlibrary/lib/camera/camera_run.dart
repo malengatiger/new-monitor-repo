@@ -3,12 +3,14 @@ import 'dart:io';
 
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:monitorlibrary/camera/uploader.dart';
 import 'package:monitorlibrary/data/project.dart';
 import 'package:monitorlibrary/data/settlement.dart';
 import 'package:monitorlibrary/slide_right.dart';
-import 'package:orgadmin/ui/camera/uploader.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:video_player/video_player.dart';
+
+import '../functions.dart';
 
 class CameraRun extends StatefulWidget {
   final Project project;
@@ -38,8 +40,7 @@ IconData getCameraLensIcon(CameraLensDirection direction) {
 void logError(String code, String message) =>
     print(' 👿  👿  👿  👿 Error: 👿  $code\nError Message: 👿👿  $message');
 
-class _CameraRunState extends State<CameraRun>
-    with WidgetsBindingObserver {
+class _CameraRunState extends State<CameraRun> with WidgetsBindingObserver {
   CameraController controller;
   String imagePath;
   String videoPath;
@@ -57,17 +58,15 @@ class _CameraRunState extends State<CameraRun>
     }
   }
 
-  void _setCamera()  async {
+  void _setCamera() async {
     try {
       debugPrint('🥝 🥝 🥝 _setCamera: trying to find cameras  ... 🧩 🧩 ');
       cameras = await availableCameras();
-      if  (cameras != null) {
-        debugPrint('🥝 🥝 🥝 🥝 🥝 🥝 🥝 🥝 🥝 _setCamera: cameras found:  ${cameras
-            .length}  ... 🧩 Yebo!!! 🧩 ');
-        setState(() {
-
-        });
-      }  else {
+      if (cameras != null) {
+        debugPrint(
+            '🥝 🥝 🥝 🥝 🥝 🥝 🥝 🥝 🥝 _setCamera: cameras found:  ${cameras.length}  ... 🧩 Yebo!!! 🧩 ');
+        setState(() {});
+      } else {
         debugPrint('👿👿👿👿👿👿_setCamera: cameras NOT found:  👿👿👿👿 ');
       }
     } on CameraException catch (e) {
@@ -75,9 +74,11 @@ class _CameraRunState extends State<CameraRun>
       logError(e.code, e.description);
     }
   }
+
   @override
   void dispose() {
-    debugPrint('🥁 dispose: 🥁 🥁 Removing ... WidgetsBinding.instance.removeObserver');
+    debugPrint(
+        '🥁 dispose: 🥁 🥁 Removing ... WidgetsBinding.instance.removeObserver');
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
@@ -103,39 +104,45 @@ class _CameraRunState extends State<CameraRun>
       appBar: AppBar(
         title: const Text('Photos & Videos'),
       ),
-      body: Column(
+      body: Stack(
         children: <Widget>[
-          Expanded(
-            child: Container(
-              child: Padding(
-                padding: const EdgeInsets.all(1.0),
-                child: Center(
-                  child: _cameraPreviewWidget(),
-                ),
-              ),
-              decoration: BoxDecoration(
-                color: Colors.black,
-                border: Border.all(
-                  color: controller != null && controller.value.isRecordingVideo
-                      ? Colors.redAccent
-                      : Colors.grey,
-                  width: 3.0,
-                ),
-              ),
-            ),
-          ),
-          _captureControlRowWidget(),
-          _toggleAudioWidget(),
-          Padding(
-            padding: const EdgeInsets.all(5.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: <Widget>[
-                _cameraTogglesRowWidget(),
-                _thumbnailWidget(),
-              ],
-            ),
-          ),
+          isCameraSelected
+              ? Column(
+                  children: <Widget>[
+                    Expanded(
+                      child: Container(
+                        child: Center(
+                          child: _cameraPreviewWidget(),
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.black,
+                          border: Border.all(
+                            color: controller != null &&
+                                    controller.value.isRecordingVideo
+                                ? Colors.redAccent
+                                : Colors.grey,
+                            width: 0.0,
+                          ),
+                        ),
+                      ),
+                    ),
+                    _captureControlRowWidget(),
+                    _toggleAudioWidget(),
+                    Padding(
+                      padding: const EdgeInsets.all(5.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: <Widget>[
+                          _thumbnailWidget(),
+                        ],
+                      ),
+                    ),
+                  ],
+                )
+              : Container(),
+          !isCameraSelected
+              ? _cameraList()
+              : Container(),
         ],
       ),
     );
@@ -143,21 +150,12 @@ class _CameraRunState extends State<CameraRun>
 
   /// Display the preview from the camera (or a message if the preview is not available).
   Widget _cameraPreviewWidget() {
-    if (controller == null || !controller.value.isInitialized) {
-      return const Text(
-        'Tap a camera',
-        style: TextStyle(
-          color: Colors.white,
-          fontSize: 24.0,
-          fontWeight: FontWeight.w900,
-        ),
-      );
-    } else {
+
       return AspectRatio(
         aspectRatio: controller.value.aspectRatio,
         child: CameraPreview(controller),
       );
-    }
+
   }
 
   /// Toggle recording audio
@@ -192,23 +190,23 @@ class _CameraRunState extends State<CameraRun>
             videoController == null && imagePath == null
                 ? Container()
                 : SizedBox(
-              child: (videoController == null)
-                  ? Image.file(File(imagePath))
-                  : Container(
-                child: Center(
-                  child: AspectRatio(
-                      aspectRatio:
-                      videoController.value.size != null
-                          ? videoController.value.aspectRatio
-                          : 1.0,
-                      child: VideoPlayer(videoController)),
-                ),
-                decoration: BoxDecoration(
-                    border: Border.all(color: Colors.pink)),
-              ),
-              width: 64.0,
-              height: 64.0,
-            ),
+                    child: (videoController == null)
+                        ? Image.file(File(imagePath))
+                        : Container(
+                            child: Center(
+                              child: AspectRatio(
+                                  aspectRatio:
+                                      videoController.value.size != null
+                                          ? videoController.value.aspectRatio
+                                          : 1.0,
+                                  child: VideoPlayer(videoController)),
+                            ),
+                            decoration: BoxDecoration(
+                                border: Border.all(color: Colors.pink)),
+                          ),
+                    width: 64.0,
+                    height: 64.0,
+                  ),
           ],
         ),
       ),
@@ -222,29 +220,38 @@ class _CameraRunState extends State<CameraRun>
       mainAxisSize: MainAxisSize.max,
       children: <Widget>[
         IconButton(
-          icon: const Icon(Icons.camera_alt, size: 36,),
+          icon: const Icon(
+            Icons.camera_alt,
+            size: 36,
+          ),
           color: Colors.blue,
           onPressed: controller != null &&
-              controller.value.isInitialized &&
-              !controller.value.isRecordingVideo
+                  controller.value.isInitialized &&
+                  !controller.value.isRecordingVideo
               ? onTakePictureButtonPressed
               : null,
         ),
         IconButton(
-          icon: const Icon(Icons.videocam, size: 36,),
+          icon: const Icon(
+            Icons.videocam,
+            size: 36,
+          ),
           color: Colors.blue,
           onPressed: controller != null &&
-              controller.value.isInitialized &&
-              !controller.value.isRecordingVideo
+                  controller.value.isInitialized &&
+                  !controller.value.isRecordingVideo
               ? onVideoRecordButtonPressed
               : null,
         ),
         IconButton(
-          icon: const Icon(Icons.stop, size: 36,),
+          icon: const Icon(
+            Icons.stop,
+            size: 36,
+          ),
           color: Colors.red,
           onPressed: controller != null &&
-              controller.value.isInitialized &&
-              controller.value.isRecordingVideo
+                  controller.value.isInitialized &&
+                  controller.value.isRecordingVideo
               ? onStopButtonPressed
               : null,
         )
@@ -252,31 +259,51 @@ class _CameraRunState extends State<CameraRun>
     );
   }
 
-  /// Display a row of toggle to select the camera (or a message if no camera is available).
-  Widget _cameraTogglesRowWidget() {
-    final List<Widget> toggles = <Widget>[];
-
+  Widget _cameraList() {
     if (cameras == null || cameras.isEmpty) {
-      return const Text('No camera found');
-    } else {
-      for (CameraDescription cameraDescription in cameras) {
-        toggles.add(
-          SizedBox(
-            width: 90.0,
-            child: RadioListTile<CameraDescription>(
-              title: Icon(getCameraLensIcon(cameraDescription.lensDirection)),
-              groupValue: controller?.description,
-              value: cameraDescription,
-              onChanged: controller != null && controller.value.isRecordingVideo
-                  ? null
-                  : onNewCameraSelected,
+      return Center(
+        child: Text(
+          'No cameras found',
+          style: Styles.purpleBoldLarge,
+        ),
+      );
+    }
+
+    return ListView.builder(
+      itemCount: cameras.length,
+      itemBuilder: (BuildContext context, int index) {
+        var cam = cameras.elementAt(index);
+        var name;
+        if (cam.lensDirection.toString().contains('front')) {
+          name =  'Front Camera';
+        }
+        if (cam.lensDirection.toString().contains('back')) {
+          name =  'Back Camera';
+        }
+
+        return Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: GestureDetector(
+            onTap: () {
+              onNewCameraSelected(cam);
+              setState(() {
+                isCameraSelected = true;
+              });
+            },
+            child: Card(
+              elevation: 4,
+              child: ListTile(
+                leading: Icon(Icons.camera_alt),
+                title: Text(
+                  '$name',
+                  style: Styles.blackBoldMedium,
+                ),
+              ),
             ),
           ),
         );
-      }
-    }
-
-    return Row(children: toggles);
+      },
+    );
   }
 
   String timestamp() => DateTime.now().millisecondsSinceEpoch.toString();
@@ -322,7 +349,7 @@ class _CameraRunState extends State<CameraRun>
           videoController?.dispose();
           videoController = null;
         });
-        if (filePath != null) showInSnackBar('Picture saved to $filePath');
+        //if (filePath != null) showInSnackBar('Picture saved to $filePath');
         //show in pic upload page .... upload from there
 
       }
@@ -386,7 +413,7 @@ class _CameraRunState extends State<CameraRun>
 
   Future<void> _startVideoPlayer() async {
     final VideoPlayerController vcontroller =
-    VideoPlayerController.file(File(videoPath));
+        VideoPlayerController.file(File(videoPath));
     videoPlayerListener = () {
       if (videoController != null && videoController.value.size != null) {
         // Refreshing the state to update video player with the correct ratio.
@@ -424,17 +451,22 @@ class _CameraRunState extends State<CameraRun>
 
     try {
       await controller.takePicture(filePath);
-      if (widget.project  != null) {
+      if (widget.project != null) {
         debugPrint('🖲🖲🖲🖲🖲🖲  Picture File to send : 🖲🖲 $filePath 🖲🖲');
-        Navigator.push(context, SlideRightRoute(
-          widget: FileUploader(filePath: filePath, project: widget.project),
-        ));
+        Navigator.push(
+            context,
+            SlideRightRoute(
+              widget: FileUploader(filePath: filePath, project: widget.project),
+            ));
       }
-      if (widget.settlement  != null) {
+      if (widget.settlement != null) {
         debugPrint('🖲🖲🖲🖲🖲🖲  Picture File to send : 🖲🖲 $filePath 🖲🖲');
-        Navigator.push(context, SlideRightRoute(
-          widget: FileUploader(filePath: filePath, settlement: widget.settlement),
-        ));
+        Navigator.push(
+            context,
+            SlideRightRoute(
+              widget: FileUploader(
+                  filePath: filePath, settlement: widget.settlement),
+            ));
       }
     } on CameraException catch (e) {
       _showCameraException(e);
@@ -448,11 +480,24 @@ class _CameraRunState extends State<CameraRun>
     logError(e.code, e.description);
     showInSnackBar('Error: ${e.code}\n${e.description}');
   }
-}
 
+  bool isCameraSelected = false;
+  void _onCameraChanged(CameraDescription value) {
+    if (controller != null && controller.value.isRecordingVideo) {
+      debugPrint(
+          '⚔️⚔️⚔️ Ignoring this change .... controller.value.isRecordingVideo');
+    } else {
+      debugPrint('🧡 🧡 🧡 ️camera selected description: 🔰🔰 ${value.name}  ');
+      onNewCameraSelected(value);
+      setState(() {
+        isCameraSelected = true;
+      });
+    }
+  }
+}
 
 List<CameraDescription> cameras;
 
-abstract class  CameraListener {
-  onPhotoTaken(String  filePath);
+abstract class CameraListener {
+  onPhotoTaken(String filePath);
 }

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:monitorlibrary/camera/camera_run.dart';
 import 'package:monitorlibrary/data/project.dart';
 import 'package:monitorlibrary/data/settlement.dart';
 import 'package:monitorlibrary/functions.dart';
 import 'package:camera/camera.dart';
 import 'package:monitorlibrary/slide_right.dart';
-import 'package:orgadmin/ui/camera/camera_run.dart';
 
 
 class CameraMain extends StatefulWidget {

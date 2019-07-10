@@ -3,12 +3,16 @@ import 'package:monitorlibrary/api/sharedprefs.dart';
 import 'package:monitorlibrary/data/country.dart';
 import 'package:monitorlibrary/data/settlement.dart';
 import 'package:monitorlibrary/functions.dart';
-import 'package:monitorlibrary/slide_right.dart';
-import 'package:orgadmin/admin_bloc.dart';
-import 'package:orgadmin/ui/settlement/settlement_detail.dart';
-import 'package:orgadmin/ui/settlement/settlement_editor.dart';
+import 'package:monitorlibrary/bloc/admin_bloc.dart';
 
+abstract class SettlementListener {
+  onSettlementSelected(Settlement settlement);
+}
 class SettlementList extends StatefulWidget {
+  final SettlementListener listener;
+
+  SettlementList(this.listener);
+
   @override
   _SettlementListState createState() => _SettlementListState();
 }
@@ -32,13 +36,13 @@ class _SettlementListState extends State<SettlementList> {
     });
     country = await Prefs.getCountry();
     if (country == null) {
-      countries = await adminBloc.getCountries();
+      countries = await bloc.getCountries();
       if (countries.length == 1) {
         country = countries.elementAt(0);
       }
     }
     if (country != null) {
-      await adminBloc.findSettlementsByCountry(country.countryId);
+      await bloc.findSettlementsByCountry(country.countryId);
     }
     setState(() {
       isBusy = false;
@@ -48,7 +52,7 @@ class _SettlementListState extends State<SettlementList> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
-      stream: adminBloc.settlementStream,
+      stream: bloc.settlementStream,
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.hasData) {
           list = snapshot.data;
@@ -62,10 +66,7 @@ class _SettlementListState extends State<SettlementList> {
             title: Text('Settlements'),
             backgroundColor: Colors.indigo[400],
             actions: <Widget>[
-              IconButton(
-                icon: Icon(Icons.add),
-                onPressed: _navigateToEditor,
-              ),
+
               IconButton(
                 icon: Icon(Icons.refresh),
                 onPressed: _getSettlements,
@@ -118,9 +119,7 @@ class _SettlementListState extends State<SettlementList> {
                       var sett = list.elementAt(index);
                       return GestureDetector(
                         onTap: () {
-                          Navigator.push(context, SlideRightRoute(
-                            widget: SettlementDetail(sett)
-                          ));
+                         widget.listener.onSettlementSelected(sett);
                         },
                         child: Card(
                           elevation: 4,
@@ -146,11 +145,4 @@ class _SettlementListState extends State<SettlementList> {
     );
   }
 
-  void _navigateToEditor() {
-    Navigator.push(
-        context,
-        SlideRightRoute(
-          widget: SettlementEditor(),
-        ));
-  }
 }

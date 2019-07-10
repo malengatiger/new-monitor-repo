@@ -2,7 +2,6 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:monitorlibrary/api/data_api.dart';
 import 'package:monitorlibrary/api/sharedprefs.dart';
-import 'package:monitorlibrary/auth/app_auth.dart';
 import 'package:monitorlibrary/data/country.dart';
 import 'package:monitorlibrary/data/position.dart';
 import 'package:monitorlibrary/data/section.dart';
@@ -14,9 +13,9 @@ import 'package:monitorlibrary/functions.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:location/location.dart';
 
-final AdminBloc adminBloc = AdminBloc();
+final GeneralBloc bloc = GeneralBloc();
 
-class AdminBloc {
+class GeneralBloc {
   StreamController<List<Settlement>> _settController =
       StreamController.broadcast();
   StreamController<List<Questionnaire>> _questController =
@@ -45,7 +44,7 @@ class AdminBloc {
   List<User> _users = List();
   List<Country> _countries = List();
 
-  AdminBloc() {
+  GeneralBloc() {
     checkPermission();
     _setActiveQuestionnaire();
     setActiveUser();
@@ -159,6 +158,13 @@ class AdminBloc {
 
   Future addSettlement(Settlement sett) async {
     var res = await DataAPI.addSettlement(sett);
+    _settlements.add(res);
+    _settController.sink.add(_settlements);
+    await findSettlementsByCountry(sett.countryId);
+  }
+
+  Future updateSettlement(Settlement sett) async {
+    var res = await DataAPI.updateSettlement(sett);
     _settlements.add(res);
     _settController.sink.add(_settlements);
     await findSettlementsByCountry(sett.countryId);

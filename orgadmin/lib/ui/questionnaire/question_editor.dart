@@ -7,7 +7,7 @@ import 'package:monitorlibrary/functions.dart';
 import 'package:grouped_buttons/grouped_buttons.dart';
 import 'package:monitorlibrary/functions.dart' as prefix0;
 import 'package:monitorlibrary/slide_right.dart';
-import 'package:orgadmin/admin_bloc.dart';
+import 'package:monitorlibrary/bloc/admin_bloc.dart';
 import 'package:orgadmin/ui/questionnaire/choice_editor.dart';
 
 class QuestionEditor extends StatefulWidget {
@@ -96,7 +96,7 @@ class _QuestionEditorState extends State<QuestionEditor> implements QuestionForm
     prettyPrint(widget.questionnaire.toJson(), '🐤 🐤 Questionnaire after question update, ☘☘ check  question');
 
     await  Prefs.saveQuestionnaire(widget.questionnaire);
-    adminBloc.updateActiveQuestionnaire(widget.questionnaire);
+    bloc.updateActiveQuestionnaire(widget.questionnaire);
     return null;
   }
 }
@@ -265,7 +265,7 @@ class _QuestionFormState extends State<QuestionForm> {
     }
 
     await Prefs.saveQuestionnaire(widget.questionnaire);
-    adminBloc.updateActiveQuestionnaire(widget.questionnaire);
+    bloc.updateActiveQuestionnaire(widget.questionnaire);
     Navigator.push(context, SlideRightRoute(
       widget: ChoiceEditor(widget.question, widget.questionnaire),
     ));
