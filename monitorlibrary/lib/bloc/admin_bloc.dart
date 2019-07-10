@@ -233,6 +233,12 @@ class GeneralBloc {
     _projController.sink.add(_projects);
     return _projects;
   }
+  Future<Project> findProjectById(String projectId) async {
+    var res = await DataAPI.findProjectById(projectId);
+    prettyPrint(res.toJson(), '❤️ 🧡 💛 RESULT: findProjectById: ❤️ 🧡 💛');
+    print('\n\n❤️ 🧡 💛');
+    return  res;
+  }
 
 
   Future<Project> addProject(Project project) async {

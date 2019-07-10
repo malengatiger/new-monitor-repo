@@ -9,6 +9,7 @@ import 'package:monitorlibrary/data/user.dart';
 import 'package:monitorlibrary/functions.dart';
 import 'package:monitorlibrary/api/storage_api.dart';
 import 'package:location/location.dart';
+import 'package:image/image.dart' as  Img;
 
 class FileUploader extends StatefulWidget  {
   final String filePath;
@@ -25,20 +26,34 @@ class FileUploader extends StatefulWidget  {
 class _FileUploaderState extends State<FileUploader> implements UploadListener {
   bool isBusy = false;
   User  user;
+  File file;
   @override
   void initState() {
     super.initState();
     _getUser();
   }
   _getUser() async {
+    file = File(widget.filePath);
     user = await Prefs.getUser();
+    //_resizeImage();
+
+  }
+  _resizeImage()  async {
+    var mFile  = File(widget.filePath);
+    var mFileLength  = await mFile.length();
+    debugPrint('🔆🔆🔆  🕹🕹 File before resize: 🕹 $mFileLength 🕹');
+    Img.Image tempImg = Img.decodeImage(mFile.readAsBytesSync());
+    Img.Image resized = Img.copyResize(tempImg, height: tempImg.height ~/ 2, width: tempImg.width ~/ 2);
+    file = mFile
+      ..writeAsBytesSync(Img.encodeJpg(resized));
+    var length = await file.length();
+    debugPrint('🔆🔆🔆 🕹🕹🕹 File after resize: 🕹 $length 🕹 🔰🔰  RATIO: ${mFileLength / length} 🔰🔰');
   }
   @override
   Widget build(BuildContext context) {
-    File file = File(widget.filePath);
     return Stack(
       children: <Widget>[
-        Image.file(file, fit: BoxFit.fill,),
+        file != null?  Image.file(file, fit: BoxFit.fill,) : Container(),
         Positioned(
           top: 60, left: 10,
           child: Card(
@@ -62,10 +77,10 @@ class _FileUploaderState extends State<FileUploader> implements UploadListener {
   }
 
   int bytesTransferred = 0, totalByteCount = 0;
+
   void _uploadFile() async {
     debugPrint('▶️ Uploader: ▶️▶️▶️▶️▶️▶️  uploading file: 📮📮 ${widget.filePath}  📮📮');
-
-    await StorageAPI.uploadPhoto(listener: this, file: File(widget.filePath));
+    await StorageAPI.uploadPhoto(listener: this, file: file);
   }
 
   @override

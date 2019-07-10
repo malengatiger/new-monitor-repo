@@ -151,6 +151,10 @@ class _CameraRunState extends State<CameraRun> with WidgetsBindingObserver {
   /// Display the preview from the camera (or a message if the preview is not available).
   Widget _cameraPreviewWidget() {
 
+      if (controller == null) {
+        return Container();
+      }
+
       return AspectRatio(
         aspectRatio: controller.value.aspectRatio,
         child: CameraPreview(controller),
@@ -318,7 +322,7 @@ class _CameraRunState extends State<CameraRun> with WidgetsBindingObserver {
     }
     controller = CameraController(
       cameraDescription,
-      ResolutionPreset.high,
+      ResolutionPreset.medium,
       enableAudio: enableAudio,
     );
 
@@ -440,7 +444,7 @@ class _CameraRunState extends State<CameraRun> with WidgetsBindingObserver {
       return null;
     }
     final Directory extDir = await getApplicationDocumentsDirectory();
-    final String dirPath = '${extDir.path}/Pictures/flutter_test';
+    final String dirPath = '${extDir.path}/Pictures/monitor';
     await Directory(dirPath).create(recursive: true);
     final String filePath = '$dirPath/${timestamp()}.jpg';
 

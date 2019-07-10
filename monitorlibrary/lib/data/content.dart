@@ -16,7 +16,6 @@ class Content {
     this.userId = data['userId'];
     this.created = data['created'];
     if (data['position'] != null) {
-      print(data['position']);
       this.position = Position.fromJson(data['position']);
     }
   }

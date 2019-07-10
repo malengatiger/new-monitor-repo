@@ -33,6 +33,21 @@ class DataAPI {
     }
   }
 
+
+  static Future<Project> findProjectById(
+      String projectId) async {
+    Map bag = {
+      'projectId': projectId,
+    };
+    try {
+      var result = await _callWebAPIPost(URL + 'findProjectById', bag);
+      return Project.fromJson(result);
+    } catch (e) {
+      print(e);
+      throw e;
+    }
+  }
+
   static Future<List<User>> findUsersByOrganization(
       String organizationId) async {
     Map bag = {
@@ -398,6 +413,7 @@ class DataAPI {
         debugPrint(
             '\n\n👿👿👿 DancerAPI._callWebAPI .... : 🔆 statusCode: 👿👿👿 ${resp
                 .statusCode} 🔆🔆🔆 for $mUrl');
+        throw Exception('🚨 🚨 Status Code 🚨 ${resp.statusCode} 🚨 Exception');
       }
       var end = DateTime.now();
       debugPrint(
@@ -405,9 +421,8 @@ class DataAPI {
       var mJson = json.decode(resp.body);
       return mJson;
     } catch (e) {
-      var msg = ('Houston, 👿👿👿👿👿 what the fuck? 👿👿👿👿👿 ');
       debugPrint(e.message);
-      throw Exception(msg);
+      throw Exception(e.message);
     }
   }
 
