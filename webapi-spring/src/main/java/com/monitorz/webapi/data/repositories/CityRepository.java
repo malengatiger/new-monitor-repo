@@ -20,7 +20,9 @@ public interface CityRepository extends MongoRepository<City, String> {
             "               $maxDistance: ?2" +
             "          }\n" +
             "       }}")
-    public List<City> findByLocation(double longitude, double latitude, int radiusInKM);
+    List<City> findByLocation(double longitude, double latitude, int radiusInKM);
+
+    List<City> findByPosition(double longitude, double latitude, int radiusInKM);
 }
 
 /*

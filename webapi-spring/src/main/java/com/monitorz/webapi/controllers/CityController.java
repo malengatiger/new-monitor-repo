@@ -48,7 +48,6 @@ public class CityController {
         LOG.log(Level.INFO, "\uD83C\uDF4E \uD83C\uDF4E returning cities: "+cities.size()+"  \uD83C\uDF4E \uD83C\uDF4E "
                 + num + counter.incrementAndGet() + " requests thus far \uD83D\uDD06\uD83D\uDD06\uD83D\uDD06  \uD83D\uDC9B");
 
-
         return  cities;
     }
     int cnt = 0;
@@ -67,6 +66,7 @@ public class CityController {
         });
         return  cities;
     }
+
     @PostMapping(value = "/addCity")
     @ResponseStatus(code = HttpStatus.CREATED)
     public City add(@RequestBody City city) {

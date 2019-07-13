@@ -2,7 +2,6 @@ package com.monitorz.webapi.data.repositories;
 
 import com.monitorz.webapi.data.Project;
 import org.springframework.data.mongodb.repository.MongoRepository;
-
 import org.springframework.data.mongodb.repository.Query;
 import org.springframework.stereotype.Repository;
 
