@@ -18,7 +18,7 @@ class UserHelper {
             console.log(`operationType: 👽 👽 👽  ${event.operationType},  User in stream:   🍀🍎 `);
         });
     }
-    static addUser(organizationId, organizationName, firstName, lastName, email, cellphone, userType, gender, countryId, countryName) {
+    static addUser(organizationId, organizationName, firstName, lastName, email, cellphone, userType, gender, countryId) {
         return __awaiter(this, void 0, void 0, function* () {
             const UserModel = new user_1.default().getModelForClass(user_1.default);
             const u = new UserModel({
@@ -29,7 +29,6 @@ class UserHelper {
                 userType,
                 gender,
                 countryId,
-                countryName,
                 organizationName,
                 organizationId,
             });

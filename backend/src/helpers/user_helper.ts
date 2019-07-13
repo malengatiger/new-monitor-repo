@@ -19,9 +19,9 @@ export class UserHelper {
     userType: string,
     gender: string,
     countryId: string,
-    countryName: string,
   ): Promise<any> {
     const UserModel = new User().getModelForClass(User);
+   
     const u = new UserModel({
       firstName,
       lastName,
@@ -30,7 +30,6 @@ export class UserHelper {
       userType,
       gender,
       countryId,
-      countryName,
       organizationName,
       organizationId,
     });

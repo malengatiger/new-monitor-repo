@@ -1,7 +1,7 @@
 {
-  "name": "dancer3033",
+  "name": "monitor",
   "version": "1.0.1",
-  "description": "Dancer, dances everywhere",
+  "description": "Monitor Web API",
   "main": "dist/server/server.js",
   "engines": {
     "node": "^8.11.1"
@@ -29,9 +29,6 @@
     "delay": "2500"
   },
   "dependencies": {
-    "appmetrics-dash": "^4.1.0",
-    "appmetrics-prometheus": "^2.0.0",
-    "appmetrics-zipkin": "^1.1.1",
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
     "dotenv": "^8.0.0",

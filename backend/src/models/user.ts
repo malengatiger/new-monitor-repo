@@ -88,7 +88,7 @@ class User extends Typegoose {
   public countryId?: string;
   
   @prop({ required: true })
-  public userType!: UserType;
+  public userType!: string;
   //
   @prop({ required: true, default: new Date().toISOString() })
   public created!: string;

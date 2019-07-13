@@ -64,6 +64,7 @@ class CityHelper {
             const position = {
                 coordinates: [longitude, latitude],
                 type: "Point",
+                createdAt: new Date().toISOString(),
             };
             const u = new cityModel({
                 countryId,

@@ -17,7 +17,7 @@ mongoose
   .connect(mongoConnection, {
     useNewUrlParser: true,
   })
-  .then((client) => {
+  .then((client: any) => {
     console.log(
       `\n🔆🔆🔆🔆🔆🔆  Monitor Mongo connected ... 🔆🔆🔆  💛  ${new Date()}  💛 💛`,
     );

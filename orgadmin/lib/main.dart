@@ -42,10 +42,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: _title,
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-          fontFamily: 'Raleway',
-          primaryColor: Colors.teal,
-          accentColor: Colors.pink),
+      theme: ThemeData(fontFamily: ''),
       home: Dashboard(),
     );
   }

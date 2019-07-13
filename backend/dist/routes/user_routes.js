@@ -20,7 +20,7 @@ class UserExpressRoutes {
             console.log(`\n\n💦  POST: /addUser requested .... 💦 💦 💦 💦 💦 💦  ${new Date().toISOString()}`);
             console.log(req.body);
             try {
-                const result = yield user_helper_1.UserHelper.addUser(req.body.organizationId, req.body.organizationName, req.body.firstName, req.body.lastName, req.body.email, req.body.cellphone, req.body.userType, req.body.gender, req.body.countryID, req.body.countryName);
+                const result = yield user_helper_1.UserHelper.addUser(req.body.organizationId, req.body.organizationName, req.body.firstName, req.body.lastName, req.body.email, req.body.cellphone, req.body.userType, req.body.gender, req.body.countryID);
                 res.status(200).json(result);
             }
             catch (err) {

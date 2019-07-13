@@ -24,7 +24,6 @@ export class UserExpressRoutes {
           req.body.userType,
           req.body.gender,
           req.body.countryID,
-          req.body.countryName,
          
         );
         res.status(200).json(result);
