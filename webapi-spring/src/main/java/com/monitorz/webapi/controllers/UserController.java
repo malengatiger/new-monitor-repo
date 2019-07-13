@@ -80,7 +80,7 @@ public class UserController {
         return mUser;
     }
 
-    @RequestMapping(value = "/getAllUsers")
+    @RequestMapping(value = "/findAllUsers")
     public List<User> getAll() {
         List<User> list = repository.findAll();
         LOG.log(Level.INFO, "\uD83C\uDF4E \uD83C\uDF4E getAllUsers found  \uD83D\uDD35 " + list.size() + " \uD83D\uDD35 "

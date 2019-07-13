@@ -11,6 +11,8 @@ import java.util.List;
 public interface CityRepository extends MongoRepository<City, String> {
 
     List<City> findByCountryId(String countryId);
+
+    //
     @Query(value = "{\"position\":\n" +
             "       { $nearSphere :\n" +
             "          {\n" +
@@ -22,7 +24,6 @@ public interface CityRepository extends MongoRepository<City, String> {
             "       }}")
     List<City> findByLocation(double longitude, double latitude, int radiusInKM);
 
-    List<City> findByPosition(double longitude, double latitude, int radiusInKM);
 }
 
 /*
