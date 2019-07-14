@@ -13,14 +13,17 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const settlement_1 = __importDefault(require("../models/settlement"));
 const position_1 = __importDefault(require("../models/position"));
+const messaging_1 = __importDefault(require("../server/messaging"));
 class SettlementHelper {
     static addSettlement(settlementName, email, cellphone, countryId, countryName, polygon, population) {
         return __awaiter(this, void 0, void 0, function* () {
             const positions = [];
-            for (const p of polygon) {
-                const pos = new position_1.default();
-                pos.coordinates = [p.longitude, p.latitude];
-                positions.push(pos);
+            if (polygon) {
+                for (const p of polygon) {
+                    const pos = new position_1.default();
+                    pos.coordinates = [p.longitude, p.latitude];
+                    positions.push(pos);
+                }
             }
             const settlementModel = new settlement_1.default().getModelForClass(settlement_1.default);
             const settlement = new settlementModel({
@@ -93,6 +96,15 @@ class SettlementHelper {
             console.log(`onSettlementAdded event has occured .... 👽 👽 👽`);
             console.log(event);
             console.log(`operationType: 👽 👽 👽  ${event.operationType},   🍎 `);
+            const doc = event.fullDocument;
+            const data = {
+                settlementId: doc.settlementId,
+                id: doc.id,
+                settlementName: doc.settlementName,
+                countryId: doc.countryId,
+                countryName: doc.countryName,
+            };
+            yield messaging_1.default.sendSettlement(data);
         });
     }
 }

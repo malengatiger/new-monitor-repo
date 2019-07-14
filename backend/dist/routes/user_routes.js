@@ -47,16 +47,6 @@ class UserExpressRoutes {
                 util_1.default.sendError(res, err, "findUsersByOrganization failed");
             }
         }));
-        app.route("/findUserByUid").post((req, res) => __awaiter(this, void 0, void 0, function* () {
-            console.log(`\n\n💦  POST: /findUserByUid requested .... 💦 💦 💦 💦 💦 💦  ${new Date().toISOString()}`);
-            try {
-                const result = yield user_helper_1.UserHelper.findByUid(req.body.uid);
-                res.status(200).json(result);
-            }
-            catch (err) {
-                util_1.default.sendError(res, err, "findUserByUid failed");
-            }
-        }));
         app.route("/findUserByEmail").post((req, res) => __awaiter(this, void 0, void 0, function* () {
             console.log(`\n\n💦  POST: /findUserByEmail requested .... 💦 💦 💦 💦 💦 💦  ${new Date().toISOString()}`);
             try {

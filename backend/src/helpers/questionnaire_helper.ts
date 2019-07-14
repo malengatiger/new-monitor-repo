@@ -4,6 +4,7 @@ import Organization from "../models/organization";
 import Country from "../models/country";
 import { Section } from "../models/interfaces";
 import QuestionnaireResponse from "../models/questionnaire_response";
+import Messaging from "../server/messaging";
 
 export class QuestionnaireHelper {
   public static async addQuestionnaireResponse(
@@ -143,6 +144,15 @@ export class QuestionnaireHelper {
     console.log(`onQuestionnaireResponseAdded event has occured .... 👽 👽 👽`);
     console.log(event);
     console.log(`operationType: 👽 👽 👽  ${event.operationType},   🍎 `);
+    const doc = event.fullDocument;
+    const data = {
+      id: doc.id,
+      title: doc.title,
+      description: doc.description,
+      organizationId: doc.organizationId,
+      organizationName: doc.organizationName,
+    }
+    await Messaging.sendQuestionnaire(data);
   }
 
   public static async getQuestionnaireResponses(

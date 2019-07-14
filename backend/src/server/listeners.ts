@@ -1,5 +1,6 @@
 import Constants from '../server/constants';
 import { SettlementHelper } from '../helpers/settlement_helper';
+import { UserHelper } from '../helpers/user_helper';
 
 class MongoListeners {
   public static listen(client: any) {
@@ -21,6 +22,13 @@ class MongoListeners {
       );
       console.log(event);
       SettlementHelper.onSettlementAdded(event);
+    });
+    usersStream.on("change", (event: any) => {
+      console.log(
+        `\n🔆🔆🔆🔆   🍎  usersStream onChange fired!  🍎  🔆🔆🔆🔆 ${event}`,
+      );
+      console.log(event);
+      UserHelper.onUserAdded(event);
     });
     
   }

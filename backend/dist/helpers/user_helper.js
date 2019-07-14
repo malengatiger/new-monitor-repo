@@ -12,10 +12,29 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const user_1 = __importDefault(require("../models/user"));
+const messaging_1 = __importDefault(require("../server/messaging"));
 class UserHelper {
     static onUserAdded(event) {
         return __awaiter(this, void 0, void 0, function* () {
             console.log(`operationType: 👽 👽 👽  ${event.operationType},  User in stream:   🍀🍎 `);
+            if (event.operationType != 'insert') {
+                console.log('👽👽👽 User updated, no need to send message');
+                return;
+            }
+            const UserModel = new user_1.default().getModelForClass(user_1.default);
+            const doc = event.fullDocument;
+            const u = new UserModel({
+                firstName: doc.firstName,
+                lastName: doc.lastName,
+                email: doc.email,
+                cellphone: doc.cellphone,
+                userType: doc.userType,
+                gender: doc.gender,
+                countryId: doc.countryId,
+                organizationName: doc.organizationName,
+                organizationId: doc.organizationId,
+            });
+            yield messaging_1.default.sendUser(u);
         });
     }
     static addUser(organizationId, organizationName, firstName, lastName, email, cellphone, userType, gender, countryId) {

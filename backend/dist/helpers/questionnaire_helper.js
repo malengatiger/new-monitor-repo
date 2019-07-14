@@ -15,6 +15,7 @@ const questionnaire_1 = __importDefault(require("../models/questionnaire"));
 const organization_1 = __importDefault(require("../models/organization"));
 const country_1 = __importDefault(require("../models/country"));
 const questionnaire_response_1 = __importDefault(require("../models/questionnaire_response"));
+const messaging_1 = __importDefault(require("../server/messaging"));
 class QuestionnaireHelper {
     static addQuestionnaireResponse(questionnaireId, respondentId, userId, sections) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -134,6 +135,15 @@ class QuestionnaireHelper {
             console.log(`onQuestionnaireResponseAdded event has occured .... 👽 👽 👽`);
             console.log(event);
             console.log(`operationType: 👽 👽 👽  ${event.operationType},   🍎 `);
+            const doc = event.fullDocument;
+            const data = {
+                id: doc.id,
+                title: doc.title,
+                description: doc.description,
+                organizationId: doc.organizationId,
+                organizationName: doc.organizationName,
+            };
+            yield messaging_1.default.sendQuestionnaire(data);
         });
     }
     static getQuestionnaireResponses(questionnaireId) {

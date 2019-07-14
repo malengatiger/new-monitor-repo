@@ -1,5 +1,6 @@
 
 import Organization from "../models/organization";
+import Messaging from "../server/messaging";
 
 export class OrganizationHelper {
   public static async onOrganizationAdded(event: any) {
@@ -8,6 +9,15 @@ export class OrganizationHelper {
         event.operationType
       },  Organization in stream:   🍀 🍎 `,
     );
+    const doc = event.fullDocument;
+    const data = {
+      id: doc.id,
+      name: doc.name,
+      email: doc.email,
+      organizationId: doc.organizationId,
+      organizationName: doc.organizationName,
+    }
+    Messaging.sendOrganization(data);
   }
   public static async addOrganization(
     name: string,

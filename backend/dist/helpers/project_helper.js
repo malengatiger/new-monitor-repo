@@ -13,13 +13,23 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const project_1 = __importDefault(require("../models/project"));
 const position_1 = __importDefault(require("../models/position"));
+const messaging_1 = __importDefault(require("../server/messaging"));
 class ProjectHelper {
     static onProjectAdded(event) {
         return __awaiter(this, void 0, void 0, function* () {
             console.log(`operationType: 👽 👽 👽  ${event.operationType},  Project in stream:   🍀 🍎 `);
+            const doc = event.fullDocument;
+            const data = {
+                id: doc.id,
+                name: doc.name,
+                description: doc.description,
+                organizationId: doc.organizationId,
+                organizationName: doc.organizationName,
+            };
+            messaging_1.default.sendProject(data);
         });
     }
-    static addProject(name, description, organizationId, organizationName, settlements, positions) {
+    static addProject(name, description, organizationId, organizationName, settlements, positions, position) {
         return __awaiter(this, void 0, void 0, function* () {
             const ProjectModel = new project_1.default().getModelForClass(project_1.default);
             const u = new ProjectModel({
@@ -29,6 +39,7 @@ class ProjectHelper {
                 organizationName,
                 settlements,
                 positions,
+                position,
             });
             const m = yield u.save();
             m.projectId = m.id;

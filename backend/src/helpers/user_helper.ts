@@ -1,5 +1,6 @@
 
 import User from "../models/user";
+import Messaging from "../server/messaging";
 
 export class UserHelper {
   public static async onUserAdded(event: any) {
@@ -8,6 +9,25 @@ export class UserHelper {
         event.operationType
       },  User in stream:   🍀🍎 `,
     );
+    if (event.operationType != 'insert') {
+      console.log('👽👽👽 User updated, no need to send message');
+      return;
+    }
+    const UserModel = new User().getModelForClass(User);
+    const doc = event.fullDocument;
+    const u = new UserModel({
+      firstName: doc.firstName,
+      lastName: doc.lastName,
+      email: doc.email,
+      cellphone: doc.cellphone,
+      userType: doc.userType,
+      gender: doc.gender,
+      countryId: doc.countryId,
+      organizationName: doc.organizationName,
+      organizationId: doc.organizationId,
+    });
+    await Messaging.sendUser(u);
+
   }
   public static async addUser(
     organizationId: string,

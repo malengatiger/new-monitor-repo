@@ -20,7 +20,7 @@ class ProjectExpressRoutes {
             console.log(`\n\n💦  POST: /addProject requested .... 💦 💦 💦 💦 💦 💦  ${new Date().toISOString()}`);
             console.log(req.body);
             try {
-                const result = yield project_helper_1.ProjectHelper.addProject(req.body.name, req.body.description, req.body.organizationId, req.body.organizationName, req.body.settlements, req.body.positions);
+                const result = yield project_helper_1.ProjectHelper.addProject(req.body.name, req.body.description, req.body.organizationId, req.body.organizationName, req.body.settlements, req.body.positions, req.body.position);
                 res.status(200).json(result);
             }
             catch (err) {

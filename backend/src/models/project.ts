@@ -59,6 +59,9 @@ class Project extends Typegoose {
   @prop({ required: true, default: [] })
   public positions?: Position[];
   //
+  @prop({ required: true})
+  public position?: Position;
+  //
   @prop({ required: true, default: [] })
   public photoUrls!: Content[];
   //

@@ -21,6 +21,7 @@ export class ProjectExpressRoutes {
           req.body.organizationName,
           req.body.settlements,
           req.body.positions,
+          req.body.position,
          
         );
         res.status(200).json(result);

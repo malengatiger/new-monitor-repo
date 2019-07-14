@@ -1,6 +1,7 @@
 import Project from "../models/project";
 import Settlement from "../models/settlement";
 import Position from "../models/position";
+import Messaging from "../server/messaging";
 
 export class ProjectHelper {
   public static async onProjectAdded(event: any) {
@@ -9,6 +10,15 @@ export class ProjectHelper {
         event.operationType
       },  Project in stream:   🍀 🍎 `,
     );
+    const doc = event.fullDocument;
+    const data = {
+      id: doc.id,
+      name: doc.name,
+      description: doc.description,
+      organizationId: doc.organizationId,
+      organizationName: doc.organizationName,
+    }
+    Messaging.sendProject(data);
   }
   public static async addProject(
     name: string,
@@ -17,6 +27,7 @@ export class ProjectHelper {
     organizationName: string,
     settlements: any[],
     positions: any[],
+    position: any
   ): Promise<any> {
     const ProjectModel = new Project().getModelForClass(Project);
     const u = new ProjectModel({
@@ -26,6 +37,7 @@ export class ProjectHelper {
       organizationName,
       settlements,
       positions,
+      position,
     });
     const m = await u.save();
     m.projectId = m.id;

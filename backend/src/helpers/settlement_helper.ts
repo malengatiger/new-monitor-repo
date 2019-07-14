@@ -1,5 +1,6 @@
 import Settlement from "../models/settlement";
 import Position from "../models/position";
+import Messaging from "../server/messaging";
 
 export class SettlementHelper {
   public static async addSettlement(
@@ -12,10 +13,12 @@ export class SettlementHelper {
     population: number,
   ): Promise<any> {
     const positions: Position[] = [];
-    for (const p of polygon) {
-      const pos = new Position();
-      pos.coordinates = [p.longitude, p.latitude];
-      positions.push(pos);
+    if (polygon) {
+      for (const p of polygon) {
+        const pos = new Position();
+        pos.coordinates = [p.longitude, p.latitude];
+        positions.push(pos);
+      }
     }
     const settlementModel = new Settlement().getModelForClass(Settlement);
     const settlement = new settlementModel({
@@ -64,28 +67,28 @@ export class SettlementHelper {
     // const sett = await settlementModel.findBySettlementId(settlementId).exec();
 
     const position = {
-        type: "Point",
-        coordinates: [longitude, latitude],
-      };
+      type: "Point",
+      coordinates: [longitude, latitude],
+    };
     settlementModel.findOneAndUpdate(
-        { _id: settlementId },
-        { $push: { polygon: position } },
-        () => (error: any, success: any) => {
-          if (error) {
-            console.log(`🔆🔆🔆🔆🔆🔆 error has occured`);
-            console.error(error);
-          } else {
-            console.log(`🥦🥦🥦🥦🥦🥦 success has occured`);
-            console.log(success);
-          }
-        },
-      );
-      // await sett.addToPolygon(latitude, longitude);
+      { _id: settlementId },
+      { $push: { polygon: position } },
+      () => (error: any, success: any) => {
+        if (error) {
+          console.log(`🔆🔆🔆🔆🔆🔆 error has occured`);
+          console.error(error);
+        } else {
+          console.log(`🥦🥦🥦🥦🥦🥦 success has occured`);
+          console.log(success);
+        }
+      },
+    );
+    // await sett.addToPolygon(latitude, longitude);
     const msg = `📌 📌 📌 Point added to polygon, maybe: ${new Date().toISOString()} `;
     console.log(msg);
     return {
-        message: msg,
-      };
+      message: msg,
+    };
     // } else {
     //   throw new Error(`Settlement not  found`);
     // }
@@ -95,5 +98,14 @@ export class SettlementHelper {
     console.log(`onSettlementAdded event has occured .... 👽 👽 👽`);
     console.log(event);
     console.log(`operationType: 👽 👽 👽  ${event.operationType},   🍎 `);
+    const doc = event.fullDocument;
+    const data = {
+      settlementId: doc.settlementId,
+      id: doc.id,
+      settlementName: doc.settlementName,
+      countryId: doc.countryId,
+      countryName: doc.countryName,
+    }
+    await Messaging.sendSettlement(data);
   }
 }

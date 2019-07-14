@@ -12,10 +12,20 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const organization_1 = __importDefault(require("../models/organization"));
+const messaging_1 = __importDefault(require("../server/messaging"));
 class OrganizationHelper {
     static onOrganizationAdded(event) {
         return __awaiter(this, void 0, void 0, function* () {
             console.log(`operationType: 👽 👽 👽  ${event.operationType},  Organization in stream:   🍀 🍎 `);
+            const doc = event.fullDocument;
+            const data = {
+                id: doc.id,
+                name: doc.name,
+                email: doc.email,
+                organizationId: doc.organizationId,
+                organizationName: doc.organizationName,
+            };
+            messaging_1.default.sendOrganization(data);
         });
     }
     static addOrganization(name, email, countryId, countryName) {
