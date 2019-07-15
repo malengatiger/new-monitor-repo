@@ -19,19 +19,19 @@ const port = process.env.PORT || "8000";
 const password = process.env.MONGODB_PASSWORD || "xyz";
 const user = process.env.MONGODB_USER || "abc";
 console.log(`password: ${password} user: ${user}`);
-const appName = "Monitor MongoDB API";
+const appName = " Digital Monitoring Platform  MongoDB API";
 const mongoConnection = `mongodb+srv://${user}:${password}@ar001-1xhdt.mongodb.net/monitordb?retryWrites=true`;
-console.log(`\n🧡 💛   Monitor MongoDB API ... ☘️  starting  ☘️  ${new Date().toISOString()}   🧡 💛\n`);
+console.log(`\n🧡 💛    Digital Monitoring Platform  MongoDB API ... ☘️  starting  ☘️  ${new Date().toISOString()}   🧡 💛\n`);
 mongoose_1.default
     .connect(mongoConnection, {
     useNewUrlParser: true,
 })
     .then((client) => {
-    console.log(`\n🔆🔆🔆🔆🔆🔆  Monitor Mongo connected ... 🔆🔆🔆  💛  ${new Date()}  💛 💛`);
+    console.log(`\n🔆🔆🔆🔆🔆🔆 Digital Monitoring Platform  Mongo connected ... 🔆🔆🔆  💛  ${new Date()}  💛 💛`);
     console.log(`\n🍎🍎  ${appName} :: database:  ☘️  client version: ${client.version}  ☘️  is OK   🍎🍎 `);
-    console.log(`🍎🍎🍎  Monitor MongoDB config ...${JSON.stringify(mongoose_1.default.connection.config)}`);
+    console.log(`🍎🍎🍎 Digital Monitoring Platform  MongoDB config ...${JSON.stringify(mongoose_1.default.connection.config)}`);
     listeners_1.default.listen(client);
-    console.log(`🍎🍎🍎  MongoDB collections listened to ...`);
+    console.log(`🍎🍎🍎 Digital Monitoring Platform  MongoDB collections listened to ...`);
     console.log(mongoose_1.default.connection.collections);
 })
     .catch((err) => {

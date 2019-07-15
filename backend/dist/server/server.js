@@ -4,7 +4,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const appName = "bfnwebapinode";
 const express_1 = __importDefault(require("express"));
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
@@ -22,11 +21,11 @@ exports.app.use((req, res, next) => {
 });
 const port = process.env.PORT || 3000;
 server.listen(port, () => {
-    console.info(`\n🔵🔵🔵  MonitorWebAPI started and listening on 🧡 💛  http://localhost:${port} 🧡 💛`);
-    console.info(`💕 💕 💕 💕 MonitorWebAPI  running at:: 🧡💛  ${new Date().toISOString() +
+    console.info(`\n🔵🔵🔵   Digital Monitoring Platform started and listening on 🧡 💛  http://localhost:${port} 🧡 💛`);
+    console.info(`💕 💕 💕 💕  Digital Monitoring Platform running at:: 🧡💛  ${new Date().toISOString() +
         "  🙄 🙄 🙄"}`);
 });
 const myApp = new app_1.default();
-console.log(`🔆 🔆 MonitorWebAPI has been created and stood up! 🔆 🔆 🍎🍎 ${new Date().toUTCString()} 🍎🍎`);
+console.log(`🔆 🔆  Digital Monitoring Platform has been created and stood up! 🔆 🔆 🍎🍎 ${new Date().toUTCString()} 🍎🍎`);
 module.exports = server;
 //# sourceMappingURL=server.js.map

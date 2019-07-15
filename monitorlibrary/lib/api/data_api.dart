@@ -17,9 +17,9 @@ class DataAPI {
     'Content-type': 'application/json',
     'Accept': 'application/json',
   };
-  static const URL = 'http://192.168.86.240:8000/';
+//  static const URL = 'http://192.168.86.240:8000/';
 //  static const URL = 'https://dancer3033a1.eu-gb.cf.appdomain.cloud/';
-//  static const URL = 'https://dancermx.azurewebsites.net/';
+  static const URL = 'https://monitorz.azurewebsites.net/';
 //  static const URL = 'https://dancer3033a1.eu-gb.cf.appdomain.cloud/';
 
   static Future<User> addUser(User user) async {

@@ -1,6 +1,5 @@
 // import { AppExpressRoutes } from "./../routes/app_routes";
 
-const appName = "bfnwebapinode";
 import express from "express";
 import dotenv from "dotenv";
 dotenv.config();
@@ -26,17 +25,17 @@ app.use((req: Request, res: Response, next) => {
 const port = process.env.PORT || 3000;
 server.listen(port, () => {
   console.info(
-    `\n🔵🔵🔵  MonitorWebAPI started and listening on 🧡 💛  http://localhost:${port} 🧡 💛`,
+    `\n🔵🔵🔵   Digital Monitoring Platform started and listening on 🧡 💛  http://localhost:${port} 🧡 💛`,
   );
   console.info(
-    `💕 💕 💕 💕 MonitorWebAPI  running at:: 🧡💛  ${new Date().toISOString() +
+    `💕 💕 💕 💕  Digital Monitoring Platform running at:: 🧡💛  ${new Date().toISOString() +
       "  🙄 🙄 🙄"}`,
   );
 });
 
 const myApp = new MonitorApp();
 console.log(
-  `🔆 🔆 MonitorWebAPI has been created and stood up! 🔆 🔆 🍎🍎 ${new Date().toUTCString()} 🍎🍎`,
+  `🔆 🔆  Digital Monitoring Platform has been created and stood up! 🔆 🔆 🍎🍎 ${new Date().toUTCString()} 🍎🍎`,
 );
 
 module.exports = server;

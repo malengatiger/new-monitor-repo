@@ -8,7 +8,7 @@ export class AppExpressRoutes {
       `\n🏓🏓🏓🏓🏓    AppExpressRoutes:  💙  setting up default home routes ...`,
     );
     app.route("/").get((req: Request, res: Response) => {
-      const msg = `🧡 💛  Hello World from HDA Monitor,🧡 💛  independence is here!!! 💙 IBM Cloud is UP! 💙 GCP is UP!  💙 Azure is UP!   🌽🌽🌽 ${new Date().toISOString()} 🌽🌽🌽`;
+      const msg = `🧡 💛 Digital Monitoring Platform says 💙 HELLO 💙!!! 🧡 💛  independence is here!!! 💙 IBM Cloud is UP! 💙 GCP is UP!  💙 Azure is UP!   🍎 🌽🌽🌽 ${new Date().toISOString()} 🌽🌽🌽 🍎`;
       console.log(msg);
       res.status(200).json({
         message: msg,
@@ -16,16 +16,16 @@ export class AppExpressRoutes {
     });
     app.route("/ping").get((req: Request, res: Response) => {
       console.log(
-        `\n\n💦  HDA Monitor has been pinged!! IBM Cloud is UP!💦 💦 💦 💦 💦 💦  ${new Date().toISOString()}`,
+        `\n\n💦  Digital Monitoring Platform has been pinged!! IBM Cloud is UP!💦 💦 💦 💦 💦 💦  ${new Date().toISOString()}`,
       );
       console.log("GET /ping", JSON.stringify(req.headers, null, 2));
       res.status(200).json({
-        message: `🔆🔆🔆 SoldierBoy, aka HDA Monitor pinged !!! 💙 IBM Cloud is UP! 💙 GCP is UP! 💙  Azure is UP! 💙 ${new Date()}  💙  ${new Date().toISOString()}  🔆 🔆 🔆 🔆 🔆 `,
+        message: `🔆🔆🔆 💙💙💙  🍎 Digital Monitoring Platform 🍎 pinged !!! 💙 IBM Cloud is UP! 💙 GCP is UP! 💙  Azure is UP! 💙 ${new Date()}  💙  ${new Date().toISOString()}  🔆 🍎🔆🍎 🔆🍎 🔆🍎 🔆🍎 `,
       });
     });
     app.route("/migrator").get((req: Request, res: Response) => {
       console.log(
-        `\n\n💦  HDA Monitor Migrator requested! ... 💦 💦 💦 💦 💦 💦  ${new Date().toISOString()}`,
+        `\n\n💦  Digital Monitoring Platform Migrator requested! ... 💦 💦 💦 💦 💦 💦  ${new Date().toISOString()}`,
       );
       try {
         Migrator.start();
