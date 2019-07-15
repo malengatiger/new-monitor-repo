@@ -1,0 +1,2 @@
+**Digital Monitoring Platform**
+This is the source code for DMP. It contains a ****Node MongoDB Atlas** backend API (Typescript and Java implementations. It also contains 2 ****Flutter** (Dart) mobile applications (Android)) 
