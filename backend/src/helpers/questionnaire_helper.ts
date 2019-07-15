@@ -139,6 +139,15 @@ export class QuestionnaireHelper {
     console.log(`onQuestionnaireAdded event has occured .... 👽 👽 👽`);
     console.log(event);
     console.log(`operationType: 👽👽👽  ${event.operationType},   🍎 `);
+    const doc = event.fullDocument;
+    const data = {
+      id: doc.id,
+      title: doc.title,
+      description: doc.description,
+      organizationId: doc.organizationId,
+      organizationName: doc.organizationName,
+    }
+    await Messaging.sendQuestionnaire(data);
   }
   public static async onQuestionnaireResponseAdded(event: any) {
     console.log(`onQuestionnaireResponseAdded event has occured .... 👽 👽 👽`);

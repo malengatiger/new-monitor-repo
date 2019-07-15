@@ -121,7 +121,7 @@ __decorate([
     __metadata("design:type", Array)
 ], Project.prototype, "positions", void 0);
 __decorate([
-    typegoose_1.prop({ required: true }),
+    typegoose_1.prop({ required: false }),
     __metadata("design:type", position_1.default)
 ], Project.prototype, "position", void 0);
 __decorate([

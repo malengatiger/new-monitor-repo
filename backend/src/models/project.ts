@@ -59,7 +59,7 @@ class Project extends Typegoose {
   @prop({ required: true, default: [] })
   public positions?: Position[];
   //
-  @prop({ required: true})
+  @prop({ required: false})
   public position?: Position;
   //
   @prop({ required: true, default: [] })
