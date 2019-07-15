@@ -13,7 +13,7 @@ import 'package:monitorlibrary/functions.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:location/location.dart';
 
-final GeneralBloc bloc = GeneralBloc();
+GeneralBloc bloc = GeneralBloc();
 
 class GeneralBloc {
   StreamController<List<Settlement>> _settController =
@@ -92,7 +92,7 @@ class GeneralBloc {
     statusFuture.then((PermissionStatus status) {
       switch (status) {
         case PermissionStatus.granted:
-          print('location is GRANTED:  ❤️ 🧡 💛 💚 💙 💜');
+          print('location is GRANTED:  ❤️ 🧡 💛 💚 💙 💜 ....');
           break;
         case PermissionStatus.denied:
           print('location is DENIED 🔱 🔱 🔱 🔱 🔱 ');
@@ -177,9 +177,6 @@ class GeneralBloc {
     _settController.sink.add(_settlements);
     print(
         'adminBloc:  🧩 🧩 🧩 _settController.sink.added 🏈 🏈 ${_settlements.length} settlements  ');
-//    _settlements.forEach((s) {
-//      prettyPrint(s.toJson(), '🍏 🍏 🍏 SETTLEMENT 🍏 🍏 ');
-//    });
     return _settlements;
   }
 
@@ -246,6 +243,7 @@ class GeneralBloc {
     debugPrint('🎽 🎽 🎽 Bloc: addProject: Project adding to stream ...');
     _projects.add(res);
     _projController.sink.add(_projects);
+    findProjectsByOrganization(project.organizationId);
     return res;
   }
 

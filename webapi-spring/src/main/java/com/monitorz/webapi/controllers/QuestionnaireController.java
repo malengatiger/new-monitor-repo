@@ -3,17 +3,20 @@ package com.monitorz.webapi.controllers;
 import com.monitorz.webapi.data.Questionnaire;
 import com.monitorz.webapi.data.repositories.QuestionnaireRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 
 @RestController
@@ -30,37 +33,45 @@ public class QuestionnaireController {
     public Questionnaire getQuestionnaireById(@RequestParam(value = "id") String id) {
 
         long num = counter.incrementAndGet();
-        LOG.log(Level.INFO, "\uD83C\uDF4E \uD83C\uDF4E returning Questionnaire object all \uD83D\uDD35 JSONifified: \uD83C\uDF4E \uD83C\uDF4E " + num + counter.incrementAndGet() + " requests thus far \uD83D\uDD06\uD83D\uDD06\uD83D\uDD06  \uD83D\uDC9B");
 
-        Optional<Questionnaire> city = repository.findById(id);
+        Questionnaire qEx = new Questionnaire();
+        qEx.setId(id);
+        Mono<Questionnaire> qFlux = repository
+                .findOne(Example.of(qEx));
 
-        return  city.get();
+
+        Questionnaire q = qFlux.block();
+        LOG.log(Level.INFO, "\uD83C\uDF4E \uD83C\uDF4E returning Questionnaire \uD83D\uDD06\uD83D\uDD06\uD83D\uDD06  \uD83D\uDC9B " + q.getDescription());
+        return q;
+
     }
     @PostMapping(value = "/addQuestionnaire")
     @ResponseStatus(code = HttpStatus.CREATED)
     public Questionnaire add(@RequestBody Questionnaire questionnaire) {
         questionnaire.setCreated(sdf.format(new Date()));
-        Questionnaire c = repository.save(questionnaire);
-        LOG.log(Level.INFO, "\uD83C\uDF4E \uD83C\uDF4E addQuestionnairey: Questionnaire added  \uD83D\uDD35  \uD83D\uDC99" + c.getName() + " \uD83D\uDC99 \uD83D\uDC99  \uD83D\uDD35 " + counter.incrementAndGet() + " requests thus far \uD83D\uDD06\uD83D\uDD06\uD83D\uDD06  \uD83D\uDC9B");
-        return c;
+        Mono<Questionnaire> c = repository.save(questionnaire);
+        Questionnaire q = c.block();
+        LOG.log(Level.INFO, "\uD83C\uDF4E \uD83C\uDF4E addQuestionnairey: Questionnaire added  \uD83D\uDD35  \uD83D\uDC99" + q.getTitle() + " \uD83D\uDC99 \uD83D\uDC99  \uD83D\uDD35 " + counter.incrementAndGet() + " requests thus far \uD83D\uDD06\uD83D\uDD06\uD83D\uDD06  \uD83D\uDC9B");
+        return q;
     }
     @GetMapping(value = "/getQuestionnaires")
     public List<Questionnaire> getQuestionnaires() {
-        List<Questionnaire> list = repository.findAll();
-        LOG.log(Level.INFO, "\uD83C\uDF4E \uD83C\uDF4E getQuestionnaires found  \uD83D\uDD35 " + list.size() + " \uD83D\uDD35 " + counter.incrementAndGet() + " requests thus far \uD83D\uDD06\uD83D\uDD06\uD83D\uDD06  \uD83D\uDC9B");
-        return list;
+        Flux<Questionnaire> list = repository.findAll();
+        List<Questionnaire> m = list.toStream().collect(Collectors.toList());
+        LOG.log(Level.INFO, "\uD83C\uDF4E \uD83C\uDF4E getQuestionnaires found  \uD83D\uDD35 " + m.size() + " \uD83D\uDD35 \uD83D\uDD06\uD83D\uDD06\uD83D\uDD06  \uD83D\uDC9B");
+        return m;
     }
 
 
     @PutMapping(value = "/updateQuestionnaire")
     public Questionnaire update(@PathVariable String id, @RequestBody Questionnaire project) throws Exception {
-        Questionnaire c = repository.findById(id)
-                .orElseThrow(() -> new Exception());
+        Mono<Questionnaire> mc = repository.findById(id);
+        Questionnaire c = mc.block();
         c.setName(project.getName());
         c.setDescription(project.getDescription());
         c.setOrganizationId(project.getOrganizationId());
         c.setOrganizationName(project.getOrganizationName());
 
-        return repository.save(c);
+        return repository.save(c).block();
     }
 }

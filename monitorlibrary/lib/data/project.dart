@@ -10,6 +10,7 @@ class Project {
   String name, projectId, description, organizationId, created;
   String organizationName;
   List<City> nearestCities;
+  Position position;
   List<Position> positions;
   List<Content> photoUrls, videoUrls;
   List<RatingContent> ratings;
@@ -23,7 +24,7 @@ class Project {
       this.photoUrls,
       this.videoUrls,
       this.ratings,
-      this.created, this.positions,
+      this.created, this.positions, this.position,
       this.organizationName,
       @required this.projectId});
 
@@ -36,6 +37,9 @@ class Project {
     this.created = data['created'];
     this.organizationName = data['organizationName'];
 
+    if (data['position'] != null) {
+      position = Position.fromJson(data['position']);
+    }
     this.settlements = [];
     if (data['settlements'] != null) {
       List list = data['settlements'];

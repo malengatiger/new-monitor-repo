@@ -99,13 +99,16 @@ export class SettlementHelper {
     console.log(event);
     console.log(`operationType: 👽 👽 👽  ${event.operationType},   🍎 `);
     const doc = event.fullDocument;
-    const data = {
-      settlementId: doc.settlementId,
-      id: doc.id,
-      settlementName: doc.settlementName,
-      countryId: doc.countryId,
-      countryName: doc.countryName,
+    if (doc) {
+      const data = {
+        id: doc.id,
+        settlementName: doc.settlementName,
+        countryId: doc.countryId,
+        countryName: doc.countryName,
+      }
+      await Messaging.sendSettlement(data);
+    } else {
+      console.log('onSettlementAdded: no data to send')
     }
-    await Messaging.sendSettlement(data);
   }
 }

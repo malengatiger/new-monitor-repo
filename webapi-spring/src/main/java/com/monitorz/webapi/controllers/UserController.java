@@ -6,15 +6,17 @@ import com.monitorz.webapi.data.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 
 @RestController
@@ -48,8 +50,8 @@ public class UserController {
         LOG.log(Level.INFO, "\uD83C\uDF4E \uD83C\uDF4E findUserById: returning user object all \uD83D\uDD35 JSONifified: \uD83C\uDF4E \uD83C\uDF4E "
                 + num + counter.incrementAndGet() + " requests thus far \uD83D\uDD06\uD83D\uDD06\uD83D\uDD06  \uD83D\uDC9B");
 
-        Optional<User> user = repository.findById(id);
-        return user.get();
+        Mono<User> user = repository.findById(id);
+        return user.block();
     }
 
     @RequestMapping("/findUserByEmail")
@@ -71,9 +73,9 @@ public class UserController {
     @ResponseStatus(code = HttpStatus.CREATED)
     public User add(@RequestBody User user) {
         user.setCreated(sdf.format(new Date()));
-        User mUser = repository.save(user);
+        User mUser = repository.save(user).block();
         mUser.setUserId(mUser.getId());
-        mUser = repository.save(user);
+        mUser = repository.save(user).block();
         LOG.log(Level.INFO, "\uD83C\uDF4E \uD83C\uDF4E addUser user added  \uD83D\uDD35  \uD83D\uDC99" + mUser.getUserId() + " \uD83D\uDC99  "
                 + mUser.getUserType() + " \uD83D\uDC99  \uD83D\uDD35 " + counter.incrementAndGet()
                 + " requests thus far \uD83D\uDD06\uD83D\uDD06\uD83D\uDD06  \uD83D\uDC9B");
@@ -82,18 +84,19 @@ public class UserController {
 
     @RequestMapping(value = "/findAllUsers")
     public List<User> getAll() {
-        List<User> list = repository.findAll();
-        LOG.log(Level.INFO, "\uD83C\uDF4E \uD83C\uDF4E getAllUsers found  \uD83D\uDD35 " + list.size() + " \uD83D\uDD35 "
+        Flux<User> list = repository.findAll();
+        List<User> users = list.toStream().collect(Collectors.toList());
+        LOG.log(Level.INFO, "\uD83C\uDF4E \uD83C\uDF4E getAllUsers found  \uD83D\uDD35 " + users.size() + " \uD83D\uDD35 "
                 + counter.incrementAndGet() + " requests thus far \uD83D\uDD06\uD83D\uDD06\uD83D\uDD06  \uD83D\uDC9B");
-        return list;
+        return users;
     }
 
     @PostMapping(value = "/updateUser")
     public User update(@RequestBody User updatedUser) throws Exception {
-        User user = repository.findById(updatedUser.getId())
-                .orElseThrow(() -> new Exception());
+        Mono<User> m = repository.findById(updatedUser.getId());
+        User user = m.block();
         user.setEmail(updatedUser.getEmail());
         user.setCellphone(updatedUser.getCellphone());
-        return repository.save(user);
+        return repository.save(user).block();
     }
 }

@@ -97,14 +97,18 @@ class SettlementHelper {
             console.log(event);
             console.log(`operationType: 👽 👽 👽  ${event.operationType},   🍎 `);
             const doc = event.fullDocument;
-            const data = {
-                settlementId: doc.settlementId,
-                id: doc.id,
-                settlementName: doc.settlementName,
-                countryId: doc.countryId,
-                countryName: doc.countryName,
-            };
-            yield messaging_1.default.sendSettlement(data);
+            if (doc) {
+                const data = {
+                    id: doc.id,
+                    settlementName: doc.settlementName,
+                    countryId: doc.countryId,
+                    countryName: doc.countryName,
+                };
+                yield messaging_1.default.sendSettlement(data);
+            }
+            else {
+                console.log('onSettlementAdded: no data to send');
+            }
         });
     }
 }

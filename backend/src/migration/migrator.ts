@@ -3,7 +3,7 @@ const z = "\n";
 // tslint:disable-next-line: no-var-requires
 const citiesJson = require("../../cities.json");
 const mData: Map<string, any> = citiesJson;
-console.log(mData);
+//console.log(mData);
 
 class Migrator {
   public static async start() {

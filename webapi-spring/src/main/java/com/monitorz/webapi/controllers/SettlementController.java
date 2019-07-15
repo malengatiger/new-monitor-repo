@@ -8,12 +8,12 @@ import com.monitorz.webapi.data.repositories.SettlementRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Mono;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -35,9 +35,9 @@ public class SettlementController {
         long num = counter.incrementAndGet();
         LOG.log(Level.INFO, "\uD83C\uDF4E \uD83C\uDF4E returning Settlement object all \uD83D\uDD35 JSONifified: \uD83C\uDF4E \uD83C\uDF4E " + num + counter.incrementAndGet() + " requests thus far \uD83D\uDD06\uD83D\uDD06\uD83D\uDD06  \uD83D\uDC9B");
 
-        Optional<Settlement> city = settlementRepository.findById(id);
+        Mono<Settlement> city = settlementRepository.findById(id);
 
-        return  city.get();
+        return  city.block();
     }
     @RequestMapping("/addPointToPolygon")
     public Settlement addPointToPolygon(@RequestParam(value = "settlementId") String settlementId,
@@ -47,8 +47,8 @@ public class SettlementController {
         long num = counter.incrementAndGet();
         LOG.log(Level.INFO, "\uD83C\uDF4E \uD83C\uDF4E addPointToPolygon:t  \uD83C\uDF4E \uD83C\uDF4E " + num + counter.incrementAndGet() + " requests thus far \uD83D\uDD06\uD83D\uDD06\uD83D\uDD06  \uD83D\uDC9B");
 
-        Optional<Settlement> settlementOpt = settlementRepository.findById(settlementId);
-        Settlement settlement = settlementOpt.get();
+        Mono<Settlement> settlementOpt = settlementRepository.findById(settlementId);
+        Settlement settlement = settlementOpt.block();
         Position position = new Position(latitude,longitude);
         settlement.getPolygon().add(position);
         settlementRepository.save(settlement);
@@ -62,8 +62,8 @@ public class SettlementController {
         long num = counter.incrementAndGet();
         LOG.log(Level.INFO, "\uD83C\uDF4E \uD83C\uDF4E addSettlementPhoto:  \uD83C\uDF4E \uD83C\uDF4E " + num + counter.incrementAndGet() + " requests thus far \uD83D\uDD06\uD83D\uDD06\uD83D\uDD06  \uD83D\uDC9B");
 
-        Optional<Settlement> settlementOpt = settlementRepository.findById(settlementId);
-        Settlement settlement = settlementOpt.get();
+        Mono<Settlement> settlementOpt = settlementRepository.findById(settlementId);
+        Settlement settlement = settlementOpt.block();
         settlement.getPhotoUrls().add(content);
         settlementRepository.save(settlement);
         LOG.log(Level.INFO, ": \uD83C\uDF30 \uD83C\uDF30 photo added");
@@ -76,8 +76,8 @@ public class SettlementController {
         long num = counter.incrementAndGet();
         LOG.log(Level.INFO, "\uD83C\uDF4E \uD83C\uDF4E addSettlementVideo:  \uD83C\uDF4E \uD83C\uDF4E " + num + counter.incrementAndGet() + " requests thus far \uD83D\uDD06\uD83D\uDD06\uD83D\uDD06  \uD83D\uDC9B");
 
-        Optional<Settlement> settlementOpt = settlementRepository.findById(settlementId);
-        Settlement settlement = settlementOpt.get();
+        Mono<Settlement> settlementOpt = settlementRepository.findById(settlementId);
+        Settlement settlement = settlementOpt.block();
         settlement.getVideoUrls().add(content);
         settlementRepository.save(settlement);
         LOG.log(Level.INFO, ": \uD83C\uDF30 \uD83C\uDF30 video added");
@@ -90,8 +90,8 @@ public class SettlementController {
         long num = counter.incrementAndGet();
         LOG.log(Level.INFO, "\uD83C\uDF4E \uD83C\uDF4E addSettlementRating:  \uD83C\uDF4E \uD83C\uDF4E " + num + counter.incrementAndGet() + " requests thus far \uD83D\uDD06\uD83D\uDD06\uD83D\uDD06  \uD83D\uDC9B");
 
-        Optional<Settlement> settlementOpt = settlementRepository.findById(settlementId);
-        Settlement settlement = settlementOpt.get();
+        Mono<Settlement> settlementOpt = settlementRepository.findById(settlementId);
+        Settlement settlement = settlementOpt.block();
         settlement.getRatings().add(content);
         settlementRepository.save(settlement);
         LOG.log(Level.INFO, ": \uD83C\uDF30 \uD83C\uDF30 rating added");
@@ -102,9 +102,10 @@ public class SettlementController {
     @ResponseStatus(code = HttpStatus.CREATED)
     public Settlement add(@RequestBody Settlement settlement) {
         settlement.setCreated(sdf.format(new Date()));
-        Settlement c = settlementRepository.save(settlement);
+        Mono<Settlement> m = settlementRepository.save(settlement);
+        Settlement c = m.block();
         c.setCountryId(c.getId());
-        c = settlementRepository.save(settlement);
+        c = settlementRepository.save(settlement).block();
         LOG.log(Level.INFO, "\uD83C\uDF4E \uD83C\uDF4E addSettlement: Settlement added  \uD83D\uDD35  \uD83D\uDC99" + c.getName() + " \uD83D\uDC99 \uD83D\uDC99  \uD83D\uDD35 " + counter.incrementAndGet() + " requests thus far \uD83D\uDD06\uD83D\uDD06\uD83D\uDD06  \uD83D\uDC9B");
         return c;
     }
@@ -118,13 +119,12 @@ public class SettlementController {
 
     @PutMapping(value = "updateSettlement")
     public Settlement update(@PathVariable String id, @RequestBody Settlement settlement) throws Exception {
-        Settlement c = settlementRepository.findById(id)
-                .orElseThrow(() -> new Exception());
-
+        Mono<Settlement> m = settlementRepository.findById(id);
+        Settlement c = m.block();
         c.setName(settlement.getName());
         c.setEmail(settlement.getEmail());
         c.setCreated(new Date().toString());
 
-        return settlementRepository.save(c);
+        return settlementRepository.save(c).block();
     }
 }

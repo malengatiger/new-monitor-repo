@@ -9,7 +9,6 @@ import 'package:monitorlibrary/slide_right.dart';
 import 'package:monitorlibrary/camera/gallery.dart';
 import 'package:monitorlibrary/snack.dart';
 import 'package:orgadmin/ui/project/project_editor.dart';
-import 'package:orgadmin/ui/questionnaire/questionnaire_editor.dart';
 
 class ProjectDetail extends StatefulWidget {
   final Project project;
@@ -23,6 +22,7 @@ class ProjectDetail extends StatefulWidget {
 class _ProjectDetailState extends State<ProjectDetail> {
   GlobalKey<ScaffoldState> _key = GlobalKey();
   Project project;
+
   @override
   void initState() {
     super.initState();
@@ -327,8 +327,7 @@ class _ProjectDetailState extends State<ProjectDetail> {
 class Basics extends StatelessWidget {
   final Settlement settlement;
   const Basics({
-    Key key,
-    @required this.settlement,
+    Key key, this.settlement,
   }) : super(key: key);
 
   @override

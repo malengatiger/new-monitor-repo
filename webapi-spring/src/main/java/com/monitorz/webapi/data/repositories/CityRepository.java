@@ -1,14 +1,14 @@
 package com.monitorz.webapi.data.repositories;
 
 import com.monitorz.webapi.data.City;
-import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
+import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 @Repository
-public interface CityRepository extends MongoRepository<City, String> {
+public interface CityRepository extends ReactiveMongoRepository<City, String> {
 
     List<City> findByCountryId(String countryId);
 

@@ -6,14 +6,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Mono;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Locale;
-import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 
 @RestController
@@ -36,9 +37,9 @@ public class CityController {
         long num = counter.incrementAndGet();
         LOG.log(Level.INFO, "\uD83C\uDF4E \uD83C\uDF4E returning city object \uD83C\uDF4E \uD83C\uDF4E "
                 + num + counter.incrementAndGet() + " requests thus far \uD83D\uDD06\uD83D\uDD06\uD83D\uDD06  \uD83D\uDC9B");
-        Optional<City> city = repository.findById(id);
+        Mono<City> city = repository.findById(id);
 
-        return  city.get();
+        return  city.block();
     }
     @RequestMapping("/findCitiesByCountry")
     public List<City> findCitiesByCountry(@RequestParam(value = "countryId") String countryId) {
@@ -70,9 +71,9 @@ public class CityController {
     @PostMapping(value = "/addCity")
     @ResponseStatus(code = HttpStatus.CREATED)
     public City add(@RequestBody City city) {
-        City c = repository.save(city);
+        City c = repository.save(city).block();
         c.setCityId(c.getId());
-        c = repository.save(city);
+        c = repository.save(city).block();
         LOG.log(Level.INFO, "\uD83C\uDF4E \uD83C\uDF4E addCountry: country added  \uD83D\uDD35  \uD83D\uDC99"
                 + c.getName() + " \uD83D\uDC99  " + c.getProvinceName() + " \uD83D\uDC99  \uD83D\uDD35 " + counter.incrementAndGet()
                 + " requests thus far \uD83D\uDD06\uD83D\uDD06\uD83D\uDD06  \uD83D\uDC9B");
@@ -80,7 +81,7 @@ public class CityController {
     }
     @GetMapping(value = "/getAllCities")
     public List<City> getAll() {
-        List<City> list = repository.findAll();
+        List<City> list = repository.findAll().toStream().collect(Collectors.toList());
         LOG.log(Level.INFO, "\uD83C\uDF4E \uD83C\uDF4E getAllCities: found  \uD83D\uDD35 " + list.size()
                 + " \uD83D\uDD35 " + counter.incrementAndGet() + " requests thus far \uD83D\uDD06\uD83D\uDD06\uD83D\uDD06  \uD83D\uDC9B");
         return list;
@@ -89,11 +90,10 @@ public class CityController {
 
     @PutMapping(value = "/updateCity")
     public City update(@PathVariable String id, @RequestBody City city) throws Exception {
-        City c = repository.findById(id)
-                .orElseThrow(() -> new Exception());
+        City c = repository.findById(id).block();
         c.setName(city.getName());
         c.setPosition(city.getPosition());
         c.setProvinceName(city.getProvinceName());
-        return repository.save(c);
+        return repository.save(c).block();
     }
 }

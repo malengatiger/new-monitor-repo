@@ -10,3 +10,4 @@ commands.txt
 *.zip
 cities.json
 monitor.json
+.env

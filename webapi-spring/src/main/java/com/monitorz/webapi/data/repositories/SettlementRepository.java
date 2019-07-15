@@ -1,15 +1,15 @@
 package com.monitorz.webapi.data.repositories;
 
 import com.monitorz.webapi.data.Settlement;
-import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
+import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 @Repository
 
-public interface SettlementRepository extends MongoRepository<Settlement, String> {
+public interface SettlementRepository extends ReactiveMongoRepository<Settlement, String> {
 
     @Query(value = "{\"position\":\n" +
             "       { $nearSphere :\n" +

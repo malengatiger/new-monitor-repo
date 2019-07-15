@@ -14,14 +14,15 @@ var __importStar = (this && this.__importStar) || function (mod) {
     result["default"] = mod;
     return result;
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const admin = __importStar(require("firebase-admin"));
+const constants_1 = __importDefault(require("./constants"));
 console.log(`\n\n☘️ ☘️ ☘️ Loading service accounts from ☘️ .env ☘️  ...\n\n`);
 const sa1 = process.env.MONITOR_CONFIG || "config 1 not found";
 const ssa1 = JSON.parse(sa1);
-console.log(`📌 📌 📌 📌 📌 📌 📌 📌  `);
-console.log(ssa1);
-console.log(`📌 📌 📌 📌 📌 📌 📌 📌 `);
 console.log(`\n☘️ serviceAccounts listed ☘️ ok: 😍 😍 😍 ...\n\n`);
 const appTo = admin.initializeApp({
     credential: admin.credential.cert(ssa1),
@@ -41,12 +42,13 @@ class Messaging {
                     body: JSON.stringify(data),
                 },
                 data: {
+                    type: constants_1.default.USERS,
                     json: JSON.stringify(data),
                 },
             };
-            const topic = "users";
+            const topic = constants_1.default.USERS;
             yield appTo.messaging().sendToTopic(topic, payload, options);
-            console.log(`😍😍😍😍😍😍😍😍 sendUser: user data message sent to topic: 🍎🍎  ${new Date().toISOString()} 🍎🍎 `);
+            console.log(`😍😍😍😍😍😍😍😍 sendUser: user data message sent to topic: 🍎🍎 ${topic}: 🍎🍎  ${new Date().toISOString()} 🍎🍎 `);
             console.log(payload);
         });
     }
@@ -62,10 +64,11 @@ class Messaging {
                     body: JSON.stringify(data),
                 },
                 data: {
+                    type: constants_1.default.SETTLEMENTS,
                     json: JSON.stringify(data),
                 },
             };
-            const topic = "settlements_" + data.countryId;
+            const topic = constants_1.default.SETTLEMENTS;
             yield appTo.messaging().sendToTopic(topic, payload, options);
             console.log(`😍😍😍😍😍😍😍😍 sendSettlement: data message sent to topic: 💙 ${topic} 💙 🍎🍎  ${new Date().toISOString()} 🍎🍎 `);
             console.log(payload);
@@ -83,10 +86,11 @@ class Messaging {
                     body: JSON.stringify(data),
                 },
                 data: {
+                    type: constants_1.default.PROJECTS,
                     json: JSON.stringify(data),
                 },
             };
-            const topic = "projects";
+            const topic = constants_1.default.PROJECTS;
             yield appTo.messaging().sendToTopic(topic, payload, options);
             console.log(`😍😍😍😍😍😍😍😍 sendProject: data message sent to topic: 💙 ${topic} 💙 🍎🍎  ${new Date().toISOString()} 🍎🍎 `);
             console.log(payload);
@@ -104,10 +108,11 @@ class Messaging {
                     body: JSON.stringify(data),
                 },
                 data: {
+                    type: constants_1.default.QUESTIONNAIRES,
                     json: JSON.stringify(data),
                 },
             };
-            const topic = "questionnaires";
+            const topic = constants_1.default.QUESTIONNAIRES;
             yield appTo.messaging().sendToTopic(topic, payload, options);
             console.log(`😍😍😍😍😍😍😍😍 sendQuestionnaire: data message sent to topic: 💙 ${topic} 💙 🍎🍎  ${new Date().toISOString()} 🍎🍎 `);
             console.log(payload);
@@ -125,10 +130,11 @@ class Messaging {
                     body: JSON.stringify(data),
                 },
                 data: {
+                    type: constants_1.default.ORGANIZATIONS,
                     json: JSON.stringify(data),
                 },
             };
-            const topic = "organizations";
+            const topic = constants_1.default.ORGANIZATIONS;
             yield appTo.messaging().sendToTopic(topic, payload, options);
             console.log(`😍😍😍😍😍😍😍😍 sendOrganization: data message sent to topic: 💙 ${topic} 💙 🍎🍎  ${new Date().toISOString()} 🍎🍎 `);
             console.log(payload);

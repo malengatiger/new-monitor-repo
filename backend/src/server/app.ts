@@ -1,11 +1,15 @@
 import * as bodyParser from "body-parser";
 import cors from "cors";
+import dotenv from 'dotenv';
 import express from "express";
 import mongoose from "mongoose";
 import { AppExpressRoutes } from "../routes/app_routes";
+
+require('dotenv').config();
 const port = process.env.PORT || "8000";
-const password = process.env.MONGODB_PASSWORD || "aubrey3";
-const user = process.env.MONGODB_USER || "aubs";
+const password = process.env.MONGODB_PASSWORD || "xyz";
+const user = process.env.MONGODB_USER || "abc";
+console.log(`password: ${password} user: ${user}`);
 const appName = "Monitor MongoDB API";
 const mongoConnection = `mongodb+srv://${user}:${password}@ar001-1xhdt.mongodb.net/monitordb?retryWrites=true`;
 

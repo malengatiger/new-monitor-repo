@@ -13,7 +13,7 @@ const z = "\n";
 // tslint:disable-next-line: no-var-requires
 const citiesJson = require("../../cities.json");
 const mData = citiesJson;
-console.log(mData);
+//console.log(mData);
 class Migrator {
     static start() {
         return __awaiter(this, void 0, void 0, function* () {
