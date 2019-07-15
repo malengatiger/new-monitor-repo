@@ -12,13 +12,13 @@ class AdminMessagingBloc {
     initialize();
   }
 
-  subscribe() {
+  subscribe() async{
     debugPrint('\n\n🍏🍏 💙💙💙 💙💙💙 AdminMessagingBloc: Subscribe to FCM topics ... 💙💙💙💙💙💙 🍏🍏');
-    firebaseMessaging.subscribeToTopic(Constants.TOPIC_USERS);
-    firebaseMessaging.subscribeToTopic(Constants.TOPIC_SETTLEMENTS);
-    firebaseMessaging.subscribeToTopic(Constants.TOPIC_PROJECTS);
-    firebaseMessaging.subscribeToTopic(Constants.TOPIC_QUESTIONNAIRES);
-    firebaseMessaging.subscribeToTopic(Constants.TOPIC_ORGANIZATIONS);
+    await firebaseMessaging.subscribeToTopic(Constants.TOPIC_USERS);
+    await firebaseMessaging.subscribeToTopic(Constants.TOPIC_SETTLEMENTS);
+    await firebaseMessaging.subscribeToTopic(Constants.TOPIC_PROJECTS);
+    await firebaseMessaging.subscribeToTopic(Constants.TOPIC_QUESTIONNAIRES);
+    await firebaseMessaging.subscribeToTopic(Constants.TOPIC_ORGANIZATIONS);
     debugPrint('💙💙💙 🍎🍎🍎🍎 AdminMessagingBloc: Subscriptions to FCM topics completed. 🍎🍎🍎🍎🍎🍎');
     debugPrint('🔆🔆🔆🔆 topics: 🔆 ${Constants.TOPIC_USERS} 🔆 ${Constants.TOPIC_SETTLEMENTS} 🔆 ${Constants.TOPIC_PROJECTS} 🔆 ${Constants.TOPIC_ORGANIZATIONS} 🔆 ${Constants.TOPIC_QUESTIONNAIRES} 🔆🔆🔆🔆 \n\n');
   }
