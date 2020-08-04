@@ -2,9 +2,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:monitorlibrary/api/data_api.dart';
 import 'package:monitorlibrary/api/sharedprefs.dart';
 import 'package:monitorlibrary/data/user.dart';
-class AppAuth {
 
-  static FirebaseAuth _auth  = FirebaseAuth.instance;
+class AppAuth {
+  static FirebaseAuth _auth = FirebaseAuth.instance;
 
   static Future<bool> isUserSignedIn() async {
     var user = await _auth.currentUser();
@@ -14,38 +14,40 @@ class AppAuth {
       return true;
     }
   }
-   static Future createUser(User user, String password)  async {
-    var fbUser = await _auth.createUserWithEmailAndPassword(email: user.email, password: password)
-    .catchError((e) {
+
+  static Future createUser(User user, String password) async {
+    var fbUser = await _auth
+        .createUserWithEmailAndPassword(email: user.email, password: password)
+        .catchError((e) {
       print('User create failed');
     });
     if (fbUser != null) {
-      var mUser =  await DataAPI.addUser(user);
+      var mUser = await DataAPI.addUser(user);
       await Prefs.saveUser(mUser);
-      var countries  = await DataAPI.getCountries();
+      var countries = await DataAPI.getCountries();
       if (countries.isNotEmpty) {
         await Prefs.saveCountry(countries.elementAt(0));
       }
     }
-   }
-   static Future signIn({String email, String password})  async {
-     var fbUser = await _auth.signInWithEmailAndPassword(email: email, password: password)
-     .catchError((e) {
-       print(e);
-       throw e;
-     });
-     if (fbUser != null) {
-       var user = await DataAPI.findUserByEmail(fbUser.email);
-       await Prefs.saveUser(user);
-       var countries  = await DataAPI.getCountries();
-       if (countries.isNotEmpty) {
-         await Prefs.saveCountry(countries.elementAt(0));
-       }
-       return user;
-     }
-   }
+  }
 
-   static Future getCountry() async {
+  static Future signIn({String email, String password}) async {
+    var fbUser = await _auth
+        .signInWithEmailAndPassword(email: email, password: password)
+        .catchError((e) {
+      print(e);
+      throw e;
+    });
+    if (fbUser != null) {
+      var user = await DataAPI.findUserByEmail(fbUser.user.email);
+      await Prefs.saveUser(user);
+      var countries = await DataAPI.getCountries();
+      if (countries.isNotEmpty) {
+        await Prefs.saveCountry(countries.elementAt(0));
+      }
+      return user;
+    }
+  }
 
-   }
+  static Future getCountry() async {}
 }

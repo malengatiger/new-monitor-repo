@@ -1,17 +1,18 @@
 import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
+import 'package:location/location.dart';
 import 'package:monitorlibrary/api/data_api.dart';
 import 'package:monitorlibrary/api/sharedprefs.dart';
 import 'package:monitorlibrary/data/country.dart';
 import 'package:monitorlibrary/data/position.dart';
+import 'package:monitorlibrary/data/project.dart';
+import 'package:monitorlibrary/data/questionnaire.dart';
 import 'package:monitorlibrary/data/section.dart';
 import 'package:monitorlibrary/data/settlement.dart';
-import 'package:monitorlibrary/data/questionnaire.dart';
-import 'package:monitorlibrary/data/project.dart';
 import 'package:monitorlibrary/data/user.dart';
 import 'package:monitorlibrary/functions.dart';
-import 'package:permission_handler/permission_handler.dart';
-import 'package:location/location.dart';
+import 'package:permission_handler/permission_handler.dart' as perm;
 
 GeneralBloc bloc = GeneralBloc();
 
@@ -25,9 +26,8 @@ class GeneralBloc {
   StreamController<List<Country>> _cntryController =
       StreamController.broadcast();
   StreamController<Questionnaire> _activeQuestionnaireController =
-  StreamController.broadcast();
-  StreamController<User> _activeUserController =
-  StreamController.broadcast();
+      StreamController.broadcast();
+  StreamController<User> _activeUserController = StreamController.broadcast();
 
   Stream get settlementStream => _settController.stream;
   Stream get questionnaireStream => _questController.stream;
@@ -35,7 +35,7 @@ class GeneralBloc {
   Stream get countryStream => _cntryController.stream;
   Stream get activeUserStream => _activeUserController.stream;
   Stream get usersStream => _userController.stream;
-  Stream get activeQuestionnaireStream  => _activeQuestionnaireController.stream;
+  Stream get activeQuestionnaireStream => _activeQuestionnaireController.stream;
 
   StreamController<List<User>> _userController = StreamController.broadcast();
   List<Settlement> _settlements = List();
@@ -51,16 +51,16 @@ class GeneralBloc {
   }
 
   setActiveUser() async {
-
-    var user =  await Prefs.getUser();
+    var user = await Prefs.getUser();
     if (user != null) {
       debugPrint('setting active user .... 🤟🤟');
       _activeUserController.sink.add(user);
     }
   }
+
   _setActiveQuestionnaire() async {
     var q = await Prefs.getQuestionnaire();
-    if (q !=  null) {
+    if (q != null) {
       updateActiveQuestionnaire(q);
     }
   }
@@ -68,8 +68,10 @@ class GeneralBloc {
   updateActiveQuestionnaire(Questionnaire q) {
     _activeQuestionnaireController.sink.add(q);
     print('🍅 🍅 🍅 🍅 active questionnaire has been set');
-    prettyPrint(q.toJson(), '🅿️ 🅿️ 🅿️ 🅿️ 🅿️ ACTIVE QUESTIONNAIRE 🍅 🍅 🍅 🍅 ');
+    prettyPrint(
+        q.toJson(), '🅿️ 🅿️ 🅿️ 🅿️ 🅿️ ACTIVE QUESTIONNAIRE 🍅 🍅 🍅 🍅 ');
   }
+
   Future<Position> getCurrentLocation() async {
     var location = Location();
     try {
@@ -86,44 +88,39 @@ class GeneralBloc {
   Future checkPermission() async {
     print(' 🔆 🔆 🔆 🔆 checking permission ...');
 
-    final Future<PermissionStatus> statusFuture =
-        PermissionHandler().checkPermissionStatus(PermissionGroup.location);
-
-    statusFuture.then((PermissionStatus status) {
-      switch (status) {
-        case PermissionStatus.granted:
-          print('location is GRANTED:  ❤️ 🧡 💛 💚 💙 💜 ....');
-          break;
-        case PermissionStatus.denied:
-          print('location is DENIED 🔱 🔱 🔱 🔱 🔱 ');
-          requestPermission();
-          break;
-        case PermissionStatus.disabled:
-          print('location is DiSABLED  🔕 🔕 🔕 🔕 🔕 ');
-          requestPermission();
-          break;
-        case PermissionStatus.unknown:
-          print('location is UNKNOWN  🔕 🔕 🔕 🔕 🔕 ');
-          requestPermission();
-          break;
-      }
-    });
-  }
-
-  Future requestPermission() async {
-    print('🧩🧩🧩🧩 Requesting permission ....  🧩🧩🧩🧩');
-    PermissionStatus permission = await PermissionHandler()
-        .checkPermissionStatus(PermissionGroup.location);
-    final List<PermissionGroup> permissions = <PermissionGroup>[
-      PermissionGroup.location
-    ];
-    final Map<PermissionGroup, PermissionStatus> permissionRequestResult =
-        await PermissionHandler().requestPermissions(permissions);
-
-    var permissionStatus = permissionRequestResult[permission];
-    if (permissionStatus == PermissionStatus.granted) {
-      print('💚💚💚💚 Permission has been  granted. 🍏🍏 Yeah!');
+    if (await perm.Permission.contacts.request().isGranted) {
+      // Either the permission was already granted before or the user just granted it.
     }
+
+// You can request multiple permissions at once.
+    Map<perm.Permission, PermissionStatus> statuses = (await [
+      perm.Permission.location,
+      perm.Permission.storage,
+    ].request())
+        .cast<perm.Permission, PermissionStatus>();
+    print(statuses[perm.Permission.location]);
+//    final Future<perm.PermissionStatus> statusFuture = perm.PermissionHandler()
+//        .checkPermissionStatus(PermissionGroup.location);
+//
+//    statusFuture.then((PermissionStatus status) {
+//      switch (status) {
+//        case PermissionStatus.granted:
+//          print('location is GRANTED:  ❤️ 🧡 💛 💚 💙 💜 ....');
+//          break;
+//        case PermissionStatus.denied:
+//          print('location is DENIED 🔱 🔱 🔱 🔱 🔱 ');
+//          requestPermission();
+//          break;
+//        case PermissionStatus.disabled:
+//          print('location is DiSABLED  🔕 🔕 🔕 🔕 🔕 ');
+//          requestPermission();
+//          break;
+//        case PermissionStatus.unknown:
+//          print('location is UNKNOWN  🔕 🔕 🔕 🔕 🔕 ');
+//          requestPermission();
+//          break;
+//      }
+//    });
   }
 
   Future addToPolygon(
@@ -137,8 +134,8 @@ class GeneralBloc {
     var country = await Prefs.getCountry();
     if (country != null) {
       print('Bloc: 🐬 🐬 addToPolygon ... 🐷 🐷 🐷 refreshing settlement list');
-      _settlements = await findSettlementsByCountry(country.countryId);
-      _settController.sink.add(_settlements);
+//      _settlements = await findSettlementsByCountry(country.countryId);
+//      _settController.sink.add(_settlements);
     }
     return res;
   }
@@ -188,7 +185,8 @@ class GeneralBloc {
     var user = await Prefs.getUser();
     if (user != null) {
       await getQuestionnairesByOrganization(user.organizationId);
-      print('🤟🤟🤟 Org questionnaires refreshed after 🤟 successfull addition to DB 🌹');
+      print(
+          '🤟🤟🤟 Org questionnaires refreshed after 🤟 successfull addition to DB 🌹');
     }
   }
 
@@ -223,20 +221,21 @@ class GeneralBloc {
     return _users;
   }
 
-  Future<List<Project>> findProjectsByOrganization(String organizationId) async {
+  Future<List<Project>> findProjectsByOrganization(
+      String organizationId) async {
     _projects.clear();
     var res = await DataAPI.findProjectsByOrganization(organizationId);
     _projects.addAll(res);
     _projController.sink.add(_projects);
     return _projects;
   }
+
   Future<Project> findProjectById(String projectId) async {
     var res = await DataAPI.findProjectById(projectId);
     prettyPrint(res.toJson(), '❤️ 🧡 💛 RESULT: findProjectById: ❤️ 🧡 💛');
     print('\n\n❤️ 🧡 💛');
-    return  res;
+    return res;
   }
-
 
   Future<Project> addProject(Project project) async {
     var res = await DataAPI.addProject(project);

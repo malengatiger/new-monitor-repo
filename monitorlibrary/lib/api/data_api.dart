@@ -33,9 +33,7 @@ class DataAPI {
     }
   }
 
-
-  static Future<Project> findProjectById(
-      String projectId) async {
+  static Future<Project> findProjectById(String projectId) async {
     Map bag = {
       'projectId': projectId,
     };
@@ -65,13 +63,15 @@ class DataAPI {
       throw e;
     }
   }
+
   static Future<List<Project>> findProjectsByOrganization(
       String organizationId) async {
     Map bag = {
       'organizationId': organizationId,
     };
     try {
-      List result = await _callWebAPIPost(URL + 'findProjectsByOrganization', bag);
+      List result =
+          await _callWebAPIPost(URL + 'findProjectsByOrganization', bag);
       List<Project> list = List();
       result.forEach((m) {
         list.add(Project.fromJson(m));
@@ -82,13 +82,15 @@ class DataAPI {
       throw e;
     }
   }
+
   static Future<List<Questionnaire>> getQuestionnairesByOrganization(
       String organizationId) async {
     Map bag = {
       'organizationId': organizationId,
     };
     try {
-      List result = await _callWebAPIPost(URL + 'getQuestionnairesByOrganization', bag);
+      List result =
+          await _callWebAPIPost(URL + 'getQuestionnairesByOrganization', bag);
       List<Questionnaire> list = List();
       result.forEach((m) {
         list.add(Questionnaire.fromJson(m));
@@ -121,13 +123,15 @@ class DataAPI {
       throw e;
     }
   }
-  static Future addPointToPolygon({@required String settlementId,
-    @required double latitude, @required double longitude}) async {
+
+  static Future addPointToPolygon(
+      {@required String settlementId,
+      @required double latitude,
+      @required double longitude}) async {
     Map bag = {
       'settlementId': settlementId,
       'latitude': latitude,
       'longitude': longitude,
-
     };
     try {
       var result = await _callWebAPIPost(URL + 'addPointToPolygon', bag);
@@ -137,12 +141,12 @@ class DataAPI {
       throw e;
     }
   }
-  static Future addQuestionnaireSection({@required String questionnaireId,
-    @required Section section}) async {
+
+  static Future addQuestionnaireSection(
+      {@required String questionnaireId, @required Section section}) async {
     Map bag = {
       'questionnaireId': questionnaireId,
       'section': section.toJson(),
-
     };
     try {
       var result = await _callWebAPIPost(URL + 'addQuestionnaireSection', bag);
@@ -184,7 +188,9 @@ class DataAPI {
       throw e;
     }
   }
-  static Future<Project> addSettlementToProject({String projectId, String  settlementId}) async {
+
+  static Future<Project> addSettlementToProject(
+      {String projectId, String settlementId}) async {
     Map bag = {
       'projectId': projectId,
       'settlementId': settlementId,
@@ -197,7 +203,9 @@ class DataAPI {
       throw e;
     }
   }
-  static Future<Project> addPositionsToProject({String projectId, List<Position> positions}) async {
+
+  static Future<Project> addPositionsToProject(
+      {String projectId, List<Position> positions}) async {
     List mPos = List();
     positions.forEach((p) {
       mPos.add(p.toJson());
@@ -214,9 +222,13 @@ class DataAPI {
       throw e;
     }
   }
-  static Future<Project> addProjectPhoto({String projectId, String url,
-  double latitude, longitude, String userId}) async {
 
+  static Future<Project> addProjectPhoto(
+      {String projectId,
+      String url,
+      double latitude,
+      longitude,
+      String userId}) async {
     Map bag = {
       'projectId': projectId,
       'url': url,
@@ -233,9 +245,14 @@ class DataAPI {
       throw e;
     }
   }
-  static Future<Settlement> addSettlementPhoto({String settlementId, String url,
-    String comment, double latitude, longitude, String userId}) async {
 
+  static Future<Settlement> addSettlementPhoto(
+      {String settlementId,
+      String url,
+      String comment,
+      double latitude,
+      longitude,
+      String userId}) async {
     Map bag = {
       'settlementId': settlementId,
       'url': url,
@@ -252,9 +269,14 @@ class DataAPI {
       throw e;
     }
   }
-  static Future<Project> addProjectVideo({String projectId, String url,
-    String comment, double latitude, longitude, String userId}) async {
 
+  static Future<Project> addProjectVideo(
+      {String projectId,
+      String url,
+      String comment,
+      double latitude,
+      longitude,
+      String userId}) async {
     Map bag = {
       'projectId': projectId,
       'url': url,
@@ -271,9 +293,14 @@ class DataAPI {
       throw e;
     }
   }
-  static Future<Project> addProjectRating({String projectId, String rating,
-    String comment, double latitude, longitude, String userId}) async {
 
+  static Future<Project> addProjectRating(
+      {String projectId,
+      String rating,
+      String comment,
+      double latitude,
+      longitude,
+      String userId}) async {
     Map bag = {
       'projectId': projectId,
       'rating': rating,
@@ -294,7 +321,8 @@ class DataAPI {
   static Future<Questionnaire> addQuestionnaire(
       Questionnaire questionnaire) async {
     Map bag = questionnaire.toJson();
-    prettyPrint(bag, 'DataAPI  💦 💦 💦 addQuestionnaire: 🔆🔆 Sending to web api ......');
+    prettyPrint(bag,
+        'DataAPI  💦 💦 💦 addQuestionnaire: 🔆🔆 Sending to web api ......');
     try {
       var result = await _callWebAPIPost(URL + 'addQuestionnaire', bag);
       return Questionnaire.fromJson(result);
@@ -304,13 +332,10 @@ class DataAPI {
     }
   }
 
-  static Future<List<Project>> findAllProjects(
-      String organizationId) async {
-    Map bag = {
-    };
+  static Future<List<Project>> findAllProjects(String organizationId) async {
+    Map bag = {};
     try {
-      List result =
-          await _callWebAPIPost(URL + 'findAllProjects', bag);
+      List result = await _callWebAPIPost(URL + 'findAllProjects', bag);
       List<Project> list = List();
       result.forEach((m) {
         list.add(Project.fromJson(m));
@@ -358,14 +383,14 @@ class DataAPI {
       throw e;
     }
   }
+
   static Future<List<Country>> getCountries() async {
-    Map bag = {
-    };
+    Map bag = {};
     try {
       List result = await _callWebAPIPost(URL + 'getCountries', bag);
       List<Country> list = List();
       result.forEach((m) {
-        list.add( Country.fromJson(m));
+        list.add(Country.fromJson(m));
       });
 
       return list;
@@ -407,12 +432,10 @@ class DataAPI {
       });
       if (resp.statusCode == 200) {
         debugPrint(
-            '\n\n❤️️❤️  DancerAPI._callWebAPI .... : 💙 statusCode: 👌👌👌 ${resp
-                .statusCode} 👌👌👌 💙 for $mUrl');
+            '\n\n❤️️❤️  DancerAPI._callWebAPI .... : 💙 statusCode: 👌👌👌 ${resp.statusCode} 👌👌👌 💙 for $mUrl');
       } else {
         debugPrint(
-            '\n\n👿👿👿 DancerAPI._callWebAPI .... : 🔆 statusCode: 👿👿👿 ${resp
-                .statusCode} 🔆🔆🔆 for $mUrl');
+            '\n\n👿👿👿 DancerAPI._callWebAPI .... : 🔆 statusCode: 👿👿👿 ${resp.statusCode} 🔆🔆🔆 for $mUrl');
         throw Exception('🚨 🚨 Status Code 🚨 ${resp.statusCode} 🚨 Exception');
       }
       var end = DateTime.now();
