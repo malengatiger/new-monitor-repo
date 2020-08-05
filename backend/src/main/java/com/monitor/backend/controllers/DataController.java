@@ -68,8 +68,8 @@ public class DataController {
         return dataService.addMonitorReport(report);
     }
     @PostMapping("/addUser")
-    public String addUser(User user) throws Exception {
+    public String addUser(User user, String password) throws Exception {
         LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS).concat("Adding User: ".concat(user.getName())));
-        return dataService.addUser(user);
+        return dataService.createUser(user, password);
     }
 }

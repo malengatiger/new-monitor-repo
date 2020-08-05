@@ -10,10 +10,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.ListUsersPage;
 import com.google.firebase.auth.UserRecord;
 import com.google.firebase.cloud.FirestoreClient;
-import com.monitor.backend.models.Country;
-import com.monitor.backend.models.Organization;
-import com.monitor.backend.models.Position;
-import com.monitor.backend.models.Project;
+import com.monitor.backend.models.*;
 import com.monitor.backend.services.DataService;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -108,9 +105,35 @@ public class Generator {
         for (Organization organization : organizations) {
            addProjects(organization);
         }
+        generateUsers(organizations);
     }
     public void generateUsers(List<Organization> organizations) throws Exception {
+        LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS + Emoji.RAIN_DROPS.concat(" Generating Users ...")));
+        for (Organization organization : organizations) {
+            for (int i = 0; i < 4; i++) {
+                String name = getRandomFirstName() + " " + getRandomLastName();
+                if (i == 0) {
+                    User user = new User(name, "user." + System.currentTimeMillis() + "@monitor.com",
+                            "099 999 9999", "userId", Objects.requireNonNull(organization.getOrganizationId()),
+                            organization.getName(), new DateTime().toDateTimeISO().toString(), UserType.ORGANIZATION_USER);
+                    dataService.createUser(user, "pass123");
+                }
 
+                if (i == 1 || i == 2) {
+                    User user = new User(name, "user." + System.currentTimeMillis() + "@monitor.com",
+                            "099 999 9999", "userId", Objects.requireNonNull(organization.getOrganizationId()),
+                            organization.getName(), new DateTime().toDateTimeISO().toString(), UserType.MONITOR);
+                    dataService.createUser(user, "pass123");
+                }
+
+                if (i == 3 ) {
+                    User user = new User(name, "user." + System.currentTimeMillis() + "@monitor.com",
+                            "099 999 9999", "userId", Objects.requireNonNull(organization.getOrganizationId()),
+                            organization.getName(), new DateTime().toDateTimeISO().toString(), UserType.EXECUTIVE);
+                    dataService.createUser(user, "pass123");
+                }
+            }
+        }
     }
 
     private void addProjects(Organization organization) throws Exception {
@@ -234,18 +257,6 @@ public class Generator {
         lastNames.add("Zulu");
     }
 
-    public UserRecord createUser(String name, String email, String password) throws Exception {
-        LOGGER.info(Emoji.LEMON + Emoji.LEMON + "createUser: name: " + name + " email: " + email + " password: " + password);
-        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-        UserRecord.CreateRequest createRequest = new UserRecord.CreateRequest();
-        createRequest.setEmail(email);
-        createRequest.setDisplayName(name);
-        createRequest.setPassword(password);
-        ApiFuture<UserRecord> userRecord = firebaseAuth.createUserAsync(createRequest);
-        LOGGER.info(Emoji.HEART_ORANGE + Emoji.HEART_ORANGE + "Firebase user record created: ".concat(userRecord.get().getUid()));
-        return userRecord.get();
-
-    }
 
     public List<ExportedUserRecord> getAuthUsers() throws Exception {
         // Start listing users from the beginning, 1000 at a time.

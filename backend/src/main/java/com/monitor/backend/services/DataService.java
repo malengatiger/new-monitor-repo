@@ -9,6 +9,8 @@ import com.google.cloud.firestore.DocumentReference;
 import com.google.cloud.firestore.Firestore;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.UserRecord;
 import com.google.firebase.cloud.FirestoreClient;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -88,12 +90,13 @@ public class DataService {
     }
 
 
-    public String addUser(User user) throws Exception {
+    private void addUser(User user) throws Exception {
         user.setUserId(UUID.randomUUID().toString());
         firestore = FirestoreClient.getFirestore();
         ApiFuture<DocumentReference> future = firestore.collection("users").add(user);
-        LOGGER.info(Emoji.LEAF.concat(Emoji.LEAF).concat("User added: " +  future.get().getPath()));
-        return user.getUserId();
+        LOGGER.info(Emoji.LEAF.concat(Emoji.LEAF).concat("User added: "
+                + user.getName() + " path: "
+                +  future.get().getPath()));
     }
 
     public String addMonitorReport(MonitorReport report) throws Exception {
@@ -141,5 +144,22 @@ public class DataService {
         ApiFuture<DocumentReference> future = firestore.collection("organizations").add(organization);
         LOGGER.info(Emoji.LEAF.concat(Emoji.LEAF).concat("Organization added: " +  future.get().getPath()));
         return organization.getOrganizationId();
+    }
+
+    public String createUser(User user, String password) throws Exception {
+        LOGGER.info(Emoji.LEMON + Emoji.LEMON + "createUser: name: " + user.getName() + " email: " + user.getEmail() + " password: " + password);
+        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+        UserRecord.CreateRequest createRequest = new UserRecord.CreateRequest();
+        createRequest.setEmail(user.getEmail());
+        createRequest.setDisplayName(user.getName());
+        createRequest.setPassword(password);
+        ApiFuture<UserRecord> userRecord = firebaseAuth.createUserAsync(createRequest);
+        String uid = userRecord.get().getUid();
+        LOGGER.info(Emoji.HEART_ORANGE + Emoji.HEART_ORANGE + "Firebase user record created: ".concat(uid));
+        user.setUserId(uid);
+        addUser(user);
+
+        return uid;
+
     }
 }

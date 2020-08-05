@@ -14,7 +14,7 @@ enum class Rating {
 }
 
 data class User(var name: String, var email: String, var cellphone: String, var userId: String?,
-                var organizationId: String, var organizationName: String, var created: String) {
+                var organizationId: String, var organizationName: String, var created: String, var userType: UserType) {
 }
 
 data class Organization(var name: String, var countryName: String, var countryId: String,
