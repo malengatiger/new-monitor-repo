@@ -8,14 +8,20 @@ import com.google.cloud.firestore.QuerySnapshot;
 import com.google.firebase.auth.ExportedUserRecord;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.ListUsersPage;
-import com.google.firebase.auth.UserRecord;
 import com.google.firebase.cloud.FirestoreClient;
+import com.google.gson.Gson;
 import com.monitor.backend.models.*;
 import com.monitor.backend.services.DataService;
+import com.monitor.backend.services.ListService;
 import org.joda.time.DateTime;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
+import java.io.FileReader;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -66,6 +72,72 @@ public class Generator {
         countries.add(c2);
         generateOrganizations(countries);
     }
+
+    @Autowired
+    private ListService listService;
+    public void migrateCities() throws Exception {
+        LOGGER.info(Emoji.FLOWER_RED + Emoji.FLOWER_RED + " Migrating cities at ".concat(" " + new DateTime().toDateTimeISO().toString()));
+
+        DateTime start = new DateTime();
+        Country country = listService.getCountryByName("South Africa");
+        if (country == null) {
+            throw new Exception("South Africa is missing!! " + Emoji.NOT_OK);
+        }
+        Gson gson = new Gson();
+
+        JSONParser parser = new JSONParser();
+        try {
+            Object obj = parser.parse(new FileReader("cities.json"));
+
+            JSONObject jsonObject = (JSONObject) obj;
+            int cnt = 0;
+            for (Object o : jsonObject.keySet()) {
+                Double latitude = null;
+                Double longitude = null;
+                String key = (String)o;
+                JSONObject object = (JSONObject) jsonObject.get(key);
+                String cityName = (String) object.get("name");
+                String province = (String)object.get("provinceName");
+                try {
+                    latitude = (Double) object.get("latitude");
+                    longitude = (Double) object.get("longitude");
+                    if (province == null) {
+                        province = "Unknown";
+                    }
+                    if (cityName != null && !cityName.isEmpty()) {
+                        City city = new City(cityName, "id", country, province,
+                                new Position(latitude, longitude, DataService.getGeoHash(latitude, longitude)));
+                        try {
+                            dataService.addCity(city);
+                            cnt++;
+                            LOGGER.info(Emoji.PEAR + Emoji.PEAR + "City #" + cnt +
+                                    " " + city.getName() +  " " + city.getProvinceName() + " added to database " + Emoji.RED_DOT);
+                        } catch (Exception e) {
+                            LOGGER.info(Emoji.NOT_OK + " City add failed: " + city.getName());
+                        }
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+
+            }
+
+            DateTime end = new DateTime();
+            long ms = end.toDate().getTime() - start.toDate().getTime();
+            long seconds = ms / 1000;
+            long minutes = seconds / 60;
+
+            LOGGER.info(Emoji.LEAF + Emoji.LEAF  + Emoji.LEAF + Emoji.LEAF + " Cities migrated: " + cnt + " " + Emoji.RED_APPLE +
+                    Emoji.DICE + " minutes elapsed: " + minutes + " " + Emoji.DICE);
+            LOGGER.info(Emoji.LEAF + Emoji.LEAF + Emoji.LEAF + Emoji.LEAF + " Cities migrated: " + cnt + " " + Emoji.RED_APPLE +
+                    Emoji.DICE + " seconds elapsed: " + seconds + " " + Emoji.DICE + " completed at: " + new DateTime().toDateTimeISO().toString());
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
     public void generateOrganizations(List<Country> countries) throws Exception {
         List<Organization> organizations = new ArrayList<>();
         Country country = countries.get(0);
@@ -109,6 +181,7 @@ public class Generator {
     }
     public void generateUsers(List<Organization> organizations) throws Exception {
         LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS + Emoji.RAIN_DROPS.concat(" Generating Users ...")));
+        int cnt = 0;
         for (Organization organization : organizations) {
             for (int i = 0; i < 4; i++) {
                 String name = getRandomFirstName() + " " + getRandomLastName();
@@ -117,6 +190,7 @@ public class Generator {
                             "099 999 9999", "userId", Objects.requireNonNull(organization.getOrganizationId()),
                             organization.getName(), new DateTime().toDateTimeISO().toString(), UserType.ORGANIZATION_USER);
                     dataService.createUser(user, "pass123");
+                    cnt++;
                 }
 
                 if (i == 1 || i == 2) {
@@ -124,6 +198,7 @@ public class Generator {
                             "099 999 9999", "userId", Objects.requireNonNull(organization.getOrganizationId()),
                             organization.getName(), new DateTime().toDateTimeISO().toString(), UserType.MONITOR);
                     dataService.createUser(user, "pass123");
+                    cnt++;
                 }
 
                 if (i == 3 ) {
@@ -131,9 +206,11 @@ public class Generator {
                             "099 999 9999", "userId", Objects.requireNonNull(organization.getOrganizationId()),
                             organization.getName(), new DateTime().toDateTimeISO().toString(), UserType.EXECUTIVE);
                     dataService.createUser(user, "pass123");
+                    cnt++;
                 }
             }
         }
+        LOGGER.info(Emoji.PEAR + Emoji.PEAR + Emoji.PEAR + " Users added : " + cnt);
     }
 
     private void addProjects(Organization organization) throws Exception {
@@ -293,8 +370,8 @@ public class Generator {
         Firestore fs = FirestoreClient.getFirestore();
         CollectionReference ref1 = fs.collection("countries");
         deleteCollection(ref1, 1000);
-        CollectionReference ref2 = fs.collection("cities");
-        deleteCollection(ref2, 1000);
+//        CollectionReference ref2 = fs.collection("cities");
+//        deleteCollection(ref2, 1000);
         CollectionReference ref3 = fs.collection("organizations");
         deleteCollection(ref3, 1000);
         CollectionReference ref4 = fs.collection("projects");

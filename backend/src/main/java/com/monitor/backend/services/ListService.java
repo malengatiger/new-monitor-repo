@@ -1,6 +1,8 @@
 package com.monitor.backend.services;
 
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.*;
 import com.google.firebase.cloud.FirestoreClient;
@@ -14,7 +16,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class ListService {
@@ -38,7 +42,7 @@ public class ListService {
                 .orderBy("name")
                 .get();
         for (QueryDocumentSnapshot snapshot : future.get()) {
-            Organization organization = G.fromJson((JsonElement) snapshot.getData(),Organization.class);
+            Organization organization = G.fromJson(getJSON(snapshot.getData()),Organization.class);
             mList.add(organization);
         }
         LOGGER.info(Emoji.GLOBE.concat(Emoji.GLOBE).concat("getOrganizations ... found: " + mList.size()));
@@ -55,7 +59,7 @@ public class ListService {
                 .orderBy("name")
                 .get();
         for (QueryDocumentSnapshot snapshot : future.get()) {
-            Organization organization = G.fromJson((JsonElement) snapshot.getData(),Organization.class);
+            Organization organization = G.fromJson(getJSON(snapshot.getData()),Organization.class);
             mList.add(organization);
         }
         LOGGER.info(Emoji.GLOBE.concat(Emoji.GLOBE).concat("getOrganizations ... found: " + mList.size()));
@@ -77,7 +81,7 @@ public class ListService {
         QuerySnapshot snapshot = firestore.collection("projects").whereGreaterThanOrEqualTo("position.geohash", lower)
                 .whereLessThanOrEqualTo("position.geohash", upper).get().get();
         for (QueryDocumentSnapshot document : snapshot.getDocuments()) {
-            Project project = G.fromJson((JsonElement) document.getData(), Project.class);
+            Project project = G.fromJson(getJSON(document.getData()), Project.class);
             mList.add(project);
         }
         LOGGER.info(Emoji.HEART_ORANGE.concat(Emoji.HEART_BLUE).concat("Nearby Projects found: " + mList.size()));
@@ -99,7 +103,7 @@ public class ListService {
         QuerySnapshot snapshot = firestore.collection("cities").whereGreaterThanOrEqualTo("position.geohash", lower)
                 .whereLessThanOrEqualTo("position.geohash", upper).get().get();
         for (QueryDocumentSnapshot document : snapshot.getDocuments()) {
-            City project = G.fromJson((JsonElement) document.getData(), City.class);
+            City project = G.fromJson(getJSON(document.getData()), City.class);
             mList.add(project);
         }
         LOGGER.info(Emoji.HEART_ORANGE.concat(Emoji.HEART_BLUE).concat("Nearby Cities found: " + mList.size()));
@@ -115,7 +119,7 @@ public class ListService {
                 .whereEqualTo("projectId", projectId)
                 .get();
         for (QueryDocumentSnapshot snapshot : future.get()) {
-            MonitorReport monitorReport = G.fromJson((JsonElement) snapshot.getData(),MonitorReport.class);
+            MonitorReport monitorReport = G.fromJson(getJSON(snapshot.getData()),MonitorReport.class);
             mList.add(monitorReport);
         }
         LOGGER.info(Emoji.GLOBE.concat(Emoji.GLOBE).concat("getMonitorReports ... found: " + mList.size()));
@@ -132,7 +136,7 @@ public class ListService {
                 .whereEqualTo("organizationId", organizationId)
                 .get();
         for (QueryDocumentSnapshot snapshot : future.get()) {
-            Project project = G.fromJson((JsonElement) snapshot.getData(),Project.class);
+            Project project = G.fromJson(getJSON(snapshot.getData()),Project.class);
             mList.add(project);
         }
         LOGGER.info(Emoji.GLOBE.concat(Emoji.GLOBE).concat("getOrganizationProjects ... found: " + mList.size()));
@@ -150,7 +154,7 @@ public class ListService {
                 .orderBy("name")
                 .get();
         for (QueryDocumentSnapshot snapshot : future.get()) {
-            User project = G.fromJson((JsonElement) snapshot.getData(),User.class);
+            User project = G.fromJson(getJSON( snapshot.getData()),User.class);
             mList.add(project);
         }
         LOGGER.info(Emoji.GLOBE.concat(Emoji.GLOBE).concat("getOrganizationUsers ... found: " + mList.size()));
@@ -167,12 +171,37 @@ public class ListService {
                 .orderBy("name")
                 .get();
         for (QueryDocumentSnapshot snapshot : future.get()) {
-            User project = G.fromJson((JsonElement) snapshot.getData(),User.class);
+            User project = G.fromJson(getJSON( snapshot.getData()),User.class);
             mList.add(project);
         }
         LOGGER.info(Emoji.GLOBE.concat(Emoji.GLOBE).concat("getOrganizationUsers ... found: " + mList.size()));
 
         return mList;
+    }
+
+    public Country getCountryByName(String name) throws Exception {
+        firestore = FirestoreClient.getFirestore();
+        QuerySnapshot snapshot = firestore.collection("countries").whereEqualTo("name", name)
+                .limit(1)
+                .get().get();
+        //java.util.HashMap cannot be cast to com.google.gson.JsonElement\n\tat
+        Country country = null;
+        for (QueryDocumentSnapshot shot : snapshot.getDocuments()) {
+            country = G.fromJson(getJSON(shot.getData()), Country.class);
+        }
+        return country;
+    }
+
+    private String getJSON(Map<String, Object> hashMap) throws Exception {
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        try {
+            String json = objectMapper.writeValueAsString(hashMap);
+            System.out.println(json);
+            return json;
+        } catch (JsonProcessingException e) {
+           throw new Exception("JSON parsing failed " + Emoji.NOT_OK);
+        }
     }
 
 }

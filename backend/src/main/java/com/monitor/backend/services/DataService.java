@@ -84,9 +84,7 @@ public class DataService {
     }
 
     public static String getGeoHash(double latitude, double longitude) {
-        String geoHash = GeoHash.geoHashStringWithCharacterPrecision(latitude,longitude, 12);
-        LOGGER.info(Emoji.LEMON.concat(" GeoHash: ").concat(geoHash));
-        return geoHash;
+        return GeoHash.geoHashStringWithCharacterPrecision(latitude,longitude, 12);
     }
 
 
@@ -124,7 +122,7 @@ public class DataService {
         city.setCityId(UUID.randomUUID().toString());
         firestore = FirestoreClient.getFirestore();
         ApiFuture<DocumentReference> future = firestore.collection("cities").add(city);
-        LOGGER.info(Emoji.LEAF.concat(Emoji.LEAF).concat("City added: " +  future.get().getPath()));
+//        LOGGER.info(Emoji.LEAF.concat(Emoji.LEAF).concat("City added to database at path: " +  future.get().getPath()));
         return city.getCityId();
     }
 
