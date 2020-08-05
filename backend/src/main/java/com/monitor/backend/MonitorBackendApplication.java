@@ -4,6 +4,7 @@ import com.monitor.backend.controllers.DataController;
 import com.monitor.backend.controllers.ListController;
 import com.monitor.backend.services.DataService;
 import com.monitor.backend.services.ListService;
+import com.monitor.backend.utils.Emoji;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.Banner;
@@ -21,13 +22,13 @@ import java.util.logging.Logger;
 
 @SpringBootApplication
 @EnableScheduling
-public class MonitorbackendApplication implements ApplicationListener<ApplicationReadyEvent> {
+public class MonitorBackendApplication implements ApplicationListener<ApplicationReadyEvent> {
 
-    public static final Logger LOGGER = Logger.getLogger(MonitorbackendApplication.class.getName());
+    public static final Logger LOGGER = Logger.getLogger(MonitorBackendApplication.class.getName());
 
     public static void main(String[] args) {
-        LOGGER.info("\uD83D\uDE21 \uD83D\uDE21 \uD83D\uDE21 \uD83D\uDE21 Monitor Backend Starting ...");
-        SpringApplication app = new SpringApplication(MonitorbackendApplication.class);
+        LOGGER.info("\uD83D\uDE21 \uD83D\uDE21 \uD83D\uDE21 \uD83D\uDE21 MonitorBackendApplication Starting ...");
+        SpringApplication app = new SpringApplication(MonitorBackendApplication.class);
         app.setLogStartupInfo(true);
         app.setBanner(new Banner() {
             @Override
@@ -48,7 +49,8 @@ public class MonitorbackendApplication implements ApplicationListener<Applicatio
         LOGGER.info(Emoji.PANDA.concat(Emoji.PANDA).concat(Emoji.PANDA) +
                 " Monitor Backend started OK! ".concat(Emoji.HAND2.concat(Emoji.HAND2))
                 + " All services up and running.");
-        LOGGER.info("\uD83C\uDF38 \uD83C\uDF38 \uD83C\uDF38  Monitor Backend Ready and Able ...");
+        LOGGER.info("\uD83C\uDF38 \uD83C\uDF38 \uD83C\uDF38  MonitorBackendApplication Ready and willing ... "
+                .concat(Emoji.RED_APPLE));
 
     }
 

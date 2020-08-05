@@ -2,7 +2,7 @@ package com.monitor.backend.controllers;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.monitor.backend.Emoji;
+import com.monitor.backend.utils.Emoji;
 import com.monitor.backend.models.*;
 import com.monitor.backend.services.ListService;
 import org.slf4j.Logger;

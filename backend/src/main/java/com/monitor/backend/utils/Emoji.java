@@ -1,4 +1,4 @@
-package com.monitor.backend;
+package com.monitor.backend.utils;
 
 public class Emoji {
     public static final String

@@ -1,6 +1,6 @@
 package com.monitor.backend.controllers;
 
-import com.monitor.backend.Emoji;
+import com.monitor.backend.utils.Emoji;
 import com.monitor.backend.models.*;
 import com.monitor.backend.services.DataService;
 import org.springframework.beans.factory.annotation.Autowired;

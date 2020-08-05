@@ -12,7 +12,7 @@ import com.google.firebase.FirebaseOptions;
 import com.google.firebase.cloud.FirestoreClient;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.monitor.backend.Emoji;
+import com.monitor.backend.utils.Emoji;
 import com.monitor.backend.models.*;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
