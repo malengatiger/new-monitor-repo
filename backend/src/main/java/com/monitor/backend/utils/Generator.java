@@ -18,14 +18,8 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.io.File;
 import java.io.FileReader;
-import java.io.Reader;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Random;
+import java.util.*;
 import java.util.logging.Logger;
 
 @Service
@@ -111,7 +105,7 @@ public class Generator {
                             dataService.addCity(city);
                             cnt++;
                             LOGGER.info(Emoji.PEAR + Emoji.PEAR + "City #" + cnt +
-                                    " " + city.getName() +  " " + city.getProvinceName() + " added to database " + Emoji.RED_DOT);
+                                    " " + city.getName() +  " " + city.getProvinceName() + " added to database " + Emoji.RED_APPLE);
                         } catch (Exception e) {
                             LOGGER.info(Emoji.NOT_OK + " City add failed: " + city.getName());
                         }
@@ -139,35 +133,30 @@ public class Generator {
         }
     }
     public void generateOrganizations(List<Country> countries) throws Exception {
+
         List<Organization> organizations = new ArrayList<>();
         Country country = countries.get(0);
         LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS).concat("generateOrganizations: "
                 .concat(country.getName()).concat(" ")
                 .concat(Emoji.FLOWER_YELLOW)));
-        Organization org1 = new Organization(getRandomOrgName(), country.getName(),
-                Objects.requireNonNull(country.getCountryId()), country.getCountryCode(), new DateTime().toDateTimeISO().toString() );
-        String id1 = dataService.addOrganization(org1);
-        org1.setOrganizationId(id1);
-        organizations.add(org1);
-        String name = getRandomOrgName();
-        Organization org2 = null;
-        if (!name.equalsIgnoreCase(org1.getName())) {
-            org2 = new Organization(name, countries.get(0).getName(),
-                    country.getCountryId(), country.getCountryCode(), new DateTime().toDateTimeISO().toString() );
-            String id2 = dataService.addOrganization(org2);
-            org2.setOrganizationId(id2);
-            organizations.add(org2);
-        }
-        name = getRandomOrgName();
-        if (org2 != null) {
-            if (!name.equalsIgnoreCase(org2.getName())) {
-                Organization org3 = new Organization(name, country.getName(),
-                        Objects.requireNonNull(country.getCountryId()), country.getCountryCode(), new DateTime().toDateTimeISO().toString());
-                String id2 = dataService.addOrganization(org3);
-                org3.setOrganizationId(id2);
-                organizations.add(org3);
+
+        HashMap<String, String> hMap = new HashMap<>();
+        while (hMap.keySet().size() < 4) {
+            String name = getRandomOrgName();
+            if (!hMap.containsKey(name)) {
+                hMap.put(name, name);
             }
         }
+        Collection<String> fNames = hMap.values();
+        for (String name : fNames) {
+            Organization org1 = new Organization(name, country.getName(),
+                    Objects.requireNonNull(country.getCountryId()), country.getCountryCode(),
+                    new DateTime().toDateTimeISO().toString() );
+            String id1 = dataService.addOrganization(org1);
+            org1.setOrganizationId(id1);
+            organizations.add(org1);
+        }
+
         LOGGER.info(Emoji.LEAF + Emoji.LEAF + "Organizations generated: " + organizations.size());
         generateProjects(organizations);
     }

@@ -86,11 +86,8 @@ class GeneralBloc {
   }
 
   Future checkPermission() async {
-    print(' 🔆 🔆 🔆 🔆 checking permission ...');
-
-    if (await perm.Permission.contacts.request().isGranted) {
-      // Either the permission was already granted before or the user just granted it.
-    }
+    print(
+        ' 🔆 🔆 🔆 🔆 .................... checking permissions 💙 location 💙 storage 💙 ...');
 
 // You can request multiple permissions at once.
     Map<perm.Permission, PermissionStatus> statuses = (await [
@@ -99,28 +96,6 @@ class GeneralBloc {
     ].request())
         .cast<perm.Permission, PermissionStatus>();
     print(statuses[perm.Permission.location]);
-//    final Future<perm.PermissionStatus> statusFuture = perm.PermissionHandler()
-//        .checkPermissionStatus(PermissionGroup.location);
-//
-//    statusFuture.then((PermissionStatus status) {
-//      switch (status) {
-//        case PermissionStatus.granted:
-//          print('location is GRANTED:  ❤️ 🧡 💛 💚 💙 💜 ....');
-//          break;
-//        case PermissionStatus.denied:
-//          print('location is DENIED 🔱 🔱 🔱 🔱 🔱 ');
-//          requestPermission();
-//          break;
-//        case PermissionStatus.disabled:
-//          print('location is DiSABLED  🔕 🔕 🔕 🔕 🔕 ');
-//          requestPermission();
-//          break;
-//        case PermissionStatus.unknown:
-//          print('location is UNKNOWN  🔕 🔕 🔕 🔕 🔕 ');
-//          requestPermission();
-//          break;
-//      }
-//    });
   }
 
   Future addToPolygon(
