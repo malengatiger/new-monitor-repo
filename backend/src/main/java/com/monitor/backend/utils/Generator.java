@@ -1,6 +1,15 @@
 package com.monitor.backend.utils;
 
-import com.monitor.backend.controllers.DataController;
+import com.google.api.core.ApiFuture;
+import com.google.cloud.firestore.CollectionReference;
+import com.google.cloud.firestore.Firestore;
+import com.google.cloud.firestore.QueryDocumentSnapshot;
+import com.google.cloud.firestore.QuerySnapshot;
+import com.google.firebase.auth.ExportedUserRecord;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.ListUsersPage;
+import com.google.firebase.auth.UserRecord;
+import com.google.firebase.cloud.FirestoreClient;
 import com.monitor.backend.models.Country;
 import com.monitor.backend.models.Organization;
 import com.monitor.backend.models.Position;
@@ -12,6 +21,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 import java.util.logging.Logger;
 
@@ -29,11 +39,11 @@ public class Generator {
     private static final double latitudeLanseria = -25.934042, longitudeLanseria = 27.929928;
 
     private static final double latitudeRandburg = 	-26.093611, longitudeRandburg  = 28.006390;
-
     private static final double latitudeRosebank = -26.140499438, longitudeRosebank  = 28.037666516;
     private static final double latitudeJHB = -26.195246, longitudeJHB  = 28.034088;
-//-26.140499438 28.037666516
+
     public void startGeneration() throws Exception {
+        LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS + Emoji.RAIN_DROPS + Emoji.RAIN_DROPS.concat(" ... startGeneration of Demo Data ...")));
         setFirstNames();
         setLastNames();
         setOrgNames();
@@ -44,9 +54,10 @@ public class Generator {
     }
 
     private void deleteFirebase() throws Exception {
-
+        deleteAuthUsers();
+        deleteCollections();
     }
-    private void generateCountries() throws Exception {
+    public void generateCountries() throws Exception {
         List<Country> countries = new ArrayList<>();
         Country c1 = new Country(null, "South Africa", "ZAR", latitudeHarties, longitudeHarties);
         Country c2 = new Country(null, "Zimbabwe", "ZIM", latitudeHarties, longitudeHarties);
@@ -58,10 +69,14 @@ public class Generator {
         countries.add(c2);
         generateOrganizations(countries);
     }
-    private void generateOrganizations(List<Country> countries) throws Exception {
+    public void generateOrganizations(List<Country> countries) throws Exception {
         List<Organization> organizations = new ArrayList<>();
-        Organization org1 = new Organization(getRandomOrgName(), countries.get(0).getName(),
-                "", countries.get(0).getCountryCode(), new DateTime().toDateTimeISO().toString() );
+        Country country = countries.get(0);
+        LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS).concat("generateOrganizations: "
+                .concat(country.getName()).concat(" ")
+                .concat(Emoji.FLOWER_YELLOW)));
+        Organization org1 = new Organization(getRandomOrgName(), country.getName(),
+                Objects.requireNonNull(country.getCountryId()), country.getCountryCode(), new DateTime().toDateTimeISO().toString() );
         String id1 = dataService.addOrganization(org1);
         org1.setOrganizationId(id1);
         organizations.add(org1);
@@ -69,7 +84,7 @@ public class Generator {
         Organization org2 = null;
         if (!name.equalsIgnoreCase(org1.getName())) {
             org2 = new Organization(name, countries.get(0).getName(),
-                    "", countries.get(0).getCountryCode(), new DateTime().toDateTimeISO().toString() );
+                    country.getCountryId(), country.getCountryCode(), new DateTime().toDateTimeISO().toString() );
             String id2 = dataService.addOrganization(org2);
             org2.setOrganizationId(id2);
             organizations.add(org2);
@@ -77,8 +92,8 @@ public class Generator {
         name = getRandomOrgName();
         if (org2 != null) {
             if (!name.equalsIgnoreCase(org2.getName())) {
-                Organization org3 = new Organization(name, countries.get(0).getName(),
-                        "", countries.get(0).getCountryCode(), new DateTime().toDateTimeISO().toString());
+                Organization org3 = new Organization(name, country.getName(),
+                        Objects.requireNonNull(country.getCountryId()), country.getCountryCode(), new DateTime().toDateTimeISO().toString());
                 String id2 = dataService.addOrganization(org3);
                 org3.setOrganizationId(id2);
                 organizations.add(org3);
@@ -87,18 +102,21 @@ public class Generator {
         LOGGER.info(Emoji.LEAF + Emoji.LEAF + "Organizations generated: " + organizations.size());
         generateProjects(organizations);
     }
-    private void generateProjects(List<Organization> organizations) throws Exception {
+    public void generateProjects(List<Organization> organizations) throws Exception {
 
         LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS + Emoji.RAIN_DROPS.concat(" Generating projects ...")));
         for (Organization organization : organizations) {
            addProjects(organization);
         }
     }
-    private void generateUsers(List<Organization> organizations) throws Exception {
+    public void generateUsers(List<Organization> organizations) throws Exception {
 
     }
 
     private void addProjects(Organization organization) throws Exception {
+        LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS).concat("addProjects ...: "
+                .concat(organization.getName()).concat(" ")
+                .concat(Emoji.FLOWER_YELLOW)));
         int choice = random.nextInt(10);
         if (choice > 5) {
             Project p0 = new Project("", "Lanseria Project H", organization,
@@ -215,4 +233,94 @@ public class Generator {
         lastNames.add("Buthelezi");
         lastNames.add("Zulu");
     }
+
+    public UserRecord createUser(String name, String email, String password) throws Exception {
+        LOGGER.info(Emoji.LEMON + Emoji.LEMON + "createUser: name: " + name + " email: " + email + " password: " + password);
+        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+        UserRecord.CreateRequest createRequest = new UserRecord.CreateRequest();
+        createRequest.setEmail(email);
+        createRequest.setDisplayName(name);
+        createRequest.setPassword(password);
+        ApiFuture<UserRecord> userRecord = firebaseAuth.createUserAsync(createRequest);
+        LOGGER.info(Emoji.HEART_ORANGE + Emoji.HEART_ORANGE + "Firebase user record created: ".concat(userRecord.get().getUid()));
+        return userRecord.get();
+
+    }
+
+    public List<ExportedUserRecord> getAuthUsers() throws Exception {
+        // Start listing users from the beginning, 1000 at a time.
+        List<ExportedUserRecord> mList = new ArrayList<>();
+        ApiFuture<ListUsersPage> future = FirebaseAuth.getInstance().listUsersAsync(null);
+        ListUsersPage page = future.get();
+        while (page != null) {
+            for (ExportedUserRecord user : page.getValues()) {
+                LOGGER.info(Emoji.PIG.concat(Emoji.PIG) + "Auth User: " + user.getDisplayName());
+                mList.add(user);
+            }
+            page = page.getNextPage();
+        }
+
+        return mList;
+    }
+
+    public void deleteAuthUsers() throws Exception {
+        LOGGER.info(Emoji.WARNING.concat(Emoji.WARNING.concat(Emoji.WARNING)
+                .concat(" DELETING ALL AUTH USERS from Firebase .... ").concat(Emoji.RED_DOT)));
+        List<ExportedUserRecord> list = getAuthUsers();
+        for (ExportedUserRecord exportedUserRecord : list) {
+            if (!exportedUserRecord.getEmail().equalsIgnoreCase("aubrey@gmail.com")) {
+                FirebaseAuth.getInstance().deleteUser(exportedUserRecord.getUid());
+                LOGGER.info(Emoji.OK.concat(Emoji.RED_APPLE) + "Successfully deleted user: "
+                        .concat(exportedUserRecord.getDisplayName()));
+            }
+        }
+    }
+
+    public void deleteCollections() throws Exception {
+        LOGGER.info(Emoji.WARNING.concat(Emoji.WARNING.concat(Emoji.WARNING)
+                .concat(" DELETING ALL DATA from Firestore .... ").concat(Emoji.RED_DOT)));
+        Firestore fs = FirestoreClient.getFirestore();
+        CollectionReference ref1 = fs.collection("countries");
+        deleteCollection(ref1, 1000);
+        CollectionReference ref2 = fs.collection("cities");
+        deleteCollection(ref2, 1000);
+        CollectionReference ref3 = fs.collection("organizations");
+        deleteCollection(ref3, 1000);
+        CollectionReference ref4 = fs.collection("projects");
+        deleteCollection(ref4, 1000);
+        CollectionReference ref5 = fs.collection("users");
+        deleteCollection(ref5, 1000);
+        CollectionReference ref6 = fs.collection("monitorReports");
+        deleteCollection(ref6, 1000);
+
+        LOGGER.info(Emoji.PEAR.concat(Emoji.PEAR.concat(Emoji.PEAR)
+                .concat(" DELETED ALL DATA from Firestore .... ").concat(Emoji.RED_TRIANGLE)));
+    }
+
+    /**
+     * Delete a collection in batches to avoid out-of-memory errors.
+     * Batch size may be tuned based on document size (atmost 1MB) and application requirements.
+     */
+    private void deleteCollection(CollectionReference collection, int batchSize) {
+        try {
+            // retrieve a small batch of documents to avoid out-of-memory errors
+            ApiFuture<QuerySnapshot> future = collection.limit(batchSize).get();
+            int deleted = 0;
+            // future.get() blocks on document retrieval
+            List<QueryDocumentSnapshot> documents = future.get().getDocuments();
+            for (QueryDocumentSnapshot document : documents) {
+                document.getReference().delete();
+                ++deleted;
+                LOGGER.info(Emoji.RECYCLE.concat(document.getReference().getPath()
+                        .concat(" deleted")));
+            }
+            if (deleted >= batchSize) {
+                // retrieve and delete another batch
+                deleteCollection(collection, batchSize);
+            }
+        } catch (Exception e) {
+            LOGGER.info(Emoji.NOT_OK.concat(Emoji.ERROR) + "Error deleting collection : " + e.getMessage());
+        }
+    }
+
 }

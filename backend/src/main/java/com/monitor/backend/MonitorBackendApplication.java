@@ -5,6 +5,7 @@ import com.monitor.backend.controllers.ListController;
 import com.monitor.backend.services.DataService;
 import com.monitor.backend.services.ListService;
 import com.monitor.backend.utils.Emoji;
+import com.monitor.backend.utils.Generator;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.Banner;
@@ -66,6 +67,9 @@ public class MonitorBackendApplication implements ApplicationListener<Applicatio
     @Autowired
     private ListController listController;
 
+    @Autowired
+    private Generator generator;
+
     @Override
     public void onApplicationEvent(ApplicationReadyEvent applicationReadyEvent) {
         LOGGER.info("\uD83D\uDC2C \uD83D\uDC2C ApplicationReadyEvent fired! \uD83D\uDC2C "
@@ -91,6 +95,9 @@ public class MonitorBackendApplication implements ApplicationListener<Applicatio
 
             printServiceMethods(listController.getClass().getMethods(), Emoji.YELLOW_BIRD, "ListController method: ", Emoji.YELLOW_BIRD);
             LOGGER.info(Emoji.YELLOW_BIRD + " -------- end of ListController methods ");
+
+            printServiceMethods(generator.getClass().getMethods(), Emoji.FERN, "Generator method: ", Emoji.FERN);
+            LOGGER.info(Emoji.FERN + " -------- end of Generator methods ");
 
 
         } catch (Exception e) {

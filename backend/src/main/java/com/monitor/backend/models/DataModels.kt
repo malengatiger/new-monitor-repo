@@ -13,29 +13,29 @@ enum class Rating {
     EXCELLENT, GOOD, AVERAGE, BAD, TERRIBLE
 }
 
-data class User(var name: String, var email: String, var cellphone: String, var userId: String,
+data class User(var name: String, var email: String, var cellphone: String, var userId: String?,
                 var organizationId: String, var organizationName: String, var created: String) {
 }
 
 data class Organization(var name: String, var countryName: String, var countryId: String,
-                        var organizationId: String, var created: String) {}
+                        var organizationId: String?, var created: String) {}
 
-data class Project(var projectId: String, var name: String, var organization: Organization,
+data class Project(var projectId: String?, var name: String, var organization: Organization,
                    var description: String?,
                    var created: String, var nearestCities: List<City>?, var position: Position) {}
 
-data class City(var name: String, var cityId: String, var country: Country,
+data class City(var name: String, var cityId: String?, var country: Country,
                 var provinceName: String, var position: Position) {
 }
 
-data class Questionnaire(var organization: Organization, var created: String, var questionnaireId: String,
+data class Questionnaire(var organization: Organization, var created: String, var questionnaireId: String?,
                          var title: String,
                          var description: String?, var sections: List<Section>) {}
 
-data class Position(var latitude: Double, var longitude: Double, var geohash: String) {
+data class Position(var latitude: Double, var longitude: Double, var geohash: String?) {
 }
 
-data class Country(var countryId: String, var name: String, var countryCode: String,
+data class Country(var countryId: String?, var name: String, var countryCode: String,
                    var latitude: Double?, var longitude: Double?) {
 }
 
@@ -55,9 +55,9 @@ data class Photo(var url: String, var caption: String?, var created: String) {}
 
 data class Video(var url: String, var caption: String?, var created: String) {}
 
-data class MonitorReport(var monitorReportId: String, var projectId: String,
+data class MonitorReport(var monitorReportId: String?, var projectId: String,
                          var user: User, var rating: Rating, var photos: List<Photo>,
                          var videos: List<Video>, var description: String, var created: String) {}
 
-data class QuestionnaireResponse(var questionnaireResponseId: String, var questionnaireId: String,
+data class QuestionnaireResponse(var questionnaireResponseId: String?, var questionnaireId: String,
                                  var user: User, var sections: List<Section>) {}
