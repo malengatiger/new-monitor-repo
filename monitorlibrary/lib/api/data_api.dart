@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:monitorlibrary/data/country.dart';
 import 'package:monitorlibrary/data/organization.dart';
@@ -19,13 +20,32 @@ class DataAPI {
   };
 //  static const URL = 'http://192.168.86.240:8000/';
 //  static const URL = 'https://dancer3033a1.eu-gb.cf.appdomain.cloud/';
-  static const URL = 'https://monitorz.azurewebsites.net/';
+//  static const URL = 'https://monitorz.azurewebsites.net/';
 //  static const URL = 'https://dancer3033a1.eu-gb.cf.appdomain.cloud/';
 
+  static String activeURL;
+  static bool isDevelopmentStatus = true;
+  static Future<String> getUrl() async {
+    await DotEnv().load('.env');
+    String status = DotEnv().env['status'];
+    if (status == 'dev') {
+      isDevelopmentStatus = true;
+      String url = DotEnv().env['devURL'];
+      return url;
+    } else {
+      isDevelopmentStatus = false;
+      String url = DotEnv().env['prodURL'];
+      return url;
+    }
+    print(
+        ' 🌎 🌎 🌎 Status of the app is ${isDevelopmentStatus ? 'DEVELOPMENT' : 'PRODUCTION'}  🌎 🌎 🌎');
+  }
+
   static Future<User> addUser(User user) async {
+    String mURL = await getUrl();
     Map bag = user.toJson();
     try {
-      var result = await _callWebAPIPost(URL + 'addUser', bag);
+      var result = await _callWebAPIPost(mURL + 'addUser', bag);
       return User.fromJson(result);
     } catch (e) {
       print(e);
@@ -34,11 +54,12 @@ class DataAPI {
   }
 
   static Future<Project> findProjectById(String projectId) async {
+    String mURL = await getUrl();
     Map bag = {
       'projectId': projectId,
     };
     try {
-      var result = await _callWebAPIPost(URL + 'findProjectById', bag);
+      var result = await _callWebAPIPost(mURL + 'findProjectById', bag);
       return Project.fromJson(result);
     } catch (e) {
       print(e);
@@ -48,11 +69,13 @@ class DataAPI {
 
   static Future<List<User>> findUsersByOrganization(
       String organizationId) async {
+    String mURL = await getUrl();
     Map bag = {
       'organizationId': organizationId,
     };
     try {
-      List result = await _callWebAPIPost(URL + 'findUsersByOrganization', bag);
+      List result =
+          await _callWebAPIPost(mURL + 'findUsersByOrganization', bag);
       List<User> list = List();
       result.forEach((m) {
         list.add(User.fromJson(m));
@@ -66,12 +89,13 @@ class DataAPI {
 
   static Future<List<Project>> findProjectsByOrganization(
       String organizationId) async {
+    String mURL = await getUrl();
     Map bag = {
       'organizationId': organizationId,
     };
     try {
       List result =
-          await _callWebAPIPost(URL + 'findProjectsByOrganization', bag);
+          await _callWebAPIPost(mURL + 'findProjectsByOrganization', bag);
       List<Project> list = List();
       result.forEach((m) {
         list.add(Project.fromJson(m));
@@ -85,12 +109,13 @@ class DataAPI {
 
   static Future<List<Questionnaire>> getQuestionnairesByOrganization(
       String organizationId) async {
+    String mURL = await getUrl();
     Map bag = {
       'organizationId': organizationId,
     };
     try {
       List result =
-          await _callWebAPIPost(URL + 'getQuestionnairesByOrganization', bag);
+          await _callWebAPIPost(mURL + 'getQuestionnairesByOrganization', bag);
       List<Questionnaire> list = List();
       result.forEach((m) {
         list.add(Questionnaire.fromJson(m));
@@ -103,9 +128,10 @@ class DataAPI {
   }
 
   static Future<Settlement> updateSettlement(Settlement settlement) async {
+    String mURL = await getUrl();
     Map bag = settlement.toJson();
     try {
-      var result = await _callWebAPIPost(URL + 'updateSettlement', bag);
+      var result = await _callWebAPIPost(mURL + 'updateSettlement', bag);
       return Settlement.fromJson(result);
     } catch (e) {
       print(e);
@@ -114,9 +140,10 @@ class DataAPI {
   }
 
   static Future<Settlement> addSettlement(Settlement settlement) async {
+    String mURL = await getUrl();
     Map bag = settlement.toJson();
     try {
-      var result = await _callWebAPIPost(URL + 'addSettlement', bag);
+      var result = await _callWebAPIPost(mURL + 'addSettlement', bag);
       return Settlement.fromJson(result);
     } catch (e) {
       print(e);
@@ -128,13 +155,14 @@ class DataAPI {
       {@required String settlementId,
       @required double latitude,
       @required double longitude}) async {
+    String mURL = await getUrl();
     Map bag = {
       'settlementId': settlementId,
       'latitude': latitude,
       'longitude': longitude,
     };
     try {
-      var result = await _callWebAPIPost(URL + 'addPointToPolygon', bag);
+      var result = await _callWebAPIPost(mURL + 'addPointToPolygon', bag);
       return result;
     } catch (e) {
       print(e);
@@ -144,12 +172,13 @@ class DataAPI {
 
   static Future addQuestionnaireSection(
       {@required String questionnaireId, @required Section section}) async {
+    String mURL = await getUrl();
     Map bag = {
       'questionnaireId': questionnaireId,
       'section': section.toJson(),
     };
     try {
-      var result = await _callWebAPIPost(URL + 'addQuestionnaireSection', bag);
+      var result = await _callWebAPIPost(mURL + 'addQuestionnaireSection', bag);
       return result;
     } catch (e) {
       print(e);
@@ -159,13 +188,14 @@ class DataAPI {
 
   static Future<List<Settlement>> findSettlementsByCountry(
       String countryId) async {
+    String mURL = await getUrl();
     Map bag = {
       'countryId': countryId,
     };
     print('🍏 findSettlementsByCountry ');
     try {
       List result =
-          await _callWebAPIPost(URL + 'findSettlementsByCountry', bag);
+          await _callWebAPIPost(mURL + 'findSettlementsByCountry', bag);
       List<Settlement> list = List();
       result.forEach((m) {
         list.add(Settlement.fromJson(m));
@@ -179,9 +209,10 @@ class DataAPI {
   }
 
   static Future<Project> addProject(Project project) async {
+    String mURL = await getUrl();
     Map bag = project.toJson();
     try {
-      var result = await _callWebAPIPost(URL + 'addProject', bag);
+      var result = await _callWebAPIPost(mURL + 'addProject', bag);
       return Project.fromJson(result);
     } catch (e) {
       print(e);
@@ -191,12 +222,13 @@ class DataAPI {
 
   static Future<Project> addSettlementToProject(
       {String projectId, String settlementId}) async {
+    String mURL = await getUrl();
     Map bag = {
       'projectId': projectId,
       'settlementId': settlementId,
     };
     try {
-      var result = await _callWebAPIPost(URL + 'addSettlementToProject', bag);
+      var result = await _callWebAPIPost(mURL + 'addSettlementToProject', bag);
       return Project.fromJson(result);
     } catch (e) {
       print(e);
@@ -206,6 +238,7 @@ class DataAPI {
 
   static Future<Project> addPositionsToProject(
       {String projectId, List<Position> positions}) async {
+    String mURL = await getUrl();
     List mPos = List();
     positions.forEach((p) {
       mPos.add(p.toJson());
@@ -215,7 +248,7 @@ class DataAPI {
       'settlementId': mPos,
     };
     try {
-      var result = await _callWebAPIPost(URL + 'addPositionsToProject', bag);
+      var result = await _callWebAPIPost(mURL + 'addPositionsToProject', bag);
       return Project.fromJson(result);
     } catch (e) {
       print(e);
@@ -229,6 +262,7 @@ class DataAPI {
       double latitude,
       longitude,
       String userId}) async {
+    String mURL = await getUrl();
     Map bag = {
       'projectId': projectId,
       'url': url,
@@ -237,7 +271,7 @@ class DataAPI {
       'userId': userId,
     };
     try {
-      var result = await _callWebAPIPost(URL + 'addProjectPhoto', bag);
+      var result = await _callWebAPIPost(mURL + 'addProjectPhoto', bag);
       print(result);
       return Project.fromJson(result);
     } catch (e) {
@@ -253,6 +287,7 @@ class DataAPI {
       double latitude,
       longitude,
       String userId}) async {
+    String mURL = await getUrl();
     Map bag = {
       'settlementId': settlementId,
       'url': url,
@@ -262,7 +297,7 @@ class DataAPI {
       'userId': userId,
     };
     try {
-      var result = await _callWebAPIPost(URL + 'addSettlementPhoto', bag);
+      var result = await _callWebAPIPost(mURL + 'addSettlementPhoto', bag);
       return Settlement.fromJson(result);
     } catch (e) {
       print(e);
@@ -277,6 +312,7 @@ class DataAPI {
       double latitude,
       longitude,
       String userId}) async {
+    String mURL = await getUrl();
     Map bag = {
       'projectId': projectId,
       'url': url,
@@ -286,7 +322,7 @@ class DataAPI {
       'userId': userId
     };
     try {
-      var result = await _callWebAPIPost(URL + 'addProjectVideo', bag);
+      var result = await _callWebAPIPost(mURL + 'addProjectVideo', bag);
       return Project.fromJson(result);
     } catch (e) {
       print(e);
@@ -301,6 +337,7 @@ class DataAPI {
       double latitude,
       longitude,
       String userId}) async {
+    String mURL = await getUrl();
     Map bag = {
       'projectId': projectId,
       'rating': rating,
@@ -310,7 +347,7 @@ class DataAPI {
       'userId': userId
     };
     try {
-      var result = await _callWebAPIPost(URL + 'addProjectRating', bag);
+      var result = await _callWebAPIPost(mURL + 'addProjectRating', bag);
       return Project.fromJson(result);
     } catch (e) {
       print(e);
@@ -320,11 +357,12 @@ class DataAPI {
 
   static Future<Questionnaire> addQuestionnaire(
       Questionnaire questionnaire) async {
+    String mURL = await getUrl();
     Map bag = questionnaire.toJson();
     prettyPrint(bag,
         'DataAPI  💦 💦 💦 addQuestionnaire: 🔆🔆 Sending to web api ......');
     try {
-      var result = await _callWebAPIPost(URL + 'addQuestionnaire', bag);
+      var result = await _callWebAPIPost(mURL + 'addQuestionnaire', bag);
       return Questionnaire.fromJson(result);
     } catch (e) {
       print(e);
@@ -333,9 +371,10 @@ class DataAPI {
   }
 
   static Future<List<Project>> findAllProjects(String organizationId) async {
+    String mURL = await getUrl();
     Map bag = {};
     try {
-      List result = await _callWebAPIPost(URL + 'findAllProjects', bag);
+      List result = await _callWebAPIPost(mURL + 'findAllProjects', bag);
       List<Project> list = List();
       result.forEach((m) {
         list.add(Project.fromJson(m));
@@ -348,9 +387,10 @@ class DataAPI {
   }
 
   static Future<Organization> addOrganization(Organization org) async {
+    String mURL = await getUrl();
     Map bag = org.toJson();
     try {
-      var result = await _callWebAPIPost(URL + 'addOrganization', bag);
+      var result = await _callWebAPIPost(mURL + 'addOrganization', bag);
       return Organization.fromJson(result);
     } catch (e) {
       print(e);
@@ -359,11 +399,12 @@ class DataAPI {
   }
 
   static Future<User> findUserByEmail(String email) async {
+    String mURL = await getUrl();
     Map bag = {
       'email': email,
     };
     try {
-      var result = await _callWebAPIPost(URL + 'findUserByEmail', bag);
+      var result = await _callWebAPIPost(mURL + 'findUserByEmail', bag);
       return User.fromJson(result);
     } catch (e) {
       print(e);
@@ -372,11 +413,12 @@ class DataAPI {
   }
 
   static Future<User> findUserByUid(String uid) async {
+    String mURL = await getUrl();
     Map bag = {
       'uid': uid,
     };
     try {
-      var result = await _callWebAPIPost(URL + 'findUserByUid', bag);
+      var result = await _callWebAPIPost(mURL + 'findUserByUid', bag);
       return User.fromJson(result);
     } catch (e) {
       print(e);
@@ -385,9 +427,10 @@ class DataAPI {
   }
 
   static Future<List<Country>> getCountries() async {
+    String mURL = await getUrl();
     Map bag = {};
     try {
-      List result = await _callWebAPIPost(URL + 'getCountries', bag);
+      List result = await _callWebAPIPost(mURL + 'getCountries', bag);
       List<Country> list = List();
       result.forEach((m) {
         list.add(Country.fromJson(m));
@@ -401,18 +444,20 @@ class DataAPI {
   }
 
   static Future hello() async {
-    var result = await _callWebAPIGet(URL);
-    debugPrint('DancerAPI: 🔴 🔴 🔴 hello: $result');
+    String mURL = await getUrl();
+    var result = await _callWebAPIGet(mURL);
+    debugPrint('DataAPI: 🔴 🔴 🔴 hello: $result');
   }
 
   static Future ping() async {
-    var result = await _callWebAPIGet(URL + 'ping');
-    debugPrint('DancerAPI: 🔴 🔴 🔴 ping: $result');
+    String mURL = await getUrl();
+    var result = await _callWebAPIGet(mURL + 'ping');
+    debugPrint('DataAPI: 🔴 🔴 🔴 ping: $result');
   }
 
   static Future _callWebAPIPost(String mUrl, Map bag) async {
     debugPrint(
-        '\n\n🏈 🏈 🏈 🏈 🏈 DancerAPI_callWebAPI:  🔆 🔆 🔆 🔆 calling : 💙  $mUrl  💙 print bag ...');
+        '\n\n🏈 🏈 🏈 🏈 🏈DataAPI_callWebAPI:  🔆 🔆 🔆 🔆 calling : 💙  $mUrl  💙 print bag ...');
     print(bag);
     var mBag;
     if (bag != null) {
@@ -432,15 +477,15 @@ class DataAPI {
       });
       if (resp.statusCode == 200) {
         debugPrint(
-            '\n\n❤️️❤️  DancerAPI._callWebAPI .... : 💙 statusCode: 👌👌👌 ${resp.statusCode} 👌👌👌 💙 for $mUrl');
+            '\n\n❤️️❤️  DataAPI._callWebAPI .... : 💙 statusCode: 👌👌👌 ${resp.statusCode} 👌👌👌 💙 for $mUrl');
       } else {
         debugPrint(
-            '\n\n👿👿👿 DancerAPI._callWebAPI .... : 🔆 statusCode: 👿👿👿 ${resp.statusCode} 🔆🔆🔆 for $mUrl');
+            '\n\n👿👿👿 DataAPI._callWebAPI .... : 🔆 statusCode: 👿👿👿 ${resp.statusCode} 🔆🔆🔆 for $mUrl');
         throw Exception('🚨 🚨 Status Code 🚨 ${resp.statusCode} 🚨 Exception');
       }
       var end = DateTime.now();
       debugPrint(
-          '❤️❤️  DancerAPI._callWebAPI ### 🔆 elapsed: ${end.difference(start).inSeconds} seconds 🔆 \n\n');
+          '❤️❤️  DataAPI._callWebAPI ### 🔆 elapsed: ${end.difference(start).inSeconds} seconds 🔆 \n\n');
       var mJson = json.decode(resp.body);
       return mJson;
     } catch (e) {
@@ -451,7 +496,7 @@ class DataAPI {
 
   static Future _callWebAPIGet(String mUrl) async {
     debugPrint(
-        '\n\n🏈 🏈 🏈 🏈 🏈 DancerAPI_callWebAPIGet:  🔆 🔆 🔆 🔆 calling : 💙  $mUrl  💙');
+        '\n\n🏈 🏈 🏈 🏈 🏈DataAPI_callWebAPIGet:  🔆 🔆 🔆 🔆 calling : 💙  $mUrl  💙');
 
     var start = DateTime.now();
     var client = new http.Client();
@@ -465,10 +510,10 @@ class DataAPI {
         //client.close();
       });
       debugPrint(
-          '\n\n❤️️❤️  DancerAPI._callWebAPIGet .... : 💙 statusCode: 👌👌👌 ${resp.statusCode} 👌👌👌 💙 for $mUrl');
+          '\n\n❤️️❤️  DataAPI._callWebAPIGet .... : 💙 statusCode: 👌👌👌 ${resp.statusCode} 👌👌👌 💙 for $mUrl');
       var end = DateTime.now();
       debugPrint(
-          '❤️❤️  DancerAPI._callWebAPIGet ### 🔆 elapsed: ${end.difference(start).inSeconds} seconds 🔆 \n\n');
+          '❤️❤️  DataAPI._callWebAPIGet ### 🔆 elapsed: ${end.difference(start).inSeconds} seconds 🔆 \n\n');
       var mJson = json.decode(resp.body);
       return mJson;
     } catch (e) {

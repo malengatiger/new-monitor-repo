@@ -44,6 +44,7 @@ public class Generator {
         setFirstNames();
         setLastNames();
         setOrgNames();
+        setSettlementNames();
 
         deleteFirebase();
         generateCountries();
@@ -65,6 +66,7 @@ public class Generator {
         countries.add(c1);
         countries.add(c2);
         generateOrganizations(countries);
+        generateCommunities();
     }
 
     @Autowired
@@ -135,6 +137,7 @@ public class Generator {
     public void generateOrganizations(List<Country> countries) throws Exception {
 
         List<Organization> organizations = new ArrayList<>();
+        //Generate orgs for South Africa
         Country country = countries.get(0);
         LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS).concat("generateOrganizations: "
                 .concat(country.getName()).concat(" ")
@@ -155,6 +158,8 @@ public class Generator {
             String id1 = dataService.addOrganization(org1);
             org1.setOrganizationId(id1);
             organizations.add(org1);
+            LOGGER.info(Emoji.RAINBOW.concat(Emoji.RAINBOW.concat("Organization has been generated ".concat(org1.getName()
+            .concat(" ").concat(Emoji.RED_APPLE)))));
         }
 
         LOGGER.info(Emoji.LEAF + Emoji.LEAF + "Organizations generated: " + organizations.size());
@@ -202,6 +207,25 @@ public class Generator {
         LOGGER.info(Emoji.PEAR + Emoji.PEAR + Emoji.PEAR + " Users added : " + cnt);
     }
 
+    public void generateCommunities() throws Exception {
+        Country country = listService.getCountryByName("South Africa");
+        setSettlementNames();
+        if (country == null) {
+            throw new Exception("South Africa is not here, Bud!");
+        }
+        for (String name : settlementNames) {
+            Community c = new Community(name,"id",
+                    Objects.requireNonNull(country.getCountryId()),getPopulation(),
+                    country.getName(),
+                    new ArrayList<>(),new ArrayList<>(),new ArrayList<>(),new ArrayList<>());
+            dataService.addCommunity(c);
+        }
+    }
+
+    private int getPopulation() {
+        int x = random.nextInt(100);
+        return x == 0? 100000: x * 20000;
+    }
     private void addProjects(Organization organization) throws Exception {
         LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS).concat("addProjects ...: "
                 .concat(organization.getName()).concat(" ")
@@ -244,10 +268,10 @@ public class Generator {
         }
     }
 
-    private final List<Project> projects = new ArrayList<>();
     private final List<String> firstNames = new ArrayList<>();
     private final List<String> lastNames = new ArrayList<>();
     private final List<String> organizationNames = new ArrayList<>();
+    private final List<String> settlementNames = new ArrayList<>();
     private final Random random = new Random(System.currentTimeMillis());
 
     private String getRandomFirstName() {
@@ -257,7 +281,7 @@ public class Generator {
         return lastNames.get(random.nextInt(lastNames.size() - 1));
     }
     private String getRandomOrgName() {
-        return organizationNames.get(random.nextInt(organizationNames.size() - 1));
+        return settlementNames.get(random.nextInt(organizationNames.size() - 1));
     }
 
     private void setOrgNames() {
@@ -273,7 +297,13 @@ public class Generator {
         organizationNames.add("Afro Management & Monitoring");
         organizationNames.add("Public Housing Monitoring");
         organizationNames.add("Rental Housing Monitoring");
-
+    }
+    private void setSettlementNames() {
+        settlementNames.add("Freedom Corner");
+        settlementNames.add("Marhumbi Community");
+        settlementNames.add("Victory Community Settlement");
+        settlementNames.add("Informal Dreams Community");
+        settlementNames.add("Jerusalema Groove");
 
     }
     private void setFirstNames() {

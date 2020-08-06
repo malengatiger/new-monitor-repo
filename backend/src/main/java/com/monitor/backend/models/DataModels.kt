@@ -13,6 +13,11 @@ enum class Rating {
     EXCELLENT, GOOD, AVERAGE, BAD, TERRIBLE
 }
 
+data class Community(var name: String, var communityId: String?, var countryId: String, var population: Int = 0,
+                     var countryName: String,
+                     var polygon:  List<Position>?, var photos: List<Photo> = ArrayList(), var videos: List<Video> = ArrayList(),
+                     var nearestCities: List<City> = ArrayList()) {
+}
 data class User(var name: String, var email: String, var cellphone: String, var userId: String?,
                 var organizationId: String, var organizationName: String, var created: String, var userType: UserType) {
 }

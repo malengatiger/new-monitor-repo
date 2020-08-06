@@ -34,7 +34,10 @@ import 'package:orgadmin/ui/questionnaire/questionnaire_editor.dart';
 import 'package:orgadmin/ui/settlement/settlement_detail.dart';
 import 'package:orgadmin/ui/settlement/settlement_editor.dart';
 
-void main() => runApp(MyApp());
+void main() {
+//  SharedPreferences.setMockInitialValues({}); // set initial values
+  runApp(MyApp());
+}
 
 /// This Widget is the main application widget.
 class MyApp extends StatelessWidget {

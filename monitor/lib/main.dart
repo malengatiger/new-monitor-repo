@@ -4,16 +4,16 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:monitorlibrary/api/sharedprefs.dart';
 import 'package:monitorlibrary/auth/app_auth.dart';
+import 'package:monitorlibrary/bloc/admin_bloc.dart';
 import 'package:monitorlibrary/data/project.dart';
 import 'package:monitorlibrary/data/questionnaire.dart';
 import 'package:monitorlibrary/data/settlement.dart';
 import 'package:monitorlibrary/data/user.dart';
 import 'package:monitorlibrary/functions.dart';
-import 'package:monitorlibrary/slide_right.dart';
-import 'package:monitorlibrary/ui/signin.dart';
-import 'package:monitorlibrary/ui/settlement_list.dart';
 import 'package:monitorlibrary/ui/questionare_list.dart';
-import 'package:monitorlibrary/bloc/admin_bloc.dart';
+import 'package:monitorlibrary/ui/settlement_list.dart';
+import 'package:monitorlibrary/ui/signin.dart';
+import 'package:page_transition/page_transition.dart';
 
 void main() => runApp(MyApp());
 
@@ -40,7 +40,8 @@ class MyHomePage extends StatefulWidget {
   _MyHomePageState createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> implements SettlementListener, QuestionnaireListener {
+class _MyHomePageState extends State<MyHomePage>
+    implements SettlementListener, QuestionnaireListener {
   bool isBusy = false;
   @override
   initState() {
@@ -52,13 +53,18 @@ class _MyHomePageState extends State<MyHomePage> implements SettlementListener, 
   Future _checkUser() async {
     var isOK = await AppAuth.isUserSignedIn();
     if (!isOK) {
-      user = await Navigator.push(context,
-          MaterialPageRoute(builder: (BuildContext context) {
-        return SignIn();
-      }));
-      print('🤟🤟🤟🤟🤟🤟🤟🤟 User returned from signIn');
-      prettyPrint(user.toJson(), "User returned  🤟🤟🤟🤟🤟🤟🤟");
-      bloc.setActiveUser();
+      user = await Navigator.push(
+          context,
+          PageTransition(
+              type: PageTransitionType.scale,
+              alignment: Alignment.topLeft,
+              duration: Duration(seconds: 2),
+              child: SignIn()));
+      if (user != null) {
+        print('🤟🤟🤟🤟🤟🤟🤟🤟 User returned from signIn');
+        prettyPrint(user.toJson(), "User returned  🤟🤟🤟🤟🤟🤟🤟");
+        bloc.setActiveUser();
+      }
     }
     user = await Prefs.getUser();
     if (user != null) {
@@ -103,8 +109,9 @@ class _MyHomePageState extends State<MyHomePage> implements SettlementListener, 
                     Expanded(
                       child: Container(
                         child: Text(
-                            'This app is used only for the purposes of the HDA and not for personal entertainment ',
-                        overflow: TextOverflow.clip,),
+                          'This app is used only for the purposes of the HDA and not for personal entertainment ',
+                          overflow: TextOverflow.clip,
+                        ),
                       ),
                     ),
                     IconButton(
@@ -134,120 +141,129 @@ class _MyHomePageState extends State<MyHomePage> implements SettlementListener, 
               fit: BoxFit.fill,
             ),
           ),
-          isBusy? Center(
-            child: Container(
-              child: CircularProgressIndicator(
-                strokeWidth: 24,
-                backgroundColor: Colors.blue,
-              ),
-            ),
-          ): ListView(
-            children: <Widget>[
-              SizedBox(
-                height: 100,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-                  Container(
-                    height: 100,
-                    width: 160,
-                    child: GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                            context,
-                            SlideRightRoute(
-                              widget: SettlementList(this),
-                            ));
-                      },
-                      child: Card(
-                        elevation: 4,
-                        child: Center(
-                          child: Column(
-                            children: <Widget>[
-                              SizedBox(
-                                height: 8,
+          isBusy
+              ? Center(
+                  child: Container(
+                    child: CircularProgressIndicator(
+                      strokeWidth: 24,
+                      backgroundColor: Colors.blue,
+                    ),
+                  ),
+                )
+              : ListView(
+                  children: <Widget>[
+                    SizedBox(
+                      height: 100,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: <Widget>[
+                        Container(
+                          height: 100,
+                          width: 160,
+                          child: GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  PageTransition(
+                                      type: PageTransitionType.scale,
+                                      alignment: Alignment.topLeft,
+                                      duration: Duration(seconds: 2),
+                                      child: SettlementList(this)));
+                            },
+                            child: Card(
+                              elevation: 4,
+                              child: Center(
+                                child: Column(
+                                  children: <Widget>[
+                                    SizedBox(
+                                      height: 8,
+                                    ),
+                                    Text(
+                                      '${getFormattedNumber(settlements, context)}',
+                                      style: Styles.purpleBoldLarge,
+                                    ),
+                                    SizedBox(
+                                      height: 8,
+                                    ),
+                                    Text('Settlements'),
+                                  ],
+                                ),
                               ),
-                              Text(
-                                '${getFormattedNumber(settlements, context)}',
-                                style: Styles.purpleBoldLarge,
-                              ),
-                              SizedBox(
-                                height: 8,
-                              ),
-                              Text('Settlements'),
-                            ],
+                            ),
                           ),
                         ),
-                      ),
-                    ),
-                  ),
-                  Container(
-                    height: 100,
-                    width: 160,
-                    child: Card(
-                      elevation: 4,
-                      child: Center(
-                        child: Column(
-                          children: <Widget>[
-                            SizedBox(
-                              height: 8,
-                            ),
-                            Text(
-                              '${getFormattedNumber(projects, context)}',
-                              style: Styles.tealBoldLarge,
-                            ),
-                            SizedBox(
-                              height: 8,
-                            ),
-                            Text('Projects'),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: 8,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-                  Container(
-                    height: 100,
-                    width: 160,
-                    child: GestureDetector(
-                      onTap: () {
-                        Navigator.push(context,
-                            SlideRightRoute(widget: QuestionnaireList(this)));
-                      },
-                      child: Card(
-                        elevation: 4,
-                        child: Center(
-                          child: Column(
-                            children: <Widget>[
-                              SizedBox(
-                                height: 8,
+                        Container(
+                          height: 100,
+                          width: 160,
+                          child: Card(
+                            elevation: 4,
+                            child: Center(
+                              child: Column(
+                                children: <Widget>[
+                                  SizedBox(
+                                    height: 8,
+                                  ),
+                                  Text(
+                                    '${getFormattedNumber(projects, context)}',
+                                    style: Styles.tealBoldLarge,
+                                  ),
+                                  SizedBox(
+                                    height: 8,
+                                  ),
+                                  Text('Projects'),
+                                ],
                               ),
-                              Text(
-                                '${getFormattedNumber(questionnaires, context)}',
-                                style: Styles.pinkBoldLarge,
-                              ),
-                              SizedBox(
-                                height: 8,
-                              ),
-                              Text('Questionnaires'),
-                            ],
+                            ),
                           ),
                         ),
-                      ),
+                      ],
                     ),
-                  ),
-                ],
-              ),
-            ],
-          ),
+                    SizedBox(
+                      height: 8,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: <Widget>[
+                        Container(
+                          height: 100,
+                          width: 160,
+                          child: GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  PageTransition(
+                                      type: PageTransitionType.scale,
+                                      alignment: Alignment.topLeft,
+                                      duration: Duration(seconds: 2),
+                                      child: QuestionnaireList(this)));
+                            },
+                            child: Card(
+                              elevation: 4,
+                              child: Center(
+                                child: Column(
+                                  children: <Widget>[
+                                    SizedBox(
+                                      height: 8,
+                                    ),
+                                    Text(
+                                      '${getFormattedNumber(questionnaires, context)}',
+                                      style: Styles.pinkBoldLarge,
+                                    ),
+                                    SizedBox(
+                                      height: 8,
+                                    ),
+                                    Text('Questionnaires'),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
@@ -289,7 +305,7 @@ class _MyHomePageState extends State<MyHomePage> implements SettlementListener, 
   void _getData() async {
     print(
         '💊 💊 💊 get all settlements in country 📡  all org questionnaires 🎡  all org users +'
-            ' 💈 all org  projects');
+        ' 💈 all org  projects');
     setState(() {
       isBusy = true;
     });
@@ -301,12 +317,10 @@ class _MyHomePageState extends State<MyHomePage> implements SettlementListener, 
       print('country is NULL');
     }
     if (user != null) {
-      
       var list2 =
-      await bloc.getQuestionnairesByOrganization(user.organizationId);
+          await bloc.getQuestionnairesByOrganization(user.organizationId);
       questionnaires = list2.length;
-      var list3 =
-      await bloc.findProjectsByOrganization(user.organizationId);
+      var list3 = await bloc.findProjectsByOrganization(user.organizationId);
       projects = list3.length;
     }
     print(
@@ -315,6 +329,7 @@ class _MyHomePageState extends State<MyHomePage> implements SettlementListener, 
       isBusy = false;
     });
   }
+
   int settlements = 0;
   int questionnaires = 0;
   int projects = 0;
@@ -329,6 +344,7 @@ class _MyHomePageState extends State<MyHomePage> implements SettlementListener, 
         break;
     }
   }
+
   void _cancel() {
     settSub.cancel();
     questSub.cancel();

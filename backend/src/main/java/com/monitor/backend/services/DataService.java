@@ -126,6 +126,14 @@ public class DataService {
         return city.getCityId();
     }
 
+    public String addCommunity(Community community) throws Exception {
+        community.setCommunityId(UUID.randomUUID().toString());
+        firestore = FirestoreClient.getFirestore();
+        ApiFuture<DocumentReference> future = firestore.collection("communities").add(community);
+        LOGGER.info(Emoji.LEAF.concat(Emoji.LEAF).concat("Community added to database at path: " +  future.get().getPath()));
+        return community.getCommunityId();
+    }
+
     public String addCountry(Country country) throws Exception {
         country.setCountryId(UUID.randomUUID().toString());
 

@@ -36,6 +36,8 @@ dependencies:
   path: ^1.7.0
   video_player: ^0.10.11+2
   cached_network_image: ^2.2.0+1
+  flutter_dotenv: ^2.1.0
+  page_transition: ^1.1.6
   image:
 
 dev_dependencies:

@@ -53,6 +53,12 @@ public class DataController {
         long delta = end.toDate().getTime() - now.toDate().getTime();
         return Emoji.LEAF.concat(Emoji.LEAF.concat(" City migration completed in " + delta /1000 + " seconds " + Emoji.RED_APPLE));
     }
+    @GetMapping("/generateCommunities")
+    public String generateCommunities() throws Exception {
+        LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS).concat("generateCommunities: ".concat(Emoji.FLOWER_YELLOW)));
+        generator.generateCommunities();
+        return Emoji.LEAF.concat(Emoji.LEAF.concat("Communities generated " + Emoji.RED_APPLE));
+    }
     @PostMapping("/addOrganization")
     public String addOrganization(Organization organization) throws Exception {
         LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS).concat("Adding Organization: ".concat(organization.getName())));
