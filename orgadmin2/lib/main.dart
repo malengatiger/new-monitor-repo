@@ -23,7 +23,6 @@ import 'package:monitorlibrary/data/questionnaire.dart';
 import 'package:monitorlibrary/data/settlement.dart';
 import 'package:monitorlibrary/data/user.dart';
 import 'package:monitorlibrary/functions.dart';
-import 'package:monitorlibrary/slide_right.dart';
 import 'package:monitorlibrary/ui/project_list.dart';
 import 'package:monitorlibrary/ui/questionare_list.dart';
 import 'package:monitorlibrary/ui/settlement_list.dart';
@@ -33,6 +32,7 @@ import 'package:orgadmin2/ui/project/project_editor.dart';
 import 'package:orgadmin2/ui/questionnaire/questionnaire_editor.dart';
 import 'package:orgadmin2/ui/settlement/settlement_detail.dart';
 import 'package:orgadmin2/ui/settlement/settlement_editor.dart';
+import 'package:page_transition/page_transition.dart';
 
 void main() {
 //  SharedPreferences.setMockInitialValues({}); // set initial values
@@ -76,23 +76,32 @@ class _DashboardState extends State<Dashboard>
       case 0:
         Navigator.push(
             context,
-            SlideRightRoute(
-              widget: SettlementEditor(),
-            ));
+            PageTransition(
+                type: PageTransitionType.scale,
+                alignment: Alignment.topLeft,
+                duration: Duration(seconds: 2),
+                child: SettlementEditor()));
+
         break;
       case 1:
         Navigator.push(
             context,
-            SlideRightRoute(
-              widget: QuestionnaireEditor(),
-            ));
+            PageTransition(
+                type: PageTransitionType.scale,
+                alignment: Alignment.topLeft,
+                duration: Duration(seconds: 2),
+                child: QuestionnaireEditor()));
+
         break;
       case 2:
         Navigator.push(
             context,
-            SlideRightRoute(
-              widget: ProjectEditor(),
-            ));
+            PageTransition(
+                type: PageTransitionType.scale,
+                alignment: Alignment.topLeft,
+                duration: Duration(seconds: 2),
+                child: ProjectEditor()));
+
         break;
     }
     setState(() {
@@ -201,10 +210,13 @@ class _DashboardState extends State<Dashboard>
   Future _checkUser() async {
     var isOK = await AppAuth.isUserSignedIn();
     if (!isOK) {
-      user = await Navigator.push(context,
-          MaterialPageRoute(builder: (BuildContext context) {
-        return SignIn();
-      }));
+      user = await Navigator.push(
+          context,
+          PageTransition(
+              type: PageTransitionType.scale,
+              alignment: Alignment.topLeft,
+              duration: Duration(seconds: 2),
+              child: SignIn('ORGANIZATION_USER')));
       print('🤟🤟🤟🤟🤟🤟🤟🤟 User returned from signIn');
       prettyPrint(user.toJson(), "User returned  🤟🤟🤟🤟🤟🤟🤟");
       bloc.setActiveUser();
@@ -308,9 +320,11 @@ class _DashboardState extends State<Dashboard>
                             onTap: () {
                               Navigator.push(
                                   context,
-                                  SlideRightRoute(
-                                    widget: SettlementList(this),
-                                  ));
+                                  PageTransition(
+                                      type: PageTransitionType.scale,
+                                      alignment: Alignment.topLeft,
+                                      duration: Duration(seconds: 2),
+                                      child: SettlementList(this)));
                             },
                             child: StreamBuilder<List<Settlement>>(
                                 stream: bloc.settlementStream,
@@ -351,9 +365,11 @@ class _DashboardState extends State<Dashboard>
                             onTap: () {
                               Navigator.push(
                                   context,
-                                  SlideRightRoute(
-                                    widget: ProjectList(this),
-                                  ));
+                                  PageTransition(
+                                      type: PageTransitionType.scale,
+                                      alignment: Alignment.topLeft,
+                                      duration: Duration(seconds: 2),
+                                      child: ProjectList(this)));
                             },
                             child: StreamBuilder<List<Project>>(
                                 stream: bloc.projectStream,
@@ -401,8 +417,11 @@ class _DashboardState extends State<Dashboard>
                             onTap: () {
                               Navigator.push(
                                   context,
-                                  SlideRightRoute(
-                                      widget: QuestionnaireList(this)));
+                                  PageTransition(
+                                      type: PageTransitionType.scale,
+                                      alignment: Alignment.topLeft,
+                                      duration: Duration(seconds: 2),
+                                      child: QuestionnaireList(this)));
                             },
                             child: StreamBuilder<List<Questionnaire>>(
                                 stream: bloc.questionnaireStream,
@@ -574,11 +593,13 @@ class _DashboardState extends State<Dashboard>
     prettyPrint(project.toJson(), '🍑 🍑 🍑  SELECTED PROJECT');
     Navigator.push(
         context,
-        SlideRightRoute(
-          widget: ProjectDetail(
-            project,
-          ),
-        ));
+        PageTransition(
+            type: PageTransitionType.scale,
+            alignment: Alignment.topLeft,
+            duration: Duration(seconds: 2),
+            child: ProjectDetail(
+              project,
+            )));
   }
 
   @override
@@ -586,13 +607,16 @@ class _DashboardState extends State<Dashboard>
     debugPrint(
         'Main:  🤕 🤕 onSettlementSelected: 🍑 settlement has  been selected');
     prettyPrint(settlement.toJson(), '🍑 🍑 🍑  SELECTED SETTLEMENT');
+
     Navigator.push(
         context,
-        SlideRightRoute(
-          widget: SettlementDetail(
-            settlement,
-          ),
-        ));
+        PageTransition(
+            type: PageTransitionType.scale,
+            alignment: Alignment.topLeft,
+            duration: Duration(seconds: 2),
+            child: SettlementDetail(
+              settlement,
+            )));
   }
 
   @override
@@ -602,10 +626,12 @@ class _DashboardState extends State<Dashboard>
     prettyPrint(questionnaire.toJson(), '🍑 🍑 🍑  SELECTED QUESTIONNAIRE');
     Navigator.push(
         context,
-        SlideRightRoute(
-          widget: QuestionnaireEditor(
-            questionnaire: questionnaire,
-          ),
-        ));
+        PageTransition(
+            type: PageTransitionType.scale,
+            alignment: Alignment.topLeft,
+            duration: Duration(seconds: 2),
+            child: QuestionnaireEditor(
+              questionnaire: questionnaire,
+            )));
   }
 }

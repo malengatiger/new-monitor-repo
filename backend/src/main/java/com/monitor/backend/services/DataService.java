@@ -14,21 +14,22 @@ import com.google.firebase.auth.UserRecord;
 import com.google.firebase.cloud.FirestoreClient;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.monitor.backend.utils.Emoji;
 import com.monitor.backend.models.*;
+import com.monitor.backend.utils.Emoji;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.util.Objects;
 import java.util.UUID;
 
 @Service
 public class DataService {
     public static final Logger LOGGER = LoggerFactory.getLogger(DataService.class.getSimpleName());
     private static final Gson G = new GsonBuilder().setPrettyPrinting().create();
-   private  Firestore firestore;
+    private Firestore firestore;
 
     public DataService() {
         LOGGER.info("\uD83C\uDF4F \uD83C\uDF4F DataService constructed \uD83C\uDF4F");
@@ -84,7 +85,7 @@ public class DataService {
     }
 
     public static String getGeoHash(double latitude, double longitude) {
-        return GeoHash.geoHashStringWithCharacterPrecision(latitude,longitude, 12);
+        return GeoHash.geoHashStringWithCharacterPrecision(latitude, longitude, 12);
     }
 
 
@@ -94,13 +95,13 @@ public class DataService {
         ApiFuture<DocumentReference> future = firestore.collection("users").add(user);
         LOGGER.info(Emoji.LEAF.concat(Emoji.LEAF).concat("User added: "
                 + user.getName() + " path: "
-                +  future.get().getPath()));
+                + future.get().getPath()));
     }
 
     public String addMonitorReport(MonitorReport report) throws Exception {
         report.setMonitorReportId(UUID.randomUUID().toString());
         ApiFuture<DocumentReference> future = firestore.collection("monitorReports").add(report);
-        LOGGER.info(Emoji.LEAF.concat(Emoji.LEAF).concat("MonitorReport added: " +  future.get().getPath()));
+        LOGGER.info(Emoji.LEAF.concat(Emoji.LEAF).concat("MonitorReport added: " + future.get().getPath()));
         return report.getMonitorReportId();
     }
 
@@ -115,9 +116,10 @@ public class DataService {
         }
         firestore = FirestoreClient.getFirestore();
         ApiFuture<DocumentReference> future = firestore.collection("projects").add(project);
-        LOGGER.info(Emoji.LEAF.concat(Emoji.LEAF).concat("Project added: " +  future.get().getPath()));
+        LOGGER.info(Emoji.LEAF.concat(Emoji.LEAF).concat("Project added: " + future.get().getPath()));
         return project.getProjectId();
     }
+
     public String addCity(City city) throws Exception {
         city.setCityId(UUID.randomUUID().toString());
         firestore = FirestoreClient.getFirestore();
@@ -130,7 +132,8 @@ public class DataService {
         community.setCommunityId(UUID.randomUUID().toString());
         firestore = FirestoreClient.getFirestore();
         ApiFuture<DocumentReference> future = firestore.collection("communities").add(community);
-        LOGGER.info(Emoji.LEAF.concat(Emoji.LEAF).concat("Community added to database at path: " +  future.get().getPath()));
+        LOGGER.info(Emoji.LEAF.concat(Emoji.LEAF).concat("Community: \uD83C\uDF3C "+community.getName()
+                +" added to database at path: \uD83D\uDC24 " + future.get().getPath()));
         return community.getCommunityId();
     }
 
@@ -139,21 +142,21 @@ public class DataService {
 
         firestore = FirestoreClient.getFirestore();
         ApiFuture<DocumentReference> future = firestore.collection("countries").add(country);
-        LOGGER.info(Emoji.LEAF.concat(Emoji.LEAF).concat("Country added: " +  future.get().getPath()));
+        LOGGER.info(Emoji.LEAF.concat(Emoji.LEAF).concat("Country added: " + future.get().getPath()));
         return country.getCountryId();
     }
+
     public String addOrganization(Organization organization) throws Exception {
         organization.setOrganizationId(UUID.randomUUID().toString());
         organization.setCreated(new DateTime().toDateTimeISO().toString());
 
         firestore = FirestoreClient.getFirestore();
         ApiFuture<DocumentReference> future = firestore.collection("organizations").add(organization);
-        LOGGER.info(Emoji.LEAF.concat(Emoji.LEAF).concat("Organization added: " +  future.get().getPath()));
+        LOGGER.info(Emoji.LEAF.concat(Emoji.LEAF).concat("Organization added: " + future.get().getPath()));
         return organization.getOrganizationId();
     }
 
     public String createUser(User user, String password) throws Exception {
-        LOGGER.info(Emoji.LEMON + Emoji.LEMON + "createUser: name: " + user.getName() + " email: " + user.getEmail() + " password: " + password);
         FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
         UserRecord.CreateRequest createRequest = new UserRecord.CreateRequest();
         createRequest.setEmail(user.getEmail());
@@ -161,8 +164,11 @@ public class DataService {
         createRequest.setPassword(password);
         ApiFuture<UserRecord> userRecord = firebaseAuth.createUserAsync(createRequest);
         String uid = userRecord.get().getUid();
-        LOGGER.info(Emoji.HEART_ORANGE + Emoji.HEART_ORANGE + "Firebase user record created: ".concat(uid));
         user.setUserId(uid);
+        LOGGER.info(Emoji.HEART_ORANGE + Emoji.HEART_ORANGE + "Firebase user auth record created: "
+                .concat(" \uD83E\uDDE1 ").concat(user.getName().concat(" \uD83E\uDDE1 ").concat(user.getEmail())
+                        .concat(" \uD83E\uDDE1 ").concat(Objects.requireNonNull(user.getUserId()))));
+
         addUser(user);
 
         return uid;

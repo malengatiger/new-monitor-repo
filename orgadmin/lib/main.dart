@@ -33,7 +33,7 @@ import 'package:orgadmin/ui/project/project_editor.dart';
 import 'package:orgadmin/ui/questionnaire/questionnaire_editor.dart';
 import 'package:orgadmin/ui/settlement/settlement_detail.dart';
 import 'package:orgadmin/ui/settlement/settlement_editor.dart';
-
+import 'package:page_transition/page_transition.dart';
 void main() {
 //  SharedPreferences.setMockInitialValues({}); // set initial values
   runApp(MyApp());
@@ -205,6 +205,13 @@ class _DashboardState extends State<Dashboard>
           MaterialPageRoute(builder: (BuildContext context) {
         return SignIn();
       }));
+      user = await Navigator.push(
+          context,
+          PageTransition(
+              type: PageTransitionType.scale,
+              alignment: Alignment.topLeft,
+              duration: Duration(seconds: 2),
+              child: SignIn()));
       print('🤟🤟🤟🤟🤟🤟🤟🤟 User returned from signIn');
       prettyPrint(user.toJson(), "User returned  🤟🤟🤟🤟🤟🤟🤟");
       bloc.setActiveUser();

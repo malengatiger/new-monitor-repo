@@ -8,6 +8,7 @@ import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.logging.Logger;
@@ -59,6 +60,11 @@ public class DataController {
         generator.generateCommunities();
         return Emoji.LEAF.concat(Emoji.LEAF.concat("Communities generated " + Emoji.RED_APPLE));
     }
+    @PostMapping("/createUser")
+    public String createUser(@RequestParam  User user, @RequestParam String password) throws Exception {
+        LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS).concat("createUser: ".concat(user.getName())));
+        return dataService.createUser(user, password);
+    }
     @PostMapping("/addOrganization")
     public String addOrganization(Organization organization) throws Exception {
         LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS).concat("Adding Organization: ".concat(organization.getName())));
@@ -68,6 +74,11 @@ public class DataController {
     public String addCountry(Country country) throws Exception {
         LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS).concat("Adding Country: ".concat(country.getName())));
         return dataService.addCountry(country);
+    }
+    @PostMapping("/addCommunity")
+    public String addCommunity(Community community) throws Exception {
+        LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS).concat("Adding Community: ".concat(community.getName())));
+        return dataService.addCommunity(community);
     }
     @PostMapping("/addCity")
     public String addCity(City city) throws Exception {

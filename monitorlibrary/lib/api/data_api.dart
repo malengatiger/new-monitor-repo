@@ -31,14 +31,16 @@ class DataAPI {
     if (status == 'dev') {
       isDevelopmentStatus = true;
       String url = DotEnv().env['devURL'];
+      print(' 🌎 🌎 🌎 Status of the app is  DEVELOPMENT 🌎 🌎 🌎');
+
       return url;
     } else {
       isDevelopmentStatus = false;
       String url = DotEnv().env['prodURL'];
+      print(' 🌎 🌎 🌎 Status of the app is PRODUCTION 🌎 🌎 🌎');
+
       return url;
     }
-    print(
-        ' 🌎 🌎 🌎 Status of the app is ${isDevelopmentStatus ? 'DEVELOPMENT' : 'PRODUCTION'}  🌎 🌎 🌎');
   }
 
   static Future<User> addUser(User user) async {
@@ -399,12 +401,15 @@ class DataAPI {
   }
 
   static Future<User> findUserByEmail(String email) async {
+    debugPrint('🐤🐤🐤🐤 DataAPI : ... findUserByEmail $email ');
     String mURL = await getUrl();
+    assert(mURL != null);
     Map bag = {
       'email': email,
     };
     try {
       var result = await _callWebAPIPost(mURL + 'findUserByEmail', bag);
+      print(result);
       return User.fromJson(result);
     } catch (e) {
       print(e);
@@ -457,7 +462,7 @@ class DataAPI {
 
   static Future _callWebAPIPost(String mUrl, Map bag) async {
     debugPrint(
-        '\n\n🏈 🏈 🏈 🏈 🏈DataAPI_callWebAPI:  🔆 🔆 🔆 🔆 calling : 💙  $mUrl  💙 print bag ...');
+        '\n\n🏈 🏈 🏈 🏈 🏈 DataAPI_callWebAPI:  🔆 🔆 🔆 🔆 calling : 💙  $mUrl  💙 print bag ...');
     print(bag);
     var mBag;
     if (bag != null) {

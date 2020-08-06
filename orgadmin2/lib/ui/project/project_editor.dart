@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:monitorlibrary/api/sharedprefs.dart';
+import 'package:monitorlibrary/bloc/admin_bloc.dart';
+import 'package:monitorlibrary/camera/camera_ui.dart';
 import 'package:monitorlibrary/data/project.dart';
 import 'package:monitorlibrary/data/user.dart';
 import 'package:monitorlibrary/functions.dart';
-import 'package:monitorlibrary/slide_right.dart';
 import 'package:monitorlibrary/snack.dart';
-import 'package:monitorlibrary/bloc/admin_bloc.dart';
-import 'package:monitorlibrary/camera/camera_ui.dart';
+import 'package:page_transition/page_transition.dart';
 
 class ProjectEditor extends StatefulWidget {
   final Project project;
@@ -38,6 +38,7 @@ class _ProjectEditorState extends State<ProjectEditor>
       mProject = Project(
         organizationName: user.organizationName,
         organizationId: user.organizationId,
+        description: '',
         settlements: [],
         positions: [],
         photoUrls: [],
@@ -91,78 +92,83 @@ class _ProjectEditorState extends State<ProjectEditor>
               ),
             )
           : Padding(
-        padding: EdgeInsets.all(8),
-        child: ListView(
-          children: <Widget>[
-            Card(
-              elevation: 4,
-              child: Padding(
-                padding: const EdgeInsets.only(left: 20.0, right: 20),
-                child: Column(
-                  children: <Widget>[
-                    SizedBox(
-                      height: 20,
-                    ),
-                    Text(
-                      'Project Details',
-                      style: Styles.blackBoldLarge,
-                    ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    TextField(
-                      controller: nameController,
-                      decoration: InputDecoration(
-                        hintText: 'Enter Project Name',
-                        labelText: 'Project Name',
+              padding: EdgeInsets.all(8),
+              child: ListView(
+                children: <Widget>[
+                  Card(
+                    elevation: 4,
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 20.0, right: 20),
+                      child: Column(
+                        children: <Widget>[
+                          SizedBox(
+                            height: 20,
+                          ),
+                          Text(
+                            'Project Details',
+                            style: Styles.blackBoldLarge,
+                          ),
+                          SizedBox(
+                            height: 20,
+                          ),
+                          TextField(
+                            controller: nameController,
+                            decoration: InputDecoration(
+                              hintText: 'Enter Project Name',
+                              labelText: 'Project Name',
+                            ),
+                            onChanged: _onNameChanged,
+                          ),
+                          SizedBox(
+                            height: 20,
+                          ),
+                          TextField(
+                            controller: descController,
+                            keyboardType: TextInputType.multiline,
+                            maxLines: null,
+                            decoration: InputDecoration(
+                              hintText: 'Enter Project Description',
+                              labelText: 'Description',
+                            ),
+                            onChanged: _onDescChanged,
+                          ),
+                          SizedBox(
+                            height: 60,
+                          ),
+                          RaisedButton(
+                            elevation: 8,
+                            color: Colors.indigo,
+                            child: Padding(
+                              padding: const EdgeInsets.only(
+                                  left: 24.0, right: 24.0, top: 20, bottom: 20),
+                              child: Text(
+                                'Submit Project',
+                                style: Styles.whiteSmall,
+                              ),
+                            ),
+                            onPressed: _submit,
+                          ),
+                          SizedBox(
+                            height: 60,
+                          ),
+                        ],
                       ),
-                      onChanged: _onNameChanged,
                     ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    TextField(
-                      controller: descController,
-                      keyboardType: TextInputType.multiline,
-                      maxLines: null,
-                      decoration: InputDecoration(
-                        hintText: 'Enter Project Description',
-                        labelText: 'Description',
-                      ),
-                      onChanged: _onDescChanged,
-                    ),
-                    SizedBox(
-                      height: 60,
-                    ),
-                    RaisedButton(
-                      elevation: 8,
-                      color: Colors.indigo,
-                      child: Padding(
-                        padding: const EdgeInsets.only(
-                            left: 24.0, right: 24.0, top: 20, bottom: 20),
-                        child: Text(
-                          'Submit Project',
-                          style: Styles.whiteSmall,
-                        ),
-                      ),
-                      onPressed: _submit,
-                    ),
-                    SizedBox(
-                      height: 60,
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
-          ],
-        ),
+      bottomNavigationBar: BottomNavigationBar(
+        items: <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+              icon: Icon(Icons.camera), title: Text('Camera')),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.local_library), title: Text('Rating')),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.location_on), title: Text('Location')),
+        ],
+        onTap: _onNavTapped,
       ),
-      bottomNavigationBar: BottomNavigationBar(items: <BottomNavigationBarItem>[
-        BottomNavigationBarItem(icon: Icon(Icons.camera), title: Text('Camera')),
-        BottomNavigationBarItem(icon: Icon(Icons.local_library), title: Text('Rating')),
-        BottomNavigationBarItem(icon: Icon(Icons.location_on), title: Text('Location')),
-      ],
-      onTap: _onNavTapped,),
     );
   }
 
@@ -188,7 +194,8 @@ class _ProjectEditorState extends State<ProjectEditor>
     }
     try {
       mProject = await bloc.addProject(mProject);
-      prettyPrint(mProject.toJson(), '🍉 PROJECT added to database. 🍉 🍉 🍉 check projectId');
+      prettyPrint(mProject.toJson(),
+          '🍉 PROJECT added to database. 🍉 🍉 🍉 check projectId');
     } catch (e) {
       print(e);
       _showError(e.message);
@@ -217,17 +224,22 @@ class _ProjectEditorState extends State<ProjectEditor>
   }
 
   void _onNavTapped(int value) {
-    if  (mProject.projectId == null || mProject.projectId.isEmpty) {
+    if (mProject.projectId == null || mProject.projectId.isEmpty) {
       debugPrint('👎 👎 👎 NavTapped - project not ready yet');
       return;
     }
-    switch(value) {
+    switch (value) {
       case 0:
-        Navigator.push(context, SlideRightRoute(
-          widget: CameraMain(project: mProject,),
-        ));
+        Navigator.push(
+            context,
+            PageTransition(
+                type: PageTransitionType.scale,
+                alignment: Alignment.topLeft,
+                duration: Duration(seconds: 2),
+                child: CameraMain(
+                  project: mProject,
+                )));
         break;
     }
-
   }
 }

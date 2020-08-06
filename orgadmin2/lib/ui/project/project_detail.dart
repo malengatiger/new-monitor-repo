@@ -6,11 +6,12 @@ import 'package:monitorlibrary/data/project.dart';
 import 'package:monitorlibrary/data/settlement.dart';
 import 'package:monitorlibrary/data/user.dart';
 import 'package:monitorlibrary/functions.dart';
-import 'package:monitorlibrary/slide_right.dart';
 import 'package:monitorlibrary/snack.dart';
+import 'package:page_transition/page_transition.dart';
 
 import 'project_editor.dart';
 
+/// shows the details for projects
 class ProjectDetail extends StatefulWidget {
   final Project project;
 
@@ -130,11 +131,11 @@ class _ProjectDetailState extends State<ProjectDetail> {
                               onTap: () {
                                 Navigator.push(
                                     context,
-                                    SlideRightRoute(
-                                      widget: PhotoGallery(
-                                        project: project,
-                                      ),
-                                    ));
+                                    PageTransition(
+                                        type: PageTransitionType.scale,
+                                        alignment: Alignment.topLeft,
+                                        duration: Duration(seconds: 2),
+                                        child: PhotoGallery()));
                               },
                               child: Card(
                                 elevation: 4,
@@ -291,17 +292,22 @@ class _ProjectDetailState extends State<ProjectDetail> {
         print('Questionnaire Nav  tapped');
         Navigator.push(
             context,
-            SlideRightRoute(
-              widget: ProjectEditor(
-                project: widget.project,
-              ),
-            ));
+            PageTransition(
+                type: PageTransitionType.scale,
+                alignment: Alignment.topLeft,
+                duration: Duration(seconds: 2),
+                child: ProjectEditor()));
+
         break;
       case 1:
         print('Project Nav  tapped');
+        AppSnackbar.showErrorSnackbar(
+            scaffoldKey: _key, message: 'Under Construction');
         break;
       case 2:
         print('Map Nav  tapped');
+        AppSnackbar.showErrorSnackbar(
+            scaffoldKey: _key, message: 'Under Construction');
 //        Navigator.push(context, SlideRightRoute(
 //          widget: MapEditor(widget.project),
 //        ));

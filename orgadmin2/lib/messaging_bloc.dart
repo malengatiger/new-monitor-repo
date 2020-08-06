@@ -1,10 +1,12 @@
 import 'dart:async';
 import 'dart:convert';
+
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:monitorlibrary/api/Constants.dart';
 import 'package:monitorlibrary/functions.dart';
 
+/// This Bloc maanges messaging (FCM)
 class AdminMessagingBloc {
   final FirebaseMessaging firebaseMessaging = FirebaseMessaging();
 
@@ -12,16 +14,20 @@ class AdminMessagingBloc {
     initialize();
   }
 
-  subscribe() async{
-    debugPrint('\n\n🍏🍏 💙💙💙 💙💙💙 AdminMessagingBloc: Subscribe to FCM topics ... 💙💙💙💙💙💙 🍏🍏');
+  subscribe() async {
+    debugPrint(
+        '\n\n🍏🍏 💙💙💙 💙💙💙 AdminMessagingBloc: Subscribe to FCM topics ... 💙💙💙💙💙💙 🍏🍏');
     await firebaseMessaging.subscribeToTopic(Constants.TOPIC_USERS);
     await firebaseMessaging.subscribeToTopic(Constants.TOPIC_SETTLEMENTS);
     await firebaseMessaging.subscribeToTopic(Constants.TOPIC_PROJECTS);
     await firebaseMessaging.subscribeToTopic(Constants.TOPIC_QUESTIONNAIRES);
     await firebaseMessaging.subscribeToTopic(Constants.TOPIC_ORGANIZATIONS);
-    debugPrint('💙💙💙 🍎🍎🍎🍎 AdminMessagingBloc: Subscriptions to FCM topics completed. 🍎🍎🍎🍎🍎🍎');
-    debugPrint('🔆🔆🔆🔆 topics: 🔆 ${Constants.TOPIC_USERS} 🔆 ${Constants.TOPIC_SETTLEMENTS} 🔆 ${Constants.TOPIC_PROJECTS} 🔆 ${Constants.TOPIC_ORGANIZATIONS} 🔆 ${Constants.TOPIC_QUESTIONNAIRES} 🔆🔆🔆🔆 \n\n');
+    debugPrint(
+        '💙💙💙 🍎🍎🍎🍎 AdminMessagingBloc: Subscriptions to FCM topics completed. 🍎🍎🍎🍎🍎🍎');
+    debugPrint(
+        '🔆🔆🔆🔆 topics: 🔆 ${Constants.TOPIC_USERS} 🔆 ${Constants.TOPIC_SETTLEMENTS} 🔆 ${Constants.TOPIC_PROJECTS} 🔆 ${Constants.TOPIC_ORGANIZATIONS} 🔆 ${Constants.TOPIC_QUESTIONNAIRES} 🔆🔆🔆🔆 \n\n');
   }
+
 //R8,712,540,942,08
   initialize() async {
     debugPrint(
@@ -34,8 +40,10 @@ class AdminMessagingBloc {
         prettyPrint(mJson,
             '🧡🧡🧡🧡🧡🧡 🍎 AdminMessagingBloc: Message Received 🍎 from 💙💙💙 FCM 💙💙💙 🧡🧡🧡🧡🧡🧡 ');
         var type = mJson['type'];
-        print('🍏🍏🍏🍏🍏🍏🍏🍏🍏🍏 AdminMessagingBloc: type of message: $type 💙💙💙');
-        prettyPrint(mJson, 'AdminMessagingBloc: ********* 🐥🐥🐥🐥🐥 json payload');
+        print(
+            '🍏🍏🍏🍏🍏🍏🍏🍏🍏🍏 AdminMessagingBloc: type of message: $type 💙💙💙');
+        prettyPrint(
+            mJson, 'AdminMessagingBloc: ********* 🐥🐥🐥🐥🐥 json payload');
         switch (type) {
           case Constants.TOPIC_USERS:
             _userController.sink.add(message);
@@ -62,7 +70,8 @@ class AdminMessagingBloc {
       },
     );
     var token = await firebaseMessaging.getToken();
-    debugPrint('🧩🧩🧩🧩🧩🧩 AdminMessagingBloc: FCM token: 🧩🧩🧩🧩🧩🧩🧩🧩 🐥🐥🐥🐥🐥 $token 🐥🐥🐥🐥🐥');
+    debugPrint(
+        '🧩🧩🧩🧩🧩🧩 AdminMessagingBloc: FCM token: 🧩🧩🧩🧩🧩🧩🧩🧩 🐥🐥🐥🐥🐥 $token 🐥🐥🐥🐥🐥');
     subscribe();
   }
 

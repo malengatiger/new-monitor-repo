@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:monitorlibrary/data/settlement.dart';
 import 'package:monitorlibrary/functions.dart';
-import 'package:monitorlibrary/slide_right.dart';
 import 'package:orgadmin2/ui/map_editor.dart';
 import 'package:orgadmin2/ui/questionnaire/questionnaire_editor.dart';
+import 'package:page_transition/page_transition.dart';
 
 class SettlementDetail extends StatefulWidget {
   final Settlement settlement;
@@ -235,9 +235,12 @@ class _SettlementDetailState extends State<SettlementDetail> {
         print('Questionnaire Nav  tapped');
         Navigator.push(
             context,
-            SlideRightRoute(
-              widget: QuestionnaireEditor(),
-            ));
+            PageTransition(
+                type: PageTransitionType.scale,
+                alignment: Alignment.topLeft,
+                duration: Duration(seconds: 2),
+                child: QuestionnaireEditor()));
+
         break;
       case 1:
         print('Project Nav  tapped');
@@ -246,9 +249,12 @@ class _SettlementDetailState extends State<SettlementDetail> {
         print('Map Nav  tapped');
         Navigator.push(
             context,
-            SlideRightRoute(
-              widget: MapEditor(widget.settlement),
-            ));
+            PageTransition(
+                type: PageTransitionType.scale,
+                alignment: Alignment.topLeft,
+                duration: Duration(seconds: 2),
+                child: MapEditor(widget.settlement)));
+
         break;
     }
   }

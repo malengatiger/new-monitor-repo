@@ -41,14 +41,21 @@ public class Generator {
 
     public void startGeneration() throws Exception {
         LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS + Emoji.RAIN_DROPS + Emoji.RAIN_DROPS.concat(" ... startGeneration of Demo Data ...")));
+        Date start = new Date();
         setFirstNames();
         setLastNames();
         setOrgNames();
-        setSettlementNames();
+        setCommunityNames();
 
+        //clean up first
         deleteFirebase();
         generateCountries();
 
+        Date end = new Date();
+        long seconds = (end.getTime() - start.getTime()) / 1000;
+        long minutes = seconds/ 60;
+        LOGGER.info("\uD83E\uDD6C \uD83E\uDD6C \uD83E\uDD6C \uD83E\uDD6C \uD83E\uDD6C \uD83E\uDD6C "
+        .concat(" \uD83C\uDF3C Demo Data Generator completed; \uD83C\uDF3C elapsed seconds: " + seconds + "; elapsed minutes " + minutes));
     }
 
     private void deleteFirebase() throws Exception {
@@ -180,7 +187,7 @@ public class Generator {
             for (int i = 0; i < 4; i++) {
                 String name = getRandomFirstName() + " " + getRandomLastName();
                 if (i == 0) {
-                    User user = new User(name, "user." + System.currentTimeMillis() + "@monitor.com",
+                    User user = new User(name, buildEmail("orgadmin"),
                             "099 999 9999", "userId", Objects.requireNonNull(organization.getOrganizationId()),
                             organization.getName(), new DateTime().toDateTimeISO().toString(), UserType.ORGANIZATION_USER);
                     dataService.createUser(user, "pass123");
@@ -188,7 +195,7 @@ public class Generator {
                 }
 
                 if (i == 1 || i == 2) {
-                    User user = new User(name, "user." + System.currentTimeMillis() + "@monitor.com",
+                    User user = new User(name, buildEmail( "monitor") ,
                             "099 999 9999", "userId", Objects.requireNonNull(organization.getOrganizationId()),
                             organization.getName(), new DateTime().toDateTimeISO().toString(), UserType.MONITOR);
                     dataService.createUser(user, "pass123");
@@ -196,7 +203,7 @@ public class Generator {
                 }
 
                 if (i == 3 ) {
-                    User user = new User(name, "user." + System.currentTimeMillis() + "@monitor.com",
+                    User user = new User(name, buildEmail("executive") ,
                             "099 999 9999", "userId", Objects.requireNonNull(organization.getOrganizationId()),
                             organization.getName(), new DateTime().toDateTimeISO().toString(), UserType.EXECUTIVE);
                     dataService.createUser(user, "pass123");
@@ -207,13 +214,27 @@ public class Generator {
         LOGGER.info(Emoji.PEAR + Emoji.PEAR + Emoji.PEAR + " Users added : " + cnt);
     }
 
+    public String buildEmail(String prefix) {
+        String s1 = alphabet[random.nextInt(alphabet.length)];
+        String s2 = alphabet[random.nextInt(alphabet.length)];
+        String s3 = alphabet[random.nextInt(alphabet.length)];
+//        String s4 = alphabet[random.nextInt(alphabet.length)];
+//        String s5 = alphabet[random.nextInt(alphabet.length)];
+        return prefix.toLowerCase() + "." + s1.toLowerCase()+s2.toLowerCase()+s3.toLowerCase()
+                + "@monitor.com".toLowerCase();
+    }
+    private final String[] alphabet = {"A","B","C","D","E","F","G","H","I","J","K","L","M","N",
+    "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"};
+
     public void generateCommunities() throws Exception {
+
         Country country = listService.getCountryByName("South Africa");
-        setSettlementNames();
         if (country == null) {
             throw new Exception("South Africa is not here, Bud!");
         }
-        for (String name : settlementNames) {
+        LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS + Emoji.RAIN_DROPS
+                .concat(" Generating "+communities.size()+" Communities ...")));
+        for (String name : communities) {
             Community c = new Community(name,"id",
                     Objects.requireNonNull(country.getCountryId()),getPopulation(),
                     country.getName(),
@@ -222,6 +243,8 @@ public class Generator {
         }
     }
 
+    public static final String testProjectDesc = "This is the description of a truly transformational project that will change the lives of thousands of people." +
+            " The infrastructure built will enhance quality of life and provide opportunities for entrepreneurs and job seekers";
     private int getPopulation() {
         int x = random.nextInt(100);
         return x == 0? 100000: x * 20000;
@@ -233,36 +256,36 @@ public class Generator {
         int choice = random.nextInt(10);
         if (choice > 5) {
             Project p0 = new Project("", "Lanseria Project H", organization,
-                    "Generated Test Project", new DateTime().toDateTimeISO().toString(), new ArrayList<>(),
+                    testProjectDesc, new DateTime().toDateTimeISO().toString(), new ArrayList<>(),
                     new Position(latitudeLanseria, longitudeLanseria, DataService.getGeoHash(latitudeLanseria, longitudeLanseria)));
             dataService.addProject(p0);
             Project p1 = new Project("", "Sandton Project #" + 1, organization,
-                    "Generated Test Project", new DateTime().toDateTimeISO().toString(), new ArrayList<>(),
+                    testProjectDesc, new DateTime().toDateTimeISO().toString(), new ArrayList<>(),
                     new Position(latitudeSandton, longitudeSandton, DataService.getGeoHash(latitudeSandton, longitudeSandton)));
             dataService.addProject(p1);
-            Project p2 = new Project("", "Harties Project Zero", organization,
-                    "Generated Test Project", new DateTime().toDateTimeISO().toString(), new ArrayList<>(),
+            Project p2 = new Project("", "Harties Project BuildIt", organization,
+                    testProjectDesc, new DateTime().toDateTimeISO().toString(), new ArrayList<>(),
                     new Position(latitudeHarties, longitudeHarties, DataService.getGeoHash(latitudeHarties, longitudeHarties)));
             dataService.addProject(p2);
             Project p3 = new Project("", "Johannesburg Project X", organization,
-                    "Generated Test Project", new DateTime().toDateTimeISO().toString(), new ArrayList<>(),
+                    testProjectDesc, new DateTime().toDateTimeISO().toString(), new ArrayList<>(),
                     new Position(latitudeJHB, longitudeJHB, DataService.getGeoHash(latitudeJHB, longitudeJHB)));
             dataService.addProject(p3);
         } else {
             Project p0 = new Project("", "Harties Project Z", organization,
-                    "Generated Test Project", new DateTime().toDateTimeISO().toString(), new ArrayList<>(),
+                    testProjectDesc, new DateTime().toDateTimeISO().toString(), new ArrayList<>(),
                     new Position(latitudeHarties, longitudeHarties, DataService.getGeoHash(latitudeHarties, longitudeHarties)));
             dataService.addProject(p0);
             Project p1 = new Project("", "Randburg Project A" + 1, organization,
-                    "Generated Test Project", new DateTime().toDateTimeISO().toString(), new ArrayList<>(),
+                    testProjectDesc, new DateTime().toDateTimeISO().toString(), new ArrayList<>(),
                     new Position(latitudeRandburg, longitudeRandburg, DataService.getGeoHash(latitudeRandburg, longitudeRandburg)));
             dataService.addProject(p1);
             Project p2 = new Project("", "Rosebank Project C", organization,
-                    "Generated Test Project", new DateTime().toDateTimeISO().toString(), new ArrayList<>(),
+                    testProjectDesc, new DateTime().toDateTimeISO().toString(), new ArrayList<>(),
                     new Position(latitudeRosebank, longitudeRosebank, DataService.getGeoHash(latitudeRosebank, longitudeRosebank)));
             dataService.addProject(p2);
             Project p3 = new Project("", "Lanseria Project Baker", organization,
-                    "Generated Test Project", new DateTime().toDateTimeISO().toString(), new ArrayList<>(),
+                    testProjectDesc, new DateTime().toDateTimeISO().toString(), new ArrayList<>(),
                     new Position(latitudeLanseria, longitudeLanseria, DataService.getGeoHash(latitudeLanseria, longitudeLanseria)));
             dataService.addProject(p3);
         }
@@ -271,7 +294,7 @@ public class Generator {
     private final List<String> firstNames = new ArrayList<>();
     private final List<String> lastNames = new ArrayList<>();
     private final List<String> organizationNames = new ArrayList<>();
-    private final List<String> settlementNames = new ArrayList<>();
+    private final List<String> communities = new ArrayList<>();
     private final Random random = new Random(System.currentTimeMillis());
 
     private String getRandomFirstName() {
@@ -281,10 +304,11 @@ public class Generator {
         return lastNames.get(random.nextInt(lastNames.size() - 1));
     }
     private String getRandomOrgName() {
-        return settlementNames.get(random.nextInt(organizationNames.size() - 1));
+        return organizationNames.get(random.nextInt(organizationNames.size() - 1));
     }
-
+//orgadmin1596705856490@monitor.com
     private void setOrgNames() {
+        organizationNames.clear();
         organizationNames.add("Housing Agency");
         organizationNames.add("Infrastructure Management");
         organizationNames.add("Project Management");
@@ -298,12 +322,13 @@ public class Generator {
         organizationNames.add("Public Housing Monitoring");
         organizationNames.add("Rental Housing Monitoring");
     }
-    private void setSettlementNames() {
-        settlementNames.add("Freedom Corner");
-        settlementNames.add("Marhumbi Community");
-        settlementNames.add("Victory Community Settlement");
-        settlementNames.add("Informal Dreams Community");
-        settlementNames.add("Jerusalema Groove");
+    private void setCommunityNames() {
+        communities.clear();
+        communities.add("Freedom Corner");
+        communities.add("Marhumbi Community");
+        communities.add("Victory Community Settlement");
+        communities.add("Informal Dreams Community");
+        communities.add("Jerusalema Groove");
 
     }
     private void setFirstNames() {
@@ -320,7 +345,25 @@ public class Generator {
         firstNames.add("Ntozo");
         firstNames.add("Roberta");
         firstNames.add("Dineo");
+        firstNames.add("Mokone");
+        firstNames.add("Letlotlo");
+        firstNames.add("Kgabi");
+        firstNames.add("Malenga");
+        firstNames.add("Msapa");
+        firstNames.add("Musa");
+        firstNames.add("Rogers");
         firstNames.add("Portia");
+        firstNames.add("Sylvester");
+        firstNames.add("David");
+        firstNames.add("Nokwanda");
+        firstNames.add("Nozipho");
+        firstNames.add("Mantoa");
+        firstNames.add("Dennis");
+        firstNames.add("Vusi");
+        firstNames.add("Kenneth");
+        firstNames.add("Nana");
+        firstNames.add("Vuyelwa");
+        firstNames.add("Vuyo");
         firstNames.add("Helen");
         firstNames.add("Buti");
         firstNames.add("Craig");
@@ -351,6 +394,15 @@ public class Generator {
         lastNames.add("Mathebula");
         lastNames.add("Buthelezi");
         lastNames.add("Zulu");
+        lastNames.add("Khumalo");
+        lastNames.add("Pieterse");
+        lastNames.add("Makhatini");
+        lastNames.add("Ndlovu");
+        lastNames.add("Masemola");
+        lastNames.add("Sono");
+        lastNames.add("Hlungwane");
+        lastNames.add("Makhubela");
+        lastNames.add("Mthombeni");
     }
 
 
@@ -389,8 +441,8 @@ public class Generator {
         Firestore fs = FirestoreClient.getFirestore();
         CollectionReference ref1 = fs.collection("countries");
         deleteCollection(ref1, 1000);
-//        CollectionReference ref2 = fs.collection("cities");
-//        deleteCollection(ref2, 1000);
+        CollectionReference ref2 = fs.collection("communities");
+        deleteCollection(ref2, 1000);
         CollectionReference ref3 = fs.collection("organizations");
         deleteCollection(ref3, 1000);
         CollectionReference ref4 = fs.collection("projects");

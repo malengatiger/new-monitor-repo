@@ -95,7 +95,7 @@ class GeneralBloc {
       perm.Permission.storage,
     ].request())
         .cast<perm.Permission, PermissionStatus>();
-    print(statuses[perm.Permission.location]);
+//    print(statuses[perm.Permission.location]);
   }
 
   Future addToPolygon(

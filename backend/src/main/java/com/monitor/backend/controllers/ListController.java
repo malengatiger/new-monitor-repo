@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -24,13 +25,54 @@ public class ListController {
 
     @Autowired
     private ListService listService;
-
+    @GetMapping("/findUserByEmail")
+    public User findUserByEmail(@RequestParam  String email) throws Exception {
+        LOGGER.info(Emoji.DICE.concat(Emoji.DICE).concat("findUserByEmail ... email: ".concat(email)));
+        if (email.isEmpty()) {
+            throw new Exception("Email is missing ".concat(Emoji.NOT_OK).concat(Emoji.NOT_OK));
+        }
+        User user = listService.findUserByEmail(email);
+        LOGGER.info(Emoji.DOLPHIN.concat(Emoji.DOLPHIN) + " findUserByEmail found: " + user.getName());
+        return user;
+    }
+    //user.1596685142563@monitor.com
     @GetMapping("/getOrganizations")
     public List<Organization> getOrganizations() throws Exception {
         LOGGER.info(Emoji.DICE.concat(Emoji.DICE).concat(" getOrganizations ..."));
         List<Organization> orgs =  listService.getOrganizations();
         LOGGER.info(Emoji.DOLPHIN.concat(Emoji.DOLPHIN) + " Organizations found: " + orgs.size());
         return orgs;
+    }
+    @GetMapping("/getCommunities")
+    public List<Community> getCommunities() throws Exception {
+        LOGGER.info(Emoji.DICE.concat(Emoji.DICE).concat(" getCommunities ..."));
+        List<Community> communities =  listService.getCommunities();
+        LOGGER.info(Emoji.DOLPHIN.concat(Emoji.DOLPHIN) + " Communities found: " + communities.size());
+        return communities;
+    }
+    @GetMapping("/getProjects")
+    public List<Project> getProjects() throws Exception {
+        LOGGER.info(Emoji.DICE.concat(Emoji.DICE).concat("ListController: getProjects ..."));
+        List<Project> projects =  listService.getProjects();
+        LOGGER.info(Emoji.DOLPHIN.concat(Emoji.DOLPHIN)
+                + "ListController: Projects found: \uD83D\uDC24 " + projects.size());
+        return projects;
+    }
+    @GetMapping("/getCities")
+    public List<City> getCities() throws Exception {
+        LOGGER.info(Emoji.DICE.concat(Emoji.DICE).concat("ListController: getProjects ..."));
+        List<City> cities =  listService.getCities();
+        LOGGER.info(Emoji.DOLPHIN.concat(Emoji.DOLPHIN)
+                + "ListController: Cities found: \uD83D\uDC24 " + cities.size());
+        return cities;
+    }
+    @GetMapping("/getCountries")
+    public List<Country> getCountries() throws Exception {
+        LOGGER.info(Emoji.DICE.concat(Emoji.DICE).concat("ListController: getCountries ..."));
+        List<Country> countries =  listService.getCountries();
+        LOGGER.info(Emoji.DOLPHIN.concat(Emoji.DOLPHIN)
+                + "ListController: Countries found: \uD83D\uDC24 " + countries.size());
+        return countries;
     }
     @GetMapping("/getCountryOrganizations")
     public List<Organization> getCountryOrganizations(String countryId) throws Exception {

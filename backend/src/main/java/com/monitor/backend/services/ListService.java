@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 @Service
 public class ListService {
@@ -33,6 +34,24 @@ public class ListService {
     static final  double lat = 0.0144927536231884; // degrees latitude per mile
     static final  double lon = 0.0181818181818182; // degrees longitude per mile
 
+    public User findUserByEmail(String email) throws Exception {
+        LOGGER.info(Emoji.GLOBE.concat(Emoji.GLOBE).concat("findUserByEmail ...".concat(email)));
+        firestore = FirestoreClient.getFirestore();
+        ApiFuture<QuerySnapshot> future = firestore.collection("users")
+                .whereEqualTo("email", email)
+                .limit(1)
+                .get();
+        User user = null;
+        for (QueryDocumentSnapshot snapshot : future.get()) {
+           user = G.fromJson(getJSON(snapshot.getData()),User.class);
+        }
+       if (user != null) {
+           LOGGER.info(Emoji.GLOBE.concat(Emoji.GLOBE).concat("findUserByEmail ... found: \uD83D\uDC24 " + G.toJson(user)));
+       } else {
+           throw new Exception(Emoji.ALIEN + "User "+email+" not found, probably not registered yet ".concat(Emoji.NOT_OK));
+       }
+       return user;
+    }
     public List<Organization> getOrganizations() throws Exception {
         List<Organization> mList = new ArrayList<>();
         LOGGER.info(Emoji.GLOBE.concat(Emoji.GLOBE).concat("getOrganizations ..."));
@@ -49,6 +68,40 @@ public class ListService {
 
         return mList;
     }
+    public List<Community> getCommunities() throws Exception {
+        List<Community> mList = new ArrayList<>();
+        LOGGER.info(Emoji.GLOBE.concat(Emoji.GLOBE).concat("getCommunities ..."));
+
+        firestore = FirestoreClient.getFirestore();
+        ApiFuture<QuerySnapshot> future = firestore.collection("communities")
+                .orderBy("name")
+                .get();
+        for (QueryDocumentSnapshot snapshot : future.get()) {
+            Community community = G.fromJson(getJSON(snapshot.getData()),Community.class);
+            mList.add(community);
+        }
+        LOGGER.info(Emoji.GLOBE.concat(Emoji.GLOBE).concat("getCommunities ... found: " + mList.size()));
+
+        return mList;
+    }
+    public List<Project> getProjects() throws Exception {
+        List<Project> mList = new ArrayList<>();
+        LOGGER.info(Emoji.GLOBE.concat(Emoji.GLOBE).concat("ListService: getProjects ..."));
+
+        firestore = FirestoreClient.getFirestore();
+        ApiFuture<QuerySnapshot> future = firestore.collection("projects")
+                .orderBy("name")
+                .get();
+        for (QueryDocumentSnapshot snapshot : future.get()) {
+            Project project = G.fromJson(getJSON(snapshot.getData()),Project.class);
+            mList.add(project);
+        }
+        LOGGER.info(Emoji.GLOBE.concat(Emoji.GLOBE).concat("ListService: getProjects ... found:" +
+                " \uD83D\uDC24 " + mList.size()));
+
+        return mList;
+    }
+
 
     public List<Organization> getCountryOrganizations(String countryId) throws Exception {
         List<Organization> mList = new ArrayList<>();
@@ -164,7 +217,7 @@ public class ListService {
 
     public List<User> getUsers()  throws Exception{
         List<User> mList = new ArrayList<>();
-        LOGGER.info(Emoji.GLOBE.concat(Emoji.GLOBE).concat("getOrganizationUsers ..."));
+        LOGGER.info(Emoji.GLOBE.concat(Emoji.GLOBE).concat("getUsers ..."));
 
         firestore = FirestoreClient.getFirestore();
         ApiFuture<QuerySnapshot> future = firestore.collection("users")
@@ -174,7 +227,39 @@ public class ListService {
             User project = G.fromJson(getJSON( snapshot.getData()),User.class);
             mList.add(project);
         }
-        LOGGER.info(Emoji.GLOBE.concat(Emoji.GLOBE).concat("getOrganizationUsers ... found: " + mList.size()));
+        LOGGER.info(Emoji.GLOBE.concat(Emoji.GLOBE).concat("getUsers ... found: " + mList.size()));
+
+        return mList;
+    }
+    public List<City> getCities()  throws Exception{
+        List<City> mList = new ArrayList<>();
+        LOGGER.info(Emoji.GLOBE.concat(Emoji.GLOBE).concat("getCities ..."));
+
+        firestore = FirestoreClient.getFirestore();
+        ApiFuture<QuerySnapshot> future = firestore.collection("cities")
+                .orderBy("name")
+                .get();
+        for (QueryDocumentSnapshot snapshot : future.get()) {
+            City project = G.fromJson(getJSON( snapshot.getData()),City.class);
+            mList.add(project);
+        }
+        LOGGER.info(Emoji.RED_CAR.concat(Emoji.RED_CAR).concat("getCities ... found: " + mList.size()));
+
+        return mList;
+    }
+    public List<Country> getCountries()  throws Exception{
+        List<Country> mList = new ArrayList<>();
+        LOGGER.info(Emoji.GLOBE.concat(Emoji.GLOBE).concat("getCities ..."));
+
+        firestore = FirestoreClient.getFirestore();
+        ApiFuture<QuerySnapshot> future = firestore.collection("countries")
+                .orderBy("name")
+                .get();
+        for (QueryDocumentSnapshot snapshot : future.get()) {
+            Country project = G.fromJson(getJSON( snapshot.getData()),Country.class);
+            mList.add(project);
+        }
+        LOGGER.info(Emoji.RED_CAR.concat(Emoji.RED_CAR).concat("getCountries ... found: " + mList.size()));
 
         return mList;
     }
@@ -196,9 +281,7 @@ public class ListService {
         ObjectMapper objectMapper = new ObjectMapper();
 
         try {
-            String json = objectMapper.writeValueAsString(hashMap);
-            System.out.println(json);
-            return json;
+            return objectMapper.writeValueAsString(hashMap);
         } catch (JsonProcessingException e) {
            throw new Exception("JSON parsing failed " + Emoji.NOT_OK);
         }

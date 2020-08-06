@@ -6,8 +6,8 @@ import 'package:monitorlibrary/data/question.dart';
 import 'package:monitorlibrary/data/questionnaire.dart';
 import 'package:monitorlibrary/data/section.dart';
 import 'package:monitorlibrary/functions.dart';
-import 'package:monitorlibrary/slide_right.dart';
 import 'package:orgadmin2/ui/questionnaire/choice_editor.dart';
+import 'package:page_transition/page_transition.dart';
 
 class QuestionEditor extends StatefulWidget {
   final Section section;
@@ -285,11 +285,14 @@ class _QuestionFormState extends State<QuestionForm> {
 
     await Prefs.saveQuestionnaire(widget.questionnaire);
     bloc.updateActiveQuestionnaire(widget.questionnaire);
+
     Navigator.push(
         context,
-        SlideRightRoute(
-          widget: ChoiceEditor(widget.question, widget.questionnaire),
-        ));
+        PageTransition(
+            type: PageTransitionType.scale,
+            alignment: Alignment.topLeft,
+            duration: Duration(seconds: 2),
+            child: ChoiceEditor(widget.question, widget.questionnaire)));
   }
 }
 

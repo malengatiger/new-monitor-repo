@@ -6,11 +6,10 @@ import 'package:flutter/material.dart';
 import 'package:monitorlibrary/camera/uploader.dart';
 import 'package:monitorlibrary/data/project.dart';
 import 'package:monitorlibrary/data/settlement.dart';
-import 'package:monitorlibrary/slide_right.dart';
+import 'package:monitorlibrary/functions.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:video_player/video_player.dart';
-
-import '../functions.dart';
 
 class CameraRun extends StatefulWidget {
   final Project project;
@@ -140,9 +139,7 @@ class _CameraRunState extends State<CameraRun> with WidgetsBindingObserver {
                   ],
                 )
               : Container(),
-          !isCameraSelected
-              ? _cameraList()
-              : Container(),
+          !isCameraSelected ? _cameraList() : Container(),
         ],
       ),
     );
@@ -150,16 +147,14 @@ class _CameraRunState extends State<CameraRun> with WidgetsBindingObserver {
 
   /// Display the preview from the camera (or a message if the preview is not available).
   Widget _cameraPreviewWidget() {
+    if (controller == null) {
+      return Container();
+    }
 
-      if (controller == null) {
-        return Container();
-      }
-
-      return AspectRatio(
-        aspectRatio: controller.value.aspectRatio,
-        child: CameraPreview(controller),
-      );
-
+    return AspectRatio(
+      aspectRatio: controller.value.aspectRatio,
+      child: CameraPreview(controller),
+    );
   }
 
   /// Toggle recording audio
@@ -279,10 +274,10 @@ class _CameraRunState extends State<CameraRun> with WidgetsBindingObserver {
         var cam = cameras.elementAt(index);
         var name;
         if (cam.lensDirection.toString().contains('front')) {
-          name =  'Front Camera';
+          name = 'Front Camera';
         }
         if (cam.lensDirection.toString().contains('back')) {
-          name =  'Back Camera';
+          name = 'Back Camera';
         }
 
         return Padding(
@@ -457,20 +452,26 @@ class _CameraRunState extends State<CameraRun> with WidgetsBindingObserver {
       await controller.takePicture(filePath);
       if (widget.project != null) {
         debugPrint('🖲🖲🖲🖲🖲🖲  Picture File to send : 🖲🖲 $filePath 🖲🖲');
+
         Navigator.push(
             context,
-            SlideRightRoute(
-              widget: FileUploader(filePath: filePath, project: widget.project),
-            ));
+            PageTransition(
+                type: PageTransitionType.scale,
+                alignment: Alignment.topLeft,
+                duration: Duration(seconds: 2),
+                child:
+                    FileUploader(filePath: filePath, project: widget.project)));
       }
       if (widget.settlement != null) {
         debugPrint('🖲🖲🖲🖲🖲🖲  Picture File to send : 🖲🖲 $filePath 🖲🖲');
         Navigator.push(
             context,
-            SlideRightRoute(
-              widget: FileUploader(
-                  filePath: filePath, settlement: widget.settlement),
-            ));
+            PageTransition(
+                type: PageTransitionType.scale,
+                alignment: Alignment.topLeft,
+                duration: Duration(seconds: 2),
+                child: FileUploader(
+                    filePath: filePath, settlement: widget.settlement)));
       }
     } on CameraException catch (e) {
       _showCameraException(e);

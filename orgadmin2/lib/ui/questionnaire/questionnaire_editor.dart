@@ -8,9 +8,9 @@ import 'package:monitorlibrary/data/questionnaire.dart';
 import 'package:monitorlibrary/data/section.dart';
 import 'package:monitorlibrary/data/user.dart';
 import 'package:monitorlibrary/functions.dart';
-import 'package:monitorlibrary/slide_right.dart';
 import 'package:monitorlibrary/snack.dart';
 import 'package:orgadmin2/ui/questionnaire/section_editor.dart';
+import 'package:page_transition/page_transition.dart';
 
 class QuestionnaireEditor extends StatefulWidget {
   final Questionnaire questionnaire;
@@ -300,11 +300,14 @@ class _QuestionnaireEditorState extends State<QuestionnaireEditor>
 
     await Prefs.saveQuestionnaire(questionnaire);
     bloc.updateActiveQuestionnaire(questionnaire);
+
     Navigator.push(
         context,
-        SlideRightRoute(
-          widget: SectionEditor(questionnaire),
-        ));
+        PageTransition(
+            type: PageTransitionType.scale,
+            alignment: Alignment.topLeft,
+            duration: Duration(seconds: 2),
+            child: SectionEditor(questionnaire)));
   }
 
   void _showErrorSnack(String s) {
