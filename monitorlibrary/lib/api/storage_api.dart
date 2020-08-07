@@ -47,7 +47,8 @@ class StorageAPI {
             ' ${DateTime.now().toIso8601String()}\n\n');
         var url = await firebaseStorageRef.getDownloadURL();
         if (listener != null) {
-          listener.onComplete(url, snap.totalByteCount, snap.bytesTransferred);
+          listener.onUploadComplete(
+              url, snap.totalByteCount, snap.bytesTransferred);
         } else {
           pp('Listener is null ... FIX this! ............................');
         }
@@ -92,6 +93,6 @@ class StorageAPI {
 
 abstract class StorageUploadListener {
   onProgress(int totalByteCount, int bytesTransferred);
-  onComplete(String url, int totalByteCount, int bytesTransferred);
+  onUploadComplete(String url, int totalByteCount, int bytesTransferred);
   onError(String message);
 }

@@ -108,7 +108,7 @@ class _FileUploaderState extends State<FileUploader>
   }
 
   @override
-  onComplete(String url, int byteCnt, int transferred) async {
+  onUploadComplete(String url, int byteCnt, int transferred) async {
     setState(() {
       totalByteCount = byteCnt ~/ 1024;
       bytesTransferred = transferred ~/ 1024;

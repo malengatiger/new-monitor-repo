@@ -96,6 +96,7 @@ class _CameraRunState extends State<CameraRun>
   }
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  int totalBytes, bytesTransferred;
 
   @override
   Widget build(BuildContext context) {
@@ -141,6 +142,44 @@ class _CameraRunState extends State<CameraRun>
                 )
               : Container(),
           !isCameraSelected ? _cameraList() : Container(),
+          totalBytes == null
+              ? Container()
+              : Positioned(
+                  left: 20,
+                  top: 20,
+                  child: Container(
+                    width: 300,
+                    height: 40,
+                    child: Card(
+                      elevation: 8,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Row(
+                          children: [
+                            Text('Transferred'),
+                            SizedBox(
+                              width: 4,
+                            ),
+                            Text(
+                              '$bytesTransferred',
+                              style: Styles.pinkBoldSmall,
+                            ),
+                            SizedBox(
+                              width: 4,
+                            ),
+                            Text('of'),
+                            SizedBox(
+                              width: 4,
+                            ),
+                            Text(
+                              '$totalBytes',
+                              style: Styles.blackBoldSmall,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  )),
         ],
       ),
     );
@@ -344,6 +383,7 @@ class _CameraRunState extends State<CameraRun>
 
   void onTakePictureButtonPressed() {
     pp('🍊 🍊 🍊onTakePictureButtonPressed .. takePicture ... ');
+    isVideo = false;
     takePicture().then((String filePath) {
       pp('🍊 🍊 🍊 onTakePictureButtonPressed filePath: filePath: $filePath 🍊');
       if (mounted) {
@@ -379,6 +419,7 @@ class _CameraRunState extends State<CameraRun>
       return null;
     }
 
+    isVideo = true;
     final Directory extDir = await getApplicationDocumentsDirectory();
     final String dirPath = '${extDir.path}/Movies/flutter_test';
     await Directory(dirPath).create(recursive: true);
@@ -458,24 +499,13 @@ class _CameraRunState extends State<CameraRun>
         pp('🖲🖲🖲🖲🖲🖲  Picture File to send : 🖲🖲 $filePath 🖲🖲');
         var file = File(filePath);
         var url = StorageAPI.uploadPhoto(listener: this, file: file);
-        pp(' 🥝 🥝 🥝 🥝 🥝 Uploaded file url arrived at camera module, use for photo record: $url');
+        pp(' 🥝 🥝 🥝 🥝 🥝 Uploaded project file url arrived at camera module, use for photo record: $url');
       }
       if (widget.community != null) {
         pp('🖲🖲🖲🖲🖲🖲  Picture File to send : 🖲🖲 $filePath 🖲🖲');
         var file = File(filePath);
         var url = StorageAPI.uploadPhoto(listener: this, file: file);
-        pp(' 🥝 🥝 🥝 🥝 🥝 Uploaded file url arrived at camera module, use for photo record: $url');
-//        Navigator.push(
-//            context,
-//            PageTransition(
-//                type: PageTransitionType.scale,
-//                alignment: Alignment.topLeft,
-//                duration: Duration(seconds: 1),
-//                child: FileUploader(
-//                  filePath: filePath,
-//                  community: widget.settlement,
-//                  uploaderListener: this,
-//                )));
+        pp(' 🥝 🥝 🥝 🥝 🥝 Uploaded community file url arrived at camera module, use for photo record: $url');
       }
     } on CameraException catch (e) {
       _showCameraException(e);
@@ -491,6 +521,8 @@ class _CameraRunState extends State<CameraRun>
   }
 
   bool isCameraSelected = false;
+  bool isVideo = false;
+
   void _onCameraChanged(CameraDescription value) {
     if (cameraController != null && cameraController.value.isRecordingVideo) {
       pp('⚔️⚔️⚔️ Ignoring this change .... controller.value.isRecordingVideo');
@@ -504,18 +536,60 @@ class _CameraRunState extends State<CameraRun>
   }
 
   @override
-  onComplete(String url, int totalByteCount, int bytesTransferred) async {
+  onUploadComplete(String url, int totalByteCount, int bytesTransferred) async {
+    await savePhoto(url, totalByteCount, bytesTransferred);
+  }
+
+  Future savePhoto(String url, int totalByteCount, int bytesTransferred) async {
     var user = await Prefs.getUser();
     pp('📩 📩 📩 CameraRun:: Uploaded file url arrived at camera module, use for photo record: $url');
     pp('📩 📩 📩 CameraRun:: Uploaded file bytes: 🍊 $totalByteCount 🍊 transferred: $bytesTransferred');
-    var photo = Photo(
-        url: url,
-        userId: user.userId,
-        created: DateTime.now().toUtc().toIso8601String());
-    widget.project.photos.add(photo);
-    Prefs.saveActiveProject(widget.project);
-    pp('📩 📩 📩 CameraRun:: ........... popping off now!');
-    Navigator.pop(context);
+    //todo - use and create a monitor report .... in another widget StartMonitorReport
+    if (isVideo) {
+      if (widget.project != null) {
+        var video = Video(
+            url: url,
+            userId: user.userId,
+            created: DateTime.now().toUtc().toIso8601String());
+        widget.project.videos.add(video);
+        Prefs.saveActiveProject(widget.project);
+        pp('📩 📩 📩 CameraRun:: ........... popping off now!');
+//        Navigator.pop(context);
+      } else {
+        if (widget.community != null) {
+          var photo = Photo(
+              url: url,
+              userId: user.userId,
+              created: DateTime.now().toUtc().toIso8601String());
+//          widget.community.photos.add(photo);
+//          Prefs.saveActiveProject(widget.project);
+//          pp('📩 📩 📩 CameraRun:: ........... popping off now!');
+//          Navigator.pop(context);
+        }
+      }
+    } else {
+      if (widget.project != null) {
+        var photo = Photo(
+            url: url,
+            userId: user.userId,
+            created: DateTime.now().toUtc().toIso8601String());
+        widget.project.photos.add(photo);
+        Prefs.saveActiveProject(widget.project);
+        pp('📩 📩 📩 CameraRun:: ........... popping off now!');
+//        Navigator.pop(context);
+      } else {
+        if (widget.community != null) {
+          var photo = Photo(
+              url: url,
+              userId: user.userId,
+              created: DateTime.now().toUtc().toIso8601String());
+//          widget.community.photos.add(photo);
+//          Prefs.saveActiveProject(widget.project);
+//          pp('📩 📩 📩 CameraRun:: ........... popping off now!');
+//          Navigator.pop(context);
+        }
+      }
+    }
   }
 
   @override
@@ -526,7 +600,11 @@ class _CameraRunState extends State<CameraRun>
 
   @override
   onProgress(int totalByteCount, int bytesTransferred) {
-    pp('📩 📩 📩 CameraRun: bytesTransferred: 🍊 $bytesTransferred of $totalByteCount 🍊');
+    pp('📩 📩 📩 CameraRun: 🍊 bytesTransferred: 🍊 $bytesTransferred of $totalByteCount 🍊');
+    setState(() {
+      this.bytesTransferred = bytesTransferred;
+      this.totalBytes = totalByteCount;
+    });
   }
 }
 
