@@ -1,10 +1,11 @@
 import 'package:meta/meta.dart';
-import 'package:monitorlibrary/data/content.dart';
+import 'package:monitorlibrary/data/monitor_report.dart';
 import 'package:monitorlibrary/data/position.dart';
 import 'package:monitorlibrary/data/ratingContent.dart';
-import 'package:monitorlibrary/data/settlement.dart';
 
 import 'city.dart';
+import 'community.dart';
+import 'photo.dart' as ph;
 
 class Project {
   String name, projectId, description, organizationId, created;
@@ -12,19 +13,24 @@ class Project {
   List<City> nearestCities;
   Position position;
   List<Position> positions;
-  List<Content> photoUrls, videoUrls;
+  List<ph.Photo> photos;
+  List<ph.Video> videos;
   List<RatingContent> ratings;
-  List<Settlement> settlements;
+  List<Community> communities;
+  List<MonitorReport> monitorReports;
   Project(
       {@required this.name,
       @required this.description,
       this.organizationId,
-      this.settlements,
+      this.communities,
       this.nearestCities,
-      this.photoUrls,
-      this.videoUrls,
+      this.photos,
+      this.videos,
       this.ratings,
-      this.created, this.positions, this.position,
+      this.created,
+      this.positions,
+      this.position,
+      this.monitorReports,
       this.organizationName,
       @required this.projectId});
 
@@ -40,11 +46,18 @@ class Project {
     if (data['position'] != null) {
       position = Position.fromJson(data['position']);
     }
-    this.settlements = [];
-    if (data['settlements'] != null) {
-      List list = data['settlements'];
+    this.monitorReports = [];
+    if (data['monitorReports'] != null) {
+      List list = data['monitorReports'];
       list.forEach((m) {
-        this.settlements.add(Settlement.fromJson(m));
+        this.monitorReports.add(MonitorReport.fromJson(m));
+      });
+    }
+    this.communities = [];
+    if (data['communities'] != null) {
+      List list = data['communities'];
+      list.forEach((m) {
+        this.communities.add(Community.fromJson(m));
       });
     }
 
@@ -62,18 +75,18 @@ class Project {
         this.positions.add(Position.fromJson(m));
       });
     }
-    this.photoUrls = [];
-    if (data['photoUrls'] != null) {
-      List list = data['photoUrls'];
+    this.photos = [];
+    if (data['photos'] != null) {
+      List list = data['photos'];
       list.forEach((m) {
-        this.photoUrls.add(Content.fromJson(m));
+        this.photos.add(ph.Photo.fromJson(m));
       });
     }
-    this.videoUrls = [];
-    if (data['videoUrls'] != null) {
-      List list = data['videoUrls'];
+    this.videos = [];
+    if (data['videos'] != null) {
+      List list = data['videos'];
       list.forEach((m) {
-        this.videoUrls.add(Content.fromJson(m));
+        this.videos.add(ph.Video.fromJson(m));
       });
     }
     this.ratings = [];
@@ -83,7 +96,6 @@ class Project {
         this.ratings.add(RatingContent.fromJson(m));
       });
     }
-
   }
   Map<String, dynamic> toJson() {
     List mPositions = List();
@@ -93,14 +105,14 @@ class Project {
       });
     }
     List mPhotos = List();
-    if (photoUrls != null) {
-      photoUrls.forEach((photo) {
+    if (photos != null) {
+      photos.forEach((photo) {
         mPhotos.add(photo.toJson());
       });
     }
     List mVideos = List();
-    if (videoUrls != null) {
-      videoUrls.forEach((photo) {
+    if (videos != null) {
+      videos.forEach((photo) {
         mVideos.add(photo.toJson());
       });
     }
@@ -111,8 +123,8 @@ class Project {
       });
     }
     List mSett = List();
-    if (settlements != null) {
-      settlements.forEach((r) {
+    if (communities != null) {
+      communities.forEach((r) {
         mSett.add(r.toJson());
       });
     }
@@ -128,11 +140,11 @@ class Project {
       'description': description,
       'organizationId': organizationId,
       'projectId': projectId,
-      'settlements': mSett,
+      'communities': mSett,
       'organizationName': organizationName,
       'nearestCities': mCities,
-      'photoUrls': mPhotos,
-      'videoUrls': mVideos,
+      'photos': mPhotos,
+      'videos': mVideos,
       'ratings': mRatings,
       'created': created,
       'positions': mPositions,

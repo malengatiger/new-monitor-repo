@@ -22,7 +22,7 @@ class _CountriesDropDownState extends State<CountriesDropDown> {
   List<Country> _countries = List();
   _getCountries() async {
     _countries = await DataAPI.getCountries();
-    print('🦠 🦠 🦠 getCountries .....🦠 ${_countries.length} found');
+    pp('🦠 🦠 🦠 getCountries .....🦠 ${_countries.length} found');
     _countries.forEach((c) {
       var item = DropdownMenuItem<Country>(
         child: ListTile(
@@ -31,9 +31,9 @@ class _CountriesDropDownState extends State<CountriesDropDown> {
         ),
       );
       items.add(item);
-    prettyPrint(c.toJson(), '🏀🏀 Country ...  🏀🏀');
+      prettyPrint(c.toJson(), '🏀🏀 Country ...  🏀🏀');
     });
-    print('🧩 🧩  setting state ');
+    pp('🧩 🧩  setting state ');
     setState(() {});
   }
 
@@ -41,7 +41,7 @@ class _CountriesDropDownState extends State<CountriesDropDown> {
 
   @override
   Widget build(BuildContext context) {
-    print('👽 👽 build starting ...  🐲 🐲 🐲 🐲 ');
+    pp('👽 👽 build starting ...  🐲 🐲 🐲 🐲 ');
     if (items.isEmpty) {
       return Container();
     }
@@ -52,7 +52,7 @@ class _CountriesDropDownState extends State<CountriesDropDown> {
   }
 
   void _onDropDownChanged(Country value) {
-    print('🔆🔆🔆 _onDropDownChanged ... ');
+    pp('🔆🔆🔆 _onDropDownChanged ... ');
     widget.countryListener.onCountrySelected(value);
   }
 }

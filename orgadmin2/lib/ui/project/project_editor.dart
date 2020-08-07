@@ -39,10 +39,10 @@ class _ProjectEditorState extends State<ProjectEditor>
         organizationName: user.organizationName,
         organizationId: user.organizationId,
         description: '',
-        settlements: [],
+        communities: [],
         positions: [],
-        photoUrls: [],
-        videoUrls: [],
+        photos: [],
+        videos: [],
         ratings: [],
         nearestCities: [],
       );
@@ -235,7 +235,7 @@ class _ProjectEditorState extends State<ProjectEditor>
             PageTransition(
                 type: PageTransitionType.scale,
                 alignment: Alignment.topLeft,
-                duration: Duration(seconds: 2),
+                duration: Duration(seconds: 1),
                 child: CameraMain(
                   project: mProject,
                 )));

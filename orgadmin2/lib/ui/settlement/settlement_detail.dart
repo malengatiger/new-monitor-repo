@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:monitorlibrary/data/settlement.dart';
+import 'package:monitorlibrary/data/community.dart';
 import 'package:monitorlibrary/functions.dart';
 import 'package:orgadmin2/ui/map_editor.dart';
 import 'package:orgadmin2/ui/questionnaire/questionnaire_editor.dart';
 import 'package:page_transition/page_transition.dart';
 
 class SettlementDetail extends StatefulWidget {
-  final Settlement settlement;
+  final Community settlement;
 
   SettlementDetail(this.settlement);
 
@@ -30,7 +30,7 @@ class _SettlementDetailState extends State<SettlementDetail> {
 
   @override
   Widget build(BuildContext context) {
-    var settlement = widget.settlement;
+    var community = widget.settlement;
     return Scaffold(
       key: _key,
       appBar: AppBar(
@@ -41,7 +41,7 @@ class _SettlementDetailState extends State<SettlementDetail> {
           child: Column(
             children: <Widget>[
               Text(
-                '${settlement.settlementName}',
+                '${community.name}',
                 style: Styles.blackBoldMedium,
               ),
               SizedBox(
@@ -62,7 +62,7 @@ class _SettlementDetailState extends State<SettlementDetail> {
                     height: 8,
                   ),
                   new Basics(
-                    settlement: settlement,
+                    settlement: community,
                   ),
                   SizedBox(
                     height: 8,
@@ -76,7 +76,7 @@ class _SettlementDetailState extends State<SettlementDetail> {
                             height: 8,
                           ),
                           Text(
-                            '${getFormattedNumber(settlement.photoUrls.length, context)}',
+                            '${getFormattedNumber(community.photoUrls.length, context)}',
                             style: Styles.blackBoldLarge,
                           ),
                           SizedBox(
@@ -108,7 +108,7 @@ class _SettlementDetailState extends State<SettlementDetail> {
                                   height: 8,
                                 ),
                                 Text(
-                                  '${getFormattedNumber(settlement.photoUrls.length, context)}',
+                                  '${getFormattedNumber(community.photoUrls.length, context)}',
                                   style: Styles.purpleBoldLarge,
                                 ),
                                 SizedBox(
@@ -132,7 +132,7 @@ class _SettlementDetailState extends State<SettlementDetail> {
                                   height: 8,
                                 ),
                                 Text(
-                                  '${getFormattedNumber(settlement.photoUrls.length, context)}',
+                                  '${getFormattedNumber(community.photoUrls.length, context)}',
                                   style: Styles.tealBoldLarge,
                                 ),
                                 SizedBox(
@@ -164,7 +164,7 @@ class _SettlementDetailState extends State<SettlementDetail> {
                                   height: 8,
                                 ),
                                 Text(
-                                  '${getFormattedNumber(settlement.ratings.length, context)}',
+                                  '${getFormattedNumber(community.ratings.length, context)}',
                                   style: Styles.pinkBoldLarge,
                                 ),
                                 SizedBox(
@@ -188,7 +188,7 @@ class _SettlementDetailState extends State<SettlementDetail> {
                                   height: 8,
                                 ),
                                 Text(
-                                  '${getFormattedNumber(settlement.ratings.length, context)}',
+                                  '${getFormattedNumber(community.ratings.length, context)}',
                                   style: Styles.blueBoldLarge,
                                 ),
                                 SizedBox(
@@ -238,7 +238,7 @@ class _SettlementDetailState extends State<SettlementDetail> {
             PageTransition(
                 type: PageTransitionType.scale,
                 alignment: Alignment.topLeft,
-                duration: Duration(seconds: 2),
+                duration: Duration(seconds: 1),
                 child: QuestionnaireEditor()));
 
         break;
@@ -252,7 +252,7 @@ class _SettlementDetailState extends State<SettlementDetail> {
             PageTransition(
                 type: PageTransitionType.scale,
                 alignment: Alignment.topLeft,
-                duration: Duration(seconds: 2),
+                duration: Duration(seconds: 1),
                 child: MapEditor(widget.settlement)));
 
         break;
@@ -261,7 +261,7 @@ class _SettlementDetailState extends State<SettlementDetail> {
 }
 
 class Basics extends StatelessWidget {
-  final Settlement settlement;
+  final Community settlement;
   const Basics({
     Key key,
     @required this.settlement,

@@ -1,14 +1,14 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:monitorlibrary/camera/camera_run.dart';
+import 'package:monitorlibrary/data/community.dart';
 import 'package:monitorlibrary/data/project.dart';
-import 'package:monitorlibrary/data/settlement.dart';
 import 'package:monitorlibrary/functions.dart';
 import 'package:page_transition/page_transition.dart';
 
 class CameraMain extends StatefulWidget {
   final Project project;
-  final Settlement settlement;
+  final Community settlement;
 
   CameraMain({this.project, this.settlement});
 
@@ -29,7 +29,7 @@ class _CameraMainState extends State<CameraMain> {
       isProject = true;
     }
     if (widget.settlement != null) {
-      name = widget.settlement.settlementName;
+      name = widget.settlement.name;
       isProject = false;
     }
     //_setupCamera();
@@ -45,7 +45,10 @@ class _CameraMainState extends State<CameraMain> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Photos and Videos'),
+        title: Text(
+          'Photos and Videos',
+          style: Styles.whiteSmall,
+        ),
         backgroundColor: Colors.teal[300],
         bottom: PreferredSize(
           preferredSize: Size.fromHeight(100),
@@ -119,28 +122,28 @@ class _CameraMainState extends State<CameraMain> {
   }
 
   void _onVideo() {
-    debugPrint('🧩 🧩 🧩 _onVideo: 🧩 🧩 ');
+    pp('🧩 🧩 🧩 _onVideo: 🧩 🧩 ');
 
     Navigator.push(
         context,
         PageTransition(
             type: PageTransitionType.scale,
             alignment: Alignment.topLeft,
-            duration: Duration(seconds: 2),
+            duration: Duration(seconds: 1),
             child: CameraRun(
               project: widget.project,
             )));
   }
 
   void _onPhoto() {
-    debugPrint('🥝 🥝 🥝 _onPhoto: 🧩 🧩 ');
+    pp('🥝 🥝 🥝 _onPhoto: 🧩 🧩 ');
     if (widget.project != null) {
       Navigator.push(
           context,
           PageTransition(
               type: PageTransitionType.scale,
               alignment: Alignment.topLeft,
-              duration: Duration(seconds: 2),
+              duration: Duration(seconds: 1),
               child: CameraRun(
                 project: widget.project,
               )));
@@ -151,25 +154,25 @@ class _CameraMainState extends State<CameraMain> {
           PageTransition(
               type: PageTransitionType.scale,
               alignment: Alignment.topLeft,
-              duration: Duration(seconds: 2),
+              duration: Duration(seconds: 1),
               child: CameraRun(
-                settlement: widget.settlement,
+                community: widget.settlement,
               )));
     }
   }
 
   CameraController controller;
   _setupCamera() async {
-    debugPrint('🥝 🥝 🥝 _setupCamera: availableCameras: 🧩 🧩 ');
+    pp('🥝 🥝 🥝 _setupCamera: availableCameras: 🧩 🧩 ');
     final cameras = await availableCameras();
     if (cameras.isEmpty) {
-      debugPrint('👿👿👿👿 No cameras found on the device');
+      pp('👿👿👿👿 No cameras found on the device');
       return;
     }
     final firstCamera = cameras.first;
     controller = CameraController(firstCamera, ResolutionPreset.medium);
     controller.initialize().then((_) {
-      debugPrint('🎲 🎲 🎲 🎲  camera controller 🎲 initialized: 🧩 🧩 ');
+      pp('🎲 🎲 🎲 🎲  camera controller 🎲 initialized: 🧩 🧩 ');
       if (!mounted) {
         return;
       }

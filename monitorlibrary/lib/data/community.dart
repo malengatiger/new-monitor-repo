@@ -1,19 +1,21 @@
 import 'package:meta/meta.dart';
+import 'package:monitorlibrary/data/photo.dart';
 import 'package:monitorlibrary/data/position.dart';
 import 'package:monitorlibrary/data/ratingContent.dart';
-import 'city.dart';
-import 'content.dart';
 
-class Settlement {
-  String settlementName, countryId, settlementId, email, countryName, created;
+import 'city.dart';
+
+class Community {
+  String name, countryId, communityId, email, countryName, created;
   int population;
   List<Position> polygon;
-  List<Content> photoUrls, videoUrls;
+  List<Photo> photoUrls;
+  List<Video> videoUrls;
   List<RatingContent> ratings;
   List<City> nearestCities;
 
-  Settlement(
-      {@required this.settlementName,
+  Community(
+      {@required this.name,
       @required this.countryId,
       @required this.email,
       this.countryName,
@@ -21,15 +23,15 @@ class Settlement {
       this.created,
       this.population,
       this.nearestCities,
-      this.settlementId});
+      this.communityId});
 
-  Settlement.fromJson(Map data) {
-    this.settlementName = data['settlementName'];
+  Community.fromJson(Map data) {
+    this.name = data['name'];
     this.countryId = data['countryId'];
-    this.settlementId = data['settlementId'];
+    this.communityId = data['communityId'];
     this.email = data['email'];
     this.countryName = data['countryName'];
-    this.settlementId = data['settlementId'];
+    this.communityId = data['communityId'];
     this.created = data['created'];
     this.population = data['population'];
     this.polygon = List();
@@ -43,14 +45,14 @@ class Settlement {
     if (data['photoUrls'] != null) {
       List list = data['photoUrls'];
       list.forEach((p) {
-        this.photoUrls.add(Content.fromJson(p));
+        this.photoUrls.add(Photo.fromJson(p));
       });
     }
     this.videoUrls = List();
     if (data['videoUrls'] != null) {
       List list = data['videoUrls'];
       list.forEach((p) {
-        this.videoUrls.add(Content.fromJson(p));
+        this.videoUrls.add(Video.fromJson(p));
       });
     }
     this.ratings = List();
@@ -100,12 +102,12 @@ class Settlement {
       });
     }
     Map<String, dynamic> map = {
-      'settlementName': settlementName,
+      'name': name,
       'countryId': countryId,
-      'settlementId': settlementId,
+      'communityId': communityId,
       'email': email,
       'countryName': countryName,
-      'settlementId': settlementId,
+      'communityId': communityId,
       'polygon': mPolygon,
       'population': population,
       'created': created,

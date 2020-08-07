@@ -2,16 +2,16 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:monitorlibrary/bloc/admin_bloc.dart';
+import 'package:monitorlibrary/data/community.dart';
 import 'package:monitorlibrary/data/position.dart';
-import 'package:monitorlibrary/data/settlement.dart';
 import 'package:monitorlibrary/functions.dart';
 import 'package:monitorlibrary/snack.dart';
-import 'package:monitorlibrary/bloc/admin_bloc.dart';
 
 class MapEditor extends StatefulWidget {
-  final Settlement settlement;
+  final Community community;
 
-  MapEditor(this.settlement);
+  MapEditor(this.community);
 
   @override
   _MapEditorState createState() => _MapEditorState();
@@ -29,7 +29,8 @@ class _MapEditorState extends State<MapEditor> implements SnackBarListener {
   @override
   void initState() {
     super.initState();
-    print('📯📯 polygon has 📯 ${widget.settlement.polygon.length} points. 📯 if > 2 must draw polygon');
+    print(
+        '📯📯 polygon has 📯 ${widget.community.polygon.length} points. 📯 if > 2 must draw polygon');
     _getLocation();
     _setPoints();
     _setMarkers();
@@ -37,7 +38,8 @@ class _MapEditorState extends State<MapEditor> implements SnackBarListener {
 
   _getLocation() async {
     position = await bloc.getCurrentLocation();
-    print('💠💠💠 setting new camera position  💠💠💠 after getting current location ${position.coordinates}');
+    print(
+        '💠💠💠 setting new camera position  💠💠💠 after getting current location ${position.coordinates}');
     _cameraPosition = CameraPosition(
       target: LatLng(position.coordinates[1], position.coordinates[0]),
       zoom: 12.0,
@@ -53,17 +55,21 @@ class _MapEditorState extends State<MapEditor> implements SnackBarListener {
       appBar: AppBar(
         title: Text('Settlement Map Editor'),
         actions: <Widget>[
-          IconButton(icon: Icon(Icons.cancel),
-          onPressed: _confirmRemovePolygons,),
-          IconButton(icon: Icon(Icons.create_new_folder),
-            onPressed: _drawPolygon,),
+          IconButton(
+            icon: Icon(Icons.cancel),
+            onPressed: _confirmRemovePolygons,
+          ),
+          IconButton(
+            icon: Icon(Icons.create_new_folder),
+            onPressed: _drawPolygon,
+          ),
         ],
         bottom: PreferredSize(
           preferredSize: Size.fromHeight(60),
           child: Column(
             children: <Widget>[
               Text(
-                '${widget.settlement.settlementName}',
+                '${widget.community.name}',
                 style: Styles.blackBoldMedium,
               ),
               SizedBox(
@@ -75,35 +81,37 @@ class _MapEditorState extends State<MapEditor> implements SnackBarListener {
       ),
       body: Stack(
         children: <Widget>[
-          _cameraPosition == null? Container() :
-          GoogleMap(
-              initialCameraPosition: _cameraPosition,
-              mapType: mapType == null ? MapType.hybrid : mapType,
-              markers: _markersForMap,
-              polygons: polygons,
-              myLocationEnabled: true,
-              compassEnabled: true,
-              zoomGesturesEnabled: true,
-              rotateGesturesEnabled: true,
-              scrollGesturesEnabled: true,
-              tiltGesturesEnabled: true,
-              onLongPress: _onMapLongPressed,
-              onMapCreated: (mapController) {
-                debugPrint(
-                    '🔆🔆🔆🔆🔆🔆 onMapCreated ... markersMap ...  🔆🔆🔆🔆');
-                _completer.complete(mapController);
-                _mapController = mapController;
-                if (points.isEmpty) {
-                  print('No points in polygon ... 🌍 🌍 🌍  try to place map at current location');
-                } else {
-                  if (points.length < 3) {
-                    _setMarkers();
-                  } else {
-                    _setMarkers();
-                    _drawPolygon();
-                  }
-                }
-              }),
+          _cameraPosition == null
+              ? Container()
+              : GoogleMap(
+                  initialCameraPosition: _cameraPosition,
+                  mapType: mapType == null ? MapType.hybrid : mapType,
+                  markers: _markersForMap,
+                  polygons: polygons,
+                  myLocationEnabled: true,
+                  compassEnabled: true,
+                  zoomGesturesEnabled: true,
+                  rotateGesturesEnabled: true,
+                  scrollGesturesEnabled: true,
+                  tiltGesturesEnabled: true,
+                  onLongPress: _onMapLongPressed,
+                  onMapCreated: (mapController) {
+                    debugPrint(
+                        '🔆🔆🔆🔆🔆🔆 onMapCreated ... markersMap ...  🔆🔆🔆🔆');
+                    _completer.complete(mapController);
+                    _mapController = mapController;
+                    if (points.isEmpty) {
+                      print(
+                          'No points in polygon ... 🌍 🌍 🌍  try to place map at current location');
+                    } else {
+                      if (points.length < 3) {
+                        _setMarkers();
+                      } else {
+                        _setMarkers();
+                        _drawPolygon();
+                      }
+                    }
+                  }),
         ],
       ),
     );
@@ -126,9 +134,7 @@ class _MapEditorState extends State<MapEditor> implements SnackBarListener {
                 child: Column(
                   children: <Widget>[
                     Text(
-                      widget.settlement == null
-                          ? ''
-                          : widget.settlement.settlementName,
+                      widget.community == null ? '' : widget.community.name,
                       style: Styles.blackSmall,
                     ),
                   ],
@@ -182,7 +188,7 @@ class _MapEditorState extends State<MapEditor> implements SnackBarListener {
 
     try {
       var res = await bloc.addToPolygon(
-          settlementId: widget.settlement.settlementId,
+          settlementId: widget.community.communityId,
           latitude: latLng.latitude,
           longitude: latLng.longitude);
       _key.currentState.removeCurrentSnackBar();
@@ -229,7 +235,8 @@ class _MapEditorState extends State<MapEditor> implements SnackBarListener {
           onTap: () {
             debugPrint('marker tapped!! ❤️ 🧡 💛 :latLng: $latLng ');
           },
-          icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueOrange),
+          icon:
+              BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueOrange),
           markerId: MarkerId(DateTime.now().toIso8601String()),
           position: LatLng(p.latitude, p.longitude),
           infoWindow: InfoWindow(
@@ -242,11 +249,8 @@ class _MapEditorState extends State<MapEditor> implements SnackBarListener {
     });
     if (_mapController != null) {
       _mapController.animateCamera(CameraUpdate.newLatLngZoom(points[0], 14));
-      setState(() {
-
-      });
+      setState(() {});
     }
-
   }
 
   List<LatLng> points = List();
@@ -263,19 +267,18 @@ class _MapEditorState extends State<MapEditor> implements SnackBarListener {
         strokeColor: Colors.yellow,
         fillColor: Colors.transparent);
     polygons.add(pol);
-    setState(() {
-
-    });
+    setState(() {});
     var latLng = points[0];
     if (_mapController != null)
-    _mapController.animateCamera(CameraUpdate.newLatLngZoom(latLng, 14));
+      _mapController.animateCamera(CameraUpdate.newLatLngZoom(latLng, 14));
   }
 
   _setPoints() {
-    widget.settlement.polygon.forEach((p) {
+    widget.community.polygon.forEach((p) {
       points.add(LatLng(p.coordinates[1], p.coordinates[0]));
     });
   }
+
   @override
   onActionPressed(int action) {
     // TODO: implement onActionPressed
@@ -283,63 +286,57 @@ class _MapEditorState extends State<MapEditor> implements SnackBarListener {
   }
 
   void _confirmRemovePolygons() {
-
     showDialog(
         context: context,
         barrierDismissible: false,
         builder: (_) => new AlertDialog(
-          title: new Text(
-            "Confirm Delete",
-            style: Styles.blackBoldLarge,
-          ),
-          content: Container(
-            height: 40.0,
-            child: Column(
-              children: <Widget>[
-                Text(
-                  widget.settlement == null
-                      ? ''
-                      : widget.settlement.settlementName,
-                  style: Styles.blackSmall,
-                ),
-              ],
-            ),
-          ),
-          actions: <Widget>[
-            FlatButton(
-              child: Text(
-                'NO',
-                style: TextStyle(color: Colors.grey),
+              title: new Text(
+                "Confirm Delete",
+                style: Styles.blackBoldLarge,
               ),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-            ),
-            Padding(
-              padding: const EdgeInsets.only(bottom: 20.0),
-              child: RaisedButton(
-                onPressed: () {
-                  print('🍏 onPressed');
-                  points.clear();
-                  _markersForMap.clear();
-                  polygons.clear();
-                  setState(() {
-
-                  });
-                },
-                elevation: 4.0,
-                color: Colors.pink.shade700,
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
+              content: Container(
+                height: 40.0,
+                child: Column(
+                  children: <Widget>[
+                    Text(
+                      widget.community == null ? '' : widget.community.name,
+                      style: Styles.blackSmall,
+                    ),
+                  ],
+                ),
+              ),
+              actions: <Widget>[
+                FlatButton(
                   child: Text(
-                    'Add to Polygon',
-                    style: TextStyle(color: Colors.white),
+                    'NO',
+                    style: TextStyle(color: Colors.grey),
+                  ),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 20.0),
+                  child: RaisedButton(
+                    onPressed: () {
+                      print('🍏 onPressed');
+                      points.clear();
+                      _markersForMap.clear();
+                      polygons.clear();
+                      setState(() {});
+                    },
+                    elevation: 4.0,
+                    color: Colors.pink.shade700,
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Text(
+                        'Add to Polygon',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
                   ),
                 ),
-              ),
-            ),
-          ],
-        ));
-
+              ],
+            ));
   }
 }

@@ -111,7 +111,7 @@ class _SignInState extends State<SignIn> implements SnackBarListener {
   String email = '', password = '';
   void _onEmailChanged(String value) {
     email = value;
-    print(email);
+    pp(email);
   }
 
   void _signIn() async {
@@ -143,7 +143,7 @@ class _SignInState extends State<SignIn> implements SnackBarListener {
 
   void _onPasswordChanged(String value) {
     password = value;
-    print(password);
+    pp(password);
   }
 
   @override

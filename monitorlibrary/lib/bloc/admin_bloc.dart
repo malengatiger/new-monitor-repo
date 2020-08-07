@@ -4,12 +4,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:location/location.dart';
 import 'package:monitorlibrary/api/data_api.dart';
 import 'package:monitorlibrary/api/sharedprefs.dart';
+import 'package:monitorlibrary/data/community.dart';
 import 'package:monitorlibrary/data/country.dart';
 import 'package:monitorlibrary/data/position.dart';
 import 'package:monitorlibrary/data/project.dart';
 import 'package:monitorlibrary/data/questionnaire.dart';
 import 'package:monitorlibrary/data/section.dart';
-import 'package:monitorlibrary/data/settlement.dart';
 import 'package:monitorlibrary/data/user.dart';
 import 'package:monitorlibrary/functions.dart';
 import 'package:permission_handler/permission_handler.dart' as perm;
@@ -17,7 +17,7 @@ import 'package:permission_handler/permission_handler.dart' as perm;
 GeneralBloc bloc = GeneralBloc();
 
 class GeneralBloc {
-  StreamController<List<Settlement>> _settController =
+  StreamController<List<Community>> _settController =
       StreamController.broadcast();
   StreamController<List<Questionnaire>> _questController =
       StreamController.broadcast();
@@ -38,7 +38,7 @@ class GeneralBloc {
   Stream get activeQuestionnaireStream => _activeQuestionnaireController.stream;
 
   StreamController<List<User>> _userController = StreamController.broadcast();
-  List<Settlement> _settlements = List();
+  List<Community> _communities = List();
   List<Questionnaire> _questionnaires = List();
   List<Project> _projects = List();
   List<User> _users = List();
@@ -53,7 +53,7 @@ class GeneralBloc {
   setActiveUser() async {
     var user = await Prefs.getUser();
     if (user != null) {
-      debugPrint('setting active user .... 🤟🤟');
+      pp('setting active user .... 🤟🤟');
       _activeUserController.sink.add(user);
     }
   }
@@ -67,7 +67,7 @@ class GeneralBloc {
 
   updateActiveQuestionnaire(Questionnaire q) {
     _activeQuestionnaireController.sink.add(q);
-    print('🍅 🍅 🍅 🍅 active questionnaire has been set');
+    pp('🍅 🍅 🍅 🍅 active questionnaire has been set');
     prettyPrint(
         q.toJson(), '🅿️ 🅿️ 🅿️ 🅿️ 🅿️ ACTIVE QUESTIONNAIRE 🍅 🍅 🍅 🍅 ');
   }
@@ -86,8 +86,7 @@ class GeneralBloc {
   }
 
   Future checkPermission() async {
-    print(
-        ' 🔆 🔆 🔆 🔆 .................... checking permissions 💙 location 💙 storage 💙 ...');
+    pp(' 🔆 🔆 🔆 🔆 .................... checking permissions 💙 location 💙 storage 💙 ...');
 
 // You can request multiple permissions at once.
     Map<perm.Permission, PermissionStatus> statuses = (await [
@@ -95,7 +94,7 @@ class GeneralBloc {
       perm.Permission.storage,
     ].request())
         .cast<perm.Permission, PermissionStatus>();
-//    print(statuses[perm.Permission.location]);
+//    pp(statuses[perm.Permission.location]);
   }
 
   Future addToPolygon(
@@ -104,11 +103,11 @@ class GeneralBloc {
       @required double longitude}) async {
     var res = await DataAPI.addPointToPolygon(
         settlementId: settlementId, latitude: latitude, longitude: longitude);
-    print('Bloc: 🐬 🐬 addToPolygon ... check response below');
+    pp('Bloc: 🐬 🐬 addToPolygon ... check response below');
 
     var country = await Prefs.getCountry();
     if (country != null) {
-      print('Bloc: 🐬 🐬 addToPolygon ... 🐷 🐷 🐷 refreshing settlement list');
+      pp('Bloc: 🐬 🐬 addToPolygon ... 🐷 🐷 🐷 refreshing settlement list');
 //      _settlements = await findSettlementsByCountry(country.countryId);
 //      _settController.sink.add(_settlements);
     }
@@ -122,34 +121,33 @@ class GeneralBloc {
     var user = await Prefs.getUser();
     if (user != null) {
       await getQuestionnairesByOrganization(user.organizationId);
-      print('🤟🤟🤟 Org questionnaires refreshed 🌹');
+      pp('🤟🤟🤟 Org questionnaires refreshed 🌹');
     }
 
     return res;
   }
 
-  Future addSettlement(Settlement sett) async {
+  Future addCommunity(Community sett) async {
     var res = await DataAPI.addSettlement(sett);
-    _settlements.add(res);
-    _settController.sink.add(_settlements);
-    await findSettlementsByCountry(sett.countryId);
+    _communities.add(res);
+    _settController.sink.add(_communities);
+    await findCommunitiesByCountry(sett.countryId);
   }
 
-  Future updateSettlement(Settlement sett) async {
+  Future updateCommunity(Community sett) async {
     var res = await DataAPI.updateSettlement(sett);
-    _settlements.add(res);
-    _settController.sink.add(_settlements);
-    await findSettlementsByCountry(sett.countryId);
+    _communities.add(res);
+    _settController.sink.add(_communities);
+    await findCommunitiesByCountry(sett.countryId);
   }
 
-  Future<List<Settlement>> findSettlementsByCountry(String countryId) async {
-    _settlements.clear();
-    var res = await DataAPI.findSettlementsByCountry(countryId);
-    _settlements.addAll(res);
-    _settController.sink.add(_settlements);
-    print(
-        'adminBloc:  🧩 🧩 🧩 _settController.sink.added 🏈 🏈 ${_settlements.length} settlements  ');
-    return _settlements;
+  Future<List<Community>> findCommunitiesByCountry(String countryId) async {
+    _communities.clear();
+    var res = await DataAPI.findCommunitiesByCountry(countryId);
+    _communities.addAll(res);
+    _settController.sink.add(_communities);
+    pp('adminBloc:  🧩 🧩 🧩 _settController.sink.added 🏈 🏈 ${_communities.length} settlements  ');
+    return _communities;
   }
 
   Future addQuestionnaire(Questionnaire quest) async {
@@ -160,8 +158,7 @@ class GeneralBloc {
     var user = await Prefs.getUser();
     if (user != null) {
       await getQuestionnairesByOrganization(user.organizationId);
-      print(
-          '🤟🤟🤟 Org questionnaires refreshed after 🤟 successfull addition to DB 🌹');
+      pp('🤟🤟🤟 Org questionnaires refreshed after 🤟 successfull addition to DB 🌹');
     }
   }
 
@@ -208,13 +205,13 @@ class GeneralBloc {
   Future<Project> findProjectById(String projectId) async {
     var res = await DataAPI.findProjectById(projectId);
     prettyPrint(res.toJson(), '❤️ 🧡 💛 RESULT: findProjectById: ❤️ 🧡 💛');
-    print('\n\n❤️ 🧡 💛');
+    pp('\n\n❤️ 🧡 💛');
     return res;
   }
 
   Future<Project> addProject(Project project) async {
     var res = await DataAPI.addProject(project);
-    debugPrint('🎽 🎽 🎽 Bloc: addProject: Project adding to stream ...');
+    pp('🎽 🎽 🎽 Bloc: addProject: Project adding to stream ...');
     _projects.add(res);
     _projController.sink.add(_projects);
     findProjectsByOrganization(project.organizationId);

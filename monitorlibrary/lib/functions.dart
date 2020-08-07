@@ -421,14 +421,23 @@ class Styles {
 }
 
 prettyPrint(Map map, String name) {
-  print('$name \t{\n');
+  pp('$name \t{\n');
   if (map != null) {
     map.forEach((key, val) {
-      print('\t$key : $val ,\n');
+      pp('\t$key : $val ,\n');
     });
-    print('}\n\n');
+    pp('}\n\n');
   } else {
-    debugPrint('📍📍📍📍 prettyPrint: 📍📍📍📍📍📍📍📍 map is NULL - tag: $name 📍📍📍📍📍📍📍📍');
+    pp('📍📍📍📍 prettyPrint: 📍📍📍📍📍📍📍📍 map is NULL - tag: $name 📍📍📍📍📍📍📍📍');
+  }
+}
+
+pp(dynamic msg) {
+  var time = '${getFormattedDateHour(DateTime.now().toIso8601String())}';
+  if (msg is String) {
+    debugPrint('$time ==> $msg');
+  } else {
+    pp('$time ==> $msg');
   }
 }
 
@@ -446,7 +455,7 @@ String getFormattedDateLongWithTime(String date, BuildContext context) {
       return format.format(mDate.toLocal());
     }
   } catch (e) {
-    debugPrint(e);
+    pp(e);
     return 'NoDate';
   }
 }
@@ -465,13 +474,13 @@ String getFormattedDateShortWithTime(String date, BuildContext context) {
       return format.format(mDate.toLocal());
     }
   } catch (e) {
-    debugPrint(e);
+    pp(e);
     return 'NoDate';
   }
 }
 
 String getFormattedDateLong(String date, BuildContext context) {
-//  print('\getFormattedDateLong $date'); //Sun, 28 Oct 2018 23:59:49 GMT
+//  pp('\getFormattedDateLong $date'); //Sun, 28 Oct 2018 23:59:49 GMT
   Locale myLocale = Localizations.localeOf(context);
 
   initializeDateFormatting();
@@ -479,15 +488,14 @@ String getFormattedDateLong(String date, BuildContext context) {
   try {
     if (date.contains('GMT')) {
       var mDate = getLocalDateFromGMT(date, context);
-      debugPrint(
-          '++++++++++++++ Formatted date with locale == ${format.format(mDate.toLocal())}');
+      pp('++++++++++++++ Formatted date with locale == ${format.format(mDate.toLocal())}');
       return format.format(mDate.toLocal());
     } else {
       var mDate = DateTime.parse(date);
       return format.format(mDate.toLocal());
     }
   } catch (e) {
-    debugPrint(e);
+    pp(e);
     return 'NoDate';
   }
 }
@@ -500,15 +508,14 @@ String getFormattedDateShort(String date, BuildContext context) {
   try {
     if (date.contains('GMT')) {
       var mDate = getLocalDateFromGMT(date, context);
-      debugPrint(
-          '++++++++++++++ Formatted date with locale == ${format.format(mDate)}');
+      pp('++++++++++++++ Formatted date with locale == ${format.format(mDate)}');
       return format.format(mDate);
     } else {
       var mDate = DateTime.parse(date);
       return format.format(mDate.toLocal());
     }
   } catch (e) {
-    debugPrint(e);
+    pp(e);
     return 'NoDate';
   }
 }
@@ -521,21 +528,20 @@ String getFormattedDateShortest(String date, BuildContext context) {
   try {
     if (date.contains('GMT')) {
       var mDate = getLocalDateFromGMT(date, context);
-      debugPrint(
-          '++++++++++++++ Formatted date with locale == ${format.format(mDate)}');
+      pp('++++++++++++++ Formatted date with locale == ${format.format(mDate)}');
       return format.format(mDate);
     } else {
       var mDate = DateTime.parse(date);
       return format.format(mDate.toLocal());
     }
   } catch (e) {
-    debugPrint(e);
+    pp(e);
     return 'NoDate';
   }
 }
 
 int getIntDate(String date, BuildContext context) {
-  print('\n---------------> getIntDate $date'); //Sun, 28 Oct 2018 23:59:49 GMT
+  pp('\n---------------> getIntDate $date'); //Sun, 28 Oct 2018 23:59:49 GMT
   assert(context != null);
   initializeDateFormatting();
   try {
@@ -547,7 +553,7 @@ int getIntDate(String date, BuildContext context) {
       return mDate.millisecondsSinceEpoch;
     }
   } catch (e) {
-    debugPrint(e);
+    pp(e);
     return 0;
   }
 }
@@ -565,22 +571,22 @@ String getFormattedDateHourMinute({DateTime date, BuildContext context}) {
       return dateFormat.format(date);
     }
   } catch (e) {
-    debugPrint(e);
+    pp(e);
     return 'NoDate';
   }
 }
 
 DateTime getLocalDateFromGMT(String date, BuildContext context) {
-  //print('getLocalDateFromGMT string: $date'); //Sun, 28 Oct 2018 23:59:49 GMT
+  //pp('getLocalDateFromGMT string: $date'); //Sun, 28 Oct 2018 23:59:49 GMT
   Locale myLocale = Localizations.localeOf(context);
 
-  //print('+++++++++++++++ locale: ${myLocale.toString()}');
+  //pp('+++++++++++++++ locale: ${myLocale.toString()}');
   initializeDateFormatting();
   try {
     var mDate = translateGMTString(date);
     return mDate.toLocal();
   } catch (e) {
-    debugPrint(e);
+    pp(e);
     throw e;
   }
 }
@@ -596,8 +602,8 @@ DateTime translateGMTString(String date) {
   var sec = int.parse(time[2]);
   var cc = DateTime.utc(year, getMonth(mth), day, hour, min, sec);
 
-  //print('##### translated date: ${cc.toIso8601String()}');
-  //print('##### translated local: ${cc.toLocal().toIso8601String()}');
+  //pp('##### translated date: ${cc.toIso8601String()}');
+  //pp('##### translated local: ${cc.toLocal().toIso8601String()}');
 
   return cc;
 }
@@ -663,6 +669,7 @@ String getFormattedDateHour(String date) {
     return format.format(d);
   }
 }
+
 String getFormattedDateHourMinSec(String date) {
   try {
     DateTime d = DateTime.parse(date);
@@ -691,6 +698,7 @@ String getFormattedNumber(int number, BuildContext context) {
 
   return oCcy.format(number);
 }
+
 String getFormattedDouble(double number, BuildContext context) {
   Locale myLocale = Localizations.localeOf(context);
   var val = myLocale.languageCode + '_' + myLocale.countryCode;
@@ -698,11 +706,12 @@ String getFormattedDouble(double number, BuildContext context) {
 
   return oCcy.format(number);
 }
+
 String getFormattedAmount(String amount, BuildContext context) {
   assert(amount != null);
   Locale myLocale = Localizations.localeOf(context);
   var val = myLocale.languageCode + '_' + myLocale.countryCode;
-  //print('getFormattedAmount ----------- locale is  $val');
+  //pp('getFormattedAmount ----------- locale is  $val');
   final oCcy = new NumberFormat("#,##0.00", val);
   try {
     double m = double.parse(amount);

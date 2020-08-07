@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 
+import 'functions.dart';
+
 ///Utility class to provide snackbars
 class AppSnackbar {
   static showSnackbar(
@@ -9,7 +11,7 @@ class AppSnackbar {
       @required Color textColor,
       @required Color backgroundColor}) {
     if (scaffoldKey.currentState == null) {
-      print('AppSnackbar.showSnackbar --- currentState is NULL, quit ..');
+      pp('AppSnackbar.showSnackbar --- currentState is NULL, quit ..');
       return;
     }
     scaffoldKey.currentState.removeCurrentSnackBar();
@@ -61,8 +63,7 @@ class AppSnackbar {
       int durationMinutes,
       int action}) {
     if (scaffoldKey.currentState == null) {
-      print(
-          'AppSnackbar.showSnackbarWithAction --- currentState is NULL, quit ..');
+      pp('AppSnackbar.showSnackbarWithAction --- currentState is NULL, quit ..');
       return;
     }
     scaffoldKey.currentState.removeCurrentSnackBar();
@@ -109,7 +110,7 @@ class AppSnackbar {
       SnackBarListener listener,
       String actionLabel}) {
     if (scaffoldKey == null || scaffoldKey.currentState == null) {
-      print('AppSnackbar.showErrorSnackbar --- currentState is NULL, quit ..');
+      pp('AppSnackbar.showErrorSnackbar --- currentState is NULL, quit ..');
       return;
     } else {
       scaffoldKey.currentState.removeCurrentSnackBar();

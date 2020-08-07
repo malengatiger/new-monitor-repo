@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:monitorlibrary/api/sharedprefs.dart';
 import 'package:monitorlibrary/bloc/admin_bloc.dart';
 import 'package:monitorlibrary/camera/gallery.dart';
+import 'package:monitorlibrary/data/community.dart';
 import 'package:monitorlibrary/data/project.dart';
-import 'package:monitorlibrary/data/settlement.dart';
 import 'package:monitorlibrary/data/user.dart';
 import 'package:monitorlibrary/functions.dart';
 import 'package:monitorlibrary/snack.dart';
@@ -134,8 +134,10 @@ class _ProjectDetailState extends State<ProjectDetail> {
                                     PageTransition(
                                         type: PageTransitionType.scale,
                                         alignment: Alignment.topLeft,
-                                        duration: Duration(seconds: 2),
-                                        child: PhotoGallery()));
+                                        duration: Duration(seconds: 1),
+                                        child: PhotoGallery(
+                                          project: project,
+                                        )));
                               },
                               child: Card(
                                 elevation: 4,
@@ -146,7 +148,7 @@ class _ProjectDetailState extends State<ProjectDetail> {
                                         height: 8,
                                       ),
                                       Text(
-                                        '${getFormattedNumber(project.photoUrls.length, context)}',
+                                        '${getFormattedNumber(project.photos.length, context)}',
                                         style: Styles.purpleBoldLarge,
                                       ),
                                       SizedBox(
@@ -171,7 +173,7 @@ class _ProjectDetailState extends State<ProjectDetail> {
                                       height: 8,
                                     ),
                                     Text(
-                                      '${getFormattedNumber(project.videoUrls.length, context)}',
+                                      '${getFormattedNumber(project.videos.length, context)}',
                                       style: Styles.tealBoldLarge,
                                     ),
                                     SizedBox(
@@ -189,7 +191,7 @@ class _ProjectDetailState extends State<ProjectDetail> {
                         height: 24,
                       ),
                       Row(
-                        mainAxisAlignment: project.settlements.isEmpty
+                        mainAxisAlignment: project.communities.isEmpty
                             ? MainAxisAlignment.center
                             : MainAxisAlignment.spaceEvenly,
                         children: <Widget>[
@@ -217,7 +219,7 @@ class _ProjectDetailState extends State<ProjectDetail> {
                               ),
                             ),
                           ),
-                          project.settlements.isEmpty
+                          project.communities.isEmpty
                               ? Container()
                               : Container(
                                   height: 100,
@@ -231,7 +233,7 @@ class _ProjectDetailState extends State<ProjectDetail> {
                                             height: 8,
                                           ),
                                           Text(
-                                            '${getFormattedNumber(project.settlements.length, context)}',
+                                            '${getFormattedNumber(project.communities.length, context)}',
                                             style: Styles.blueBoldLarge,
                                           ),
                                           SizedBox(
@@ -295,7 +297,7 @@ class _ProjectDetailState extends State<ProjectDetail> {
             PageTransition(
                 type: PageTransitionType.scale,
                 alignment: Alignment.topLeft,
-                duration: Duration(seconds: 2),
+                duration: Duration(seconds: 1),
                 child: ProjectEditor()));
 
         break;
@@ -332,7 +334,7 @@ class _ProjectDetailState extends State<ProjectDetail> {
 }
 
 class Basics extends StatelessWidget {
-  final Settlement settlement;
+  final Community settlement;
   const Basics({
     Key key,
     this.settlement,

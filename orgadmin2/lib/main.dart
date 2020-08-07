@@ -17,15 +17,15 @@ import 'package:monitorlibrary/api/Constants.dart';
 import 'package:monitorlibrary/api/sharedprefs.dart';
 import 'package:monitorlibrary/auth/app_auth.dart';
 import 'package:monitorlibrary/bloc/admin_bloc.dart';
+import 'package:monitorlibrary/data/community.dart';
 import 'package:monitorlibrary/data/country.dart';
 import 'package:monitorlibrary/data/project.dart';
 import 'package:monitorlibrary/data/questionnaire.dart';
-import 'package:monitorlibrary/data/settlement.dart';
 import 'package:monitorlibrary/data/user.dart';
 import 'package:monitorlibrary/functions.dart';
+import 'package:monitorlibrary/ui/community_list.dart';
 import 'package:monitorlibrary/ui/project_list.dart';
 import 'package:monitorlibrary/ui/questionare_list.dart';
-import 'package:monitorlibrary/ui/settlement_list.dart';
 import 'package:monitorlibrary/ui/signin.dart';
 import 'package:orgadmin2/ui/project/project_detail.dart';
 import 'package:orgadmin2/ui/project/project_editor.dart';
@@ -62,7 +62,7 @@ class Dashboard extends StatefulWidget {
 }
 
 class _DashboardState extends State<Dashboard>
-    implements ProjectListener, SettlementListener, QuestionnaireListener {
+    implements ProjectListener, CommunityListener, QuestionnaireListener {
   int _selectedIndex = 0;
   GeneralBloc bloc = GeneralBloc();
   final FirebaseMessaging firebaseMessaging = FirebaseMessaging();
@@ -79,7 +79,7 @@ class _DashboardState extends State<Dashboard>
             PageTransition(
                 type: PageTransitionType.scale,
                 alignment: Alignment.topLeft,
-                duration: Duration(seconds: 2),
+                duration: Duration(seconds: 1),
                 child: SettlementEditor()));
 
         break;
@@ -89,7 +89,7 @@ class _DashboardState extends State<Dashboard>
             PageTransition(
                 type: PageTransitionType.scale,
                 alignment: Alignment.topLeft,
-                duration: Duration(seconds: 2),
+                duration: Duration(seconds: 1),
                 child: QuestionnaireEditor()));
 
         break;
@@ -99,7 +99,7 @@ class _DashboardState extends State<Dashboard>
             PageTransition(
                 type: PageTransitionType.scale,
                 alignment: Alignment.topLeft,
-                duration: Duration(seconds: 2),
+                duration: Duration(seconds: 1),
                 child: ProjectEditor()));
 
         break;
@@ -169,7 +169,7 @@ class _DashboardState extends State<Dashboard>
           return;
         }
         if (type == Constants.TOPIC_SETTLEMENTS) {
-          bloc.findSettlementsByCountry(country.countryId);
+          bloc.findCommunitiesByCountry(country.countryId);
           return;
         }
         if (type == Constants.TOPIC_PROJECTS) {
@@ -215,7 +215,7 @@ class _DashboardState extends State<Dashboard>
           PageTransition(
               type: PageTransitionType.scale,
               alignment: Alignment.topLeft,
-              duration: Duration(seconds: 2),
+              duration: Duration(seconds: 1),
               child: SignIn('ORGANIZATION_USER')));
       print('🤟🤟🤟🤟🤟🤟🤟🤟 User returned from signIn');
       prettyPrint(user.toJson(), "User returned  🤟🤟🤟🤟🤟🤟🤟");
@@ -254,9 +254,7 @@ class _DashboardState extends State<Dashboard>
                       Row(
                         children: <Widget>[
                           Text(
-                            user == null
-                                ? 'Administrator'
-                                : '${user.firstName} ${user.lastName}',
+                            user == null ? 'Administrator' : '${user.name} ',
                             style: Styles.blackBoldMedium,
                           ),
                         ],
@@ -323,10 +321,10 @@ class _DashboardState extends State<Dashboard>
                                   PageTransition(
                                       type: PageTransitionType.scale,
                                       alignment: Alignment.topLeft,
-                                      duration: Duration(seconds: 2),
-                                      child: SettlementList(this)));
+                                      duration: Duration(seconds: 1),
+                                      child: CommunityList(this)));
                             },
-                            child: StreamBuilder<List<Settlement>>(
+                            child: StreamBuilder<List<Community>>(
                                 stream: bloc.settlementStream,
                                 initialData: List(),
                                 builder: (context, snapshot) {
@@ -368,7 +366,7 @@ class _DashboardState extends State<Dashboard>
                                   PageTransition(
                                       type: PageTransitionType.scale,
                                       alignment: Alignment.topLeft,
-                                      duration: Duration(seconds: 2),
+                                      duration: Duration(seconds: 1),
                                       child: ProjectList(this)));
                             },
                             child: StreamBuilder<List<Project>>(
@@ -420,7 +418,7 @@ class _DashboardState extends State<Dashboard>
                                   PageTransition(
                                       type: PageTransitionType.scale,
                                       alignment: Alignment.topLeft,
-                                      duration: Duration(seconds: 2),
+                                      duration: Duration(seconds: 1),
                                       child: QuestionnaireList(this)));
                             },
                             child: StreamBuilder<List<Questionnaire>>(
@@ -521,7 +519,7 @@ class _DashboardState extends State<Dashboard>
   int projects = 0;
   int users = 0;
 
-  StreamSubscription<List<Settlement>> settSub;
+  StreamSubscription<List<Community>> settSub;
   StreamSubscription<List<Questionnaire>> questSub;
   StreamSubscription<List<User>> userSub;
   StreamSubscription<List<Project>> projSub;
@@ -561,7 +559,7 @@ class _DashboardState extends State<Dashboard>
       }
     }
     if (country != null) {
-      var list = await bloc.findSettlementsByCountry(country.countryId);
+      var list = await bloc.findCommunitiesByCountry(country.countryId);
       settlements = list.length;
     } else {
       print('😈😈😈😈😈😈 country is NULL 😈😈😈😈  WTF???');
@@ -596,14 +594,14 @@ class _DashboardState extends State<Dashboard>
         PageTransition(
             type: PageTransitionType.scale,
             alignment: Alignment.topLeft,
-            duration: Duration(seconds: 2),
+            duration: Duration(seconds: 1),
             child: ProjectDetail(
               project,
             )));
   }
 
   @override
-  onSettlementSelected(Settlement settlement) {
+  onSettlementSelected(Community settlement) {
     debugPrint(
         'Main:  🤕 🤕 onSettlementSelected: 🍑 settlement has  been selected');
     prettyPrint(settlement.toJson(), '🍑 🍑 🍑  SELECTED SETTLEMENT');
@@ -613,7 +611,7 @@ class _DashboardState extends State<Dashboard>
         PageTransition(
             type: PageTransitionType.scale,
             alignment: Alignment.topLeft,
-            duration: Duration(seconds: 2),
+            duration: Duration(seconds: 1),
             child: SettlementDetail(
               settlement,
             )));
@@ -629,7 +627,7 @@ class _DashboardState extends State<Dashboard>
         PageTransition(
             type: PageTransitionType.scale,
             alignment: Alignment.topLeft,
-            duration: Duration(seconds: 2),
+            duration: Duration(seconds: 1),
             child: QuestionnaireEditor(
               questionnaire: questionnaire,
             )));

@@ -49,52 +49,64 @@ class _QuestionnaireListState extends State<QuestionnaireList> {
           }
           return Scaffold(
             appBar: AppBar(
-              title: Text('Organization Questionnaires'),
+              title: Text(
+                'Questionnaires',
+                style: Styles.whiteSmall,
+              ),
               backgroundColor: Colors.purple[300],
+              actions: [
+                IconButton(
+                  icon: Icon(Icons.refresh),
+                  onPressed: _getData,
+                ),
+              ],
               bottom: PreferredSize(
-                preferredSize: Size.fromHeight(80),
-                child: Column(
-                  children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.only(left:8.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: <Widget>[
-                          Expanded(
-                              child: Container(
-                                  child: Text(
-                            user == null ? '' : '${user.organizationName}',
-                            style: Styles.blackBoldMedium,
-                                    overflow: TextOverflow.clip,
-                          ))),
-                          SizedBox(
-                            width: 16,
-                          ),
-                          Column(
-                            children: <Widget>[
-                              Text(
-                                '${questionnaires.length}',
-                                style: Styles.blackBoldLarge,
-                              ),
-                              SizedBox(
-                                height: 4,
-                              ),
-                              Text(
-                                'Questionnaires',
-                                style: Styles.whiteSmall,
-                              ),
-                            ],
-                          ),
-                          SizedBox(
-                            width: 12,
-                          ),
-                        ],
+                preferredSize: Size.fromHeight(160),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.only(left: 8.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: <Widget>[
+                            Expanded(
+                                child: Container(
+                                    child: Text(
+                              user == null ? '' : '${user.organizationName}',
+                              style: Styles.whiteBoldSmall,
+                              overflow: TextOverflow.clip,
+                            ))),
+                            SizedBox(
+                              width: 16,
+                            ),
+                            Column(
+                              children: <Widget>[
+                                Text(
+                                  '${questionnaires.length}',
+                                  style: Styles.blackBoldLarge,
+                                ),
+                                SizedBox(
+                                  height: 4,
+                                ),
+                                Text(
+                                  'Questionnaires',
+                                  style: Styles.whiteSmall,
+                                ),
+                              ],
+                            ),
+                            SizedBox(
+                              width: 12,
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                  ],
+                      SizedBox(
+                        height: 40,
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -117,7 +129,8 @@ class _QuestionnaireListState extends State<QuestionnaireList> {
                         padding: const EdgeInsets.only(left: 8.0, right: 8),
                         child: GestureDetector(
                           onTap: () {
-                            widget.listener.onQuestionnaireSelected(questionnaires.elementAt(index));
+                            widget.listener.onQuestionnaireSelected(
+                                questionnaires.elementAt(index));
                           },
                           child: Card(
                             elevation: 4,
@@ -127,7 +140,10 @@ class _QuestionnaireListState extends State<QuestionnaireList> {
                                 children: <Widget>[
                                   Row(
                                     children: <Widget>[
-                                      Icon(Icons.apps,  color: getRandomColor(),),
+                                      Icon(
+                                        Icons.apps,
+                                        color: getRandomColor(),
+                                      ),
                                       SizedBox(
                                         width: 8,
                                       ),
@@ -183,6 +199,6 @@ class _QuestionnaireListState extends State<QuestionnaireList> {
   }
 }
 
-abstract class  QuestionnaireListener {
+abstract class QuestionnaireListener {
   onQuestionnaireSelected(Questionnaire questionnaire);
 }

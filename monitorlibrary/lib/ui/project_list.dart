@@ -8,6 +8,7 @@ import 'package:monitorlibrary/functions.dart';
 abstract class ProjectListener {
   onProjectSelected(Project project);
 }
+
 class ProjectList extends StatefulWidget {
   final ProjectListener listener;
 
@@ -20,7 +21,7 @@ class ProjectList extends StatefulWidget {
 class _ProjectListState extends State<ProjectList> {
   User user;
   bool isBusy = false;
-  List<Project> projects =  [];
+  List<Project> projects = [];
   GlobalKey<ScaffoldState> _key = GlobalKey();
   @override
   void initState() {
@@ -34,7 +35,6 @@ class _ProjectListState extends State<ProjectList> {
       isBusy = true;
     });
     projects = await DataAPI.findProjectsByOrganization(user.organizationId);
-
     setState(() {
       isBusy = false;
     });
@@ -44,84 +44,123 @@ class _ProjectListState extends State<ProjectList> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Project List'),
+        title: Text(
+          'Project List',
+          style: Styles.whiteSmall,
+        ),
         elevation: 8,
         bottom: PreferredSize(
           preferredSize: Size.fromHeight(100),
           child: Column(
             children: <Widget>[
               Padding(
-                padding: const EdgeInsets.only(left:20.0, right: 20),
+                padding: const EdgeInsets.only(left: 20.0, right: 20),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: <Widget>[
                     Expanded(
                       child: Container(
-                        child: Text(user == null? 'Organization': user.organizationName,
-                        style: Styles.whiteBoldMedium,  overflow: TextOverflow.clip,),
+                        child: Text(
+                          user == null ? 'Organization' : user.organizationName,
+                          style: Styles.whiteBoldSmall,
+                          overflow: TextOverflow.clip,
+                        ),
                       ),
                     ),
-                    SizedBox(width: 20,),
+                    SizedBox(
+                      width: 20,
+                    ),
                     Column(
                       children: <Widget>[
-                        Text('${projects.length}', style: Styles.blackBoldLarge,),
-                        SizedBox(height: 4,),
-                        Text('Projects', style: Styles.whiteSmall,),
+                        Text(
+                          '${projects.length}',
+                          style: Styles.blackBoldLarge,
+                        ),
+                        SizedBox(
+                          height: 4,
+                        ),
+                        Text(
+                          'Projects',
+                          style: Styles.whiteSmall,
+                        ),
                       ],
                     ),
                   ],
                 ),
               ),
-              SizedBox(height: 24,),
+              SizedBox(
+                height: 24,
+              ),
             ],
           ),
         ),
       ),
       backgroundColor: Colors.brown[100],
-      body: isBusy? Center(
-        child: Container(
-          child: CircularProgressIndicator(
-            strokeWidth: 24,
-            backgroundColor: Colors.yellow,
-          ),
-        ),
-      ) : ListView.builder(
-        itemCount: projects.length,
-        itemBuilder: (BuildContext context, int index) {
-        var  p =  projects.elementAt(index);
-        return  Padding(
-          padding: const EdgeInsets.only(left:8.0, right: 8, top: 8),
-          child: GestureDetector(
-            onTap: () {
-              widget.listener.onProjectSelected(p);
-            },
-            child: Card(
-              elevation: 4,
-              child: Padding(
-                padding: const EdgeInsets.only(left:12.0, right: 12, top: 8),
-                child: Column(
-                  children: <Widget>[
-                    Row(
-                      children: <Widget>[
-                        Icon(Icons.apps, color: getRandomColor(),),
-                        SizedBox(width: 8,),
-                        Expanded(child: Container(child: Text(p.name, style: Styles.blackBoldMedium, overflow: TextOverflow.clip))),
-                      ],
-                    ),
-                    Row(
-                      children: <Widget>[
-                        SizedBox(width: 32,),
-                        Expanded(child: Container(child: Text(p.description, style: Styles.blackSmall, overflow: TextOverflow.clip))),
-                      ],
-                    ),
-                    SizedBox(height: 16,)
-                  ],
+      body: isBusy
+          ? Center(
+              child: Container(
+                child: CircularProgressIndicator(
+                  strokeWidth: 24,
+                  backgroundColor: Colors.yellow,
                 ),
               ),
+            )
+          : ListView.builder(
+              itemCount: projects.length,
+              itemBuilder: (BuildContext context, int index) {
+                var p = projects.elementAt(index);
+                return Padding(
+                  padding: const EdgeInsets.only(left: 8.0, right: 8, top: 8),
+                  child: GestureDetector(
+                    onTap: () {
+                      widget.listener.onProjectSelected(p);
+                    },
+                    child: Card(
+                      elevation: 4,
+                      child: Padding(
+                        padding: const EdgeInsets.only(
+                            left: 12.0, right: 12, top: 8),
+                        child: Column(
+                          children: <Widget>[
+                            Row(
+                              children: <Widget>[
+                                Icon(
+                                  Icons.apps,
+                                  color: getRandomColor(),
+                                ),
+                                SizedBox(
+                                  width: 8,
+                                ),
+                                Expanded(
+                                    child: Container(
+                                        child: Text(p.name,
+                                            style: Styles.blackBoldMedium,
+                                            overflow: TextOverflow.clip))),
+                              ],
+                            ),
+                            Row(
+                              children: <Widget>[
+                                SizedBox(
+                                  width: 32,
+                                ),
+                                Expanded(
+                                    child: Container(
+                                        child: Text(p.description,
+                                            style: Styles.blackSmall,
+                                            overflow: TextOverflow.clip))),
+                              ],
+                            ),
+                            SizedBox(
+                              height: 16,
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+              },
             ),
-          ),
-        );
-      },),
     );
   }
 }

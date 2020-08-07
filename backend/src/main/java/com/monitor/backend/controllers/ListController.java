@@ -66,33 +66,60 @@ public class ListController {
                 + "ListController: Cities found: \uD83D\uDC24 " + cities.size());
         return cities;
     }
+    ///findSettlementsByCountry
+
+    @GetMapping("/findCommunitiesByCountry")
+    public List<Community> findCommunitiesByCountry(@RequestParam String countryId) throws Exception {
+        LOGGER.info(Emoji.DICE.concat(Emoji.DICE).concat("ListController: findCommunitiesByCountry ..."));
+        List<Community> countries =  listService.findCommunitiesByCountry(countryId);
+        LOGGER.info(Emoji.DOLPHIN.concat(Emoji.DOLPHIN)
+                + "ListController: findCommunitiesByCountry found: \uD83D\uDC24 " + countries.size());
+        return countries;
+    }
+
     @GetMapping("/getCountries")
     public List<Country> getCountries() throws Exception {
-        LOGGER.info(Emoji.DICE.concat(Emoji.DICE).concat("ListController: getCountries ..."));
+        LOGGER.info(Emoji.DICE.concat(Emoji.DICE).concat("ListController: findSettlementsByCountry ..."));
         List<Country> countries =  listService.getCountries();
         LOGGER.info(Emoji.DOLPHIN.concat(Emoji.DOLPHIN)
                 + "ListController: Countries found: \uD83D\uDC24 " + countries.size());
         return countries;
     }
     @GetMapping("/getCountryOrganizations")
-    public List<Organization> getCountryOrganizations(String countryId) throws Exception {
+    public List<Organization> getCountryOrganizations(@RequestParam  String countryId) throws Exception {
         LOGGER.info(Emoji.DICE.concat(Emoji.DICE).concat(" getCountryOrganizations ..."));
         List<Organization> orgs = listService.getCountryOrganizations(countryId);
         LOGGER.info(Emoji.DOLPHIN.concat(Emoji.DOLPHIN) + " Organizations found: " + orgs.size());
         return orgs;
     }
     @GetMapping("/getOrganizationProjects")
-    public List<Project> getOrganizationProjects(String organizationId) throws Exception {
+    public List<Project> getOrganizationProjects(@RequestParam  String organizationId) throws Exception {
         LOGGER.info(Emoji.DICE.concat(Emoji.DICE).concat(" getOrganizationProjects ..."));
         List<Project> projects = listService.getOrganizationProjects(organizationId);
         LOGGER.info(Emoji.DOLPHIN.concat(Emoji.DOLPHIN) + " Projects found: " + projects.size());
         return projects;
     }
+    //getQuestionnairesByOrganization
+    @GetMapping("/getQuestionnairesByOrganization")
+    public List<Questionnaire> getQuestionnairesByOrganization(@RequestParam  String organizationId) throws Exception {
+        LOGGER.info(Emoji.DICE.concat(Emoji.DICE).concat(" getOrganizationUsers ..."));
+        List<Questionnaire>  users = listService.getQuestionnairesByOrganization(organizationId);
+        LOGGER.info(Emoji.DOLPHIN.concat(Emoji.DOLPHIN) + " Questionnaires found: " + users.size());
+        return users;
+    }
     @GetMapping("/getOrganizationUsers")
-    public List<User> getOrganizationUsers(String organizationId) throws Exception {
+    public List<User> getOrganizationUsers(@RequestParam  String organizationId) throws Exception {
         LOGGER.info(Emoji.DICE.concat(Emoji.DICE).concat(" getOrganizationUsers ..."));
         List<User>  users = listService.getOrganizationUsers(organizationId);
         LOGGER.info(Emoji.DOLPHIN.concat(Emoji.DOLPHIN) + " Users found: " + users.size());
+        return users;
+    }
+
+    @GetMapping("/findProjectsByOrganization")
+    public List<Project> findProjectsByOrganization(@RequestParam  String organizationId) throws Exception {
+        LOGGER.info(Emoji.DICE.concat(Emoji.DICE).concat(" findProjectsByOrganization ... id: ".concat(organizationId)));
+        List<Project>  users = listService.findProjectsByOrganization(organizationId);
+        LOGGER.info(Emoji.DOLPHIN.concat(Emoji.DOLPHIN) + " findProjectsByOrganization found: " + users.size());
         return users;
     }
     @GetMapping("/getUsers")

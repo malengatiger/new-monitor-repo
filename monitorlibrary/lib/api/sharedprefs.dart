@@ -1,11 +1,12 @@
 import 'dart:convert';
 
-import 'package:flutter/cupertino.dart';
 import 'package:monitorlibrary/data/country.dart';
+import 'package:monitorlibrary/data/project.dart';
 import 'package:monitorlibrary/data/questionnaire.dart';
 import 'package:monitorlibrary/data/user.dart';
-import 'package:monitorlibrary/functions.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../functions.dart';
 
 class Prefs {
   static Future saveUser(User user) async {
@@ -14,8 +15,7 @@ class Prefs {
     Map jsonx = user.toJson();
     var jx = json.encode(jsonx);
     prefs.setString('user', jx);
-    debugPrint(
-        "🌽 🌽 🌽 Prefs.saveUser  SAVED: 🌽 ${user.email}");
+    pp("🌽 🌽 🌽 Prefs.saveUser  SAVED: 🌽 ${user.email}");
     prettyPrint(jsonx, " 🏈 Saved User in Prefs  🏈");
     return null;
   }
@@ -28,19 +28,18 @@ class Prefs {
     }
     var jx = json.decode(string);
     var user = new User.fromJson(jx);
-    debugPrint(
-        "🌽 🌽 🌽 Prefs.getUser 🧩  ${user.email} retrieved");
+    pp("🌽 🌽 🌽 Prefs.getUser 🧩  ${user.email} retrieved");
     prettyPrint(user.toJson(), " 🏈 Saved User retrieved from Prefs   🏈");
     return user;
   }
+
   static Future saveCountry(Country country) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
     Map jsonx = country.toJson();
     var jx = json.encode(jsonx);
     prefs.setString('country', jx);
-    debugPrint(
-        "🌽 🌽 🌽 Prefs.saveCountry  SAVED: 🌽 ${country.name}");
+    pp("🌽 🌽 🌽 Prefs.saveCountry  SAVED: 🌽 ${country.name}");
     prettyPrint(jsonx, " 🏈 Saved Country in Prefs  🏈");
     return null;
   }
@@ -53,8 +52,7 @@ class Prefs {
     }
     var jx = json.decode(string);
     var cntry = new Country.fromJson(jx);
-    debugPrint(
-        "🌽 🌽 🌽 Prefs.getCountry 🧩  ${cntry.name} retrieved");
+    pp("🌽 🌽 🌽 Prefs.getCountry 🧩  ${cntry.name} retrieved");
     prettyPrint(cntry.toJson(), " 🏈 Saved Country retrieved from Prefs   🏈");
     return cntry;
   }
@@ -63,15 +61,15 @@ class Prefs {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
     Map jsonx = questionnaire.toJson();
-    print(jsonx);
+    pp(jsonx);
     var jx = json.encode(jsonx);
     prefs.setString('questionnaire', jx);
-    debugPrint(
-        "\n\n🌽 🌽 🌽 Prefs.questionnaire  SAVED: 🌽 ${questionnaire.name}");
+    pp("\n\n🌽 🌽 🌽 Prefs.questionnaire  SAVED: 🌽 ${questionnaire.name}");
     prettyPrint(jsonx, " 🏈 Saved questionnaire in Prefs  🏈");
-    print('\n\n............................................................ 👽 👽 👽 !!');
+    pp('\n\n............................................................ 👽 👽 👽 !!');
     return null;
   }
+
   static Future<Questionnaire> getQuestionnaire() async {
     var prefs = await SharedPreferences.getInstance();
     var string = prefs.getString('questionnaire');
@@ -80,30 +78,56 @@ class Prefs {
     }
     var jx = json.decode(string);
     var cntry = new Questionnaire.fromJson(jx);
-    debugPrint(
-        "🌽 🌽 🌽 Prefs.questionnaire 🧩  ${cntry.title} retrieved");
-    prettyPrint(cntry.toJson(), " 🏈 Saved questionnaire retrieved from Prefs   🏈");
+    pp("🌽 🌽 🌽 Prefs.questionnaire 🧩  ${cntry.title} retrieved");
+    prettyPrint(
+        cntry.toJson(), " 🏈 Saved questionnaire retrieved from Prefs   🏈");
     return cntry;
   }
+
+  static Future saveActiveProject(Project project) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    Map jsonx = project.toJson();
+    pp(jsonx);
+    var jx = json.encode(jsonx);
+    prefs.setString('activeProject', jx);
+    pp("\n\n🌽 🌽 🌽 Prefs.project  SAVED: 🌽 ${project.name}");
+    prettyPrint(jsonx, " 🏈 Saved project in Prefs  🏈");
+    pp('\n\n............................................................ 👽 👽 👽 !!');
+    return null;
+  }
+
+  static Future<Project> getActiveProject() async {
+    var prefs = await SharedPreferences.getInstance();
+    var string = prefs.getString('activeProject');
+    if (string == null) {
+      return null;
+    }
+    var jx = json.decode(string);
+    var cntry = new Project.fromJson(jx);
+    pp("🌽 🌽 🌽 Prefs.project 🧩  ${cntry.name} retrieved");
+    prettyPrint(cntry.toJson(), " 🏈 Saved project retrieved from Prefs   🏈");
+    return cntry;
+  }
+
   static void removeQuestionnaire() async {
     var prefs = await SharedPreferences.getInstance();
     prefs.remove('questionnaire');
-    debugPrint(
-        "🌽 🌽 🌽 Prefs.removeQuestionnaire 🧩 REMOVED. KAPUT!!");
+    pp("🌽 🌽 🌽 Prefs.removeQuestionnaire 🧩 REMOVED. KAPUT!!");
   }
 
   static Future saveMinutes(int minutes) async {
-    debugPrint("SharedPrefs saving minutes ..........");
+    pp("SharedPrefs saving minutes ..........");
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setInt("minutes", minutes);
 
-    debugPrint("FCM minutes saved in cache prefs: $minutes");
+    pp("FCM minutes saved in cache prefs: $minutes");
   }
 
   static Future<int> getMinutes() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var minutes = prefs.getInt("minutes");
-    debugPrint("SharedPrefs - FCM minutes from prefs: $minutes");
+    pp("SharedPrefs - FCM minutes from prefs: $minutes");
     return minutes;
   }
 
@@ -116,7 +140,7 @@ class Prefs {
   static Future<int> getThemeIndex() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     int index = prefs.getInt("themeIndex");
-    debugPrint("=================== SharedPrefs theme index: $index");
+    pp("=================== SharedPrefs theme index: $index");
     return index;
   }
 
@@ -124,13 +148,13 @@ class Prefs {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString("url", url);
     //prefs.commit();
-    debugPrint('picture url saved to shared prefs');
+    pp('picture url saved to shared prefs');
   }
 
   static Future<String> getPictureUrl() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String path = prefs.getString("url");
-    debugPrint("=================== SharedPrefs url index: $path");
+    pp("=================== SharedPrefs url index: $path");
     return path;
   }
 
@@ -138,20 +162,20 @@ class Prefs {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString("path", path);
     //prefs.commit();
-    debugPrint('picture path saved to shared prefs');
+    pp('picture path saved to shared prefs');
   }
 
   static Future<String> getPicturePath() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String path = prefs.getString("path");
-    debugPrint("=================== SharedPrefs path index: $path");
+    pp("=================== SharedPrefs path index: $path");
     return path;
   }
 
   static Future savePageLimit(int pageLimit) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setInt("pageLimit", pageLimit);
-    debugPrint('SharedPrefs.savePageLimit ######### saved pageLimit: $pageLimit');
+    pp('SharedPrefs.savePageLimit ######### saved pageLimit: $pageLimit');
     return null;
   }
 
@@ -161,14 +185,14 @@ class Prefs {
     if (pageLimit == null) {
       pageLimit = 10;
     }
-    debugPrint("=================== SharedPrefs pageLimit: $pageLimit");
+    pp("=================== SharedPrefs pageLimit: $pageLimit");
     return pageLimit;
   }
 
   static Future saveRefreshDate(DateTime date) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setInt("refresh", date.millisecondsSinceEpoch);
-    debugPrint('SharedPrefs.saveRefreshDate ${date.toIso8601String()}');
+    pp('SharedPrefs.saveRefreshDate ${date.toIso8601String()}');
     return null;
   }
 
@@ -179,7 +203,7 @@ class Prefs {
       ms = DateTime.now().subtract(Duration(days: 365)).millisecondsSinceEpoch;
     }
     var date = DateTime.fromMillisecondsSinceEpoch(ms);
-    debugPrint('SharedPrefs.getRefreshDate ${date.toIso8601String()}');
+    pp('SharedPrefs.getRefreshDate ${date.toIso8601String()}');
     return date;
   }
 }

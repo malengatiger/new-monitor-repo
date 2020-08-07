@@ -5,13 +5,15 @@ import 'package:flutter/material.dart';
 import 'package:monitorlibrary/api/sharedprefs.dart';
 import 'package:monitorlibrary/auth/app_auth.dart';
 import 'package:monitorlibrary/bloc/admin_bloc.dart';
+import 'package:monitorlibrary/data/community.dart';
 import 'package:monitorlibrary/data/project.dart';
 import 'package:monitorlibrary/data/questionnaire.dart';
-import 'package:monitorlibrary/data/settlement.dart';
 import 'package:monitorlibrary/data/user.dart';
 import 'package:monitorlibrary/functions.dart';
+import 'package:monitorlibrary/snack.dart';
+import 'package:monitorlibrary/ui/community_list.dart';
+import 'package:monitorlibrary/ui/project_list.dart';
 import 'package:monitorlibrary/ui/questionare_list.dart';
-import 'package:monitorlibrary/ui/settlement_list.dart';
 import 'package:monitorlibrary/ui/signin.dart';
 import 'package:page_transition/page_transition.dart';
 
@@ -41,31 +43,30 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage>
-    implements SettlementListener, QuestionnaireListener {
+    implements CommunityListener, QuestionnaireListener, ProjectListener {
   bool isBusy = false;
   @override
   initState() {
-    print('🍎🍎🍎 Monitor main initState fired! 💙💙💙');
+    pp('🍎🍎🍎 Monitor main initState fired! 💙💙💙');
     super.initState();
     _checkUser();
   }
 
   User user;
   Future _checkUser() async {
-    print('💙💙💙 Monitor checking if user is authenticated ... 💙💙💙');
+    pp('💙💙💙 Monitor checking if user is authenticated ... 💙💙💙');
     var isOK = await AppAuth.isUserSignedIn();
     if (!isOK) {
-      print(
-          '🔆🔆🔆 This monitor user is not authenticated yet ... 🔆🔆🔆🔆 starting sign in ... 🔆🔆🔆🔆');
+      pp('🔆🔆🔆 This monitor user is not authenticated yet ... 🔆🔆🔆🔆 starting sign in ... 🔆🔆🔆🔆');
       user = await Navigator.push(
           context,
           PageTransition(
               type: PageTransitionType.scale,
               alignment: Alignment.topLeft,
-              duration: Duration(seconds: 2),
+              duration: Duration(seconds: 1),
               child: SignIn('MONITOR')));
       if (user != null) {
-        print('🤟🤟🤟🤟🤟🤟🤟🤟 User returned from signIn');
+        pp('🤟🤟🤟🤟🤟🤟🤟🤟 User returned from signIn');
         prettyPrint(user.toJson(), "User returned  🤟🤟🤟🤟🤟🤟🤟");
         bloc.setActiveUser();
       }
@@ -78,23 +79,31 @@ class _MyHomePageState extends State<MyHomePage>
     }
   }
 
+  var _key = GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _key,
       appBar: AppBar(
         title: Text(user == null
             ? 'Digital Monitor Platform'
             : '${user.organizationName}'),
         backgroundColor: Colors.deepOrange[300],
         elevation: 8,
+        actions: [
+          IconButton(
+            icon: Icon(Icons.refresh),
+            onPressed: _getData,
+          ),
+        ],
         bottom: PreferredSize(
-          preferredSize: Size.fromHeight(120),
+          preferredSize: Size.fromHeight(200),
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: Column(
               children: <Widget>[
                 Text(
-                  user == null ? '' : '${user.firstName} ${user.lastName}',
+                  user == null ? '' : '${user.name} ',
                   style: Styles.blackBoldMedium,
                 ),
                 SizedBox(
@@ -112,20 +121,19 @@ class _MyHomePageState extends State<MyHomePage>
                   children: <Widget>[
                     Expanded(
                       child: Container(
-                        child: Text(
-                          'This app is used only for the purposes of the HDA and not for personal entertainment ',
-                          overflow: TextOverflow.clip,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(
+                            'This app is used only for the purposes of the HDA and not for personal entertainment ',
+                            overflow: TextOverflow.clip,
+                          ),
                         ),
                       ),
-                    ),
-                    IconButton(
-                      icon: Icon(Icons.refresh),
-                      onPressed: _getData,
                     ),
                   ],
                 ),
                 SizedBox(
-                  height: 12,
+                  height: 40,
                 ),
               ],
             ),
@@ -172,8 +180,8 @@ class _MyHomePageState extends State<MyHomePage>
                                   PageTransition(
                                       type: PageTransitionType.scale,
                                       alignment: Alignment.topLeft,
-                                      duration: Duration(seconds: 2),
-                                      child: SettlementList(this)));
+                                      duration: Duration(seconds: 1),
+                                      child: CommunityList(this)));
                             },
                             child: Card(
                               elevation: 4,
@@ -190,7 +198,7 @@ class _MyHomePageState extends State<MyHomePage>
                                     SizedBox(
                                       height: 8,
                                     ),
-                                    Text('Settlements'),
+                                    Text('Communities'),
                                   ],
                                 ),
                               ),
@@ -200,23 +208,34 @@ class _MyHomePageState extends State<MyHomePage>
                         Container(
                           height: 100,
                           width: 160,
-                          child: Card(
-                            elevation: 4,
-                            child: Center(
-                              child: Column(
-                                children: <Widget>[
-                                  SizedBox(
-                                    height: 8,
-                                  ),
-                                  Text(
-                                    '${getFormattedNumber(projects, context)}',
-                                    style: Styles.tealBoldLarge,
-                                  ),
-                                  SizedBox(
-                                    height: 8,
-                                  ),
-                                  Text('Projects'),
-                                ],
+                          child: GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  PageTransition(
+                                      type: PageTransitionType.scale,
+                                      alignment: Alignment.topLeft,
+                                      duration: Duration(seconds: 1),
+                                      child: ProjectList(this)));
+                            },
+                            child: Card(
+                              elevation: 4,
+                              child: Center(
+                                child: Column(
+                                  children: <Widget>[
+                                    SizedBox(
+                                      height: 8,
+                                    ),
+                                    Text(
+                                      '${getFormattedNumber(projects, context)}',
+                                      style: Styles.tealBoldLarge,
+                                    ),
+                                    SizedBox(
+                                      height: 8,
+                                    ),
+                                    Text('Projects'),
+                                  ],
+                                ),
                               ),
                             ),
                           ),
@@ -239,7 +258,7 @@ class _MyHomePageState extends State<MyHomePage>
                                   PageTransition(
                                       type: PageTransitionType.scale,
                                       alignment: Alignment.topLeft,
-                                      duration: Duration(seconds: 2),
+                                      duration: Duration(seconds: 1),
                                       child: QuestionnaireList(this)));
                             },
                             child: Card(
@@ -282,13 +301,13 @@ class _MyHomePageState extends State<MyHomePage>
     );
   }
 
-  StreamSubscription<List<Settlement>> settSub;
+  StreamSubscription<List<Community>> settSub;
   StreamSubscription<List<Questionnaire>> questSub;
   StreamSubscription<List<User>> userSub;
   StreamSubscription<List<Project>> projSub;
 
   void _subscribe() async {
-    debugPrint('🏈 🏈 subscribe to data streams ...');
+    pp('🏈 🏈 subscribe to data streams ...');
     settSub = bloc.settlementStream.listen((data) {
       setState(() {
         settlements = data.length;
@@ -307,28 +326,35 @@ class _MyHomePageState extends State<MyHomePage>
   }
 
   void _getData() async {
-    print(
-        '💊 💊 💊 get all settlements in country 📡  all org questionnaires 🎡  all org users +'
+    pp('💊 💊 💊 get all settlements in country 📡  all org questionnaires 🎡  all org users +'
         ' 💈 all org  projects');
     setState(() {
       isBusy = true;
     });
-    var country = await Prefs.getCountry();
-    if (country != null) {
-      var list = await bloc.findSettlementsByCountry(country.countryId);
-      settlements = list.length;
-    } else {
-      print('country is NULL');
+    try {
+      var country = await Prefs.getCountry();
+      if (country != null) {
+        var list = await bloc.findCommunitiesByCountry(country.countryId);
+        settlements = list.length;
+      } else {
+        pp('country is NULL');
+      }
+      if (user != null) {
+        var list2 =
+            await bloc.getQuestionnairesByOrganization(user.organizationId);
+        questionnaires = list2.length;
+        var list3 = await bloc.findProjectsByOrganization(user.organizationId);
+        projects = list3.length;
+      }
+      pp('🐳🐳 settlements: $settlements  🐳🐳 questionnaires: $questionnaires  🐳🐳 🐳🐳 projects: $projects');
+    } catch (e) {
+      pp('Joe, we have an error! 😡😡😡😡😡😡😡');
+      setState(() {
+        isBusy = false;
+      });
+      AppSnackbar.showErrorSnackbar(
+          scaffoldKey: _key, message: 'Unable to load data', actionLabel: '');
     }
-    if (user != null) {
-      var list2 =
-          await bloc.getQuestionnairesByOrganization(user.organizationId);
-      questionnaires = list2.length;
-      var list3 = await bloc.findProjectsByOrganization(user.organizationId);
-      projects = list3.length;
-    }
-    print(
-        '🐳🐳 settlements: $settlements  🐳🐳 questionnaires: $questionnaires  🐳🐳 🐳🐳 projects: $projects');
     setState(() {
       isBusy = false;
     });
@@ -341,10 +367,10 @@ class _MyHomePageState extends State<MyHomePage>
   void _onNavTap(int value) {
     switch (value) {
       case 0:
-        print('First nav tapped: $value');
+        pp('First nav tapped: $value');
         break;
       case 1:
-        print('Secons nav tapped: $value');
+        pp('Secons nav tapped: $value');
         break;
     }
   }
@@ -357,14 +383,19 @@ class _MyHomePageState extends State<MyHomePage>
   }
 
   @override
-  onSettlementSelected(Settlement settlement) {
+  onSettlementSelected(Community settlement) {
     // TODO: implement onSettlementSelected
     return null;
   }
 
   @override
   onQuestionnaireSelected(Questionnaire questionnaire) {
-    // TODO: implement onQuestionnaireSelected
     return null;
+  }
+
+  @override
+  onProjectSelected(Project project) {
+    // TODO: implement onProjectSelected
+    throw UnimplementedError();
   }
 }

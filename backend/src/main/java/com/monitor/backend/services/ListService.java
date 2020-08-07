@@ -186,7 +186,7 @@ public class ListService {
 
         firestore = FirestoreClient.getFirestore();
         ApiFuture<QuerySnapshot> future = firestore.collection("projects")
-                .whereEqualTo("organizationId", organizationId)
+                .whereEqualTo("organization.organizationId", organizationId)
                 .get();
         for (QueryDocumentSnapshot snapshot : future.get()) {
             Project project = G.fromJson(getJSON(snapshot.getData()),Project.class);
@@ -247,6 +247,49 @@ public class ListService {
 
         return mList;
     }
+    public List<Community> findCommunitiesByCountry(String countryId)  throws Exception{
+        List<Community> mList = new ArrayList<>();
+        LOGGER.info(Emoji.GLOBE.concat(Emoji.GLOBE).concat("findCommunitiesByCountry ..."));
+
+        firestore = FirestoreClient.getFirestore();
+        ApiFuture<QuerySnapshot> future = firestore.collection("communities")
+                .whereEqualTo("countryId", countryId)
+                .orderBy("name")
+                .get();
+        for (QueryDocumentSnapshot snapshot : future.get()) {
+            Community project = G.fromJson(getJSON( snapshot.getData()),Community.class);
+            mList.add(project);
+        }
+        LOGGER.info(Emoji.RED_CAR.concat(Emoji.RED_CAR).concat("findCommunitiesByCountry ... found: " + mList.size()));
+
+        return mList;
+    }
+    public List<Questionnaire> getQuestionnairesByOrganization(String organizationId) throws Exception {
+        firestore = FirestoreClient.getFirestore();
+        QuerySnapshot snapshot = firestore.collection("questionnaires")
+                .whereEqualTo("organization.organizationId", organizationId)
+                .get().get();
+        //java.util.HashMap cannot be cast to com.google.gson.JsonElement\n\tat
+        List<Questionnaire> list = new ArrayList<>();
+        for (QueryDocumentSnapshot shot : snapshot.getDocuments()) {
+            list.add( G.fromJson(getJSON(shot.getData()), Questionnaire.class));
+        }
+        return list;
+    }
+    public List<Project> findProjectsByOrganization(String organizationId) throws Exception {
+        firestore = FirestoreClient.getFirestore();
+        QuerySnapshot snapshot = firestore.collection("projects")
+                .whereEqualTo("organization.organizationId", organizationId)
+                .orderBy("name")
+                .get().get();
+        //java.util.HashMap cannot be cast to com.google.gson.JsonElement\n\tat
+        List<Project> list = new ArrayList<>();
+        for (QueryDocumentSnapshot shot : snapshot.getDocuments()) {
+            list.add( G.fromJson(getJSON(shot.getData()), Project.class));
+        }
+        return list;
+    }
+    //
     public List<Country> getCountries()  throws Exception{
         List<Country> mList = new ArrayList<>();
         LOGGER.info(Emoji.GLOBE.concat(Emoji.GLOBE).concat("getCities ..."));

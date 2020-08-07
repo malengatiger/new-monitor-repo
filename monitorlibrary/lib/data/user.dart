@@ -1,46 +1,46 @@
 import 'package:flutter/cupertino.dart';
 import 'package:meta/meta.dart';
 
+/*
+data class User(var name: String, var email: String, var cellphone: String, var userId: String?,
+                var organizationId: String, var organizationName: String, var created: String, var userType: UserType) {
+ */
 class User {
-  String firstName,
-      lastName,
+  String name,
       userId,
       email,
       cellphone,
-      gender,
+      created,
       userType,
       organizationName,
       organizationId;
 
   User(
-      {@required this.firstName,
-      @required this.lastName,
+      {@required this.name,
       @required this.email,
       this.cellphone,
-      @required this.gender,
+      @required this.created,
       @required this.userType,
-      @required  this.organizationName,
+      @required this.organizationName,
       @required this.organizationId});
 
   User.fromJson(Map data) {
-    this.firstName = data['firstName'];
-    this.lastName = data['lastName'];
+    this.name = data['name'];
     this.userId = data['userId'];
     this.email = data['email'];
     this.cellphone = data['cellphone'];
-    this.gender = data['gender'];
+    this.created = data['created'];
     this.userType = data['userType'];
     this.organizationId = data['organizationId'];
     this.organizationName = data['organizationName'];
   }
   Map<String, dynamic> toJson() {
     Map<String, dynamic> map = {
-      'firstName': firstName,
-      'lastName': lastName,
+      'name': name,
       'userId': userId,
       'email': email,
       'cellphone': cellphone,
-      'gender': gender,
+      'created': created,
       'userType': userType,
       'organizationId': organizationId,
       'organizationName': organizationName,

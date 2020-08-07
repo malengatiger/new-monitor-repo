@@ -1,25 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:monitorlibrary/api/sharedprefs.dart';
-import 'package:monitorlibrary/data/country.dart';
-import 'package:monitorlibrary/data/settlement.dart';
-import 'package:monitorlibrary/functions.dart';
 import 'package:monitorlibrary/bloc/admin_bloc.dart';
+import 'package:monitorlibrary/data/community.dart';
+import 'package:monitorlibrary/data/country.dart';
+import 'package:monitorlibrary/functions.dart';
+import 'package:monitorlibrary/snack.dart';
 
-abstract class SettlementListener {
-  onSettlementSelected(Settlement settlement);
+abstract class CommunityListener {
+  onSettlementSelected(Community settlement);
 }
-class SettlementList extends StatefulWidget {
-  final SettlementListener listener;
 
-  SettlementList(this.listener);
+class CommunityList extends StatefulWidget {
+  final CommunityListener listener;
+
+  CommunityList(this.listener);
 
   @override
-  _SettlementListState createState() => _SettlementListState();
+  _CommunityListState createState() => _CommunityListState();
 }
 
-class _SettlementListState extends State<SettlementList> {
+class _CommunityListState extends State<CommunityList> {
   Country country;
-  List<Settlement> list = List();
+  List<Community> list = List();
   List<Country> countries = List();
   GlobalKey<ScaffoldState> _key = GlobalKey();
   bool isBusy = false;
@@ -27,10 +29,10 @@ class _SettlementListState extends State<SettlementList> {
   @override
   void initState() {
     super.initState();
-    _getSettlements();
+    _getCommunities();
   }
 
-  _getSettlements() async {
+  _getCommunities() async {
     setState(() {
       isBusy = true;
     });
@@ -42,7 +44,13 @@ class _SettlementListState extends State<SettlementList> {
       }
     }
     if (country != null) {
-      await bloc.findSettlementsByCountry(country.countryId);
+      try {
+        await bloc.findCommunitiesByCountry(country.countryId);
+      } catch (e) {
+        pp('👿 error getting community list ... 👿👿👿👿 does fucking the snackBar show?');
+        AppSnackbar.showErrorSnackbar(
+            scaffoldKey: _key, message: '😡 😡 Query failed, what now, Boss?');
+      }
     }
     setState(() {
       isBusy = false;
@@ -56,8 +64,7 @@ class _SettlementListState extends State<SettlementList> {
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.hasData) {
           list = snapshot.data;
-          print(
-              ' 🛎 settlements received fromsnapshot:  🛎 🛎 ${list.length}  🛎 🛎');
+          pp(' 🛎 settlements received from snapshot:  🛎 🛎 ${list.length}  🛎 🛎');
         }
 
         return Scaffold(
@@ -66,10 +73,9 @@ class _SettlementListState extends State<SettlementList> {
             title: Text('Settlements'),
             backgroundColor: Colors.indigo[400],
             actions: <Widget>[
-
               IconButton(
                 icon: Icon(Icons.refresh),
-                onPressed: _getSettlements,
+                onPressed: _getCommunities,
               ),
             ],
             bottom: PreferredSize(
@@ -119,7 +125,7 @@ class _SettlementListState extends State<SettlementList> {
                       var sett = list.elementAt(index);
                       return GestureDetector(
                         onTap: () {
-                         widget.listener.onSettlementSelected(sett);
+                          widget.listener.onSettlementSelected(sett);
                         },
                         child: Card(
                           elevation: 4,
@@ -129,8 +135,14 @@ class _SettlementListState extends State<SettlementList> {
                             child: Column(
                               children: <Widget>[
                                 ListTile(
-                                  leading: Icon(Icons.apps, color: getRandomColor(),),
-                                  title: Text(sett.settlementName, style: Styles.blackBoldSmall,),
+                                  leading: Icon(
+                                    Icons.apps,
+                                    color: getRandomColor(),
+                                  ),
+                                  title: Text(
+                                    sett.name,
+                                    style: Styles.blackBoldSmall,
+                                  ),
                                 )
                               ],
                             ),
@@ -144,5 +156,4 @@ class _SettlementListState extends State<SettlementList> {
       },
     );
   }
-
 }

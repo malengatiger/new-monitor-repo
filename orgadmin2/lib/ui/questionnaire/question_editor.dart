@@ -291,7 +291,7 @@ class _QuestionFormState extends State<QuestionForm> {
         PageTransition(
             type: PageTransitionType.scale,
             alignment: Alignment.topLeft,
-            duration: Duration(seconds: 2),
+            duration: Duration(seconds: 1),
             child: ChoiceEditor(widget.question, widget.questionnaire)));
   }
 }

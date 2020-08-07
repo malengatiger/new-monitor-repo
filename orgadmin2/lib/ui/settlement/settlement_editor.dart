@@ -1,18 +1,16 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:monitorlibrary/api/sharedprefs.dart';
+import 'package:monitorlibrary/bloc/admin_bloc.dart';
+import 'package:monitorlibrary/data/community.dart';
 import 'package:monitorlibrary/data/country.dart';
-import 'package:monitorlibrary/data/settlement.dart';
 import 'package:monitorlibrary/data/user.dart';
 import 'package:monitorlibrary/functions.dart';
 import 'package:monitorlibrary/snack.dart';
-import 'package:monitorlibrary/bloc/admin_bloc.dart';
-
 import 'package:monitorlibrary/ui/countries.dart';
 
-
 class SettlementEditor extends StatefulWidget {
-  final Settlement settlement;
+  final Community settlement;
 
   SettlementEditor({this.settlement});
 
@@ -31,17 +29,17 @@ class _SettlementEditorState extends State<SettlementEditor>
   GeneralBloc bloc = GeneralBloc();
   User user;
   List<Country> countries = List();
-  Settlement settlement;
+  Community community;
 
   @override
   void initState() {
     super.initState();
     if (widget.settlement != null) {
-      nameCntrl.text  = widget.settlement.settlementName;
-      emailCntrl.text  = widget.settlement.email;
-      cellCntrl.text  = widget.settlement.email;
-      popCntrl.text  = '${widget.settlement.population}';
-      settlement = widget.settlement;
+      nameCntrl.text = widget.settlement.name;
+      emailCntrl.text = widget.settlement.email;
+      cellCntrl.text = widget.settlement.email;
+      popCntrl.text = '${widget.settlement.population}';
+      community = widget.settlement;
     }
     _getData();
   }
@@ -54,9 +52,7 @@ class _SettlementEditorState extends State<SettlementEditor>
       await Prefs.saveCountry(_country);
       prettyPrint(_country.toJson(), '💙 💙 💙 country.  check country id');
     }
-    setState(() {
-
-    });
+    setState(() {});
   }
 
   @override
@@ -70,7 +66,10 @@ class _SettlementEditorState extends State<SettlementEditor>
           preferredSize: Size.fromHeight(60),
           child: Column(
             children: <Widget>[
-              Text(user == null? '': user.organizationName, style: Styles.blackBoldMedium,),
+              Text(
+                user == null ? '' : user.organizationName,
+                style: Styles.blackBoldMedium,
+              ),
               SizedBox(
                 height: 20,
               ),
@@ -90,80 +89,89 @@ class _SettlementEditorState extends State<SettlementEditor>
               ),
             )
           : ListView(
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
               children: <Widget>[
-                SizedBox(
-                  height: 12,
-                ),
-                TextField(
-                  controller: nameCntrl,
-                  keyboardType: TextInputType.text,
-                  decoration: InputDecoration(
-                    hintText: 'Enter settlement name',
-                    labelText: 'Settlement Name',
+                Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    children: <Widget>[
+                      SizedBox(
+                        height: 12,
+                      ),
+                      TextField(
+                        controller: nameCntrl,
+                        keyboardType: TextInputType.text,
+                        decoration: InputDecoration(
+                          hintText: 'Enter settlement name',
+                          labelText: 'Settlement Name',
+                        ),
+                        onChanged: _onNameChanged,
+                      ),
+                      SizedBox(
+                        height: 12,
+                      ),
+                      TextField(
+                        controller: emailCntrl,
+                        keyboardType: TextInputType.emailAddress,
+                        decoration: InputDecoration(
+                          hintText: 'Enter email address',
+                          labelText: 'Email',
+                        ),
+                        onChanged: _onEmailChanged,
+                      ),
+                      SizedBox(
+                        height: 12,
+                      ),
+                      TextField(
+                        controller: cellCntrl,
+                        keyboardType: TextInputType.phone,
+                        decoration: InputDecoration(
+                          hintText: 'Enter cellphone number',
+                          labelText: 'Cellphone',
+                        ),
+                        onChanged: _onCellChanged,
+                      ),
+                      SizedBox(
+                        height: 12,
+                      ),
+                      TextField(
+                        controller: popCntrl,
+                        keyboardType:
+                            TextInputType.numberWithOptions(signed: false),
+                        decoration: InputDecoration(
+                          hintText: 'Enter population',
+                          labelText: 'Population',
+                        ),
+                        onChanged: _onPopChanged,
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      _country == null
+                          ? Container()
+                          : Text(
+                              '${_country.name}',
+                              style: Styles.blackBoldLarge,
+                            ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      RaisedButton(
+                        elevation: 8,
+                        color: Colors.pink[700],
+                        child: Padding(
+                          padding: const EdgeInsets.all(28.0),
+                          child: Text(
+                            'Submit Settlement',
+                            style: Styles.whiteSmall,
+                          ),
+                        ),
+                        onPressed: _submit,
+                      ),
+                    ],
                   ),
-                  onChanged: _onNameChanged,
-                ),
-                SizedBox(
-                  height: 12,
-                ),
-                TextField(
-                  controller: emailCntrl,
-                  keyboardType: TextInputType.emailAddress,
-                  decoration: InputDecoration(
-                    hintText: 'Enter email address',
-                    labelText: 'Email',
-                  ),
-                  onChanged: _onEmailChanged,
-                ),
-                SizedBox(
-                  height: 12,
-                ),
-                TextField(
-                  controller: cellCntrl,
-                  keyboardType: TextInputType.phone,
-                  decoration: InputDecoration(
-                    hintText: 'Enter cellphone number',
-                    labelText: 'Cellphone',
-                  ),
-                  onChanged: _onCellChanged,
-                ),
-                SizedBox(
-                  height: 12,
-                ),
-                TextField(
-                  controller: popCntrl,
-                  keyboardType: TextInputType.numberWithOptions(signed: false),
-                  decoration: InputDecoration(
-                    hintText: 'Enter population',
-                    labelText: 'Population',
-                  ),
-                  onChanged: _onPopChanged,
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                _country == null? Container() : Text('${_country.name}', style: Styles.blackBoldLarge,),
-                SizedBox(
-                  height: 20,
-                ),
-                RaisedButton(
-                  elevation: 8,
-                  color: Colors.pink[700],
-                  child: Padding(
-                    padding: const EdgeInsets.all(28.0),
-                    child: Text('Submit Settlement', style: Styles.whiteSmall,),
-                  ),
-                  onPressed: _submit,
                 ),
               ],
             ),
-          ),
-        ],
-      ),
     );
   }
 
@@ -202,20 +210,20 @@ class _SettlementEditorState extends State<SettlementEditor>
 
     try {
       assert(_country != null);
-      if (settlement == null) {
-        settlement = Settlement(
+      if (community == null) {
+        community = Community(
           countryId: _country.countryId,
           countryName: _country.name,
-          settlementName: name,
+          name: name,
           population: pop,
           email: email,
         );
-        await bloc.addSettlement(settlement);
+        await bloc.addCommunity(community);
       } else {
-        settlement.settlementName =  name;
-        settlement.population = pop;
-        settlement.email = email;
-        await bloc.updateSettlement(settlement);
+        community.name = name;
+        community.population = pop;
+        community.email = email;
+        await bloc.updateCommunity(community);
       }
 
       setState(() {
