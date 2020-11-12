@@ -62,18 +62,11 @@ public class DataService {
                         "\uD83D\uDC99 URL: " + app.getOptions().getDatabaseUrl() + Emoji.HAPPY);
                 LOGGER.info(Emoji.HEART_BLUE + Emoji.HEART_BLUE + "Firebase has been set up and initialized. " +
                         "\uD83E\uDD66 Name: " + app.getName() + Emoji.HEART_ORANGE + Emoji.HEART_GREEN);
-                firestore = FirestoreClient.getFirestore();
-                int cnt = 0;
-                Iterable<CollectionReference> refs = firestore.listCollections();
-                for (CollectionReference listCollection : refs) {
-                    cnt++;
-                    LOGGER.info(Emoji.RAIN_DROPS + Emoji.RAIN_DROPS + "Collection: #" + cnt + " \uD83D\uDC99 collection: " + listCollection.getId());
-                }
-                LOGGER.info(Emoji.LEAF.concat(Emoji.LEAF).concat("Number of Collections in Firestore: " + cnt).concat(" ").concat(Emoji.LEAF));
 
-//                List<Anchor> list = getAnchors();
-//                LOGGER.info(Emoji.HEART_BLUE + Emoji.HEART_BLUE +
-//                        "Firebase Initialization complete; ... anchors found: " + list.size());
+                LOGGER.info(Emoji.HEART_ORANGE + Emoji.HEART_ORANGE + Emoji.HEART_ORANGE + Emoji.HEART_ORANGE +
+                        "Firebase Database URL: " + app.getOptions().getDatabaseUrl()
+                        + " " + Emoji.RED_APPLE);
+
             }
         } catch (Exception e) {
             String msg = "Unable to initialize Firebase";
@@ -132,8 +125,8 @@ public class DataService {
         community.setCommunityId(UUID.randomUUID().toString());
         firestore = FirestoreClient.getFirestore();
         ApiFuture<DocumentReference> future = firestore.collection("communities").add(community);
-        LOGGER.info(Emoji.LEAF.concat(Emoji.LEAF).concat("Community: \uD83C\uDF3C "+community.getName()
-                +" added to database at path: \uD83D\uDC24 " + future.get().getPath()));
+        LOGGER.info(Emoji.LEAF.concat(Emoji.LEAF).concat("Community: \uD83C\uDF3C " + community.getName()
+                + " added to database at path: \uD83D\uDC24 " + future.get().getPath()));
         return community.getCommunityId();
     }
 
@@ -168,6 +161,7 @@ public class DataService {
         LOGGER.info(Emoji.HEART_ORANGE + Emoji.HEART_ORANGE + "Firebase user auth record created: "
                 .concat(" \uD83E\uDDE1 ").concat(user.getName().concat(" \uD83E\uDDE1 ").concat(user.getEmail())
                         .concat(" \uD83E\uDDE1 ").concat(Objects.requireNonNull(user.getUserId()))));
+
 
         addUser(user);
 

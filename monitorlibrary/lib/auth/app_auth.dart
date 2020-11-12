@@ -1,15 +1,20 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:monitorlibrary/api/data_api.dart';
 import 'package:monitorlibrary/api/sharedprefs.dart';
-import 'package:monitorlibrary/data/user.dart';
+import 'package:monitorlibrary/data/user.dart' as mon;
 
 import '../functions.dart';
 
 class AppAuth {
-  static FirebaseAuth _auth = FirebaseAuth.instance;
+  static FirebaseAuth _auth;
 
   static Future<bool> isUserSignedIn() async {
-    var authUser = await _auth.currentUser();
+    pp('🥦 🥦  😎😎😎😎 AppAuth: isUserSignedIn :: 😎😎😎 about to initialize Firebase; 😎');
+    await Firebase.initializeApp();
+    pp('😎😎😎😎 AppAuth: isUserSignedIn :: 😎😎😎 Firebase has been initialized; 😎 or not? 🍀🍀');
+    _auth = FirebaseAuth.instance;
+    var authUser = _auth.currentUser;
     var user = await Prefs.getUser();
     if (authUser == null) {
       return false;
@@ -22,7 +27,7 @@ class AppAuth {
     }
   }
 
-  static Future createUser(User user, String password) async {
+  static Future createUser(mon.User user, String password) async {
     var fbUser = await _auth
         .createUserWithEmailAndPassword(email: user.email, password: password)
         .catchError((e) {

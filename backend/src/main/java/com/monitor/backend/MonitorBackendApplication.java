@@ -2,14 +2,10 @@ package com.monitor.backend;
 
 import com.monitor.backend.controllers.DataController;
 import com.monitor.backend.controllers.ListController;
-import com.monitor.backend.models.City;
-import com.monitor.backend.models.CityRepository;
-import com.monitor.backend.models.Country;
 import com.monitor.backend.models.CountryRepository;
 import com.monitor.backend.services.DataService;
 import com.monitor.backend.services.ListService;
 import com.monitor.backend.utils.Emoji;
-import com.monitor.backend.utils.Generator;
 import com.monitor.backend.utils.MongoGenerator;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +22,6 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import java.io.PrintStream;
 import java.lang.reflect.Method;
 import java.util.Calendar;
-import java.util.List;
 import java.util.logging.Logger;
 
 @SpringBootApplication
@@ -76,8 +71,6 @@ public class MonitorBackendApplication implements ApplicationListener<Applicatio
     @Autowired
     private ListController listController;
 
-    @Autowired
-    private Generator generator;
 
     @Override
     public void onApplicationEvent(ApplicationReadyEvent applicationReadyEvent) {
@@ -105,7 +98,6 @@ public class MonitorBackendApplication implements ApplicationListener<Applicatio
             printServiceMethods(listController.getClass().getMethods(), Emoji.YELLOW_BIRD, "ListController method: ", Emoji.YELLOW_BIRD);
             LOGGER.info(Emoji.YELLOW_BIRD + " -------- end of ListController methods ");
 
-            printServiceMethods(generator.getClass().getMethods(), Emoji.FERN, "Generator method: ", Emoji.FERN);
             LOGGER.info(Emoji.FERN + " -------- end of Generator methods ");
 
 

@@ -2,7 +2,6 @@ package com.monitor.backend.utils;
 
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.CollectionReference;
-import com.google.cloud.firestore.Firestore;
 import com.google.cloud.firestore.QueryDocumentSnapshot;
 import com.google.cloud.firestore.QuerySnapshot;
 import com.google.firebase.auth.ExportedUserRecord;
@@ -49,42 +48,25 @@ public class MongoGenerator {
     private static final double latitudeRosebank = -26.140499438, longitudeRosebank = 28.037666516;
     private static final double latitudeJHB = -26.195246, longitudeJHB = 28.034088;
 
-//    public void startGeneration() throws Exception {
-//        LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS + Emoji.RAIN_DROPS + Emoji.RAIN_DROPS.concat(" ... startGeneration of Demo Data ...")));
-//        Date start = new Date();
-//        setFirstNames();
-//        setLastNames();
-//        setOrgNames();
-//        setCommunityNames();
-//
-//        //clean up first
-//        deleteFirebase();
-//        generateCountries();
-//
-//        Date end = new Date();
-//        long seconds = (end.getTime() - start.getTime()) / 1000;
-//        long minutes = seconds/ 60;
-//        LOGGER.info("\uD83E\uDD6C \uD83E\uDD6C \uD83E\uDD6C \uD83E\uDD6C \uD83E\uDD6C \uD83E\uDD6C "
-//        .concat(" \uD83C\uDF3C Demo Data Generator completed; \uD83C\uDF3C elapsed seconds: " + seconds + "; elapsed minutes " + minutes));
-//    }
-
     public void generateCountries() throws Exception {
         LOGGER.info(Emoji.DICE + Emoji.DICE + " -------- Generating countries .... ");
         List<Country> countries = new ArrayList<>();
         List<Double> cords = new ArrayList<>();
         cords.add(longitudeHarties);
         cords.add(latitudeHarties);
-        Country c1 = new Country(null, UUID.randomUUID().toString(), "South Africa", "ZAR", new Position("Point", cords));
-        Country c2 = new Country(null, UUID.randomUUID().toString(), "Zimbabwe", "ZIM", new Position("Point", cords));
+        Country c1 = new Country("PUBLIC",null,
+                UUID.randomUUID().toString(), "South Africa", "ZAR",
+                new Position("Point", cords));
+        Country c2 = new Country("PUBLIC",null,
+                UUID.randomUUID().toString(), "Zimbabwe", "ZIM",
+                new Position("Point", cords));
 
         if (countryRepository == null) {
             throw new Exception("CountryRepository is NULL");
         }
 
         Country southAfrica = countryRepository.insert(c1);
-
         Country zimbabwe = countryRepository.insert(c2);
-
 
         countries.add(southAfrica);
         countries.add(zimbabwe);
@@ -93,17 +75,18 @@ public class MongoGenerator {
             LOGGER.info(Emoji.DICE + Emoji.DICE + " -------- Country: "
                     + country.getName() + " " + Emoji.RED_APPLE);
         }
-        migrateCities(southAfrica);
 
-//        generateOrganizations(countries);
-//        generateCommunities();
+        deleteAuthUsers();
+        processSouthAfricanCities();
+        generateOrganizations();
+        generateCommunities();
     }
 
     @Autowired
     private ListService listService;
 
     public void processSouthAfricanCities() throws Exception {
-        createUniqueIndex();
+        createUniqueCityIndex();
         List<Country> countries = countryRepository.findAll();
         for (Country country : countries) {
             if (country.getName().contains("South Africa")) {
@@ -160,7 +143,7 @@ public class MongoGenerator {
                         }
                         cords.add(longitude);
                         cords.add(latitude);
-                        City city = new City(null, cityName.trim(), UUID.randomUUID().toString(), country, province,
+                        City city = new City("PUBLIC",null, cityName.trim(), UUID.randomUUID().toString(), country, province,
                                 new Position("Point", cords));
                         mCities.add(city);
                     }
@@ -200,7 +183,7 @@ public class MongoGenerator {
     /*
     db.members.createIndex( { groupNumber: 1, lastname: 1, firstname: 1 }, { unique: true } )
      */
-    private void createUniqueIndex() {
+    private void createUniqueCityIndex() {
         LOGGER.info(Emoji.FOOTBALL + Emoji.FOOTBALL + "Creating unique index to catch name duplication within province");
         MongoDatabase db = mongoClient.getDatabase("monitordb");
         MongoCollection<Document> dbCollection = db.getCollection("city");
@@ -251,8 +234,6 @@ public class MongoGenerator {
                     index++;
 
                 } catch (Exception e) {
-//                    LOGGER.info(Emoji.RED_DOT+" Batch should be done? " + Emoji.RED_DOT
-//                            + " batch index: " + j + " main index: " + index);
                 }
             }
             try {
@@ -261,12 +242,7 @@ public class MongoGenerator {
                         + Emoji.PEAR + "...... Written to mongo:" +
                         Emoji.RED_APPLE + " CITY BATCH #" + i
                         + " batch size: " + mList.size());
-                for (City city : mList) {
-                    cnt++;
-                    LOGGER.info(Emoji.PEAR + Emoji.PEAR + "City #" + cnt +
-                            " " + city.getName() + "  " + Emoji.BLUE_DOT + city.getProvinceName() + " " + Emoji.BLUE_DOT +
-                            " added to MongoDB database " + Emoji.RED_APPLE);
-                }
+                cnt += mList.size();
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -282,12 +258,73 @@ public class MongoGenerator {
     OrganizationRepository organizationRepository;
     @Autowired
     ProjectRepository projectRepository;
+    private void createOrganizationIndexes() {
+        //add index
+        MongoDatabase db = mongoClient.getDatabase("monitordb");
+        MongoCollection<Document> dbCollection = db.getCollection("organization");
+
+        String result2 = dbCollection.createIndex(Indexes.ascending("name"),
+                new IndexOptions().unique(true));
+        LOGGER.info(Emoji.LEAF + Emoji.LEAF + Emoji.LEAF + Emoji.LEAF +
+                " Org unique name index should be created on org collection: " +
+                Emoji.RED_APPLE + result2);
+
+    }
+    private void createProjectIndexes() {
+        //add index
+        MongoDatabase db = mongoClient.getDatabase("monitordb");
+        MongoCollection<Document> dbCollection = db.getCollection("project");
+
+        String result2 = dbCollection.createIndex(Indexes.ascending("organization.organizationId","name"),
+                new IndexOptions().unique(true));
+        LOGGER.info(Emoji.LEAF + Emoji.LEAF + Emoji.LEAF + Emoji.LEAF +
+                " Project unique name index should be created on Project collection: " +
+                Emoji.RED_APPLE + result2);
+
+        String result = dbCollection.createIndex(Indexes.geo2dsphere("position"));
+        LOGGER.info(Emoji.LEAF + Emoji.LEAF + Emoji.LEAF + Emoji.LEAF +
+                " Project 2dSphere index should be created on project collection: " +
+                Emoji.RED_APPLE + result);
+    }
+    private void createUserIndexes() {
+        //add index
+        MongoDatabase db = mongoClient.getDatabase("monitordb");
+        MongoCollection<Document> dbCollection = db.getCollection("user");
+
+        String result2 = dbCollection.createIndex(Indexes.ascending("email"),
+                new IndexOptions().unique(true));
+        LOGGER.info(Emoji.LEAF + Emoji.LEAF + Emoji.LEAF + Emoji.LEAF +
+                " user unique email index should be created on user collection: " +
+                Emoji.RED_APPLE + result2);
+
+        String result = dbCollection.createIndex(Indexes.ascending("cellphone"));
+        LOGGER.info(Emoji.LEAF + Emoji.LEAF + Emoji.LEAF + Emoji.LEAF +
+                " user cellphone index should be created on user collection: " +
+                Emoji.RED_APPLE + result);
+    }
+    private void createCommunityIndexes() {
+        //add index
+        MongoDatabase db = mongoClient.getDatabase("monitordb");
+        MongoCollection<Document> dbCollection = db.getCollection("community");
+
+        String result2 = dbCollection.createIndex(Indexes.ascending("name", "countryId"),
+                new IndexOptions().unique(true));
+        LOGGER.info(Emoji.LEAF + Emoji.LEAF + Emoji.LEAF + Emoji.LEAF +
+                " user unique name index should be created on community collection: " +
+                Emoji.RED_APPLE + result2);
+
+        String result = dbCollection.createIndex(Indexes.ascending("countryId"));
+        LOGGER.info(Emoji.LEAF + Emoji.LEAF + Emoji.LEAF + Emoji.LEAF +
+                " user countryId index should be created on community collection: " +
+                Emoji.RED_APPLE + result);
+    }
 
     public void generateOrganizations() throws Exception {
         setFirstNames();
         setLastNames();
         setOrgNames();
         setCommunityNames();
+        createOrganizationIndexes();
         List<Country> countries = countryRepository.findAll();
         List<Organization> organizations = new ArrayList<>();
         //Generate orgs for South Africa
@@ -305,8 +342,8 @@ public class MongoGenerator {
         }
         Collection<String> fNames = hMap.values();
         for (String name : fNames) {
-            Organization org1 = new Organization(name, country.getName(),
-                    Objects.requireNonNull(country.getCountryId()), country.getCountryCode(),
+            Organization org1 = new Organization("PUBLIC",null,name, country.getName(),
+                    Objects.requireNonNull(country.getCountryId()), UUID.randomUUID().toString(),
                     new DateTime().toDateTimeISO().toString());
             Organization id1 = organizationRepository.save(org1);
             organizations.add(id1);
@@ -321,6 +358,8 @@ public class MongoGenerator {
     public void generateProjects(List<Organization> organizations) throws Exception {
 
         LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS + Emoji.RAIN_DROPS.concat(" Generating projects ...")));
+
+        createProjectIndexes();
         for (Organization organization : organizations) {
             addProjects(organization);
         }
@@ -331,17 +370,34 @@ public class MongoGenerator {
     UserRepository userRepository;
 
     @Autowired
+    CommunityRepository communityRepository;
+
+    @Autowired
     DataService dataService;
 
+    private String getRandomCellphone() {
+
+        return String.valueOf(random.nextInt(9)) +
+                random.nextInt(9) +
+                random.nextInt(9) +
+                random.nextInt(9) +
+                random.nextInt(9) +
+                random.nextInt(9) +
+                random.nextInt(9) +
+                random.nextInt(9) +
+                random.nextInt(9) +
+                random.nextInt(9);
+    }
     public void generateUsers(List<Organization> organizations) throws Exception {
         LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS + Emoji.RAIN_DROPS.concat(" Generating Users ...")));
+        createUserIndexes();
         int cnt = 0;
         for (Organization organization : organizations) {
             for (int i = 0; i < 4; i++) {
                 String name = getRandomFirstName() + " " + getRandomLastName();
                 if (i == 0) {
-                    User user = new User(name, buildEmail("orgadmin"),
-                            "099 999 9999", "userId", Objects.requireNonNull(organization.getOrganizationId()),
+                    User user = new User(organization.getOrganizationId(),null,name, buildEmail("orgadmin"),
+                            getRandomCellphone(), "userId", Objects.requireNonNull(organization.getOrganizationId()),
                             organization.getName(), new DateTime().toDateTimeISO().toString(), UserType.ORGANIZATION_USER);
                     userRepository.save(user);
                     //add user to Firebase
@@ -351,8 +407,8 @@ public class MongoGenerator {
                 }
 
                 if (i == 1 || i == 2) {
-                    User user = new User(name, buildEmail("monitor"),
-                            "099 999 9999", "userId", Objects.requireNonNull(organization.getOrganizationId()),
+                    User user = new User(organization.getOrganizationId(),null,name, buildEmail("monitor"),
+                            getRandomCellphone(), "userId", Objects.requireNonNull(organization.getOrganizationId()),
                             organization.getName(), new DateTime().toDateTimeISO().toString(), UserType.MONITOR);
                     userRepository.save(user);
                     dataService.createUser(user, "pass123");
@@ -361,8 +417,8 @@ public class MongoGenerator {
                 }
 
                 if (i == 3) {
-                    User user = new User(name, buildEmail("executive"),
-                            "099 999 9999", "userId", Objects.requireNonNull(organization.getOrganizationId()),
+                    User user = new User(organization.getOrganizationId(),null,name, buildEmail("executive"),
+                            getRandomCellphone(), "userId", Objects.requireNonNull(organization.getOrganizationId()),
                             organization.getName(), new DateTime().toDateTimeISO().toString(), UserType.EXECUTIVE);
                     userRepository.save(user);
                     dataService.createUser(user, "pass123");
@@ -385,22 +441,33 @@ public class MongoGenerator {
     private final String[] alphabet = {"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N",
             "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"};
 
-//    public void generateCommunities() throws Exception {
-//
-//        Country country = listService.getCountryByName("South Africa");
-//        if (country == null) {
-//            throw new Exception("South Africa is not here, Bud!");
-//        }
-//        LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS + Emoji.RAIN_DROPS
-//                .concat(" Generating "+communities.size()+" Communities ...")));
-//        for (String name : communities) {
-//            Community c = new Community(name,"id",
-//                    Objects.requireNonNull(country.getCountryId()),getPopulation(),
-//                    country.getName(),
-//                    new ArrayList<>(),new ArrayList<>(),new ArrayList<>(),new ArrayList<>());
-//            countryRepository.addCommunity(c);
-//        }
-//    }
+    public void generateCommunities() throws Exception {
+
+        createCommunityIndexes();
+        List<Country> countries = countryRepository.findAll();
+        Country country = null;
+        for (Country country1 : countries) {
+            if (country1.getName().contains("South Africa")) {
+                country = country1;
+            }
+        }
+        if (country == null) {
+            throw new Exception("South Africa is not here, Bud!");
+        }
+        setCommunityNames();
+        LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS + Emoji.RAIN_DROPS
+                .concat(" Generating "+communities.size()+" Communities ...")));
+        for (String name : communities) {
+            Community c = new Community(country.getCountryId(),null, name,"id",
+                    Objects.requireNonNull(country.getCountryId()),getPopulation(),
+                    country.getName(),
+                    new ArrayList<>(),new ArrayList<>(),new ArrayList<>(),new ArrayList<>());
+            Community sComm = communityRepository.save(c);
+            LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS + Emoji.RAIN_DROPS
+                    .concat(" Community Generated "+sComm.getName()+" on mongodb database "
+                    + Emoji.RED_APPLE)));
+        }
+    }
 
     public static final String testProjectDesc = "This is the description of a truly transformational project that will change the lives of thousands of people." +
             " The infrastructure built will enhance quality of life and provide opportunities for entrepreneurs and job seekers";
@@ -418,7 +485,7 @@ public class MongoGenerator {
 
         cords.add(longitudeLanseria);
         cords.add(latitudeLanseria);
-        Project p0 = new Project("", "Lanseria Project H", organization,
+        Project p0 = new Project(organization.getOrganizationId(),null, UUID.randomUUID().toString(),"Lanseria Project H", Objects.requireNonNull(organization.getOrganizationId()),
                 testProjectDesc, new DateTime().toDateTimeISO().toString(), new ArrayList<>(),
                 new Position("Point", cords));
         projectRepository.save(p0);
@@ -426,7 +493,8 @@ public class MongoGenerator {
         cords.clear();
         cords.add(longitudeSandton);
         cords.add(latitudeSandton);
-        Project p1 = new Project("", "Sandton Project #" + 1, organization,
+        Project p1 = new Project(organization.getOrganizationId(),null, UUID.randomUUID().toString(),
+                "Sandton Project #" + 1, Objects.requireNonNull(organization.getOrganizationId()),
                 testProjectDesc, new DateTime().toDateTimeISO().toString(), new ArrayList<>(),
                 new Position("Point", cords));
         projectRepository.save(p1);
@@ -434,7 +502,8 @@ public class MongoGenerator {
         cords.clear();
         cords.add(longitudeHarties);
         cords.add(latitudeHarties);
-        Project p2 = new Project("", "Harties Project BuildIt", organization,
+        Project p2 = new Project(organization.getOrganizationId(),null, UUID.randomUUID().toString(),
+                "Harties Project BuildIt", Objects.requireNonNull(organization.getOrganizationId()),
                 testProjectDesc, new DateTime().toDateTimeISO().toString(), new ArrayList<>(),
                 new Position("Point", cords));
         projectRepository.save(p2);
@@ -442,7 +511,8 @@ public class MongoGenerator {
         cords.clear();
         cords.add(longitudeJHB);
         cords.add(latitudeJHB);
-        Project p3 = new Project("", "Johannesburg Project X", organization,
+        Project p3 = new Project(organization.getOrganizationId(),null, UUID.randomUUID().toString(),
+                "Johannesburg Project X", Objects.requireNonNull(organization.getOrganizationId()),
                 testProjectDesc, new DateTime().toDateTimeISO().toString(), new ArrayList<>(),
                 new Position("Point", cords));
         projectRepository.save(p3);
@@ -593,31 +663,12 @@ public class MongoGenerator {
         for (ExportedUserRecord exportedUserRecord : list) {
             if (!exportedUserRecord.getEmail().equalsIgnoreCase("aubrey@gmail.com")) {
                 FirebaseAuth.getInstance().deleteUser(exportedUserRecord.getUid());
-                LOGGER.info(Emoji.OK.concat(Emoji.RED_APPLE) + "Successfully deleted user: "
-                        .concat(exportedUserRecord.getDisplayName()));
+                if (exportedUserRecord.getDisplayName() != null) {
+                    LOGGER.info(Emoji.OK.concat(Emoji.RED_APPLE) + "Successfully deleted user: "
+                            .concat(exportedUserRecord.getDisplayName()));
+                }
             }
         }
-    }
-
-    public void deleteCollections() throws Exception {
-        LOGGER.info(Emoji.WARNING.concat(Emoji.WARNING.concat(Emoji.WARNING)
-                .concat(" DELETING ALL DATA from Firestore .... ").concat(Emoji.RED_DOT)));
-        Firestore fs = FirestoreClient.getFirestore();
-        CollectionReference ref1 = fs.collection("countries");
-        deleteCollection(ref1, 1000);
-        CollectionReference ref2 = fs.collection("communities");
-        deleteCollection(ref2, 1000);
-        CollectionReference ref3 = fs.collection("organizations");
-        deleteCollection(ref3, 1000);
-        CollectionReference ref4 = fs.collection("projects");
-        deleteCollection(ref4, 1000);
-        CollectionReference ref5 = fs.collection("users");
-        deleteCollection(ref5, 1000);
-        CollectionReference ref6 = fs.collection("monitorReports");
-        deleteCollection(ref6, 1000);
-
-        LOGGER.info(Emoji.PEAR.concat(Emoji.PEAR.concat(Emoji.PEAR)
-                .concat(" DELETED ALL DATA from Firestore .... ").concat(Emoji.RED_TRIANGLE)));
     }
 
     /**

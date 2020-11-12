@@ -21,22 +21,25 @@ class StorageAPI {
         '_${rand.nextInt(1000)} +.jpg';
     try {
       pp('☕️☕️☕️ StorageAPI.uploadPhoto ------------ ☕️ path: ${file.path}');
-      final StorageReference firebaseStorageRef =
+      var firebaseStorageRef =
           FirebaseStorage.instance.ref().child("monitorPhotos").child(name);
 
-      var task = firebaseStorageRef.putFile(file);
-      task.events.listen((event) {
-        var totalByteCount = event.snapshot.totalByteCount;
-        var bytesTransferred = event.snapshot.bytesTransferred;
+      var uploadTask = firebaseStorageRef.putFile(file);
+      // var ref = FirebaseStorage.instance.ref().child("your_path");
+      // var uploadTask = ref.putFile(avatarImageFile);
+
+      uploadTask.snapshotEvents.listen((event) {
+        var totalByteCount = event.totalBytes;
+        var bytesTransferred = event.bytesTransferred;
         var bt = (bytesTransferred / 1024).toStringAsFixed(2) + ' KB';
         var tot = (totalByteCount / 1024).toStringAsFixed(2) + ' KB';
         pp('☕️☕️☕️ StorageAPI.uploadPhoto:  💚 progress ******* 🧩 $bt KB of $tot KB 🧩 transferred');
         if (listener != null)
-          listener.onProgress(
-              event.snapshot.totalByteCount, event.snapshot.bytesTransferred);
+          listener.onProgress(event.totalBytes, event.bytesTransferred);
       });
-      task.onComplete.then((snap) async {
-        var totalByteCount = snap.totalByteCount;
+
+      uploadTask.whenComplete(() => null).then((snap) async {
+        var totalByteCount = snap.totalBytes;
         var bytesTransferred = snap.bytesTransferred;
         var bt = (bytesTransferred / 1024).toStringAsFixed(2) + ' KB';
         var tot = (totalByteCount / 1024).toStringAsFixed(2) + ' KB';
@@ -48,7 +51,7 @@ class StorageAPI {
         var url = await firebaseStorageRef.getDownloadURL();
         if (listener != null) {
           listener.onUploadComplete(
-              url, snap.totalByteCount, snap.bytesTransferred);
+              url, snap.totalBytes, snap.bytesTransferred);
         } else {
           pp('Listener is null ... FIX this! ............................');
         }
@@ -93,6 +96,8 @@ class StorageAPI {
 
 abstract class StorageUploadListener {
   onProgress(int totalByteCount, int bytesTransferred);
+
   onUploadComplete(String url, int totalByteCount, int bytesTransferred);
+
   onError(String message);
 }

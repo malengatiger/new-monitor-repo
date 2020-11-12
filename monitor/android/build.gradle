@@ -5,8 +5,8 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.4.1'
-        classpath 'com.google.gms:google-services:4.3.0'
+        classpath 'com.android.tools.build:gradle:3.4.3'
+        classpath 'com.google.gms:google-services:4.3.3'
     }
 }
 
@@ -22,7 +22,7 @@ subprojects {
     project.buildDir = "${rootProject.buildDir}/${project.name}"
 }
 subprojects {
-    project.evaluationDependsOn(':app')
+//    project.evaluationDependsOn(':app')
 }
 
 task clean(type: Delete) {

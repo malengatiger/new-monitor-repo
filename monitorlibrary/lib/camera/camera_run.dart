@@ -110,23 +110,23 @@ class _CameraRunState extends State<CameraRun>
           isCameraSelected
               ? Column(
                   children: <Widget>[
-                    Expanded(
-                      child: Container(
-                        child: Center(
-                          child: _cameraPreviewWidget(),
-                        ),
-                        decoration: BoxDecoration(
-                          color: Colors.black,
-                          border: Border.all(
-                            color: cameraController != null &&
-                                    cameraController.value.isRecordingVideo
-                                ? Colors.redAccent
-                                : Colors.grey,
-                            width: 0.0,
-                          ),
-                        ),
-                      ),
-                    ),
+                    // Expanded(
+                    //   child: Container(
+                    //     child: Center(
+                    //       child: _cameraPreviewWidget(),
+                    //     ),
+                    //     decoration: BoxDecoration(
+                    //       color: Colors.black,
+                    //       border: Border.all(
+                    //         color: cameraController != null &&
+                    //                 cameraController.value.isRecordingVideo
+                    //             ? Colors.redAccent
+                    //             : Colors.grey,
+                    //         width: 0.0,
+                    //       ),
+                    //     ),
+                    //   ),
+                    // ),
                     _captureControlRowWidget(),
                     _toggleAudioWidget(),
                     Padding(

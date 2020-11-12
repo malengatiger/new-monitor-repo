@@ -3,7 +3,6 @@ package com.monitor.backend.controllers;
 import com.monitor.backend.models.*;
 import com.monitor.backend.services.DataService;
 import com.monitor.backend.utils.Emoji;
-import com.monitor.backend.utils.Generator;
 import com.monitor.backend.utils.MongoGenerator;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,8 +24,7 @@ public class DataController {
 
     @Autowired
     private DataService dataService;
-    @Autowired
-    private Generator generator;
+
     @Autowired
     private MongoGenerator mongoGenerator;
 
@@ -36,17 +34,17 @@ public class DataController {
         return Emoji.HAND2 + Emoji.HAND2 + "  PROJECT MONITOR SERVICES PLATFORM pinged at ".concat(new DateTime().toDateTimeISO().toString());
     }
 
-    @GetMapping("/generateDemoData")
-    public String generateDemoData() throws Exception {
-        LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS).concat("generateDemoData: ".concat(Emoji.FLOWER_YELLOW)));
-        DateTime now = new DateTime();
-
-        generator.startGeneration();
-
-        DateTime end = new DateTime();
-        long delta = end.toDate().getTime() - now.toDate().getTime();
-        return Emoji.LEAF.concat(Emoji.LEAF.concat(" Demo Data Generation completed in " + delta / 1000 + " seconds " + Emoji.RED_APPLE));
-    }
+//    @GetMapping("/generateDemoData")
+//    public String generateDemoData() throws Exception {
+//        LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS).concat("generateDemoData: ".concat(Emoji.FLOWER_YELLOW)));
+//        DateTime now = new DateTime();
+//
+//        generator.startGeneration();
+//
+//        DateTime end = new DateTime();
+//        long delta = end.toDate().getTime() - now.toDate().getTime();
+//        return Emoji.LEAF.concat(Emoji.LEAF.concat(" Demo Data Generation completed in " + delta / 1000 + " seconds " + Emoji.RED_APPLE));
+//    }
 
     @GetMapping("/migrateCities")
     public String migrateCities() throws Exception {
@@ -67,7 +65,7 @@ public class DataController {
     public String generateCommunities() throws Exception {
         LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS)
                 .concat("generateCommunities: ".concat(Emoji.FLOWER_YELLOW)));
-        generator.generateCommunities();
+        mongoGenerator.generateCommunities();
         return Emoji.LEAF.concat(Emoji.LEAF.concat("Communities generated " + Emoji.RED_APPLE));
     }
 

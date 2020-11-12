@@ -12,33 +12,33 @@ dependencies:
   flutter:
     sdk: flutter
   google_fonts: 1.1.0
-  firebase_auth: ^0.16.1
-  firebase_messaging: ^6.0.16
-#  firebase_core: 0.4.0+1
-  cloud_firestore: ^0.13.7
-  firebase_storage: ^3.1.6
+  firebase_auth: ^0.18.3
+  firebase_messaging: ^7.0.3
+  firebase_core: ^0.5.2
+  cloud_firestore: ^0.14.3
+  firebase_storage: ^5.0.1
   permission_handler: ^5.0.1+1
   unicorndial: ^1.1.5
   location: ^3.0.2
-  android_intent: ^0.3.7+2
-  shared_preferences: ^0.5.8
-  path_provider: ^1.6.11
-  sensors: ^0.4.2+2
-  material_design_icons_flutter: ^4.0.5345
+  android_intent: ^0.3.7+7
+  shared_preferences: ^0.5.12+4
+  path_provider: ^1.6.24
+  sensors: ^0.4.2+6
+  material_design_icons_flutter: ^4.0.5755
   flutter_google_places: ^0.2.6
   intl: ^0.16.1
   http: ^0.12.2
-  google_maps_flutter: ^0.5.29
-  google_maps_webservice: ^0.0.17
+  google_maps_flutter: ^1.0.6
+  google_maps_webservice: ^0.0.18
   autocomplete_textfield: ^1.7.3
   mongodb_mobile: ^0.0.7
   grouped_buttons: ^1.0.4
-  camera: ^0.5.8+2
+  camera: ^0.5.8+11
   path: ^1.7.0
-  video_player: ^0.10.11+2
-  cached_network_image: ^2.2.0+1
+  video_player: ^1.0.0
+  cached_network_image: ^2.3.3
   flutter_dotenv: ^2.1.0
-  page_transition: ^1.1.6
+  page_transition: ^1.1.7+2
   image:
 
 dev_dependencies:

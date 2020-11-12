@@ -8,4 +8,6 @@ import java.util.List;
 
 public interface OrganizationRepository extends PagingAndSortingRepository<Organization, String> {
 
+    List<Organization> findByCountryId(String countryId);
+
 }

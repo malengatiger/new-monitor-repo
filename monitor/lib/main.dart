@@ -1,21 +1,24 @@
 import 'dart:async';
 import 'dart:ui';
 
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:monitorlibrary/api/sharedprefs.dart';
 import 'package:monitorlibrary/auth/app_auth.dart';
 import 'package:monitorlibrary/bloc/admin_bloc.dart';
 import 'package:monitorlibrary/data/project.dart';
 import 'package:monitorlibrary/data/questionnaire.dart';
-import 'package:monitorlibrary/data/settlement.dart';
-import 'package:monitorlibrary/data/user.dart';
+import 'package:monitorlibrary/data/user.dart' as ar;
 import 'package:monitorlibrary/functions.dart';
 import 'package:monitorlibrary/ui/questionare_list.dart';
-import 'package:monitorlibrary/ui/settlement_list.dart';
 import 'package:monitorlibrary/ui/signin.dart';
 import 'package:page_transition/page_transition.dart';
 
-void main() => runApp(MyApp());
+void main() async {
+  runApp(MyApp());
+  await Firebase.initializeApp();
+  pp('😎😎😎😎😎😎😎 Firebase has been initialized; 😎 or not?');
+}
 
 class MyApp extends StatelessWidget {
   @override
@@ -41,7 +44,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage>
-    implements SettlementListener, QuestionnaireListener {
+    implements QuestionnaireListener {
   bool isBusy = false;
   @override
   initState() {
@@ -49,7 +52,7 @@ class _MyHomePageState extends State<MyHomePage>
     _checkUser();
   }
 
-  User user;
+  ar.User user;
   Future _checkUser() async {
     var isOK = await AppAuth.isUserSignedIn();
     if (!isOK) {
@@ -59,7 +62,7 @@ class _MyHomePageState extends State<MyHomePage>
               type: PageTransitionType.scale,
               alignment: Alignment.topLeft,
               duration: Duration(seconds: 2),
-              child: SignIn()));
+              child: SignIn("SomeType")));
       if (user != null) {
         print('🤟🤟🤟🤟🤟🤟🤟🤟 User returned from signIn');
         prettyPrint(user.toJson(), "User returned  🤟🤟🤟🤟🤟🤟🤟");
@@ -90,7 +93,7 @@ class _MyHomePageState extends State<MyHomePage>
             child: Column(
               children: <Widget>[
                 Text(
-                  user == null ? '' : '${user.firstName} ${user.lastName}',
+                  user == null ? '' : '${user.name}',
                   style: Styles.blackBoldMedium,
                 ),
                 SizedBox(
@@ -163,13 +166,13 @@ class _MyHomePageState extends State<MyHomePage>
                           width: 160,
                           child: GestureDetector(
                             onTap: () {
-                              Navigator.push(
-                                  context,
-                                  PageTransition(
-                                      type: PageTransitionType.scale,
-                                      alignment: Alignment.topLeft,
-                                      duration: Duration(seconds: 2),
-                                      child: SettlementList(this)));
+                              // Navigator.push(
+                              //     context,
+                              //     PageTransition(
+                              //         type: PageTransitionType.scale,
+                              //         alignment: Alignment.topLeft,
+                              //         duration: Duration(seconds: 2),
+                              //         child: SettlementList(this)));
                             },
                             child: Card(
                               elevation: 4,
@@ -278,18 +281,18 @@ class _MyHomePageState extends State<MyHomePage>
     );
   }
 
-  StreamSubscription<List<Settlement>> settSub;
+  // StreamSubscription<List<Settlement>> settSub;
   StreamSubscription<List<Questionnaire>> questSub;
-  StreamSubscription<List<User>> userSub;
+  StreamSubscription<List<ar.User>> userSub;
   StreamSubscription<List<Project>> projSub;
 
   void _subscribe() async {
     debugPrint('🏈 🏈 subscribe to data streams ...');
-    settSub = bloc.settlementStream.listen((data) {
-      setState(() {
-        settlements = data.length;
-      });
-    });
+    // settSub = bloc.settlementStream.listen((data) {
+    //   setState(() {
+    //     settlements = data.length;
+    //   });
+    // });
     questSub = bloc.questionnaireStream.listen((data) {
       setState(() {
         questionnaires = data.length;
@@ -311,8 +314,8 @@ class _MyHomePageState extends State<MyHomePage>
     });
     var country = await Prefs.getCountry();
     if (country != null) {
-      var list = await bloc.findSettlementsByCountry(country.countryId);
-      settlements = list.length;
+      // var list = await bloc.findSettlementsByCountry(country.countryId);
+      // settlements = list.length;
     } else {
       print('country is NULL');
     }
@@ -346,16 +349,9 @@ class _MyHomePageState extends State<MyHomePage>
   }
 
   void _cancel() {
-    settSub.cancel();
     questSub.cancel();
     userSub.cancel();
     projSub.cancel();
-  }
-
-  @override
-  onSettlementSelected(Settlement settlement) {
-    // TODO: implement onSettlementSelected
-    return null;
   }
 
   @override
