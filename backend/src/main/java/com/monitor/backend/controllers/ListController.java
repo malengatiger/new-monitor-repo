@@ -158,7 +158,12 @@ public class ListController {
         Point point = new Point(longitude, latitude);
         Distance distance = new Distance(radiusInKM, Metrics.KILOMETERS);
         List<City> cities = mongoDataService.getCitiesByLocation(point,distance);
-        LOGGER.info(Emoji.DOLPHIN.concat(Emoji.DOLPHIN) + " Nearby Cities found: " + cities.size() + " radius: " + radiusInKM);
+        LOGGER.info(Emoji.DOLPHIN.concat(Emoji.DOLPHIN).concat(Emoji.DOLPHIN)
+                + " Nearby Cities found: " + cities.size() + " : " + Emoji.RED_APPLE + " radius: " + radiusInKM);
+        for (City city : cities) {
+            LOGGER.info(Emoji.DOLPHIN.concat(Emoji.DOLPHIN) + city.getName() + ", " + city.getProvinceName() + " "
+                    + Emoji.COFFEE);
+        }
         return cities;
     }
 

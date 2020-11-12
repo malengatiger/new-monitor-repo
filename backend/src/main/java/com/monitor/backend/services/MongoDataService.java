@@ -2,6 +2,7 @@ package com.monitor.backend.services;
 
 import com.monitor.backend.models.City;
 import com.monitor.backend.models.CityRepository;
+import com.monitor.backend.utils.Emoji;
 import com.monitor.backend.utils.MongoGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -36,7 +37,8 @@ public class MongoDataService {
     }
     public List<City> getCitiesByLocation(Point location, Distance distance) {
         List<City> list = cityRepository.findByPositionNear(location,distance);
-        LOGGER.info("Found " + list.size() + " cities by location; radiusInKM = " + distance.getNormalizedValue());
+        LOGGER.info(Emoji.DICE + "Found " + list.size()
+                + " cities by location; radiusInKM = " + distance.getValue());
         return list;
     }
 }

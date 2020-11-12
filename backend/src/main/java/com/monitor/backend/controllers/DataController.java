@@ -50,19 +50,23 @@ public class DataController {
 
     @GetMapping("/migrateCities")
     public String migrateCities() throws Exception {
-        LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS).concat("migrateCities: ".concat(Emoji.FLOWER_YELLOW)));
+        LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS)
+                .concat("migrateCities: ".concat(Emoji.FLOWER_YELLOW)));
         DateTime now = new DateTime();
 
-        generator.migrateCities();
+        mongoGenerator.processSouthAfricanCities();
 
         DateTime end = new DateTime();
         long delta = end.toDate().getTime() - now.toDate().getTime();
-        return Emoji.LEAF.concat(Emoji.LEAF.concat(" City migration completed in " + delta / 1000 + " seconds " + Emoji.RED_APPLE));
+        return Emoji.LEAF.concat(Emoji.LEAF.concat(
+                " South African City migration completed in " + delta / 1000 + " seconds "
+                        + Emoji.RED_APPLE));
     }
 
     @GetMapping("/generateCommunities")
     public String generateCommunities() throws Exception {
-        LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS).concat("generateCommunities: ".concat(Emoji.FLOWER_YELLOW)));
+        LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS)
+                .concat("generateCommunities: ".concat(Emoji.FLOWER_YELLOW)));
         generator.generateCommunities();
         return Emoji.LEAF.concat(Emoji.LEAF.concat("Communities generated " + Emoji.RED_APPLE));
     }
@@ -75,13 +79,15 @@ public class DataController {
 
     @PostMapping("/addOrganization")
     public String addOrganization(Organization organization) throws Exception {
-        LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS).concat("Adding Organization: ".concat(organization.getName())));
+        LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS)
+                .concat("Adding Organization: ".concat(organization.getName())));
         return dataService.addOrganization(organization);
     }
 
     @PostMapping("/addCountry")
     public String addCountry(Country country) throws Exception {
-        LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS).concat("Adding Country: ".concat(country.getName())));
+        LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS)
+                .concat("Adding Country: ".concat(country.getName())));
         return dataService.addCountry(country);
     }
 
@@ -89,7 +95,13 @@ public class DataController {
     public String generateCountries() throws Exception {
         LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS).concat("generateCountries: Adding Countries to MongoDB ...."));
         mongoGenerator.generateCountries();
-        return Emoji.RAIN_DROPS + Emoji.RAIN_DROPS + " ..... MongoGenerator completed";
+        return Emoji.RAIN_DROPS + Emoji.RAIN_DROPS + " ..... MongoGenerator:generateCountries completed";
+    }
+    @GetMapping("/generateOrganizations")
+    public String generateOrganizations() throws Exception {
+        LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS).concat("generateCountries: Adding Countries to MongoDB ...."));
+        mongoGenerator.generateOrganizations();
+        return Emoji.RAIN_DROPS + Emoji.RAIN_DROPS + " ..... MongoGenerator: generateOrganizations completed";
     }
 
     @PostMapping("/addCommunity")
