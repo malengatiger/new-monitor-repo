@@ -2,28 +2,37 @@ package com.monitor.backend;
 
 import com.monitor.backend.controllers.DataController;
 import com.monitor.backend.controllers.ListController;
+import com.monitor.backend.models.City;
+import com.monitor.backend.models.CityRepository;
+import com.monitor.backend.models.Country;
+import com.monitor.backend.models.CountryRepository;
 import com.monitor.backend.services.DataService;
 import com.monitor.backend.services.ListService;
 import com.monitor.backend.utils.Emoji;
 import com.monitor.backend.utils.Generator;
+import com.monitor.backend.utils.MongoGenerator;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.Banner;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.core.env.Environment;
+import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 import java.io.PrintStream;
 import java.lang.reflect.Method;
 import java.util.Calendar;
+import java.util.List;
 import java.util.logging.Logger;
 
 @SpringBootApplication
 @EnableScheduling
-public class MonitorBackendApplication implements ApplicationListener<ApplicationReadyEvent> {
+@EnableMongoRepositories(basePackages = {"com.monitor.backend.models"} )
+public class MonitorBackendApplication implements ApplicationListener<ApplicationReadyEvent>, CommandLineRunner {
 
     public static final Logger LOGGER = Logger.getLogger(MonitorBackendApplication.class.getName());
 
@@ -129,4 +138,28 @@ public class MonitorBackendApplication implements ApplicationListener<Applicatio
                 "#################################################################\n";
     }
 
+//    @Autowired
+//    CityRepository cityRepository;
+    @Autowired
+    CountryRepository countryRepository;
+    @Autowired
+    MongoGenerator mongoGenerator;
+
+    @Override
+    public void run(String... args) throws Exception {
+        LOGGER.info(Emoji.FERN + Emoji.FERN + Emoji.FERN + " CommandLineRunner:run -------- Not doing much for now .... ");
+
+//        List<Country> countries = countryRepository.findAll();
+//        if (countries == null ) {
+//            mongoGenerator.generateCountries();
+//        }
+//        List<City> cities = cityRepository.findAll();
+//        if (cities.isEmpty()) {
+//            LOGGER.info(Emoji.ERROR + Emoji.ERROR + " -------- NO cities generated");
+//        }
+//        for (City city : cities) {
+//            LOGGER.info(Emoji.FERN + " -------- CommandLineRunner " + city.getName() + " " + city.getProvinceName());
+//        }
+
+    }
 }

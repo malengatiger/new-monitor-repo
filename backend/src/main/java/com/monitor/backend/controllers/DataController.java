@@ -1,9 +1,10 @@
 package com.monitor.backend.controllers;
 
-import com.monitor.backend.utils.Emoji;
 import com.monitor.backend.models.*;
 import com.monitor.backend.services.DataService;
+import com.monitor.backend.utils.Emoji;
 import com.monitor.backend.utils.Generator;
+import com.monitor.backend.utils.MongoGenerator;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,12 +27,15 @@ public class DataController {
     private DataService dataService;
     @Autowired
     private Generator generator;
+    @Autowired
+    private MongoGenerator mongoGenerator;
 
     @GetMapping("/ping")
     public String ping() throws Exception {
         LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS).concat("pinging the backend application .... : ".concat(Emoji.FLOWER_YELLOW)));
         return Emoji.HAND2 + Emoji.HAND2 + "  PROJECT MONITOR SERVICES PLATFORM pinged at ".concat(new DateTime().toDateTimeISO().toString());
     }
+
     @GetMapping("/generateDemoData")
     public String generateDemoData() throws Exception {
         LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS).concat("generateDemoData: ".concat(Emoji.FLOWER_YELLOW)));
@@ -41,8 +45,9 @@ public class DataController {
 
         DateTime end = new DateTime();
         long delta = end.toDate().getTime() - now.toDate().getTime();
-        return Emoji.LEAF.concat(Emoji.LEAF.concat(" Demo Data Generation completed in " + delta /1000 + " seconds " + Emoji.RED_APPLE));
+        return Emoji.LEAF.concat(Emoji.LEAF.concat(" Demo Data Generation completed in " + delta / 1000 + " seconds " + Emoji.RED_APPLE));
     }
+
     @GetMapping("/migrateCities")
     public String migrateCities() throws Exception {
         LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS).concat("migrateCities: ".concat(Emoji.FLOWER_YELLOW)));
@@ -52,49 +57,65 @@ public class DataController {
 
         DateTime end = new DateTime();
         long delta = end.toDate().getTime() - now.toDate().getTime();
-        return Emoji.LEAF.concat(Emoji.LEAF.concat(" City migration completed in " + delta /1000 + " seconds " + Emoji.RED_APPLE));
+        return Emoji.LEAF.concat(Emoji.LEAF.concat(" City migration completed in " + delta / 1000 + " seconds " + Emoji.RED_APPLE));
     }
+
     @GetMapping("/generateCommunities")
     public String generateCommunities() throws Exception {
         LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS).concat("generateCommunities: ".concat(Emoji.FLOWER_YELLOW)));
         generator.generateCommunities();
         return Emoji.LEAF.concat(Emoji.LEAF.concat("Communities generated " + Emoji.RED_APPLE));
     }
+
     @PostMapping("/createUser")
-    public String createUser(@RequestParam  User user, @RequestParam String password) throws Exception {
+    public String createUser(@RequestParam User user, @RequestParam String password) throws Exception {
         LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS).concat("createUser: ".concat(user.getName())));
         return dataService.createUser(user, password);
     }
+
     @PostMapping("/addOrganization")
     public String addOrganization(Organization organization) throws Exception {
         LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS).concat("Adding Organization: ".concat(organization.getName())));
-       return dataService.addOrganization(organization);
+        return dataService.addOrganization(organization);
     }
+
     @PostMapping("/addCountry")
     public String addCountry(Country country) throws Exception {
         LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS).concat("Adding Country: ".concat(country.getName())));
         return dataService.addCountry(country);
     }
+
+    @GetMapping("/generateCountries")
+    public String generateCountries() throws Exception {
+        LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS).concat("generateCountries: Adding Countries to MongoDB ...."));
+        mongoGenerator.generateCountries();
+        return Emoji.RAIN_DROPS + Emoji.RAIN_DROPS + " ..... MongoGenerator completed";
+    }
+
     @PostMapping("/addCommunity")
     public String addCommunity(Community community) throws Exception {
         LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS).concat("Adding Community: ".concat(community.getName())));
         return dataService.addCommunity(community);
     }
+
     @PostMapping("/addCity")
     public String addCity(City city) throws Exception {
         LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS).concat("Adding City: ".concat(city.getName())));
         return dataService.addCity(city);
     }
+
     @PostMapping("/addProject")
     public String addProject(Project project) throws Exception {
         LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS).concat("Adding Project: ".concat(project.getName())));
         return dataService.addProject(project);
     }
+
     @PostMapping("/addMonitorReport")
     public String addMonitorReport(MonitorReport report) throws Exception {
         LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS).concat("Adding MonitorReport: ".concat(report.getUser().getOrganizationName())));
         return dataService.addMonitorReport(report);
     }
+
     @PostMapping("/addUser")
     public String addUser(User user, String password) throws Exception {
         LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS).concat("Adding User: ".concat(user.getName())));

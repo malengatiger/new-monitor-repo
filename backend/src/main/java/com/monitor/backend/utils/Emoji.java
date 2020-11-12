@@ -39,7 +39,7 @@ public class Emoji {
             YELLOW_DIAMOND = "\uD83D\uDD36 ",   // 🔶
             GOLD_BELL = "\uD83D\uDD14 ",        // 🔔
             HAPPY = "\uD83E\uDD22 ",        // 🤢
-            FROG = " \uD83D\uDC38 ",        // 🐸
+            FROG = "\uD83D\uDC38 ",        // 🐸
             DOLPHIN = "\uD83D\uDC2C ",      //  🐬
             GLOBE = "\uD83C\uDF0D ",        //  🌍
             ALIEN = "\uD83D\uDC7D ",        // 👽

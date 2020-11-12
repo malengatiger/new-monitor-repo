@@ -110,10 +110,10 @@ public class DataService {
                 .concat(project.getName()).concat(" ")
                 .concat(Emoji.FLOWER_YELLOW)));
         project.setProjectId(UUID.randomUUID().toString());
-        if (project.getPosition().getGeohash() == null) {
-            String geoHash = DataService.getGeoHash(project.getPosition().getLatitude(), project.getPosition().getLongitude());
-            project.getPosition().setGeohash(geoHash);
-        }
+//        if (project.getPosition().getGeohash() == null) {
+////            String geoHash = DataService.getGeoHash(project.getPosition().getLatitude(), project.getPosition().getLongitude());
+////            project.getPosition().setGeohash(geoHash);
+//        }
         firestore = FirestoreClient.getFirestore();
         ApiFuture<DocumentReference> future = firestore.collection("projects").add(project);
         LOGGER.info(Emoji.LEAF.concat(Emoji.LEAF).concat("Project added: " + future.get().getPath()));

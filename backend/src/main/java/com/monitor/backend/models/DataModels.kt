@@ -1,5 +1,9 @@
 package com.monitor.backend.models
 
+import com.querydsl.core.annotations.QueryEntity
+import org.springframework.data.annotation.Id
+import org.springframework.data.mongodb.core.mapping.Document
+
 
 enum class QuestionType {
     SINGLE_ANSWER, MULTIPLE_CHOICE, SINGLE_CHOICE, OPTIONAL
@@ -29,7 +33,9 @@ data class Project(var projectId: String?, var name: String, var organization: O
                    var description: String?,
                    var created: String, var nearestCities: List<City>?, var position: Position) {}
 
-data class City(var name: String, var cityId: String?, var country: Country,
+@QueryEntity
+@Document
+data class City(@Id var _id:String?, var name: String, var cityId: String?, var country: Country,
                 var provinceName: String, var position: Position) {
 }
 
@@ -37,11 +43,13 @@ data class Questionnaire(var organization: Organization, var created: String, va
                          var title: String,
                          var description: String?, var sections: List<Section>) {}
 
-data class Position(var latitude: Double, var longitude: Double, var geohash: String?) {
+//data class Position(var latitude: Double, var longitude: Double, var geohash: String?) {
+//}
+data class Position(var type: String, var coordinates: List<Double>) {
 }
 
-data class Country(var countryId: String?, var name: String, var countryCode: String,
-                   var latitude: Double?, var longitude: Double?) {
+data class Country(@Id var _id:String?, var countryId: String?, var name: String, var countryCode: String,
+                   var position: Position) {
 }
 
 data class Answer(var text: String, var number: Double, var photoUrls: List<String>?,
@@ -55,6 +63,7 @@ data class Question(var text: String, var answers: List<Answer>?, var questionTy
 data class Section(var sectionNumber: Int, var title: String, var description: String,
                    var questions: List<Question>) {
 }
+
 
 data class Photo(var url: String, var caption: String?, var created: String) {}
 
