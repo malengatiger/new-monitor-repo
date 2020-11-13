@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image/image.dart' as Img;
-import 'package:location/location.dart';
 import 'package:monitorlibrary/api/data_api.dart';
 import 'package:monitorlibrary/api/sharedprefs.dart';
 import 'package:monitorlibrary/api/storage_api.dart';
@@ -10,6 +9,7 @@ import 'package:monitorlibrary/data/community.dart';
 import 'package:monitorlibrary/data/project.dart';
 import 'package:monitorlibrary/data/user.dart';
 import 'package:monitorlibrary/functions.dart';
+import 'package:monitorlibrary/location/loc_bloc.dart';
 
 abstract class UploaderListener {
   onFileUploaded(String url);
@@ -120,14 +120,13 @@ class _FileUploaderState extends State<FileUploader>
 
   _writeToDatabase(String url) async {
     pp('_writeToDatabase: 🍅🍅🍅 $url 🍅🍅🍅');
-    var location = Location();
+    var location = await locationBloc.getLocation();
     try {
-      var mLocation = await location.getLocation();
       var p = await DataAPI.addProjectPhoto(
           userId: user.userId,
           url: url,
-          latitude: mLocation.latitude,
-          longitude: mLocation.longitude,
+          latitude: location.latitude,
+          longitude: location.longitude,
           projectId: widget.project.projectId);
 
       prettyPrint(p.toJson(), '🖲🖲🖲🖲🖲🖲 RESULT  PROJECT: 🖲🖲🖲🖲🖲🖲');

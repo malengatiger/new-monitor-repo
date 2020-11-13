@@ -9,6 +9,23 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../functions.dart';
 
 class Prefs {
+  static void setThemeIndex(int index) async {
+    final preferences = await SharedPreferences.getInstance();
+    await preferences.setInt('index', index);
+    print('🔵 🔵 🔵 Prefs: theme index set to: $index 🍎 🍎 ');
+  }
+
+  static Future<int> getThemeIndex() async {
+    final preferences = await SharedPreferences.getInstance();
+    var b = preferences.getInt('index');
+    if (b == null) {
+      return 0;
+    } else {
+      print('🔵 🔵 🔵  theme index retrieved: $b 🍏 🍏 ');
+      return b;
+    }
+  }
+
   static Future saveUser(User user) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
@@ -129,19 +146,6 @@ class Prefs {
     var minutes = prefs.getInt("minutes");
     pp("SharedPrefs - FCM minutes from prefs: $minutes");
     return minutes;
-  }
-
-  static void saveThemeIndex(int index) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setInt("themeIndex", index);
-    //prefs.commit();
-  }
-
-  static Future<int> getThemeIndex() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    int index = prefs.getInt("themeIndex");
-    pp("=================== SharedPrefs theme index: $index");
-    return index;
   }
 
   static void savePictureUrl(String url) async {

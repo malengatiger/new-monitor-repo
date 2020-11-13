@@ -1,23 +1,17 @@
 import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
-import 'package:location/location.dart';
 import 'package:monitorlibrary/api/data_api.dart';
 import 'package:monitorlibrary/api/sharedprefs.dart';
 import 'package:monitorlibrary/data/community.dart';
 import 'package:monitorlibrary/data/country.dart';
-import 'package:monitorlibrary/data/position.dart';
+import 'package:monitorlibrary/data/position.dart' as mon;
 import 'package:monitorlibrary/data/project.dart';
 import 'package:monitorlibrary/data/questionnaire.dart';
 import 'package:monitorlibrary/data/section.dart';
 import 'package:monitorlibrary/data/user.dart';
 import 'package:monitorlibrary/functions.dart';
-import 'package:permission_handler/permission_handler.dart' as perm;
-
-GeneralBloc bloc = GeneralBloc();
-
-class GeneralBloc {
-  StreamController<List<Community>> _settController =
+import 'package:monitorlibrary/location/loc_bloc.dart'troller<List<Community>> _settController =
       StreamController.broadcast();
   StreamController<List<Questionnaire>> _questController =
       StreamController.broadcast();
@@ -72,11 +66,11 @@ class GeneralBloc {
         q.toJson(), '🅿️ 🅿️ 🅿️ 🅿️ 🅿️ ACTIVE QUESTIONNAIRE 🍅 🍅 🍅 🍅 ');
   }
 
-  Future<Position> getCurrentLocation() async {
-    var location = Location();
+  Future<mon.Position> getCurrentPosition() async {
+
     try {
-      var mLocation = await location.getLocation();
-      return Position.fromJson({
+      var mLocation = await locationBloc.getLocation();
+      return mon.Position.fromJson({
         'coordinates': [mLocation.longitude, mLocation.latitude],
         'type': 'Point',
       });
@@ -86,15 +80,8 @@ class GeneralBloc {
   }
 
   Future checkPermission() async {
-    pp(' 🔆 🔆 🔆 🔆 .................... checking permissions 💙 location 💙 storage 💙 ...');
-
-// You can request multiple permissions at once.
-    Map<perm.Permission, PermissionStatus> statuses = (await [
-      perm.Permission.location,
-      perm.Permission.storage,
-    ].request())
-        .cast<perm.Permission, PermissionStatus>();
-//    pp(statuses[perm.Permission.location]);
+    pp(' 🔆 🔆 🔆 🔆 .................... checking permissions 💙 location 💙 storage ?? 💙 ...');
+    return locationBloc.checkPermission();
   }
 
   Future addToPolygon(
