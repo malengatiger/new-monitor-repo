@@ -11,7 +11,12 @@ import 'package:monitorlibrary/data/questionnaire.dart';
 import 'package:monitorlibrary/data/section.dart';
 import 'package:monitorlibrary/data/user.dart';
 import 'package:monitorlibrary/functions.dart';
-import 'package:monitorlibrary/location/loc_bloc.dart'troller<List<Community>> _settController =
+import 'package:monitorlibrary/location/loc_bloc.dart';
+
+final AdminBloc bloc = AdminBloc();
+
+class AdminBloc {
+  StreamController<List<Community>> _settController =
       StreamController.broadcast();
   StreamController<List<Questionnaire>> _questController =
       StreamController.broadcast();
@@ -67,7 +72,6 @@ import 'package:monitorlibrary/location/loc_bloc.dart'troller<List<Community>> _
   }
 
   Future<mon.Position> getCurrentPosition() async {
-
     try {
       var mLocation = await locationBloc.getLocation();
       return mon.Position.fromJson({
