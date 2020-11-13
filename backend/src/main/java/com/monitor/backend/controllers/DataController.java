@@ -97,9 +97,16 @@ public class DataController {
     }
     @GetMapping("/generateOrganizations")
     public String generateOrganizations() throws Exception {
-        LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS).concat("generateCountries: Adding Countries to MongoDB ...."));
+        LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS).concat("generateOrganizations: Adding Countries to MongoDB ...."));
         mongoGenerator.generateOrganizations();
         return Emoji.RAIN_DROPS + Emoji.RAIN_DROPS + " ..... MongoGenerator: generateOrganizations completed";
+    }
+
+    @GetMapping("/generateUsers")
+    public String generateUsers(boolean eraseExistingUsers) throws Exception {
+        LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS).concat("generateUsers: Adding users to MongoDB ...."));
+        mongoGenerator.generateUsers(eraseExistingUsers);
+        return Emoji.RAIN_DROPS + Emoji.RAIN_DROPS + " ..... MongoGenerator: generateUsers completed";
     }
 
     @PostMapping("/addCommunity")

@@ -11,10 +11,14 @@ class AppAuth {
 
   static Future<bool> isUserSignedIn() async {
     pp('🥦 🥦  😎😎😎😎 AppAuth: isUserSignedIn :: 😎😎😎 about to initialize Firebase; 😎');
-    await Firebase.initializeApp();
-    pp('😎😎😎😎 AppAuth: isUserSignedIn :: 😎😎😎 Firebase has been initialized; 😎 or not? 🍀🍀');
+    var app = await Firebase.initializeApp();
+    pp('😎😎😎😎 AppAuth: isUserSignedIn :: 😎😎😎 Firebase has been initialized; 😎 or not? 🍀🍀 app: ${app.options.databaseURL}');
     _auth = FirebaseAuth.instance;
     var authUser = _auth.currentUser;
+    if (authUser == null) {
+      pp('👿👿👿 user is not signed in yet');
+      return false;
+    }
     var user = await Prefs.getUser();
     if (authUser == null) {
       return false;
@@ -44,7 +48,8 @@ class AppAuth {
   }
 
   static Future signIn(String email, String password, String type) async {
-    pp('🔐🔐🔐🔐 Auth signing in $email - $password  🔐🔐🔐🔐');
+    pp('🔐 🔐 🔐 🔐 Auth signing in $email 🌸 $password  🔐 🔐 🔐 🔐');
+
     var fbUser = await _auth
         .signInWithEmailAndPassword(email: email, password: password)
         .catchError((e) {
@@ -53,11 +58,11 @@ class AppAuth {
       throw e;
     });
     if (fbUser != null) {
-      pp('🔐🔐🔐🔐 Auth finding user by email $email 🔐🔐🔐🔐');
+      pp('🔐 🔐 🔐 🔐 Auth finding user by email $email 🔐 🔐 🔐 🔐');
       var user = await DataAPI.findUserByEmail(fbUser.user.email);
       if (user == null) {
         pp('👎🏽 👎🏽 👎🏽 User not registered yet 👿');
-        throw Exception("User not found 👿 👿 👿 ");
+        throw Exception("User not found on Firebase auth 👿 👿 👿 ");
       }
       if (user.userType != type) {
         pp('👎🏽 👎🏽 👎🏽 There is a fuck up somewhere, user type is WRONG! 👿');

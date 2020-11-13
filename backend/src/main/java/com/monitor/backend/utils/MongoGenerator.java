@@ -27,6 +27,8 @@ import java.io.FileReader;
 import java.util.*;
 import java.util.logging.Logger;
 
+import static com.monitor.backend.models.DataModelsKt.*;
+
 @Service
 public class MongoGenerator {
     private static final Logger LOGGER = Logger.getLogger(MongoGenerator.class.getSimpleName());
@@ -80,6 +82,10 @@ public class MongoGenerator {
         processSouthAfricanCities();
         generateOrganizations();
         generateCommunities();
+
+        LOGGER.info(Emoji.DICE + Emoji.DICE + Emoji.DICE + Emoji.DICE +
+                " ........ Generation completed!! "
+                + Emoji.RED_APPLE);
     }
 
     @Autowired
@@ -238,7 +244,7 @@ public class MongoGenerator {
             }
             try {
                 List<City> mList = (List<City>) cityRepository.saveAll(mBatch);
-                LOGGER.info("\n\n\n" + Emoji.PEAR + Emoji.PEAR + Emoji.PEAR + Emoji.FERN + Emoji.FERN
+                LOGGER.info( Emoji.PEAR + Emoji.PEAR + Emoji.PEAR + Emoji.FERN + Emoji.FERN
                         + Emoji.PEAR + "...... Written to mongo:" +
                         Emoji.RED_APPLE + " CITY BATCH #" + i
                         + " batch size: " + mList.size());
@@ -275,7 +281,7 @@ public class MongoGenerator {
         MongoDatabase db = mongoClient.getDatabase("monitordb");
         MongoCollection<Document> dbCollection = db.getCollection("project");
 
-        String result2 = dbCollection.createIndex(Indexes.ascending("organization.organizationId","name"),
+        String result2 = dbCollection.createIndex(Indexes.ascending("organizationId","name"),
                 new IndexOptions().unique(true));
         LOGGER.info(Emoji.LEAF + Emoji.LEAF + Emoji.LEAF + Emoji.LEAF +
                 " Project unique name index should be created on Project collection: " +
@@ -363,7 +369,8 @@ public class MongoGenerator {
         for (Organization organization : organizations) {
             addProjects(organization);
         }
-        generateUsers(organizations);
+
+        generateUsers(true);
     }
 
     @Autowired
@@ -388,40 +395,56 @@ public class MongoGenerator {
                 random.nextInt(9) +
                 random.nextInt(9);
     }
-    public void generateUsers(List<Organization> organizations) throws Exception {
+    public void generateUsers(boolean eraseExistingUsers) throws Exception {
         LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS + Emoji.RAIN_DROPS.concat(" Generating Users ...")));
+        List<Organization> organizations = (List<Organization>) organizationRepository.findAll();
+        if (eraseExistingUsers) {
+            deleteAuthUsers();
+        }
+        setFirstNames();
+        setLastNames();
+        setCommunityNames();
+        setOrgNames();
         createUserIndexes();
         int cnt = 0;
+        User mUser = new User("PRIVATE",null, "Administrator", buildEmail("netadmin"),
+                getRandomCellphone(), UUID.randomUUID().toString(), null,
+                "Network", new DateTime().toDateTimeISO().toString(), NETWORK_ADMINISTRATOR);
+        User result = userRepository.save(mUser);
+        dataService.createUser(result, "pass123");
+        LOGGER.info(Emoji.FERN + Emoji.FERN + " User saved on MongoDB and Firebase auth "
+                + Emoji.FERN + Emoji.FERN + result.getName());
+
         for (Organization organization : organizations) {
             for (int i = 0; i < 4; i++) {
                 String name = getRandomFirstName() + " " + getRandomLastName();
                 if (i == 0) {
-                    User user = new User(organization.getOrganizationId(),null,name, buildEmail("orgadmin"),
-                            getRandomCellphone(), "userId", Objects.requireNonNull(organization.getOrganizationId()),
-                            organization.getName(), new DateTime().toDateTimeISO().toString(), UserType.ORGANIZATION_USER);
-                    userRepository.save(user);
+                    User m = new User(organization.getOrganizationId(),null,name, buildEmail("orgadmin"),
+                            getRandomCellphone(), UUID.randomUUID().toString(), Objects.requireNonNull(organization.getOrganizationId()),
+                            organization.getName(), new DateTime().toDateTimeISO().toString(), ORG_ADMINISTRATOR);
+                    User result1 = userRepository.save(m);
                     //add user to Firebase
-                    dataService.createUser(user, "pass123");
+                    dataService.createUser(result1, "pass123");
                     LOGGER.info(Emoji.FERN + Emoji.FERN + " User saved on MongoDB and Firebase auth " + Emoji.FERN + Emoji.FERN + name);
                     cnt++;
                 }
 
                 if (i == 1 || i == 2) {
                     User user = new User(organization.getOrganizationId(),null,name, buildEmail("monitor"),
-                            getRandomCellphone(), "userId", Objects.requireNonNull(organization.getOrganizationId()),
-                            organization.getName(), new DateTime().toDateTimeISO().toString(), UserType.MONITOR);
-                    userRepository.save(user);
-                    dataService.createUser(user, "pass123");
+                            getRandomCellphone(), UUID.randomUUID().toString(), Objects.requireNonNull(organization.getOrganizationId()),
+                            organization.getName(), new DateTime().toDateTimeISO().toString(), FIELD_MONITOR);
+                    User result2 = userRepository.save(user);
+                    dataService.createUser(result2, "pass123");
                     LOGGER.info(Emoji.FERN + Emoji.FERN + " User saved on MongoDB and Firebase auth " + Emoji.FERN + Emoji.FERN + name);
                     cnt++;
                 }
 
                 if (i == 3) {
-                    User user = new User(organization.getOrganizationId(),null,name, buildEmail("executive"),
-                            getRandomCellphone(), "userId", Objects.requireNonNull(organization.getOrganizationId()),
-                            organization.getName(), new DateTime().toDateTimeISO().toString(), UserType.EXECUTIVE);
-                    userRepository.save(user);
-                    dataService.createUser(user, "pass123");
+                    User user = new User(organization.getOrganizationId(),null,name, buildEmail("exec"),
+                            getRandomCellphone(), UUID.randomUUID().toString(), Objects.requireNonNull(organization.getOrganizationId()),
+                            organization.getName(), new DateTime().toDateTimeISO().toString(), ORG_EXECUTIVE);
+                    User result1 = userRepository.save(user);
+                    dataService.createUser(result1, "pass123");
                     LOGGER.info(Emoji.FERN + Emoji.FERN + " User saved on MongoDB and Firebase auth " + Emoji.FERN + Emoji.FERN + name);
                     cnt++;
                 }
@@ -464,8 +487,9 @@ public class MongoGenerator {
                     new ArrayList<>(),new ArrayList<>(),new ArrayList<>(),new ArrayList<>());
             Community sComm = communityRepository.save(c);
             LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS + Emoji.RAIN_DROPS
-                    .concat(" Community Generated "+sComm.getName()+" on mongodb database "
-                    + Emoji.RED_APPLE)));
+                    .concat(" Community Generated "+ Emoji.LEMON + Emoji.LEMON +
+                            sComm.getName()+  " " + Emoji.LEMON + " on mongodb database "
+                    + Emoji.RED_APPLE+ Emoji.RED_APPLE + Emoji.RED_APPLE)));
         }
     }
 

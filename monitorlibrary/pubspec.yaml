@@ -39,6 +39,7 @@ dependencies:
   cached_network_image: ^2.3.3
   flutter_dotenv: ^2.1.0
   page_transition: ^1.1.7+2
+  responsive_builder:
   image:
 
 dev_dependencies:

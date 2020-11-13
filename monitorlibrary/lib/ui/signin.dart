@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:monitorlibrary/auth/app_auth.dart';
 import 'package:monitorlibrary/functions.dart';
 import 'package:monitorlibrary/snack.dart';
@@ -19,7 +20,10 @@ class _SignInState extends State<SignIn> implements SnackBarListener {
     return Scaffold(
       key: _key,
       appBar: AppBar(
-        title: Text('Digital Monitor Platform'),
+        title: Text(
+          'Digital Monitor Platform',
+          style: Styles.whiteSmall,
+        ),
         backgroundColor: Colors.brown[400],
         bottom: PreferredSize(
           preferredSize: Size.fromHeight(80),
@@ -108,6 +112,24 @@ class _SignInState extends State<SignIn> implements SnackBarListener {
 
   TextEditingController emailCntr = TextEditingController();
   TextEditingController pswdCntr = TextEditingController();
+
+  @override
+  initState() {
+    super.initState();
+    _checkStatus();
+  }
+
+  void _checkStatus() async {
+    await DotEnv().load('.env');
+    var status = DotEnv().env['status'];
+    pp('🥦🥦 Checking status ..... 🥦🥦 $status 🌸 🌸 🌸');
+    if (status == 'dev') {
+      emailCntr.text = 'monitor.brg@monitor.com';
+      pswdCntr.text = 'pass123';
+    }
+    setState(() {});
+  }
+
   String email = '', password = '';
   void _onEmailChanged(String value) {
     email = value;
@@ -115,6 +137,8 @@ class _SignInState extends State<SignIn> implements SnackBarListener {
   }
 
   void _signIn() async {
+    email = emailCntr.text;
+    password = pswdCntr.text;
     if (email.isEmpty || password.isEmpty) {
       AppSnackbar.showErrorSnackbar(
           scaffoldKey: _key,

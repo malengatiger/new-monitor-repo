@@ -3,6 +3,8 @@ package com.monitor.backend;
 import com.monitor.backend.controllers.DataController;
 import com.monitor.backend.controllers.ListController;
 import com.monitor.backend.models.CountryRepository;
+import com.monitor.backend.models.User;
+import com.monitor.backend.models.UserRepository;
 import com.monitor.backend.services.DataService;
 import com.monitor.backend.services.ListService;
 import com.monitor.backend.utils.Emoji;
@@ -16,17 +18,21 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.core.env.Environment;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 import java.io.PrintStream;
 import java.lang.reflect.Method;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import java.util.logging.Logger;
 
 @SpringBootApplication
 @EnableScheduling
-@EnableMongoRepositories(basePackages = {"com.monitor.backend.models"} )
+@EnableMongoRepositories(basePackages = {"com.monitor.backend.models"})
 public class MonitorBackendApplication implements ApplicationListener<ApplicationReadyEvent>, CommandLineRunner {
 
     public static final Logger LOGGER = Logger.getLogger(MonitorBackendApplication.class.getName());
@@ -71,6 +77,9 @@ public class MonitorBackendApplication implements ApplicationListener<Applicatio
     @Autowired
     private ListController listController;
 
+    @Autowired
+    private UserRepository userRepository;
+
 
     @Override
     public void onApplicationEvent(ApplicationReadyEvent applicationReadyEvent) {
@@ -99,6 +108,20 @@ public class MonitorBackendApplication implements ApplicationListener<Applicatio
             LOGGER.info(Emoji.YELLOW_BIRD + " -------- end of ListController methods ");
 
             LOGGER.info(Emoji.FERN + " -------- end of Generator methods ");
+
+            List<User> users = (List<User>) userRepository.findAll(Sort.by("name"));
+            users.sort(new Comparator<User>() {
+                @Override
+                public int compare(User u1, User u2) {
+                    return u1.getUserType().compareTo(u2.getUserType());
+                }
+            });
+            for (User user : users) {
+                LOGGER.info(Emoji.PIG + Emoji.PIG + Emoji.PIG + Emoji.PIG +
+                        " User: " + user.getName() + " " + Emoji.FERN
+                        + " " + user.getEmail()+ " " + Emoji.YELLOW_DIAMOND + " " + user.getUserType()
+                         + " " + Emoji.RED_TRIANGLE + " " + user.getOrganizationName());
+            }
 
 
         } catch (Exception e) {
@@ -130,7 +153,7 @@ public class MonitorBackendApplication implements ApplicationListener<Applicatio
                 "#################################################################\n";
     }
 
-//    @Autowired
+    //    @Autowired
 //    CityRepository cityRepository;
     @Autowired
     CountryRepository countryRepository;
