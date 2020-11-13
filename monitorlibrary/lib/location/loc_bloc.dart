@@ -15,4 +15,9 @@ class LocationBloc {
     var perm = await Geolocator.checkPermission();
     return perm;
   }
+
+  Future<LocationPermission> requestPermission() async {
+    var perm = await Geolocator.requestPermission();
+    return perm;
+  }
 }

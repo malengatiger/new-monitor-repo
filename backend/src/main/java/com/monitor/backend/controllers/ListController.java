@@ -9,9 +9,6 @@ import com.monitor.backend.services.ListService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.geo.Distance;
-import org.springframework.data.geo.Metrics;
-import org.springframework.data.geo.Point;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -145,10 +142,10 @@ public class ListController {
         LOGGER.info(Emoji.DOLPHIN.concat(Emoji.DOLPHIN) + " MonitorReports found: " + reports.size());
         return reports;
     }
-    @GetMapping("/getNearbyProjects")
-    public List<Project> getNearbyProjects(double latitude, double longitude, double radiusInKM) throws Exception {
-        LOGGER.info(Emoji.DICE.concat(Emoji.DICE).concat(" getNearbyProjects ..."));
-        List<Project> projects =  listService.getNearbyProjects(latitude, longitude, radiusInKM);
+    @GetMapping("/findProjectsByLocation")
+    public List<Project> findProjectsByLocation(double latitude, double longitude, double radiusInKM) throws Exception {
+        LOGGER.info(Emoji.DICE.concat(Emoji.DICE).concat(" findProjectsByLocation ..."));
+        List<Project> projects =  listService.findProjectsByLocation(latitude, longitude, radiusInKM);
         LOGGER.info(Emoji.DOLPHIN.concat(Emoji.DOLPHIN) + " Nearby Projects found: " + projects.size());
         return projects;
     }

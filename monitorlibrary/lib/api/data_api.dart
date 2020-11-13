@@ -107,6 +107,26 @@ class DataAPI {
     }
   }
 
+  static Future<List<Project>> findProjectsByLocation(
+      {double latitude, double longitude, double radiusInKM}) async {
+    pp('🍏 🍏 🍏 DataAPI: findProjectsByLocation: 🍏 radiusInKM: $radiusInKM');
+    String mURL = await getUrl();
+    var cmd = 'findProjectsByLocation';
+    var url =
+        '$mURL$cmd?latitude=$latitude&longitude=$longitude&radiusInKM=$radiusInKM';
+    try {
+      List result = await _callWebAPIGet(url);
+      List<Project> list = List();
+      result.forEach((m) {
+        list.add(Project.fromJson(m));
+      });
+      return list;
+    } catch (e) {
+      pp(e);
+      throw e;
+    }
+  }
+
   static Future<List<Questionnaire>> getQuestionnairesByOrganization(
       String organizationId) async {
     pp('🍏 🍏 🍏 DataAPI: getQuestionnairesByOrganization: 🍏 id: $organizationId');

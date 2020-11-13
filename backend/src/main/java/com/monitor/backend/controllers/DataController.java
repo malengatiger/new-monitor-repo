@@ -109,6 +109,13 @@ public class DataController {
         return Emoji.RAIN_DROPS + Emoji.RAIN_DROPS + " ..... MongoGenerator: generateUsers completed";
     }
 
+    @GetMapping("/generateProjects")
+    public String generateProjects() throws Exception {
+        LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS).concat("generateProjects: Adding users to MongoDB ...."));
+        mongoGenerator.generateProjects();
+        return Emoji.RAIN_DROPS + Emoji.RAIN_DROPS + " ..... MongoGenerator: generateProjects completed";
+    }
+
     @PostMapping("/addCommunity")
     public String addCommunity(Community community) throws Exception {
         LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS).concat("Adding Community: ".concat(community.getName())));

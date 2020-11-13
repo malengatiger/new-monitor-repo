@@ -95,7 +95,7 @@ public class ListService {
     }
 
 
-    public List<Project> getNearbyProjects(double latitude, double longitude, double radiusInKM) throws Exception{
+    public List<Project> findProjectsByLocation(double latitude, double longitude, double radiusInKM) throws Exception{
         LOGGER.info(Emoji.DICE.concat(Emoji.DICE).concat(" getNearbyCities ..."));
         Point point = new Point(longitude, latitude);
         Distance distance = new Distance(radiusInKM, Metrics.KILOMETERS);

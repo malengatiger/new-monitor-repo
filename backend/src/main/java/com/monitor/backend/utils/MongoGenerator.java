@@ -358,19 +358,39 @@ public class MongoGenerator {
         }
 
         LOGGER.info(Emoji.LEAF + Emoji.LEAF + "Organizations generated: " + organizations.size());
-        generateProjects(organizations);
+        generateProjects();
+        generateUsers(true);
     }
 
-    public void generateProjects(List<Organization> organizations) throws Exception {
-
+    public void generateProjects() {
+        setLocations();
+        List<Organization> organizations = (List<Organization>) organizationRepository.findAll();
         LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS + Emoji.RAIN_DROPS.concat(" Generating projects ...")));
 
         createProjectIndexes();
-        for (Organization organization : organizations) {
-            addProjects(organization);
+        for (ProjectLocation loc : projectLocations) {
+           //assign this project location to a random organization
+            int index = random.nextInt(organizations.size() - 1);
+            Organization organization = organizations.get(index);
+            List<Double> cords = new ArrayList<>();
+            cords.add(loc.longitude);
+            cords.add(loc.latitude);
+            Project p0 = new Project(organization.getOrganizationId(),null, UUID.randomUUID().toString(),
+                    loc.name, Objects.requireNonNull(organization.getOrganizationId()),
+                    testProjectDesc, organization.getName(), new DateTime().toDateTimeISO().toString(), new ArrayList<>(),
+                    new Position("Point", cords));
+            projectRepository.save(p0);
+            LOGGER.info(" \uD83E\uDD6C \uD83E\uDD6C \uD83E\uDD6C " +
+                    "Project added, project: \uD83C\uDF4E " + p0.getName() + "\t \uD83C\uDF4E " + p0.getOrganizationName());
         }
 
-        generateUsers(true);
+        LOGGER.info("\uD83C\uDF3F\uD83C\uDF3F\uD83C\uDF3F\uD83C\uDF3F ORGANIZATIONS on database ....");
+        for (Organization organization : organizations) {
+            LOGGER.info("\uD83C\uDF3F\uD83C\uDF3F\uD83C\uDF3F " +
+                    "Organization: " + organization.getName());
+        }
+
+
     }
 
     @Autowired
@@ -499,48 +519,6 @@ public class MongoGenerator {
     private int getPopulation() {
         int x = random.nextInt(100);
         return x == 0 ? 100000 : x * 20000;
-    }
-
-    private void addProjects(Organization organization) throws Exception {
-        LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS).concat("addProjects ...: "
-                .concat(organization.getName()).concat(" ")
-                .concat(Emoji.FLOWER_YELLOW)));
-        List<Double> cords = new ArrayList<>();
-
-        cords.add(longitudeLanseria);
-        cords.add(latitudeLanseria);
-        Project p0 = new Project(organization.getOrganizationId(),null, UUID.randomUUID().toString(),"Lanseria Project H", Objects.requireNonNull(organization.getOrganizationId()),
-                testProjectDesc, new DateTime().toDateTimeISO().toString(), new ArrayList<>(),
-                new Position("Point", cords));
-        projectRepository.save(p0);
-
-        cords.clear();
-        cords.add(longitudeSandton);
-        cords.add(latitudeSandton);
-        Project p1 = new Project(organization.getOrganizationId(),null, UUID.randomUUID().toString(),
-                "Sandton Project #" + 1, Objects.requireNonNull(organization.getOrganizationId()),
-                testProjectDesc, new DateTime().toDateTimeISO().toString(), new ArrayList<>(),
-                new Position("Point", cords));
-        projectRepository.save(p1);
-
-        cords.clear();
-        cords.add(longitudeHarties);
-        cords.add(latitudeHarties);
-        Project p2 = new Project(organization.getOrganizationId(),null, UUID.randomUUID().toString(),
-                "Harties Project BuildIt", Objects.requireNonNull(organization.getOrganizationId()),
-                testProjectDesc, new DateTime().toDateTimeISO().toString(), new ArrayList<>(),
-                new Position("Point", cords));
-        projectRepository.save(p2);
-
-        cords.clear();
-        cords.add(longitudeJHB);
-        cords.add(latitudeJHB);
-        Project p3 = new Project(organization.getOrganizationId(),null, UUID.randomUUID().toString(),
-                "Johannesburg Project X", Objects.requireNonNull(organization.getOrganizationId()),
-                testProjectDesc, new DateTime().toDateTimeISO().toString(), new ArrayList<>(),
-                new Position("Point", cords));
-        projectRepository.save(p3);
-
     }
 
     private final List<String> firstNames = new ArrayList<>();
@@ -718,6 +696,65 @@ public class MongoGenerator {
             }
         } catch (Exception e) {
             LOGGER.info(Emoji.NOT_OK.concat(Emoji.ERROR) + "Error deleting collection : " + e.getMessage());
+        }
+    }
+
+    private final List<ProjectLocation> projectLocations = new ArrayList<>();
+    private void setLocations() {
+        ProjectLocation loc1 = new ProjectLocation(latitudeLanseria, longitudeLanseria, "Lanseria");
+        projectLocations.add(loc1);
+        ProjectLocation loc2 = new ProjectLocation(latitudeHarties, longitudeHarties, "HartebeestPoort");
+        projectLocations.add(loc2);
+        ProjectLocation loc3 = new ProjectLocation(latitudeJHB, longitudeJHB, "Johannesburg");
+        projectLocations.add(loc3);
+        ProjectLocation loc4 = new ProjectLocation(latitudeRandburg, longitudeRandburg, "Randburg");
+        projectLocations.add(loc4);
+        ProjectLocation loc5 = new ProjectLocation(latitudeRosebank, longitudeRosebank, "Rosebank");
+        projectLocations.add(loc5);
+        ProjectLocation loc6 = new ProjectLocation(latitudeSandton, longitudeSandton, "Sandton");
+        projectLocations.add(loc6);
+        ProjectLocation loc7 = new ProjectLocation(-25.731340, 28.218370, "Pretoria");
+        projectLocations.add(loc7);
+        ProjectLocation loc8 = new ProjectLocation(-26.033, 27.983, "Fourways");
+        projectLocations.add(loc8);
+        ProjectLocation loc9 = new ProjectLocation(-25.98953, 28.12843, "Midrand");
+        projectLocations.add(loc9);
+        ProjectLocation loc10 = new ProjectLocation(-26.1844, 27.70203, "Randfontein");
+        projectLocations.add(loc10);
+        ProjectLocation loc11 = new ProjectLocation(-26.08577, 27.77515, "Krugersdorp");
+        projectLocations.add(loc11);
+        ProjectLocation loc12 = new ProjectLocation(-25.9964, 28.2268, "Tembisa");
+        projectLocations.add(loc12);
+        ProjectLocation loc13 = new ProjectLocation(-25.773, 28.068, "Atteridgeville");
+        projectLocations.add(loc13);
+        ProjectLocation loc14 = new ProjectLocation(-25.77560, 27.85987, "Oberon");
+        projectLocations.add(loc14);
+        ProjectLocation loc15 = new ProjectLocation(-25.7605543, 27.8525863, "Kingfisher Drive");
+        projectLocations.add(loc15);
+        ProjectLocation loc16 = new ProjectLocation(-25.934042, 27.929928, "Lanseria II");
+        projectLocations.add(loc16);
+        ProjectLocation loc17 = new ProjectLocation(-26.26611, 27.865833, "Soweto");
+        projectLocations.add(loc17);
+        ProjectLocation loc18 = new ProjectLocation(-25.93312, 28.01213, "Diepsloot");
+        projectLocations.add(loc18);
+        ProjectLocation loc19 = new ProjectLocation(-26.483333, 27.866667, "Orange Farm");
+        projectLocations.add(loc19);
+        ProjectLocation loc20 = new ProjectLocation(-25.762438, 27.854500, "Pecanwood Crescent");
+        projectLocations.add(loc20);
+        ProjectLocation loc21 = new ProjectLocation(-25.756321, 27.854125, "Pecanwood Boat Club");
+        projectLocations.add(loc21);
+
+        LOGGER.info(Emoji.RAINBOW + Emoji.RAINBOW +
+                "Test Project Locations have been set: " + projectLocations.size());
+    }
+    private static class ProjectLocation {
+        double latitude,  longitude;
+        String name;
+
+        public ProjectLocation(double latitude, double longitude, String name) {
+            this.latitude = latitude;
+            this.longitude = longitude;
+            this.name = name;
         }
     }
 

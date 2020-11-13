@@ -1,10 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:meta/meta.dart';
 
-/*
-data class User(var name: String, var email: String, var cellphone: String, var userId: String?,
-                var organizationId: String, var organizationName: String, var created: String, var userType: UserType) {
- */
 class User {
   String name,
       userId,

@@ -31,7 +31,7 @@ data class Organization(var _partitionKey: String?, @Id var _id: String?, var na
                         var organizationId: String?, var created: String) {}
 
 data class Project(var _partitionKey: String?, @Id var _id: String?, var projectId: String?, var name: String, var organizationId: String,
-                   var description: String?,
+                   var description: String?, var organizationName: String,
                    var created: String, var nearestCities: List<City>?, var position: Position) {}
 
 @QueryEntity
