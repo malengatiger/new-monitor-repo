@@ -96,7 +96,7 @@ public class ListService {
 
 
     public List<Project> findProjectsByLocation(double latitude, double longitude, double radiusInKM) throws Exception{
-        LOGGER.info(Emoji.DICE.concat(Emoji.DICE).concat(" getNearbyCities ..."));
+        LOGGER.info(Emoji.DICE.concat(Emoji.DICE).concat(" findProjectsByLocation ..."));
         Point point = new Point(longitude, latitude);
         Distance distance = new Distance(radiusInKM, Metrics.KILOMETERS);
         List<Project> projects = projectRepository.findByPositionNear(point,distance);
@@ -107,7 +107,8 @@ public class ListService {
                     + project.getOrganizationId() + " "
                     + Emoji.COFFEE);
         }
-        LOGGER.info(Emoji.HEART_ORANGE.concat(Emoji.HEART_BLUE).concat("Nearby Projects found: " + projects.size()));
+        LOGGER.info(Emoji.HEART_ORANGE.concat(Emoji.HEART_ORANGE).concat(
+                "findProjectsByLocation: Nearby Projects found: " + projects.size() + " \uD83C\uDF3F"));
         return projects;
     }
 

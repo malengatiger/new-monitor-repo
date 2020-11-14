@@ -21,6 +21,7 @@ import org.joda.time.DateTime;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.FileReader;
@@ -80,7 +81,7 @@ public class MongoGenerator {
 
         deleteAuthUsers();
         processSouthAfricanCities();
-        generateOrganizations();
+        generateOrganizations(8);
         generateCommunities();
 
         LOGGER.info(Emoji.DICE + Emoji.DICE + Emoji.DICE + Emoji.DICE +
@@ -325,7 +326,7 @@ public class MongoGenerator {
                 Emoji.RED_APPLE + result);
     }
 
-    public void generateOrganizations() throws Exception {
+    public void generateOrganizations(int numberOfOrgs) throws Exception {
         setFirstNames();
         setLastNames();
         setOrgNames();
@@ -340,14 +341,14 @@ public class MongoGenerator {
                 .concat(Emoji.FLOWER_YELLOW)));
 
         HashMap<String, String> hMap = new HashMap<>();
-        while (hMap.keySet().size() < 4) {
+        while (hMap.keySet().size() < numberOfOrgs) {
             String name = getRandomOrgName();
             if (!hMap.containsKey(name)) {
                 hMap.put(name, name);
             }
         }
-        Collection<String> fNames = hMap.values();
-        for (String name : fNames) {
+        Collection<String> orgNames = hMap.values();
+        for (String name : orgNames) {
             Organization org1 = new Organization("PUBLIC",null,name, country.getName(),
                     Objects.requireNonNull(country.getCountryId()), UUID.randomUUID().toString(),
                     new DateTime().toDateTimeISO().toString());
@@ -362,6 +363,9 @@ public class MongoGenerator {
         generateUsers(true);
     }
 
+    @Value("${monitorMaxDistanceInMetres}")
+    private double monitorMaxDistanceInMetres;
+
     public void generateProjects() {
         setLocations();
         List<Organization> organizations = (List<Organization>) organizationRepository.findAll();
@@ -375,10 +379,14 @@ public class MongoGenerator {
             List<Double> cords = new ArrayList<>();
             cords.add(loc.longitude);
             cords.add(loc.latitude);
+            if (monitorMaxDistanceInMetres == 0.0) {
+                monitorMaxDistanceInMetres = 200.0;
+            }
             Project p0 = new Project(organization.getOrganizationId(),null, UUID.randomUUID().toString(),
                     loc.name, Objects.requireNonNull(organization.getOrganizationId()),
-                    testProjectDesc, organization.getName(), new DateTime().toDateTimeISO().toString(), new ArrayList<>(),
-                    new Position("Point", cords));
+                    testProjectDesc, organization.getName(), monitorMaxDistanceInMetres,
+                    new DateTime().toDateTimeISO().toString(), new ArrayList<>(),
+                    new ArrayList<>(), new Position("Point", cords));
             projectRepository.save(p0);
             LOGGER.info(" \uD83E\uDD6C \uD83E\uDD6C \uD83E\uDD6C " +
                     "Project added, project: \uD83C\uDF4E " + p0.getName() + "\t \uD83C\uDF4E " + p0.getOrganizationName());
@@ -542,17 +550,17 @@ public class MongoGenerator {
     //orgadmin1596705856490@monitor.com
     private void setOrgNames() {
         organizationNames.clear();
-        organizationNames.add("Housing Agency");
-        organizationNames.add("Infrastructure Management");
-        organizationNames.add("Project Management");
+        organizationNames.add("Thabang M Construction Ltd");
+        organizationNames.add("Sithole RoadBuilders Ltd");
+        organizationNames.add("KK Projects Inc.");
         organizationNames.add("Gauteng Housing Agency");
         organizationNames.add("Construction Monitors Pty Ltd");
         organizationNames.add("Construction Surveillance Agency");
-        organizationNames.add("Peterson Management");
-        organizationNames.add("Nelson Infrastructure Management");
+        organizationNames.add("Peterson Construction Ltd");
+        organizationNames.add("Nelson PK Infrastructure Ltd");
         organizationNames.add("Community Project Monitors Ltd");
-        organizationNames.add("Afro Management & Monitoring");
-        organizationNames.add("Public Housing Monitoring");
+        organizationNames.add("Afro Management & Monitoring Pty Ltd");
+        organizationNames.add("Roberts InfraCon Lt");
         organizationNames.add("Rental Housing Monitoring");
     }
 

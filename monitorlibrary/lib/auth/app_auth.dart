@@ -47,6 +47,12 @@ class AppAuth {
     }
   }
 
+  static Future<String> getAuthToken() async {
+    var token = await _auth.currentUser.getIdToken();
+    pp(' 🔐 🔐 🔐 🔐 Firebase auth token: $token  🔐 🔐 🔐 🔐');
+    return token;
+  }
+
   static Future signIn(String email, String password, String type) async {
     pp('🔐 🔐 🔐 🔐 Auth signing in $email 🌸 $password  🔐 🔐 🔐 🔐');
 

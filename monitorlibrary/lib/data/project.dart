@@ -7,17 +7,21 @@ import 'city.dart';
 import 'community.dart';
 import 'photo.dart' as ph;
 
+/*
+var projectPoints: List<Position>?
+ */
 class Project {
   String name, projectId, description, organizationId, created;
   String organizationName;
   List<City> nearestCities;
   Position position;
-  List<Position> positions;
+  List<Position> projectPoints;
   List<ph.Photo> photos;
   List<ph.Video> videos;
   List<RatingContent> ratings;
   List<Community> communities;
   List<MonitorReport> monitorReports;
+  double monitorMaxDistanceInMetres;
   Project(
       {@required this.name,
       @required this.description,
@@ -28,10 +32,11 @@ class Project {
       this.videos,
       this.ratings,
       this.created,
-      this.positions,
+      this.projectPoints,
       this.position,
       this.monitorReports,
       this.organizationName,
+      this.monitorMaxDistanceInMetres,
       @required this.projectId});
 
   Project.fromJson(Map data) {
@@ -42,6 +47,7 @@ class Project {
     this.projectId = data['projectId'];
     this.created = data['created'];
     this.organizationName = data['organizationName'];
+    this.monitorMaxDistanceInMetres = data['monitorMaxDistanceInMetres'];
 
     if (data['position'] != null) {
       position = Position.fromJson(data['position']);
@@ -68,11 +74,11 @@ class Project {
         this.nearestCities.add(City.fromJson(m));
       });
     }
-    this.positions = [];
-    if (data['positions'] != null) {
-      List list = data['positions'];
+    this.projectPoints = [];
+    if (data['projectPoints'] != null) {
+      List list = data['projectPoints'];
       list.forEach((m) {
-        this.positions.add(Position.fromJson(m));
+        this.projectPoints.add(Position.fromJson(m));
       });
     }
     this.photos = [];
@@ -98,10 +104,10 @@ class Project {
     }
   }
   Map<String, dynamic> toJson() {
-    List mPositions = List();
-    if (positions != null) {
-      positions.forEach((pos) {
-        mPositions.add(pos.toJson());
+    List mprojectPoints = List();
+    if (projectPoints != null) {
+      projectPoints.forEach((pos) {
+        mprojectPoints.add(pos.toJson());
       });
     }
     List mPhotos = List();
@@ -139,7 +145,7 @@ class Project {
       'projectId': projectId,
       'description': description,
       'organizationId': organizationId,
-      'projectId': projectId,
+      'monitorMaxDistanceInMetres': monitorMaxDistanceInMetres,
       'communities': mSett,
       'organizationName': organizationName,
       'nearestCities': mCities,
@@ -147,7 +153,7 @@ class Project {
       'videos': mVideos,
       'ratings': mRatings,
       'created': created,
-      'positions': mPositions,
+      'projectPoints': mprojectPoints,
     };
     return map;
   }

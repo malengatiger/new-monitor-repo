@@ -2,15 +2,14 @@ package com.monitor.backend;
 
 import com.monitor.backend.controllers.DataController;
 import com.monitor.backend.controllers.ListController;
-import com.monitor.backend.models.CountryRepository;
-import com.monitor.backend.models.User;
-import com.monitor.backend.models.UserRepository;
+import com.monitor.backend.models.*;
 import com.monitor.backend.services.DataService;
 import com.monitor.backend.services.ListService;
 import com.monitor.backend.utils.Emoji;
 import com.monitor.backend.utils.MongoGenerator;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.Banner;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -80,6 +79,9 @@ public class MonitorBackendApplication implements ApplicationListener<Applicatio
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private ProjectRepository projectRepository;
+
 
     @Override
     public void onApplicationEvent(ApplicationReadyEvent applicationReadyEvent) {
@@ -87,6 +89,8 @@ public class MonitorBackendApplication implements ApplicationListener<Applicatio
                 .concat(applicationReadyEvent.getApplicationContext().getDisplayName().concat(" \uD83D\uDC2C")));
 
         try {
+            LOGGER.info(Emoji.BURGER.concat(Emoji.BURGER) +
+                    " monitorMaxDistanceInMetres: " + monitorMaxDistanceInMetres);
             dataService.initializeFirebase();
 
             LOGGER.info(Emoji.PRETZEL.concat(Emoji.PRETZEL) + " -------- PRINT SERVICE METHODS AVAILABLE --------- ");
@@ -122,7 +126,14 @@ public class MonitorBackendApplication implements ApplicationListener<Applicatio
                         + " " + user.getEmail()+ " " + Emoji.YELLOW_DIAMOND + " " + user.getUserType()
                          + " " + Emoji.RED_TRIANGLE + " " + user.getOrganizationName());
             }
+            List<Project> projects = (List<Project>) projectRepository.findAll(Sort.by("organizationName"));
 
+            for (Project project : projects) {
+                LOGGER.info(Emoji.WINE + Emoji.WINE + Emoji.WINE + Emoji.WINE +
+                        " Project: " + project.getName() + " " + Emoji.FERN
+                        + " " + project.getOrganizationName()+ " " + Emoji.YELLOW_DIAMOND
+                        + " " + Emoji.RED_TRIANGLE );
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -159,6 +170,9 @@ public class MonitorBackendApplication implements ApplicationListener<Applicatio
     CountryRepository countryRepository;
     @Autowired
     MongoGenerator mongoGenerator;
+
+    @Value("${monitorMaxDistanceInMetres}")
+    private double monitorMaxDistanceInMetres;
 
     @Override
     public void run(String... args) throws Exception {

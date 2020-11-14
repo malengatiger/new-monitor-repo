@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:monitorlibrary/functions.dart';
 
@@ -19,5 +20,15 @@ class LocationBloc {
   Future<LocationPermission> requestPermission() async {
     var perm = await Geolocator.requestPermission();
     return perm;
+  }
+
+  Future<double> getDistanceFromCurrentPosition(
+      {@required double latitude, @required double longitude}) async {
+    assert(latitude != null);
+    assert(longitude != null);
+    var pos = await getLocation();
+
+    return Geolocator.distanceBetween(
+        latitude, longitude, pos.latitude, pos.longitude);
   }
 }

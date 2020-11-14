@@ -96,9 +96,9 @@ public class DataController {
         return Emoji.RAIN_DROPS + Emoji.RAIN_DROPS + " ..... MongoGenerator:generateCountries completed";
     }
     @GetMapping("/generateOrganizations")
-    public String generateOrganizations() throws Exception {
+    public String generateOrganizations(int numberOfOrgs) throws Exception {
         LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS).concat("generateOrganizations: Adding Countries to MongoDB ...."));
-        mongoGenerator.generateOrganizations();
+        mongoGenerator.generateOrganizations(numberOfOrgs);
         return Emoji.RAIN_DROPS + Emoji.RAIN_DROPS + " ..... MongoGenerator: generateOrganizations completed";
     }
 

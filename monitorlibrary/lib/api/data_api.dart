@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
+import 'package:monitorlibrary/auth/app_auth.dart';
 import 'package:monitorlibrary/data/community.dart';
 import 'package:monitorlibrary/data/country.dart';
 import 'package:monitorlibrary/data/organization.dart';
@@ -14,7 +15,7 @@ import 'package:monitorlibrary/data/user.dart';
 import 'package:monitorlibrary/functions.dart';
 
 class DataAPI {
-  static const Map<String, String> headers = {
+  static Map<String, String> headers = {
     'Content-type': 'application/json',
     'Accept': 'application/json',
   };
@@ -22,6 +23,7 @@ class DataAPI {
   static String activeURL;
   static bool isDevelopmentStatus = true;
   static String url;
+
   static Future<String> getUrl() async {
     if (url == null) {
       pp('🐤🐤🐤🐤 Getting url via .env settings: ${url == null ? 'NO URL YET' : url}');
@@ -484,6 +486,8 @@ class DataAPI {
     }
     var start = DateTime.now();
     var client = new http.Client();
+    var token = await AppAuth.getAuthToken();
+    headers['Authorization'] = 'Bearer $token';
 
     var resp = await client
         .post(
@@ -509,6 +513,8 @@ class DataAPI {
 
     var start = DateTime.now();
     var client = new http.Client();
+    var token = await AppAuth.getAuthToken();
+    headers['Authorization'] = 'Bearer $token';
 
     var resp = await client
         .get(

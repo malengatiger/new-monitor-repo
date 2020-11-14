@@ -130,8 +130,8 @@ class ThemeUtil {
       primaryColor: Colors.pink,
       accentColor: Colors.teal,
       cardColor: Colors.white,
-      backgroundColor: Colors.brown.shade100,
-      appBarTheme: AppBarTheme(color: Colors.pink.shade200),
+      backgroundColor: Colors.brown.shade200,
+      appBarTheme: AppBarTheme(elevation: 8, color: Colors.pink.shade200),
       buttonColor: Colors.indigo,
     ));
     _themes.add(ThemeData(
