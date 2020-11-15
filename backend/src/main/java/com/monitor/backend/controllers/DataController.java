@@ -2,15 +2,15 @@ package com.monitor.backend.controllers;
 
 import com.monitor.backend.models.*;
 import com.monitor.backend.services.DataService;
+import com.monitor.backend.services.ListService;
+import com.monitor.backend.services.MongoDataService;
 import com.monitor.backend.utils.Emoji;
 import com.monitor.backend.utils.MongoGenerator;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.logging.Logger;
 
 @RestController
@@ -128,16 +128,58 @@ public class DataController {
         return dataService.addCity(city);
     }
 
+    @Autowired
+    MongoDataService mongoDataService;
     @PostMapping("/addProject")
     public String addProject(Project project) throws Exception {
         LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS).concat("Adding Project: ".concat(project.getName())));
         return dataService.addProject(project);
     }
+    @PostMapping("/addProjectPosition")
+    public String addProjectPosition(String projectId, double latitude, double longitude)
+            throws Exception {
+        LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS).concat("Adding Project Position: " ));
+        return dataService.addProjectPosition(projectId,latitude,longitude);
+    }
 
-    @PostMapping("/addMonitorReport")
-    public String addMonitorReport(MonitorReport report) throws Exception {
-        LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS).concat("Adding MonitorReport: ".concat(report.getUser().getOrganizationName())));
-        return dataService.addMonitorReport(report);
+    @PostMapping("/addPhoto")
+    public String addPhoto(@RequestBody Photo photo) throws Exception {
+        LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS)
+                .concat("Adding Photo ... " + photo.getProjectName()));
+        return dataService.addPhoto(photo);
+    }
+    @PostMapping("/addVideo")
+    public String addVideo(@RequestBody Video video) throws Exception {
+        LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS)
+                .concat("Adding Video ... " + video.getProjectName()));
+        return dataService.addVideo(video);
+    }
+    @PostMapping("/addCondition")
+    public String addCondition(@RequestBody Condition condition) throws Exception {
+        LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS)
+                .concat("Adding Condition ... " + condition.getProjectName()));
+        return dataService.addCondition(condition);
+    }
+
+    @Autowired
+    ListService listService;
+    @GetMapping("/getProjectConditions")
+    public List<Condition> getProjectConditions(String projectId) throws Exception {
+        LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS)
+                .concat("getProjectConditions ... " + projectId));
+        return listService.getProjectConditions(projectId);
+    }
+    @GetMapping("/getProjectPhotos")
+    public List<Photo> getProjectPhotos(String projectId) throws Exception {
+        LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS)
+                .concat("getProjectPhotos ... " + projectId));
+        return listService.getProjectPhotos(projectId);
+    }
+    @GetMapping("/getProjectVideos")
+    public List<Video> getProjectVideos(String projectId) throws Exception {
+        LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS)
+                .concat("getProjectVideos ... " + projectId));
+        return listService.getProjectVideos(projectId);
     }
 
     @PostMapping("/addUser")

@@ -8,14 +8,14 @@ import 'community.dart';
 import 'photo.dart' as ph;
 
 /*
-var projectPoints: List<Position>?
+var projectPositions: List<Position>?
  */
 class Project {
   String name, projectId, description, organizationId, created;
   String organizationName;
   List<City> nearestCities;
   Position position;
-  List<Position> projectPoints;
+  List<Position> projectPositions;
   List<ph.Photo> photos;
   List<ph.Video> videos;
   List<RatingContent> ratings;
@@ -32,7 +32,7 @@ class Project {
       this.videos,
       this.ratings,
       this.created,
-      this.projectPoints,
+      this.projectPositions,
       this.position,
       this.monitorReports,
       this.organizationName,
@@ -74,11 +74,11 @@ class Project {
         this.nearestCities.add(City.fromJson(m));
       });
     }
-    this.projectPoints = [];
-    if (data['projectPoints'] != null) {
-      List list = data['projectPoints'];
+    this.projectPositions = [];
+    if (data['projectPositions'] != null) {
+      List list = data['projectPositions'];
       list.forEach((m) {
-        this.projectPoints.add(Position.fromJson(m));
+        this.projectPositions.add(Position.fromJson(m));
       });
     }
     this.photos = [];
@@ -104,10 +104,10 @@ class Project {
     }
   }
   Map<String, dynamic> toJson() {
-    List mprojectPoints = List();
-    if (projectPoints != null) {
-      projectPoints.forEach((pos) {
-        mprojectPoints.add(pos.toJson());
+    List mprojectPositions = List();
+    if (projectPositions != null) {
+      projectPositions.forEach((pos) {
+        mprojectPositions.add(pos.toJson());
       });
     }
     List mPhotos = List();
@@ -153,7 +153,7 @@ class Project {
       'videos': mVideos,
       'ratings': mRatings,
       'created': created,
-      'projectPoints': mprojectPoints,
+      'projectPositions': mprojectPositions,
     };
     return map;
   }

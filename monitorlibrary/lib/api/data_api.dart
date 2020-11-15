@@ -7,6 +7,7 @@ import 'package:monitorlibrary/auth/app_auth.dart';
 import 'package:monitorlibrary/data/community.dart';
 import 'package:monitorlibrary/data/country.dart';
 import 'package:monitorlibrary/data/organization.dart';
+import 'package:monitorlibrary/data/photo.dart';
 import 'package:monitorlibrary/data/position.dart';
 import 'package:monitorlibrary/data/project.dart';
 import 'package:monitorlibrary/data/questionnaire.dart';
@@ -272,24 +273,41 @@ class DataAPI {
     }
   }
 
-  static Future<Project> addProjectPhoto(
-      {String projectId,
-      String url,
-      double latitude,
-      longitude,
-      String userId}) async {
+  static Future<String> addPhoto(Photo photo) async {
     String mURL = await getUrl();
-    Map bag = {
-      'projectId': projectId,
-      'url': url,
-      'latitude': latitude,
-      'longitude': longitude,
-      'userId': userId,
-    };
+
+    prettyPrint(photo.toJson(),
+        'sending PHOTO 😡😡 check distanceFromProjectPosition 😡😡');
     try {
-      var result = await _callWebAPIPost(mURL + 'addProjectPhoto', bag);
+      var result = await _callWebAPIPost(mURL + 'addPhoto', photo.toJson());
       pp(result);
-      return Project.fromJson(result);
+      return result as String;
+    } catch (e) {
+      pp(e);
+      throw e;
+    }
+  }
+
+  static Future<String> addVideo(Video video) async {
+    String mURL = await getUrl();
+
+    try {
+      var result = await _callWebAPIPost(mURL + 'addVideo', video.toJson());
+      pp(result);
+      return result as String;
+    } catch (e) {
+      pp(e);
+      throw e;
+    }
+  }
+
+  static Future<String> addCondition(Condition condition) async {
+    String mURL = await getUrl();
+
+    try {
+      var result = await _callWebAPIPost(mURL + 'addVideo', condition.toJson());
+      pp(result);
+      return result as String;
     } catch (e) {
       pp(e);
       throw e;
@@ -478,12 +496,13 @@ class DataAPI {
   }
 
   static Future _callWebAPIPost(String mUrl, Map bag) async {
-    pp('\n\n🏈 🏈 🏈 🏈 🏈 DataAPI_callWebAPI:  🔆 🔆 🔆 🔆 calling : 💙  $mUrl  💙 print bag ...');
-    pp(bag);
+    pp('\n\n🏈 🏈 🏈 🏈 🏈 DataAPI_callWebAPIPost:  🔆 🔆 🔆 🔆 calling : 💙  $mUrl  💙 print bag ...');
+
     var mBag;
     if (bag != null) {
       mBag = json.encode(bag);
     }
+    pp(mBag);
     var start = DateTime.now();
     var client = new http.Client();
     var token = await AppAuth.getAuthToken();
@@ -497,13 +516,13 @@ class DataAPI {
         )
         .whenComplete(() {});
     if (resp.statusCode == 200) {
-      pp('\n\n❤️️❤️  DataAPI._callWebAPI .... : 💙 statusCode: 👌👌👌 ${resp.statusCode} 👌👌👌 💙 for $mUrl');
+      pp('\n\n❤️️❤️  DataAPI._callWebAPIPost .... : 💙 statusCode: 👌👌👌 ${resp.statusCode} 👌👌👌 💙 for $mUrl');
     } else {
-      pp('\n\n👿👿👿 DataAPI._callWebAPI .... : 🔆 statusCode: 👿👿👿 ${resp.statusCode} 🔆🔆🔆 for $mUrl');
+      pp('\n\n👿👿👿 DataAPI._callWebAPIPost .... : 🔆 statusCode: 👿👿👿 ${resp.statusCode} 🔆🔆🔆 for $mUrl');
       throw Exception('🚨 🚨 Status Code 🚨 ${resp.statusCode} 🚨 Exception');
     }
     var end = DateTime.now();
-    pp('❤️❤️  DataAPI._callWebAPI ### 🔆 elapsed: ${end.difference(start).inSeconds} seconds 🔆 \n\n');
+    pp('❤️❤️  DataAPI._callWebAPIPost ### 🔆 elapsed: ${end.difference(start).inSeconds} seconds 🔆 \n\n');
     var mJson = json.decode(resp.body);
     return mJson;
   }

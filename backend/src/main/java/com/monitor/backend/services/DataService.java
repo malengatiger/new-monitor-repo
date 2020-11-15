@@ -4,14 +4,11 @@ package com.monitor.backend.services;
 import ch.hsr.geohash.GeoHash;
 import com.google.api.core.ApiFuture;
 import com.google.auth.oauth2.GoogleCredentials;
-import com.google.cloud.firestore.CollectionReference;
-import com.google.cloud.firestore.DocumentReference;
 import com.google.cloud.firestore.Firestore;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.UserRecord;
-import com.google.firebase.cloud.FirestoreClient;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.monitor.backend.models.*;
@@ -19,9 +16,12 @@ import com.monitor.backend.utils.Emoji;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -29,7 +29,6 @@ import java.util.UUID;
 public class DataService {
     public static final Logger LOGGER = LoggerFactory.getLogger(DataService.class.getSimpleName());
     private static final Gson G = new GsonBuilder().setPrettyPrinting().create();
-    private Firestore firestore;
 
     public DataService() {
         LOGGER.info("\uD83C\uDF4F \uD83C\uDF4F DataService constructed \uD83C\uDF4F");
@@ -37,11 +36,30 @@ public class DataService {
 
     @Value("${databaseUrl}")
     private String databaseUrl;
+    @Autowired
+    ProjectRepository projectRepository;
+    @Autowired
+    CityRepository cityRepository;
+    @Autowired
+    PhotoRepository photoRepository;
+    @Autowired
+    VideoRepository videoRepository;
+    @Autowired
+    UserRepository userRepository;
+    @Autowired
+    CommunityRepository communityRepository;
+    @Autowired
+    ConditionRepository conditionRepository;
+    @Autowired
+    CountryRepository countryRepository;
+    @Autowired
+    OrganizationRepository organizationRepository;
+
 
     private boolean isInitialized = false;
 
     public void initializeFirebase() throws Exception {
-        LOGGER.info("\uD83C\uDFBD \uD83C\uDFBD \uD83C\uDFBD \uD83C\uDFBD  FirebaseService: initializeFirebase: ... \uD83C\uDF4F" +
+        LOGGER.info("\uD83C\uDFBD \uD83C\uDFBD \uD83C\uDFBD \uD83C\uDFBD  DataService: initializeFirebase: ... \uD83C\uDF4F" +
                 ".... \uD83D\uDC99 \uD83D\uDC99 isInitialized: " + isInitialized + " \uD83D\uDC99 \uD83D\uDC99 FIREBASE URL: "
                 + Emoji.HEART_PURPLE + " " + databaseUrl + " " + Emoji.HEART_BLUE + Emoji.HEART_BLUE);
 
@@ -84,18 +102,48 @@ public class DataService {
 
     private void addUser(User user) throws Exception {
         user.setUserId(UUID.randomUUID().toString());
-        firestore = FirestoreClient.getFirestore();
-        ApiFuture<DocumentReference> future = firestore.collection("users").add(user);
+        userRepository.save(user);
         LOGGER.info(Emoji.LEAF.concat(Emoji.LEAF).concat("User added: "
-                + user.getName() + " path: "
-                + future.get().getPath()));
+                + user.getName() + " id: "
+                + user.getUserId()));
     }
 
-    public String addMonitorReport(MonitorReport report) throws Exception {
-        report.setMonitorReportId(UUID.randomUUID().toString());
-        ApiFuture<DocumentReference> future = firestore.collection("monitorReports").add(report);
-        LOGGER.info(Emoji.LEAF.concat(Emoji.LEAF).concat("MonitorReport added: " + future.get().getPath()));
-        return report.getMonitorReportId();
+    public String addPhoto(Photo photo) throws Exception {
+        photoRepository.save(photo);
+        LOGGER.info(Emoji.LEAF.concat(Emoji.LEAF).concat("Photo added: " + photo.get_id()));
+        return photo.get_id();
+    }
+    public String addVideo(Video video) throws Exception {
+        videoRepository.save(video);
+        LOGGER.info(Emoji.LEAF.concat(Emoji.LEAF).concat("Video added: " + video.get_id()));
+        return video.get_id();
+    }
+    public String addCondition(Condition condition) throws Exception {
+        conditionRepository.save(condition);
+        LOGGER.info(Emoji.LEAF.concat(Emoji.LEAF).concat("Condition added: " + condition.get_id()));
+        return condition.get_id();
+    }
+
+    public String addProjectPosition(String projectId, double latitude, double longitude) throws Exception {
+        LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS).concat("addProjectPosition: "
+                .concat(Emoji.FLOWER_YELLOW)));
+
+        Project project = projectRepository.findByProjectId(projectId);
+        if (project == null) {
+            throw new Exception("Project not found");
+        }
+        if (project.getProjectPositions() == null) {
+            project.setProjectPositions(new ArrayList<>());
+        }
+        List<Double> coordinates = new ArrayList<>();
+        coordinates.add(longitude);
+        coordinates.add(latitude);
+
+        project.getProjectPositions().add(new Position("Point", coordinates));
+        projectRepository.save(project);
+
+        LOGGER.info(Emoji.LEAF.concat(Emoji.LEAF).concat("Project added: " + project.getProjectId()));
+        return project.getProjectId();
     }
 
     public String addProject(Project project) throws Exception {
@@ -103,39 +151,33 @@ public class DataService {
                 .concat(project.getName()).concat(" ")
                 .concat(Emoji.FLOWER_YELLOW)));
         project.setProjectId(UUID.randomUUID().toString());
-//        if (project.getPosition().getGeohash() == null) {
-////            String geoHash = DataService.getGeoHash(project.getPosition().getLatitude(), project.getPosition().getLongitude());
-////            project.getPosition().setGeohash(geoHash);
-//        }
-        firestore = FirestoreClient.getFirestore();
-        ApiFuture<DocumentReference> future = firestore.collection("projects").add(project);
-        LOGGER.info(Emoji.LEAF.concat(Emoji.LEAF).concat("Project added: " + future.get().getPath()));
+
+        projectRepository.save(project);
+
+        LOGGER.info(Emoji.LEAF.concat(Emoji.LEAF).concat("Project added: " + project.getProjectId()));
         return project.getProjectId();
     }
 
     public String addCity(City city) throws Exception {
         city.setCityId(UUID.randomUUID().toString());
-        firestore = FirestoreClient.getFirestore();
-        ApiFuture<DocumentReference> future = firestore.collection("cities").add(city);
-//        LOGGER.info(Emoji.LEAF.concat(Emoji.LEAF).concat("City added to database at path: " +  future.get().getPath()));
+        cityRepository.save(city);
+        LOGGER.info(Emoji.LEAF.concat(Emoji.LEAF).concat("City added to database : " +  city.getCityId()));
         return city.getCityId();
     }
 
     public String addCommunity(Community community) throws Exception {
         community.setCommunityId(UUID.randomUUID().toString());
-        firestore = FirestoreClient.getFirestore();
-        ApiFuture<DocumentReference> future = firestore.collection("communities").add(community);
+        communityRepository.save(community);
         LOGGER.info(Emoji.LEAF.concat(Emoji.LEAF).concat("Community: \uD83C\uDF3C " + community.getName()
-                + " added to database at path: \uD83D\uDC24 " + future.get().getPath()));
+                + " added to database: \uD83D\uDC24 " + community.getCommunityId()));
         return community.getCommunityId();
     }
 
     public String addCountry(Country country) throws Exception {
         country.setCountryId(UUID.randomUUID().toString());
 
-        firestore = FirestoreClient.getFirestore();
-        ApiFuture<DocumentReference> future = firestore.collection("countries").add(country);
-        LOGGER.info(Emoji.LEAF.concat(Emoji.LEAF).concat("Country added: " + future.get().getPath()));
+        countryRepository.save(country);
+        LOGGER.info(Emoji.LEAF.concat(Emoji.LEAF).concat("Country added: " + country.getCountryId()));
         return country.getCountryId();
     }
 
@@ -143,9 +185,8 @@ public class DataService {
         organization.setOrganizationId(UUID.randomUUID().toString());
         organization.setCreated(new DateTime().toDateTimeISO().toString());
 
-        firestore = FirestoreClient.getFirestore();
-        ApiFuture<DocumentReference> future = firestore.collection("organizations").add(organization);
-        LOGGER.info(Emoji.LEAF.concat(Emoji.LEAF).concat("Organization added: " + future.get().getPath()));
+        organizationRepository.save(organization);
+        LOGGER.info(Emoji.LEAF.concat(Emoji.LEAF).concat("Organization added: " + organization.getOrganizationId()));
         return organization.getOrganizationId();
     }
 

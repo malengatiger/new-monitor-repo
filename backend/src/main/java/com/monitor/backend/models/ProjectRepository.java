@@ -10,5 +10,6 @@ public interface ProjectRepository extends PagingAndSortingRepository<Project, S
 
     List<Project> findByPositionNear(Point location, Distance distance);
     List<Project> findByOrganizationId(String organizationId);
+    Project findByProjectId(String projectId);
 
 }

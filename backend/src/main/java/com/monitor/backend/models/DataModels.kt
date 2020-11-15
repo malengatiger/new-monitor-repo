@@ -30,10 +30,51 @@ data class User(var _partitionKey: String?, @Id var _id: String?, var name: Stri
 data class Organization(var _partitionKey: String?, @Id var _id: String?, var name: String, var countryName: String, var countryId: String,
                         var organizationId: String?, var created: String) {}
 
-data class Project(var _partitionKey: String?, @Id var _id: String?, var projectId: String?, var name: String, var organizationId: String,
-                   var description: String?, var organizationName: String,
-                   var monitorMaxDistanceInMetres: Double? = 200.0,
-                   var created: String, var nearestCities: List<City>?, var projectPoints: List<Position>?,var position: Position) {}
+data class Project(var _partitionKey: String?, @Id var _id: String?,
+                   var projectId: String?,
+                   var name: String,
+                   var organizationId: String,
+                   var description: String?,
+                   var organizationName: String,
+                   var monitorMaxDistanceInMetres: Double? = 50.0,
+                   var created: String,
+                   var nearestCities: List<City>?,
+                   var position: Position,
+                   var projectPositions: List<Position>?) {}
+
+data class Photo(var _partitionKey: String?, @Id var _id: String?,
+                 var projectId: String,
+                 var projectName: String,
+                 var projectPosition: Position,
+                 var distanceFromProjectPosition: Double,
+                 var url: String,
+                 var thumbnailUrl: String,
+                 var caption: String?,
+                 var userId: String,
+                 var userName: String,
+                 var created: String) {}
+
+data class Video(var _partitionKey: String?, @Id var _id: String?,
+                 var projectId: String,
+                 var projectName: String,
+                 var projectPosition: Position,
+                 var distanceFromProjectPosition: Double,
+                 var url: String,
+                 var caption: String?,
+                 var userId: String,
+                 var userName: String,
+                 var created: String) {}
+
+data class Condition(var _partitionKey: String?, @Id var _id: String?,
+                     var projectId: String,
+                     var projectName: String,
+                     var projectPosition: Position,
+                     var rating: Int,
+                     var caption: String?,
+                     var userId: String,
+                     var userName: String,
+                     var created: String) {}
+
 
 @QueryEntity
 @Document
@@ -68,10 +109,6 @@ data class Section(var sectionNumber: Int, var title: String, var description: S
                    var questions: List<Question>) {
 }
 
-
-data class Photo(var _partitionKey: String?, @Id var _id: String?, var url: String, var caption: String?, var created: String) {}
-
-data class Video(var _partitionKey: String?, @Id var _id: String?, var url: String, var caption: String?, var created: String) {}
 
 data class MonitorReport(var _partitionKey: String?, @Id var _id: String?, var monitorReportId: String?, var projectId: String,
                          var user: User, var rating: Rating, var photos: List<Photo>,

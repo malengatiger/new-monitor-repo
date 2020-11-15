@@ -376,17 +376,22 @@ public class MongoGenerator {
            //assign this project location to a random organization
             int index = random.nextInt(organizations.size() - 1);
             Organization organization = organizations.get(index);
-            List<Double> cords = new ArrayList<>();
-            cords.add(loc.longitude);
-            cords.add(loc.latitude);
+            List<Double> coordinates = new ArrayList<>();
+            coordinates.add(loc.longitude);
+            coordinates.add(loc.latitude);
             if (monitorMaxDistanceInMetres == 0.0) {
-                monitorMaxDistanceInMetres = 200.0;
+                monitorMaxDistanceInMetres = 50.0;
             }
-            Project p0 = new Project(organization.getOrganizationId(),null, UUID.randomUUID().toString(),
+            List<Position> projectPositions = new ArrayList<>();
+            Position pos = new Position("Point", coordinates);
+            projectPositions.add(pos);
+
+            Project p0 = new Project(organization.getOrganizationId(),null,
+                    UUID.randomUUID().toString(),
                     loc.name, Objects.requireNonNull(organization.getOrganizationId()),
                     testProjectDesc, organization.getName(), monitorMaxDistanceInMetres,
-                    new DateTime().toDateTimeISO().toString(), new ArrayList<>(),
-                    new ArrayList<>(), new Position("Point", cords));
+                    new DateTime().toDateTimeISO().toString(), new ArrayList<>(), pos,
+                    projectPositions);
             projectRepository.save(p0);
             LOGGER.info(" \uD83E\uDD6C \uD83E\uDD6C \uD83E\uDD6C " +
                     "Project added, project: \uD83C\uDF4E " + p0.getName() + "\t \uD83C\uDF4E " + p0.getOrganizationName());

@@ -38,6 +38,12 @@ public class ListService {
     MonitorReportRepository monitorReportRepository;
     @Autowired
     QuestionnaireRepository questionnaireRepository;
+    @Autowired
+    PhotoRepository photoRepository;
+    @Autowired
+    VideoRepository videoRepository;
+    @Autowired
+    ConditionRepository conditionRepository;
 
     public ListService() {
         LOGGER.info(Emoji.HEART_BLUE.concat(Emoji.HEART_BLUE) + " ListService constructed \uD83C\uDF4F");
@@ -93,6 +99,32 @@ public class ListService {
 
         return mList;
     }
+
+    public List<Photo> getProjectPhotos(String projectId) throws Exception {
+
+        LOGGER.info(Emoji.GLOBE.concat(Emoji.GLOBE).concat("getProjectPhotos ..."));
+        List<Photo> mList = photoRepository.findByProjectId(projectId);
+        LOGGER.info(Emoji.GLOBE.concat(Emoji.GLOBE).concat("getProjectPhotos ... found: " + mList.size()));
+
+        return mList;
+    }
+    public List<Video> getProjectVideos(String projectId) throws Exception {
+
+        LOGGER.info(Emoji.GLOBE.concat(Emoji.GLOBE).concat("getProjectVideos ..."));
+        List<Video> mList = videoRepository.findByProjectId(projectId);
+        LOGGER.info(Emoji.GLOBE.concat(Emoji.GLOBE).concat("getProjectVideos ... found: " + mList.size()));
+
+        return mList;
+    }
+    public List<Condition> getProjectConditions(String projectId) throws Exception {
+
+        LOGGER.info(Emoji.GLOBE.concat(Emoji.GLOBE).concat("getProjectConditions ..."));
+        List<Condition> mList = conditionRepository.findByProjectId(projectId);
+        LOGGER.info(Emoji.GLOBE.concat(Emoji.GLOBE).concat("getProjectConditions ... found: " + mList.size()));
+
+        return mList;
+    }
+
 
 
     public List<Project> findProjectsByLocation(double latitude, double longitude, double radiusInKM) throws Exception{
