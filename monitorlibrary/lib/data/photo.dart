@@ -54,7 +54,7 @@ class Photo {
 }
 
 class Video {
-  String url, caption, created;
+  String url, caption, created, thumbnailUrl;
   String userId, userName;
   Position projectPosition;
   double distanceFromProjectPosition;
@@ -77,6 +77,8 @@ class Video {
       @required
           this.projectId,
       @required
+          this.thumbnailUrl,
+      @required
           this.projectName}); // Video({@required this.url, this.userId, @required this.created});
 
   Video.fromJson(Map data) {
@@ -84,6 +86,7 @@ class Video {
     this.caption = data['caption'];
     this.created = data['created'];
     this.userId = data['userId'];
+    this.thumbnailUrl = data['thumbnailUrl'];
 
     this.userName = data['userName'];
     this.distanceFromProjectPosition = data['distanceFromProjectPosition'];
@@ -100,6 +103,7 @@ class Video {
       'created': created,
       'userId': userId,
       'userName': userName,
+      'thumbnailUrl': thumbnailUrl,
       'distanceFromProjectPosition': distanceFromProjectPosition,
       'projectId': projectId,
       'projectName': projectName,

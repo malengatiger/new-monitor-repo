@@ -4,7 +4,6 @@ package com.monitor.backend.services;
 import ch.hsr.geohash.GeoHash;
 import com.google.api.core.ApiFuture;
 import com.google.auth.oauth2.GoogleCredentials;
-import com.google.cloud.firestore.Firestore;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.auth.FirebaseAuth;
@@ -108,20 +107,20 @@ public class DataService {
                 + user.getUserId()));
     }
 
-    public String addPhoto(Photo photo) throws Exception {
+    public void addPhoto(Photo photo) throws Exception {
         photoRepository.save(photo);
         LOGGER.info(Emoji.LEAF.concat(Emoji.LEAF).concat("Photo added: " + photo.get_id()));
-        return photo.get_id();
+        photo.get_id();
     }
-    public String addVideo(Video video) throws Exception {
+    public void addVideo(Video video) throws Exception {
         videoRepository.save(video);
         LOGGER.info(Emoji.LEAF.concat(Emoji.LEAF).concat("Video added: " + video.get_id()));
-        return video.get_id();
+        video.get_id();
     }
-    public String addCondition(Condition condition) throws Exception {
+    public void addCondition(Condition condition) throws Exception {
         conditionRepository.save(condition);
         LOGGER.info(Emoji.LEAF.concat(Emoji.LEAF).concat("Condition added: " + condition.get_id()));
-        return condition.get_id();
+        condition.get_id();
     }
 
     public String addProjectPosition(String projectId, double latitude, double longitude) throws Exception {

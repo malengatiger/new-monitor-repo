@@ -49,7 +49,7 @@ class AppAuth {
 
   static Future<String> getAuthToken() async {
     var token = await _auth.currentUser.getIdToken();
-    pp(' 🔐 🔐 🔐 🔐 Firebase auth token: $token  🔐 🔐 🔐 🔐');
+    // pp(' 🔐 🔐 🔐 🔐 Firebase auth token: $token  🔐 🔐 🔐 🔐');
     return token;
   }
 

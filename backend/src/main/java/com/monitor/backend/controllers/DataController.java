@@ -143,22 +143,25 @@ public class DataController {
     }
 
     @PostMapping("/addPhoto")
-    public String addPhoto(@RequestBody Photo photo) throws Exception {
+    public Photo addPhoto(@RequestBody Photo photo) throws Exception {
         LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS)
                 .concat("Adding Photo ... " + photo.getProjectName()));
-        return dataService.addPhoto(photo);
+         dataService.addPhoto(photo);
+         return photo;
     }
     @PostMapping("/addVideo")
-    public String addVideo(@RequestBody Video video) throws Exception {
+    public Video addVideo(@RequestBody Video video) throws Exception {
         LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS)
                 .concat("Adding Video ... " + video.getProjectName()));
-        return dataService.addVideo(video);
+         dataService.addVideo(video);
+         return video;
     }
     @PostMapping("/addCondition")
-    public String addCondition(@RequestBody Condition condition) throws Exception {
+    public Condition addCondition(@RequestBody Condition condition) throws Exception {
         LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS)
                 .concat("Adding Condition ... " + condition.getProjectName()));
-        return dataService.addCondition(condition);
+         dataService.addCondition(condition);
+         return condition;
     }
 
     @Autowired

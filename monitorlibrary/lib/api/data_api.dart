@@ -273,41 +273,37 @@ class DataAPI {
     }
   }
 
-  static Future<String> addPhoto(Photo photo) async {
+  static Future addPhoto(Photo photo) async {
     String mURL = await getUrl();
-
-    prettyPrint(photo.toJson(),
-        'sending PHOTO 😡😡 check distanceFromProjectPosition 😡😡');
     try {
       var result = await _callWebAPIPost(mURL + 'addPhoto', photo.toJson());
-      pp(result);
-      return result as String;
+      return result;
     } catch (e) {
       pp(e);
       throw e;
     }
   }
 
-  static Future<String> addVideo(Video video) async {
+  static Future addVideo(Video video) async {
     String mURL = await getUrl();
 
     try {
       var result = await _callWebAPIPost(mURL + 'addVideo', video.toJson());
       pp(result);
-      return result as String;
+      return result;
     } catch (e) {
       pp(e);
       throw e;
     }
   }
 
-  static Future<String> addCondition(Condition condition) async {
+  static Future addCondition(Condition condition) async {
     String mURL = await getUrl();
 
     try {
       var result = await _callWebAPIPost(mURL + 'addVideo', condition.toJson());
       pp(result);
-      return result as String;
+      return result;
     } catch (e) {
       pp(e);
       throw e;
@@ -502,7 +498,7 @@ class DataAPI {
     if (bag != null) {
       mBag = json.encode(bag);
     }
-    pp(mBag);
+
     var start = DateTime.now();
     var client = new http.Client();
     var token = await AppAuth.getAuthToken();
@@ -516,15 +512,22 @@ class DataAPI {
         )
         .whenComplete(() {});
     if (resp.statusCode == 200) {
-      pp('\n\n❤️️❤️  DataAPI._callWebAPIPost .... : 💙 statusCode: 👌👌👌 ${resp.statusCode} 👌👌👌 💙 for $mUrl');
+      pp('\n\n❤️️❤️  DataAPI._callWebAPIPost .... : 💙💙 statusCode: 👌👌👌 ${resp.statusCode} 👌👌👌 💙 for $mUrl');
     } else {
       pp('\n\n👿👿👿 DataAPI._callWebAPIPost .... : 🔆 statusCode: 👿👿👿 ${resp.statusCode} 🔆🔆🔆 for $mUrl');
       throw Exception('🚨 🚨 Status Code 🚨 ${resp.statusCode} 🚨 Exception');
     }
     var end = DateTime.now();
-    pp('❤️❤️  DataAPI._callWebAPIPost ### 🔆 elapsed: ${end.difference(start).inSeconds} seconds 🔆 \n\n');
-    var mJson = json.decode(resp.body);
-    return mJson;
+    pp('❤️❤️ 💙 DataAPI._callWebAPIPost ### 🔆 elapsed: ${end.difference(start).inSeconds} seconds 🔆 \n\n');
+    pp(resp.body);
+    try {
+      var mJson = json.decode(resp.body);
+      pp('❤️❤️ 💙 DataAPI._callWebAPIPost ,,,,,,,,,,,,,,,,,,, do we get here?');
+      return mJson;
+    } catch (e) {
+      pp("👿👿👿👿👿👿👿 json.decode failed, returning response body");
+      return resp.body;
+    }
   }
 
   static Future _callWebAPIGet(String mUrl) async {
