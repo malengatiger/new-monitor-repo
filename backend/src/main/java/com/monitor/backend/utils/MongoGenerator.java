@@ -219,6 +219,51 @@ public class MongoGenerator {
                 " City cityId index should be created on city collection: " +
                 Emoji.RED_APPLE + result3);
     }
+    private void createProjectPositionIndexes() {
+        //add index
+        MongoDatabase db = mongoClient.getDatabase("monitordb");
+        MongoCollection<Document> dbCollection = db.getCollection("projectPosition");
+        String result = dbCollection.createIndex(Indexes.geo2dsphere("position"));
+        LOGGER.info(Emoji.LEAF + Emoji.LEAF + Emoji.LEAF + Emoji.LEAF +
+                " projectPosition 2dSphere index should be created on projectPosition collection: " +
+                Emoji.RED_APPLE + result);
+
+        String result2 = dbCollection.createIndex(Indexes.ascending("projectId"));
+        LOGGER.info(Emoji.LEAF + Emoji.LEAF + Emoji.LEAF + Emoji.LEAF +
+                " projectId index should be created on projectPosition collection: " +
+                Emoji.RED_APPLE + result2);
+
+    }
+    private void createPhotoIndexes() {
+        //add index
+        MongoDatabase db = mongoClient.getDatabase("monitordb");
+        MongoCollection<Document> dbCollection = db.getCollection("photo");
+        String result = dbCollection.createIndex(Indexes.geo2dsphere("projectPosition"));
+        LOGGER.info(Emoji.LEAF + Emoji.LEAF + Emoji.LEAF + Emoji.LEAF +
+                " photo 2dSphere index should be created on photo collection: " +
+                Emoji.RED_APPLE + result);
+
+        String result2 = dbCollection.createIndex(Indexes.ascending("projectId"));
+        LOGGER.info(Emoji.LEAF + Emoji.LEAF + Emoji.LEAF + Emoji.LEAF +
+                " projectId index should be created on photo collection: " +
+                Emoji.RED_APPLE + result2);
+
+    }
+    private void createVideoIndexes() {
+        //add index
+        MongoDatabase db = mongoClient.getDatabase("monitordb");
+        MongoCollection<Document> dbCollection = db.getCollection("video");
+        String result = dbCollection.createIndex(Indexes.geo2dsphere("projectPosition"));
+        LOGGER.info(Emoji.LEAF + Emoji.LEAF + Emoji.LEAF + Emoji.LEAF +
+                " photo 2dSphere index should be created on video collection: " +
+                Emoji.RED_APPLE + result);
+
+        String result2 = dbCollection.createIndex(Indexes.ascending("projectId"));
+        LOGGER.info(Emoji.LEAF + Emoji.LEAF + Emoji.LEAF + Emoji.LEAF +
+                " projectId index should be created on video collection: " +
+                Emoji.RED_APPLE + result2);
+
+    }
 
     private static final int BATCH_SIZE = 600;
 
@@ -265,6 +310,10 @@ public class MongoGenerator {
     OrganizationRepository organizationRepository;
     @Autowired
     ProjectRepository projectRepository;
+
+    @Autowired
+    ProjectPositionRepository projectPositionRepository;
+
     private void createOrganizationIndexes() {
         //add index
         MongoDatabase db = mongoClient.getDatabase("monitordb");
@@ -372,6 +421,10 @@ public class MongoGenerator {
         LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS + Emoji.RAIN_DROPS.concat(" Generating projects ...")));
 
         createProjectIndexes();
+        createProjectPositionIndexes();
+        createPhotoIndexes();
+        createVideoIndexes();
+
         for (ProjectLocation loc : projectLocations) {
            //assign this project location to a random organization
             int index = random.nextInt(organizations.size() - 1);
@@ -382,17 +435,27 @@ public class MongoGenerator {
             if (monitorMaxDistanceInMetres == 0.0) {
                 monitorMaxDistanceInMetres = 50.0;
             }
-            List<Position> projectPositions = new ArrayList<>();
+
             Position pos = new Position("Point", coordinates);
-            projectPositions.add(pos);
+
 
             Project p0 = new Project(organization.getOrganizationId(),null,
                     UUID.randomUUID().toString(),
                     loc.name, Objects.requireNonNull(organization.getOrganizationId()),
-                    testProjectDesc, organization.getName(), monitorMaxDistanceInMetres,
-                    new DateTime().toDateTimeISO().toString(), new ArrayList<>(), pos,
-                    projectPositions);
+                    testProjectDesc,
+                    organization.getName(),
+                    monitorMaxDistanceInMetres,
+                    new DateTime().toDateTimeISO().toString(), new ArrayList<>(), pos);
             projectRepository.save(p0);
+
+            ProjectPosition pPos = new ProjectPosition(
+                    Objects.requireNonNull(p0.getProjectId()),
+                    pos,
+                    p0.getName(),
+                    "tbd",
+                    new DateTime().toDateTimeISO().toString());
+            projectPositionRepository.save(pPos);
+
             LOGGER.info(" \uD83E\uDD6C \uD83E\uDD6C \uD83E\uDD6C " +
                     "Project added, project: \uD83C\uDF4E " + p0.getName() + "\t \uD83C\uDF4E " + p0.getOrganizationName());
         }
@@ -714,47 +777,47 @@ public class MongoGenerator {
 
     private final List<ProjectLocation> projectLocations = new ArrayList<>();
     private void setLocations() {
-        ProjectLocation loc1 = new ProjectLocation(latitudeLanseria, longitudeLanseria, "Lanseria");
+        ProjectLocation loc1 = new ProjectLocation(latitudeLanseria, longitudeLanseria, "Lanseria Road Upgrades");
         projectLocations.add(loc1);
-        ProjectLocation loc2 = new ProjectLocation(latitudeHarties, longitudeHarties, "HartebeestPoort");
+        ProjectLocation loc2 = new ProjectLocation(latitudeHarties, longitudeHarties, "HartebeestPoort Shopping Centre");
         projectLocations.add(loc2);
-        ProjectLocation loc3 = new ProjectLocation(latitudeJHB, longitudeJHB, "Johannesburg");
+        ProjectLocation loc3 = new ProjectLocation(latitudeJHB, longitudeJHB, "Johannesburg Road ProjectX");
         projectLocations.add(loc3);
-        ProjectLocation loc4 = new ProjectLocation(latitudeRandburg, longitudeRandburg, "Randburg");
+        ProjectLocation loc4 = new ProjectLocation(latitudeRandburg, longitudeRandburg, "Randburg Road Upgrades");
         projectLocations.add(loc4);
-        ProjectLocation loc5 = new ProjectLocation(latitudeRosebank, longitudeRosebank, "Rosebank");
+        ProjectLocation loc5 = new ProjectLocation(latitudeRosebank, longitudeRosebank, "Rosebank Education Complex");
         projectLocations.add(loc5);
-        ProjectLocation loc6 = new ProjectLocation(latitudeSandton, longitudeSandton, "Sandton");
+        ProjectLocation loc6 = new ProjectLocation(latitudeSandton, longitudeSandton, "Sandton Sanitation Project");
         projectLocations.add(loc6);
-        ProjectLocation loc7 = new ProjectLocation(-25.731340, 28.218370, "Pretoria");
+        ProjectLocation loc7 = new ProjectLocation(-25.731340, 28.218370, "Pretoria Road Upgrades");
         projectLocations.add(loc7);
-        ProjectLocation loc8 = new ProjectLocation(-26.033, 27.983, "Fourways");
+        ProjectLocation loc8 = new ProjectLocation(-26.033, 27.983, "Fourways University Construction");
         projectLocations.add(loc8);
-        ProjectLocation loc9 = new ProjectLocation(-25.98953, 28.12843, "Midrand");
+        ProjectLocation loc9 = new ProjectLocation(-25.98953, 28.12843, "Midrand Engineering Project");
         projectLocations.add(loc9);
-        ProjectLocation loc10 = new ProjectLocation(-26.1844, 27.70203, "Randfontein");
+        ProjectLocation loc10 = new ProjectLocation(-26.1844, 27.70203, "Randfontein Road Upgrades");
         projectLocations.add(loc10);
-        ProjectLocation loc11 = new ProjectLocation(-26.08577, 27.77515, "Krugersdorp");
+        ProjectLocation loc11 = new ProjectLocation(-26.08577, 27.77515, "Krugersdorp Water & Sanitation Project");
         projectLocations.add(loc11);
-        ProjectLocation loc12 = new ProjectLocation(-25.9964, 28.2268, "Tembisa");
+        ProjectLocation loc12 = new ProjectLocation(-25.9964, 28.2268, "Tembisa Education Complex");
         projectLocations.add(loc12);
-        ProjectLocation loc13 = new ProjectLocation(-25.773, 28.068, "Atteridgeville");
+        ProjectLocation loc13 = new ProjectLocation(-25.773, 28.068, "Atteridgeville Road Engineering Project");
         projectLocations.add(loc13);
-        ProjectLocation loc14 = new ProjectLocation(-25.77560, 27.85987, "Oberon");
+        ProjectLocation loc14 = new ProjectLocation(-25.77560, 27.85987, "Oberon Water & Sanitation Project");
         projectLocations.add(loc14);
-        ProjectLocation loc15 = new ProjectLocation(-25.7605543, 27.8525863, "Kingfisher Drive");
+        ProjectLocation loc15 = new ProjectLocation(-25.7605543, 27.8525863, "Kingfisher Drive Road Upgrade");
         projectLocations.add(loc15);
-        ProjectLocation loc16 = new ProjectLocation(-25.934042, 27.929928, "Lanseria II");
+        ProjectLocation loc16 = new ProjectLocation(-25.934042, 27.929928, "Lanseria Electrical SubStation");
         projectLocations.add(loc16);
-        ProjectLocation loc17 = new ProjectLocation(-26.26611, 27.865833, "Soweto");
+        ProjectLocation loc17 = new ProjectLocation(-26.26611, 27.865833, "Soweto Water & Sanitation");
         projectLocations.add(loc17);
-        ProjectLocation loc18 = new ProjectLocation(-25.93312, 28.01213, "Diepsloot");
+        ProjectLocation loc18 = new ProjectLocation(-25.93312, 28.01213, "Diepsloot Education Complex");
         projectLocations.add(loc18);
-        ProjectLocation loc19 = new ProjectLocation(-26.483333, 27.866667, "Orange Farm");
+        ProjectLocation loc19 = new ProjectLocation(-26.483333, 27.866667, "Orange Farm Water Works");
         projectLocations.add(loc19);
-        ProjectLocation loc20 = new ProjectLocation(-25.762438, 27.854500, "Pecanwood Crescent");
+        ProjectLocation loc20 = new ProjectLocation(-25.762438, 27.854500, "Pecanwood Crescent Dam Works");
         projectLocations.add(loc20);
-        ProjectLocation loc21 = new ProjectLocation(-25.756321, 27.854125, "Pecanwood Boat Club");
+        ProjectLocation loc21 = new ProjectLocation(-25.756321, 27.854125, "Pecanwood Boat Club Renovations");
         projectLocations.add(loc21);
 
         LOGGER.info(Emoji.RAINBOW + Emoji.RAINBOW +

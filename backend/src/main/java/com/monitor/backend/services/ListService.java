@@ -125,7 +125,8 @@ public class ListService {
         return mList;
     }
 
-
+    @Autowired
+    ProjectPositionRepository projectPositionRepository;
 
     public List<Project> findProjectsByLocation(double latitude, double longitude, double radiusInKM) throws Exception{
         LOGGER.info(Emoji.DICE.concat(Emoji.DICE).concat(" findProjectsByLocation ..."));
@@ -143,6 +144,27 @@ public class ListService {
                 "findProjectsByLocation: Nearby Projects found: " + projects.size() + " \uD83C\uDF3F"));
         return projects;
     }
+    public List<ProjectPosition> findProjectPositionsByLocation(double latitude, double longitude, double radiusInKM) throws Exception{
+        LOGGER.info(Emoji.DICE.concat(Emoji.DICE).concat(" findProjectPositionsByLocation ..."));
+        Point point = new Point(longitude, latitude);
+        Distance distance = new Distance(radiusInKM, Metrics.KILOMETERS);
+        List<ProjectPosition> positions = projectPositionRepository.findByPositionNear(point,distance);
+        LOGGER.info(Emoji.DOLPHIN.concat(Emoji.DOLPHIN).concat(Emoji.DOLPHIN)
+                + " Nearby Projects found: " + positions.size() + " : " + Emoji.RED_APPLE + " radius: " + radiusInKM);
+
+        LOGGER.info(Emoji.HEART_ORANGE.concat(Emoji.HEART_ORANGE).concat(
+                "findProjectsByLocation: Nearby ProjectPositions found: " + positions.size() + " \uD83C\uDF3F"));
+        return positions;
+    }
+    public List<ProjectPosition> getProjectPositions(String projectId) throws Exception {
+        LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS).concat("getProjectPositions: "
+                .concat(Emoji.FLOWER_YELLOW)));
+
+        List<ProjectPosition> m = projectPositionRepository.findByProjectId(projectId);
+
+        LOGGER.info(Emoji.LEAF.concat(Emoji.LEAF).concat("ProjectPositions found: " + m.size()));
+        return m;
+    }
 
     public List<City> getNearbyCities(double latitude, double longitude, double radiusInKM) throws Exception{
 
@@ -157,15 +179,6 @@ public class ListService {
                     + Emoji.COFFEE);
         }
         return cities;
-    }
-
-    public List<MonitorReport> getMonitorReports(String projectId)  throws Exception{
-
-        LOGGER.info(Emoji.GLOBE.concat(Emoji.GLOBE).concat("getMonitorReports ..."));
-        List<MonitorReport> mList = monitorReportRepository.findByProjectId(projectId);
-        LOGGER.info(Emoji.GLOBE.concat(Emoji.GLOBE).concat("getMonitorReports ... found: " + mList.size()));
-
-        return mList;
     }
 
     public List<Project> getOrganizationProjects(String organizationId)  throws Exception{

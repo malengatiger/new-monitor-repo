@@ -10,6 +10,7 @@ import 'package:monitorlibrary/data/organization.dart';
 import 'package:monitorlibrary/data/photo.dart';
 import 'package:monitorlibrary/data/position.dart';
 import 'package:monitorlibrary/data/project.dart';
+import 'package:monitorlibrary/data/project_position.dart';
 import 'package:monitorlibrary/data/questionnaire.dart';
 import 'package:monitorlibrary/data/section.dart';
 import 'package:monitorlibrary/data/user.dart';
@@ -67,6 +68,60 @@ class DataAPI {
     try {
       var result = await _callWebAPIPost(mURL + 'findProjectById', bag);
       return Project.fromJson(result);
+    } catch (e) {
+      pp(e);
+      throw e;
+    }
+  }
+
+  static Future<List<ProjectPosition>> findProjectPositionsById(
+      String projectId) async {
+    String mURL = await getUrl();
+    Map bag = {
+      'projectId': projectId,
+    };
+    try {
+      var result = await _callWebAPIGet(
+          mURL + 'getProjectPositions?projectId=$projectId');
+      List<ProjectPosition> list = List();
+      result.forEach((m) {
+        list.add(ProjectPosition.fromJson(m));
+      });
+      return list;
+    } catch (e) {
+      pp(e);
+      throw e;
+    }
+  }
+
+  static Future<List<Photo>> findPhotosById(String projectId) async {
+    String mURL = await getUrl();
+
+    try {
+      var result =
+          await _callWebAPIGet(mURL + 'getProjectPhotos?projectId=$projectId');
+      List<Photo> list = List();
+      result.forEach((m) {
+        list.add(Photo.fromJson(m));
+      });
+      return list;
+    } catch (e) {
+      pp(e);
+      throw e;
+    }
+  }
+
+  static Future<List<Video>> findVideosById(String projectId) async {
+    String mURL = await getUrl();
+
+    try {
+      var result =
+          await _callWebAPIGet(mURL + 'getProjectVideos?projectId=$projectId');
+      List<Video> list = List();
+      result.forEach((m) {
+        list.add(Video.fromJson(m));
+      });
+      return list;
     } catch (e) {
       pp(e);
       throw e;

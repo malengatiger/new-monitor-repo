@@ -135,19 +135,47 @@ public class ListController {
         LOGGER.info(Emoji.DOLPHIN.concat(Emoji.DOLPHIN) + " Users found: " + users.size());
         return users;
     }
-    @GetMapping("/getMonitorReports")
-    public List<MonitorReport> getMonitorReports(String projectId) throws Exception {
-        LOGGER.info(Emoji.DICE.concat(Emoji.DICE).concat(" getMonitorReports ..."));
-        List<MonitorReport> reports =  listService.getMonitorReports(projectId);
-        LOGGER.info(Emoji.DOLPHIN.concat(Emoji.DOLPHIN) + " MonitorReports found: " + reports.size());
-        return reports;
-    }
+
     @GetMapping("/findProjectsByLocation")
     public List<Project> findProjectsByLocation(double latitude, double longitude, double radiusInKM) throws Exception {
         LOGGER.info(Emoji.DICE.concat(Emoji.DICE).concat(" findProjectsByLocation ..."));
         List<Project> projects =  listService.findProjectsByLocation(latitude, longitude, radiusInKM);
         LOGGER.info(Emoji.DOLPHIN.concat(Emoji.DOLPHIN) + " Nearby Projects found: " + projects.size());
         return projects;
+    }
+    @GetMapping("/findProjectPositionsByLocation")
+    public List<ProjectPosition> findProjectPositionsByLocation(double latitude, double longitude, double radiusInKM) throws Exception {
+        LOGGER.info(Emoji.DICE.concat(Emoji.DICE).concat(" findProjectsByLocation ..."));
+        List<ProjectPosition> positions =  listService.findProjectPositionsByLocation(latitude, longitude, radiusInKM);
+        LOGGER.info(Emoji.DOLPHIN.concat(Emoji.DOLPHIN) + " Nearby ProjectPositions found: " + positions.size());
+        return positions;
+    }
+    @GetMapping("/getProjectConditions")
+    public List<Condition> getProjectConditions(String projectId) throws Exception {
+        LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS)
+                .concat("getProjectConditions ... " + projectId));
+        return listService.getProjectConditions(projectId);
+    }
+    @GetMapping("/getProjectPositions")
+    public List<ProjectPosition> getProjectPositions(String projectId)
+            throws Exception {
+        LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS)
+                .concat("getProjectPositions: " + projectId));
+        return listService.getProjectPositions(projectId);
+    }
+    @GetMapping("/getProjectPhotos")
+    public List<Photo> getProjectPhotos(String projectId)
+            throws Exception {
+        LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS)
+                .concat("getProjectPositions: " + projectId));
+        return listService.getProjectPhotos(projectId);
+    }
+    @GetMapping("/getProjectVideos")
+    public List<Video> getProjectVideos(String projectId)
+            throws Exception {
+        LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS)
+                .concat("getProjectVideos: " + projectId));
+        return listService.getProjectVideos(projectId);
     }
     @GetMapping("/getNearbyCities")
     public List<City> getNearbyCities(double latitude, double longitude, double radiusInKM) throws Exception {

@@ -131,16 +131,17 @@ public class DataController {
     @Autowired
     MongoDataService mongoDataService;
     @PostMapping("/addProject")
-    public String addProject(Project project) throws Exception {
+    public Project addProject(Project project) throws Exception {
         LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS).concat("Adding Project: ".concat(project.getName())));
         return dataService.addProject(project);
     }
     @PostMapping("/addProjectPosition")
-    public String addProjectPosition(String projectId, double latitude, double longitude)
+    public ProjectPosition addProjectPosition(@RequestBody ProjectPosition projectPosition)
             throws Exception {
         LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS).concat("Adding Project Position: " ));
-        return dataService.addProjectPosition(projectId,latitude,longitude);
+        return dataService.addProjectPosition(projectPosition);
     }
+
 
     @PostMapping("/addPhoto")
     public Photo addPhoto(@RequestBody Photo photo) throws Exception {
@@ -166,24 +167,7 @@ public class DataController {
 
     @Autowired
     ListService listService;
-    @GetMapping("/getProjectConditions")
-    public List<Condition> getProjectConditions(String projectId) throws Exception {
-        LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS)
-                .concat("getProjectConditions ... " + projectId));
-        return listService.getProjectConditions(projectId);
-    }
-    @GetMapping("/getProjectPhotos")
-    public List<Photo> getProjectPhotos(String projectId) throws Exception {
-        LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS)
-                .concat("getProjectPhotos ... " + projectId));
-        return listService.getProjectPhotos(projectId);
-    }
-    @GetMapping("/getProjectVideos")
-    public List<Video> getProjectVideos(String projectId) throws Exception {
-        LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS)
-                .concat("getProjectVideos ... " + projectId));
-        return listService.getProjectVideos(projectId);
-    }
+
 
     @PostMapping("/addUser")
     public String addUser(User user, String password) throws Exception {

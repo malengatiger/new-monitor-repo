@@ -53,6 +53,8 @@ public class DataService {
     CountryRepository countryRepository;
     @Autowired
     OrganizationRepository organizationRepository;
+    @Autowired
+    ProjectPositionRepository projectPositionRepository;
 
 
     private boolean isInitialized = false;
@@ -123,38 +125,27 @@ public class DataService {
         condition.get_id();
     }
 
-    public String addProjectPosition(String projectId, double latitude, double longitude) throws Exception {
+    public ProjectPosition addProjectPosition(ProjectPosition projectPosition) throws Exception {
         LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS).concat("addProjectPosition: "
                 .concat(Emoji.FLOWER_YELLOW)));
 
-        Project project = projectRepository.findByProjectId(projectId);
-        if (project == null) {
-            throw new Exception("Project not found");
-        }
-        if (project.getProjectPositions() == null) {
-            project.setProjectPositions(new ArrayList<>());
-        }
-        List<Double> coordinates = new ArrayList<>();
-        coordinates.add(longitude);
-        coordinates.add(latitude);
+        ProjectPosition m = projectPositionRepository.save(projectPosition);
 
-        project.getProjectPositions().add(new Position("Point", coordinates));
-        projectRepository.save(project);
-
-        LOGGER.info(Emoji.LEAF.concat(Emoji.LEAF).concat("Project added: " + project.getProjectId()));
-        return project.getProjectId();
+        LOGGER.info(Emoji.LEAF.concat(Emoji.LEAF).concat("ProjectPosition added: " + projectPosition.getProjectId()));
+        return m;
     }
 
-    public String addProject(Project project) throws Exception {
+
+    public Project addProject(Project project) throws Exception {
         LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS).concat("addProject: "
                 .concat(project.getName()).concat(" ")
                 .concat(Emoji.FLOWER_YELLOW)));
         project.setProjectId(UUID.randomUUID().toString());
 
-        projectRepository.save(project);
+        Project m =projectRepository.save(project);
 
         LOGGER.info(Emoji.LEAF.concat(Emoji.LEAF).concat("Project added: " + project.getProjectId()));
-        return project.getProjectId();
+        return m;
     }
 
     public String addCity(City city) throws Exception {

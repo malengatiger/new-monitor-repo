@@ -1,6 +1,7 @@
 import 'package:meta/meta.dart';
 import 'package:monitorlibrary/data/monitor_report.dart';
 import 'package:monitorlibrary/data/position.dart';
+import 'package:monitorlibrary/data/project_position.dart';
 import 'package:monitorlibrary/data/ratingContent.dart';
 
 import 'city.dart';
@@ -15,7 +16,7 @@ class Project {
   String organizationName;
   List<City> nearestCities;
   Position position;
-  List<Position> projectPositions;
+  List<ProjectPosition> projectPositions;
   List<ph.Photo> photos;
   List<ph.Video> videos;
   List<RatingContent> ratings;
@@ -78,7 +79,7 @@ class Project {
     if (data['projectPositions'] != null) {
       List list = data['projectPositions'];
       list.forEach((m) {
-        this.projectPositions.add(Position.fromJson(m));
+        this.projectPositions.add(ProjectPosition.fromJson(m));
       });
     }
     this.photos = [];
@@ -104,10 +105,10 @@ class Project {
     }
   }
   Map<String, dynamic> toJson() {
-    List mprojectPositions = List();
+    List mProjectPositions = List();
     if (projectPositions != null) {
       projectPositions.forEach((pos) {
-        mprojectPositions.add(pos.toJson());
+        mProjectPositions.add(pos.toJson());
       });
     }
     List mPhotos = List();
@@ -153,7 +154,8 @@ class Project {
       'videos': mVideos,
       'ratings': mRatings,
       'created': created,
-      'projectPositions': mprojectPositions,
+      'position': position == null ? null : position.toJson(),
+      'projectPositions': mProjectPositions,
     };
     return map;
   }

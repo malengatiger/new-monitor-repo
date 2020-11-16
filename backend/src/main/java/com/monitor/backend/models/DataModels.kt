@@ -39,8 +39,7 @@ data class Project(var _partitionKey: String?, @Id var _id: String?,
                    var monitorMaxDistanceInMetres: Double? = 50.0,
                    var created: String,
                    var nearestCities: List<City>?,
-                   var position: Position,
-                   var projectPositions: List<Position>?) {}
+                   var position: Position) {}
 
 data class Photo(var _partitionKey: String?, @Id var _id: String?,
                  var projectId: String,
@@ -92,6 +91,11 @@ data class Questionnaire(var _partitionKey: String?, @Id var _id: String?, var o
 //data class Position(var latitude: Double, var longitude: Double, var geohash: String?) {
 //}
 data class Position(var type: String, var coordinates: List<Double>) {
+}
+
+data class ProjectPosition(var projectId: String, var position: Position,
+                           var projectName: String, var caption: String?, var created: String) {
+
 }
 
 data class Country(var _partitionKey: String?, @Id var _id: String?, var countryId: String?, var name: String, var countryCode: String,
