@@ -5,7 +5,6 @@ import 'dart:math';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:image/image.dart' as img;
 import 'package:monitorlibrary/api/sharedprefs.dart';
 import 'package:monitorlibrary/data/photo.dart';
 import 'package:monitorlibrary/data/position.dart';
@@ -13,7 +12,6 @@ import 'package:monitorlibrary/data/project.dart';
 import 'package:monitorlibrary/data/user.dart';
 import 'package:monitorlibrary/location/loc_bloc.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:video_thumbnail/video_thumbnail.dart';
 
 import '../functions.dart';
 import 'data_api.dart';
@@ -42,6 +40,7 @@ class StorageBloc {
   Future<String> uploadPhotoOrVideo(
       {@required StorageBlocListener listener,
       @required File file,
+      @required File thumbnailFile,
       @required Project project,
       @required Position projectPosition,
       @required bool isVideo}) async {
@@ -50,7 +49,7 @@ class StorageBloc {
         DateTime.now().toUtc().toIso8601String() +
         '.${isVideo ? 'mp4' : 'jpg'}';
     try {
-      pp('☕️☕️☕️ StorageAPI.uploadPhoto ------------ ..... ☕️ path: ${file.path}');
+      pp('☕️☕️☕️ .uploadPhoto ------------ ..... ☕️ path: ${file.path}');
       var firebaseStorageRef =
           FirebaseStorage.instance.ref().child(storageName).child(name);
 
@@ -62,68 +61,33 @@ class StorageBloc {
         var bytesTransferred = snapShot.bytesTransferred;
         var bt = (bytesTransferred / 1024).toStringAsFixed(2) + ' KB';
         var tot = (totalByteCount / 1024).toStringAsFixed(2) + ' KB';
-        pp('☕️☕️☕️ StorageAPI.uploadPhoto:  💚 💚 💚 💚 💚 💚 '
+        pp('☕️☕️☕️ .uploadPhoto:  💚 💚 💚 💚 💚 💚 '
             'photo upload complete '
             '******* 🧩 $bt KB of $tot KB 🧩 transferred.'
             ' date: ${DateTime.now().toIso8601String()}\n\n');
 
-        var url = await firebaseStorageRef.getDownloadURL();
+        var fileUrl = await firebaseStorageRef.getDownloadURL();
 
         listener.onFileUploadComplete(
-            url, snapShot.totalBytes, snapShot.bytesTransferred);
+            fileUrl, snapShot.totalBytes, snapShot.bytesTransferred);
 
-        String thumbnailUrl = 'somefuckingurl.com';
-        File videoThumbnail, imageThumbnail;
-        if (!isVideo) {
-          imageThumbnail = await getThumbnail(file);
-          thumbnailUrl = await _uploadThumbnail(
-              listener: listener,
-              file: imageThumbnail,
-              projectId: project.projectId,
-              type: 'jpg');
-        } else {
-          videoThumbnail = await getVideoThumbnail(file);
-          thumbnailUrl = await _uploadThumbnail(
-              listener: listener,
-              file: videoThumbnail,
-              projectId: project.projectId,
-              type: 'mp4');
-        }
-        var mediaBag = MediaBag(
-            url: url,
-            thumbnailUrl: thumbnailUrl,
+        var mType = isVideo ? 'mp4' : 'jpg';
+        _uploadThumbnail(
+            listener: listener,
+            file: file,
+            type: mType,
+            thumbnailFile: thumbnailFile,
+            position: projectPosition,
             isVideo: isVideo,
-            date: getFormattedDateHourMinSec(DateTime.now().toString()),
-            thumbnail: isVideo ? videoThumbnail : imageThumbnail);
-
-        _mediaBags.add(mediaBag);
-        pp('🍇🍇🍇🍇 ......... Sending result of upload in mediaBag to stream: '
-            '🍇 ${_mediaBags.length} 🍇');
-        _mediaStreamController.sink.add(_mediaBags);
-
-        if (isVideo) {
-          _writeVideo(
-              project: project,
-              projectPosition: projectPosition,
-              fileUrl: url,
-              thumbnailUrl: thumbnailUrl);
-        } else {
-          _writePhoto(
-              project: project,
-              projectPosition: projectPosition,
-              fileUrl: url,
-              thumbnailUrl: thumbnailUrl);
-        }
-
-        return url;
+            fileUrl: fileUrl,
+            project: project);
       }).catchError((e) {
         pp(e);
         if (listener != null) listener.onError('👿👿👿👿 Photo upload failed');
       });
     } catch (e) {
       pp(e);
-      if (listener != null)
-        listener.onError('👿👿👿👿 Houston, we have a problem $e');
+      listener.onError('👿👿👿👿 Houston, we have a problem $e');
     }
   }
 
@@ -133,84 +97,76 @@ class StorageBloc {
       var bytesTransferred = event.bytesTransferred;
       var bt = (bytesTransferred / 1024).toStringAsFixed(2) + ' KB';
       var tot = (totalByteCount / 1024).toStringAsFixed(2) + ' KB';
-      pp('☕️☕️☕️ StorageAPI.uploadPhoto:  💚 progress ******* 🧩 $bt KB of $tot KB 🧩 transferred');
+      pp('☕️☕️☕️ .uploadPhoto:  💚 progress ******* 🧩 $bt KB of $tot KB 🧩 transferred');
       if (listener != null)
         listener.onFileProgress(event.totalBytes, event.bytesTransferred);
     });
   }
 
-  Future<File> getThumbnail(File file) async {
-    img.Image image = img.decodeImage(file.readAsBytesSync());
-    var thumbnail = img.copyResize(image, width: 160);
-    final Directory directory = await getApplicationDocumentsDirectory();
-    final File mFile = File(
-        '${directory.path}/thumbnail${DateTime.now().millisecondsSinceEpoch}.jpg');
-    var thumb = mFile..writeAsBytesSync(img.encodeJpg(thumbnail, quality: 100));
-    var len = await thumb.length();
-    pp('....... 💜  .... thumbnail generated: 😡 ${(len / 1024).toStringAsFixed(1)} KB');
-    return thumb;
-  }
-
-  Future<File> getVideoThumbnail(File file) async {
-    final path = await VideoThumbnail.thumbnailFile(
-      video: file.path,
-      imageFormat: ImageFormat.JPEG,
-      maxWidth:
-          160, // specify the width of the thumbnail, let the height auto-scaled to keep the source aspect ratio
-      quality: 90,
-    );
-    var thumb = File(path);
-    var len = await thumb.length();
-    pp('....... 💜  .... video thumbnail generated: 😡 ${(len / 1024).toStringAsFixed(1)} KB - 🍏 🍏 🍏 path: $path');
-    return thumb;
-  }
-
-  // ignore: missing_return
   Future<String> _uploadThumbnail(
       {@required StorageBlocListener listener,
       @required File file,
-      @required String projectId,
-      @required type}) async {
+      @required File thumbnailFile,
+      @required type,
+      @required Project project,
+      @required Position position,
+      @required bool isVideo,
+      @required String fileUrl}) async {
     rand = new Random(new DateTime.now().millisecondsSinceEpoch);
-    var name = 'thumb@$projectId@' +
+    var name = 'thumb@${project.projectId}@' +
         DateTime.now().toUtc().toIso8601String() +
         '.$type';
+    String thumbnailUrl;
     try {
-      pp('☕️☕️☕️ StorageAPI.uploadThumbnail ------------ ..... ☕️ path: ${file.path}');
+      pp('☕️☕️☕️ .uploadThumbnail ------------ ..... ☕️ path: ${thumbnailFile.path}');
       var firebaseStorageRef =
           FirebaseStorage.instance.ref().child("monitorPhotos").child(name);
 
-      var uploadTask = firebaseStorageRef.putFile(file);
-
-      uploadTask.snapshotEvents.listen((event) {
-        var totalByteCount = event.totalBytes;
-        var bytesTransferred = event.bytesTransferred;
-        var bt = (bytesTransferred / 1024).toStringAsFixed(2) + ' KB';
-        var tot = (totalByteCount / 1024).toStringAsFixed(2) + ' KB';
-        pp('☕️☕️☕️ StorageAPI.uploadThumbnail:  🥦 progress ******* 🍓 $bt KB of $tot KB 🍓 transferred');
-        if (listener != null)
-          listener.onThumbnailProgress(
-              event.totalBytes, event.bytesTransferred);
-      });
-
+      var uploadTask = firebaseStorageRef.putFile(thumbnailFile);
+      thumbnailProgress(uploadTask, listener);
       uploadTask.whenComplete(() => null).then((snap) async {
         var totalByteCount = snap.totalBytes;
         var bytesTransferred = snap.bytesTransferred;
         var bt = (bytesTransferred / 1024).toStringAsFixed(2) + ' KB';
         var tot = (totalByteCount / 1024).toStringAsFixed(2) + ' KB';
 
-        pp('☕️☕️☕️ StorageAPI.uploadThumbnail:  🥦 🥦 🥦 🥦 '
+        pp('☕️☕️☕️ .uploadThumbnail:  🥦 🥦 🥦 🥦 '
             'thumbnail upload complete '
             '******* 🍓 $bt KB of $tot KB 🍓 transferred.'
             ' ${DateTime.now().toIso8601String()}\n\n');
-        var url = await firebaseStorageRef.getDownloadURL();
-        if (listener != null) {
-          listener.onThumbnailUploadComplete(
-              url, snap.totalBytes, snap.bytesTransferred);
+
+        thumbnailUrl = await firebaseStorageRef.getDownloadURL();
+        pp('☕️☕️☕️ .uploadThumbnail:  🥦 🥦 🥦 🥦 thumbnailUrl from storage: $thumbnailUrl');
+        listener.onThumbnailUploadComplete(
+            thumbnailUrl, snap.totalBytes, snap.bytesTransferred);
+        if (isVideo) {
+          _writeVideo(
+              project: project,
+              projectPosition: position,
+              fileUrl: fileUrl,
+              thumbnailUrl: thumbnailUrl);
         } else {
-          pp('Listener is null ... FIX this! ............................');
+          _writePhoto(
+              project: project,
+              projectPosition: position,
+              fileUrl: fileUrl,
+              thumbnailUrl: thumbnailUrl);
         }
-        return url;
+        var mediaBag = MediaBag(
+            url: fileUrl,
+            thumbnailUrl: thumbnailUrl,
+            isVideo: isVideo,
+            file: file,
+            date: getFormattedDate(DateTime.now().toString()),
+            thumbnailFile: thumbnailFile);
+
+        _mediaBags.add(mediaBag);
+        pp('\n\n🍇🍇🍇🍇 uploadTask.whenComplete: 🇿🇦 💙💙 💙💙 💙💙 mediaStream: '
+            '......... Sending result of upload in mediaBag to stream: '
+            '🍇 ${_mediaBags.length} 🍇 mediaBags in stream\n\n');
+        _mediaStreamController.sink.add(_mediaBags);
+
+        return thumbnailUrl;
       }).catchError((e) {
         pp(e);
         if (listener != null)
@@ -218,9 +174,21 @@ class StorageBloc {
       });
     } catch (e) {
       pp(e);
-      if (listener != null)
-        listener.onError('👿👿👿👿 Houston, we have a problem $e');
+      listener.onError('👿👿👿👿 Houston, we have a problem $e');
     }
+    return thumbnailUrl;
+  }
+
+  void thumbnailProgress(UploadTask uploadTask, StorageBlocListener listener) {
+    uploadTask.snapshotEvents.listen((event) {
+      var totalByteCount = event.totalBytes;
+      var bytesTransferred = event.bytesTransferred;
+      var bt = (bytesTransferred / 1024).toStringAsFixed(2) + ' KB';
+      var tot = (totalByteCount / 1024).toStringAsFixed(2) + ' KB';
+      pp('☕️☕️☕️ .uploadThumbnail:  🥦 progress ******* 🍓 $bt KB of $tot KB 🍓 transferred');
+      if (listener != null)
+        listener.onThumbnailProgress(event.totalBytes, event.bytesTransferred);
+    });
   }
 
   void _writePhoto(
@@ -281,13 +249,13 @@ class StorageBloc {
   }
 
   Future<File> downloadFile(String url) async {
-    pp('🌿🌿🌿🌿🌿🌿🌿 StorageAPI: downloadFile: 😡😡😡 $url ....');
+    pp('🌿🌿🌿🌿🌿🌿🌿 : downloadFile: 😡😡😡 $url ....');
     final http.Response response = await http.get(url).catchError((e) {
       pp('😡😡😡 Download failed: 😡😡😡 $e');
       throw Exception('😡😡😡 Download failed: $e');
     });
 
-    pp('🌿🌿🌿🌿🌿🌿🌿 StorageAPI: downloadFile: OK?? 💜💜💜💜'
+    pp('🌿🌿🌿🌿🌿🌿🌿 : downloadFile: OK?? 💜💜💜💜'
         '  statusCode: ${response.statusCode}');
 
     if (response.statusCode == 200) {
@@ -298,40 +266,40 @@ class StorageBloc {
       }
       final File mFile = File(
           '${directory.path}/download${DateTime.now().millisecondsSinceEpoch}.$type');
-      pp('🌿🌿🌿🌿🌿🌿🌿 StorageAPI: downloadFile: 💜  .... new file: ${mFile.path}');
+      pp('🌿🌿🌿🌿🌿🌿🌿 : downloadFile: 💜  .... new file: ${mFile.path}');
       mFile.writeAsBytesSync(response.bodyBytes);
       var len = await mFile.length();
-      pp('🌿🌿🌿🌿🌿🌿🌿 StorageAPI: downloadFile: 💜  .... file downloaded length: 😡 '
+      pp('🌿🌿🌿🌿🌿🌿🌿 : downloadFile: 💜  .... file downloaded length: 😡 '
           '${(len / 1024).toStringAsFixed(1)} KB - path: ${mFile.path}');
       return mFile;
     } else {
-      pp('🌿🌿🌿🌿🌿🌿🌿 StorageAPI: downloadFile: Download failed: 😡😡😡 statusCode ${response.statusCode} 😡 ${response.body} 😡');
+      pp('🌿🌿🌿🌿🌿🌿🌿 : downloadFile: Download failed: 😡😡😡 statusCode ${response.statusCode} 😡 ${response.body} 😡');
       throw Exception('Download failed: statusCode: ${response.statusCode}');
     }
   }
 
   // ignore: missing_return
   Future<int> deleteFolder(String folderName) async {
-    pp('StorageAPI.deleteFolder ######## deleting $folderName');
+    pp('.deleteFolder ######## deleting $folderName');
     var task = _firebaseStorage.ref().child(folderName).delete();
     await task.then((f) {
-      pp('StorageAPI.deleteFolder $folderName deleted from FirebaseStorage');
+      pp('.deleteFolder $folderName deleted from FirebaseStorage');
       return 0;
     }).catchError((e) {
-      pp('StorageAPI.deleteFolder ERROR $e');
+      pp('.deleteFolder ERROR $e');
       return 1;
     });
   }
 
   // ignore: missing_return
   Future<int> deleteFile(String folderName, String name) async {
-    pp('StorageAPI.deleteFile ######## deleting $folderName : $name');
+    pp('.deleteFile ######## deleting $folderName : $name');
     var task = _firebaseStorage.ref().child(folderName).child(name).delete();
     task.then((f) {
-      pp('StorageAPI.deleteFile $folderName : $name deleted from FirebaseStorage');
+      pp('.deleteFile $folderName : $name deleted from FirebaseStorage');
       return 0;
     }).catchError((e) {
-      pp('StorageAPI.deleteFile ERROR $e');
+      pp('.deleteFile ERROR $e');
       return 1;
     });
   }
@@ -360,8 +328,14 @@ abstract class StorageBlocListener {
 class MediaBag {
   String url, thumbnailUrl, date;
   bool isVideo;
-  File thumbnail;
+  File file;
+  File thumbnailFile;
 
   MediaBag(
-      {this.url, this.thumbnailUrl, this.isVideo, this.thumbnail, this.date});
+      {this.url,
+      this.file,
+      this.thumbnailUrl,
+      this.isVideo,
+      this.thumbnailFile,
+      this.date});
 }

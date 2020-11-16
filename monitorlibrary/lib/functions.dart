@@ -188,6 +188,11 @@ class Styles {
     fontSize: small,
     color: Colors.pink,
   );
+  static TextStyle pinkTiny = TextStyle(
+    fontWeight: FontWeight.normal,
+    fontSize: tiny,
+    color: Colors.pink,
+  );
   static TextStyle pinkBoldMedium = TextStyle(
     fontWeight: FontWeight.bold,
     fontSize: medium,
@@ -222,6 +227,11 @@ class Styles {
   static TextStyle purpleBoldSmall = TextStyle(
     fontWeight: FontWeight.bold,
     fontSize: small,
+    color: Colors.purple,
+  );
+  static TextStyle purpleTiny = TextStyle(
+    fontWeight: FontWeight.normal,
+    fontSize: tiny,
     color: Colors.purple,
   );
   static TextStyle purpleBoldMedium = TextStyle(
@@ -268,6 +278,11 @@ class Styles {
   static TextStyle blueSmall = TextStyle(
     fontWeight: FontWeight.normal,
     fontSize: small,
+    color: Colors.blue,
+  );
+  static TextStyle blueTiny = TextStyle(
+    fontWeight: FontWeight.normal,
+    fontSize: tiny,
     color: Colors.blue,
   );
   static TextStyle blueBoldMedium = TextStyle(
@@ -355,6 +370,11 @@ class Styles {
   static TextStyle whiteSmall = TextStyle(
     fontWeight: FontWeight.normal,
     fontSize: small,
+    color: Colors.white,
+  );
+  static TextStyle whiteTiny = TextStyle(
+    fontWeight: FontWeight.normal,
+    fontSize: tiny,
     color: Colors.white,
   );
   static TextStyle whiteBoldLarge = TextStyle(
