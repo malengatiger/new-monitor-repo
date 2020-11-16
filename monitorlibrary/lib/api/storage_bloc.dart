@@ -118,6 +118,11 @@ class StorageBloc {
         '.$type';
     String thumbnailUrl;
     try {
+      if (isVideo) {
+        _addVideoBagToStream(
+            fileUrl: fileUrl, project: project, position: position, file: file);
+        return null;
+      }
       pp('☕️☕️☕️ .uploadThumbnail ------------ ..... ☕️ path: ${thumbnailFile.path}');
       var firebaseStorageRef =
           FirebaseStorage.instance.ref().child("monitorPhotos").child(name);
@@ -139,19 +144,11 @@ class StorageBloc {
         pp('☕️☕️☕️ .uploadThumbnail:  🥦 🥦 🥦 🥦 thumbnailUrl from storage: $thumbnailUrl');
         listener.onThumbnailUploadComplete(
             thumbnailUrl, snap.totalBytes, snap.bytesTransferred);
-        if (isVideo) {
-          _writeVideo(
-              project: project,
-              projectPosition: position,
-              fileUrl: fileUrl,
-              thumbnailUrl: thumbnailUrl);
-        } else {
-          _writePhoto(
-              project: project,
-              projectPosition: position,
-              fileUrl: fileUrl,
-              thumbnailUrl: thumbnailUrl);
-        }
+        _writePhoto(
+            project: project,
+            projectPosition: position,
+            fileUrl: fileUrl,
+            thumbnailUrl: thumbnailUrl);
         var mediaBag = MediaBag(
             url: fileUrl,
             thumbnailUrl: thumbnailUrl,
@@ -165,8 +162,6 @@ class StorageBloc {
             '......... Sending result of upload in mediaBag to stream: '
             '🍇 ${_mediaBags.length} 🍇 mediaBags in stream\n\n');
         _mediaStreamController.sink.add(_mediaBags);
-
-        return thumbnailUrl;
       }).catchError((e) {
         pp(e);
         if (listener != null)
@@ -177,6 +172,31 @@ class StorageBloc {
       listener.onError('👿👿👿👿 Houston, we have a problem $e');
     }
     return thumbnailUrl;
+  }
+
+  void _addVideoBagToStream(
+      {@required String fileUrl,
+      @required File file,
+      @required Project project,
+      @required Position position}) {
+    var mediaBag = MediaBag(
+        url: fileUrl,
+        thumbnailUrl: null,
+        isVideo: true,
+        file: file,
+        date: getFormattedDate(DateTime.now().toString()),
+        thumbnailFile: null);
+
+    _mediaBags.add(mediaBag);
+    pp('\n\n🍇🍇🍇🍇 uploadTask.whenComplete: 🇿🇦 💙💙 💙💙 💙💙 mediaStream: '
+        '......... Sending result of upload in mediaBag to stream: '
+        '🍇 ${_mediaBags.length} 🍇 mediaBags in stream\n\n');
+    _mediaStreamController.sink.add(_mediaBags);
+    _writeVideo(
+        project: project,
+        projectPosition: position,
+        fileUrl: fileUrl,
+        thumbnailUrl: 'not available');
   }
 
   void thumbnailProgress(UploadTask uploadTask, StorageBlocListener listener) {
