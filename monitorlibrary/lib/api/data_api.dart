@@ -94,7 +94,7 @@ class DataAPI {
     }
   }
 
-  static Future<List<Photo>> findPhotosById(String projectId) async {
+  static Future<List<Photo>> findPhotosByProject(String projectId) async {
     String mURL = await getUrl();
 
     try {
