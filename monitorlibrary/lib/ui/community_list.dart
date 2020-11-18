@@ -38,14 +38,14 @@ class _CommunityListState extends State<CommunityList> {
     });
     country = await Prefs.getCountry();
     if (country == null) {
-      countries = await bloc.getCountries();
+      countries = await adminBloc.getCountries();
       if (countries.length == 1) {
         country = countries.elementAt(0);
       }
     }
     if (country != null) {
       try {
-        await bloc.findCommunitiesByCountry(country.countryId);
+        await adminBloc.findCommunitiesByCountry(country.countryId);
       } catch (e) {
         pp('👿 error getting community list ... 👿👿👿👿 does fucking the snackBar show?');
         AppSnackbar.showErrorSnackbar(
@@ -60,7 +60,7 @@ class _CommunityListState extends State<CommunityList> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
-      stream: bloc.settlementStream,
+      stream: adminBloc.settlementStream,
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.hasData) {
           list = snapshot.data;

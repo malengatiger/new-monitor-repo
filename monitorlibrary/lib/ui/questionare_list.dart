@@ -42,7 +42,7 @@ class _QuestionnaireListState extends State<QuestionnaireList> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<List<Questionnaire>>(
-        stream: bloc.questionnaireStream,
+        stream: adminBloc.questionnaireStream,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             questionnaires = snapshot.data;

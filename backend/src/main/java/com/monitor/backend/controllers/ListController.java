@@ -163,6 +163,50 @@ public class ListController {
                 .concat("getProjectPositions: " + projectId));
         return listService.getProjectPositions(projectId);
     }
+    @GetMapping("/countPhotosByProject")
+    public int countPhotosByProject(String projectId)
+            throws Exception {
+        LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS)
+                .concat("countPhotosByProject:  starting call: " + projectId));
+        return listService.countPhotosByProject(projectId);
+    }
+    @GetMapping("/countPhotosByUser")
+    public int countPhotosByUser(String userId)
+            throws Exception {
+        LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS)
+                .concat("countPhotosByUser:  starting call: " + userId));
+        return listService.countPhotosByUser(userId);
+    }
+
+    @GetMapping("/countVideosByProject")
+    public int countVideosByProject(String projectId)
+            throws Exception {
+        LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS)
+                .concat("countVideosByProject:  starting call: " + projectId));
+        return listService.countVideosByProject(projectId);
+    }
+    @GetMapping("/countVideosByUser")
+    public int countVideosByUser(String userId)
+            throws Exception {
+        LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS)
+                .concat("countVideosByUser:  starting call: " + userId));
+        return listService.countVideosByUser(userId);
+    }
+    @GetMapping("/getCountsByProject")
+    public ProjectCount getCountsByProject(String projectId)
+            throws Exception {
+        LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS)
+                .concat("getCountsByProject: " + projectId));
+        return listService.getCountsByProject(projectId);
+    }
+    @GetMapping("/getCountsByUser")
+    public UserCount getCountsByUser(String userId)
+            throws Exception {
+        LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS)
+                .concat("getCountsByUser: " + userId));
+        return listService.getCountsByUser(userId);
+    }
+    
     @GetMapping("/getProjectPhotos")
     public List<Photo> getProjectPhotos(String projectId)
             throws Exception {

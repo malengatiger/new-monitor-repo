@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:geolocator/geolocator.dart';
 import 'package:monitorlibrary/api/data_api.dart';
 import 'package:monitorlibrary/api/sharedprefs.dart';
 import 'package:monitorlibrary/data/community.dart';
@@ -65,8 +66,14 @@ class MonitorBloc {
 
   Future<List<Project>> getProjectsWithinRadius(
       {double radiusInKM = 100.5, bool checkUserOrg = true}) async {
-    var pos = await locationBloc.getLocation();
-    pp('💜 💜 💜 MonitorBloc: current location: 💜 latitude: ${pos.latitude} longitude: ${pos.longitude}');
+    Position pos;
+    try {
+      var pos = await locationBloc.getLocation();
+      pp('💜 💜 💜 MonitorBloc: current location: 💜 latitude: ${pos.latitude} longitude: ${pos.longitude}');
+    } catch (e) {
+      pp('MonitorBloc: Location is fucked!');
+      throw e;
+    }
     var projects = await DataAPI.findProjectsByLocation(
         latitude: pos.latitude,
         longitude: pos.longitude,
@@ -91,8 +98,6 @@ class MonitorBloc {
   }
 
   Future<List<Project>> getOrganizationProjects({String organizationId}) async {
-    var pos = await locationBloc.getLocation();
-    pp('💜 💜 💜 MonitorBloc: current location: 💜 latitude: ${pos.latitude} longitude: ${pos.longitude}');
     _projects = await DataAPI.findProjectsByOrganization(organizationId);
     _projController.sink.add(_projects);
     pp('💜 💜 💜 MonitorBloc: OrganizationProjects found: 💜 ${_projects.length} projects ');

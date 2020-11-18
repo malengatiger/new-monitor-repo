@@ -24,7 +24,7 @@ data class Community(var _partitionKey: String?, @Id var _id: String?, var name:
 }
 
 data class User(var _partitionKey: String?, @Id var _id: String?, var name: String, var email: String, var cellphone: String, var userId: String?,
-                var organizationId: String?, var organizationName: String, var created: String, var userType: String) {
+                var organizationId: String?, var organizationName: String, var created: String, var userType: String, var password:String?) {
 }
 
 data class Organization(var _partitionKey: String?, @Id var _id: String?, var name: String, var countryName: String, var countryId: String,
@@ -92,6 +92,13 @@ data class Questionnaire(var _partitionKey: String?, @Id var _id: String?, var o
 //}
 data class Position(var type: String, var coordinates: List<Double>) {
 }
+
+data class UserCount(var userId: String,  var photos: Int = 0, var videos: Int = 0, var projects:Int = 0) {
+}
+
+data class ProjectCount(var projectId: String, var photos: Int = 0, var videos: Int = 0) {
+}
+
 
 data class ProjectPosition(var projectId: String, var position: Position,
                            var projectName: String, var caption: String?, var created: String) {

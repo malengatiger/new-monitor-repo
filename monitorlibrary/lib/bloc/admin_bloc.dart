@@ -13,7 +13,7 @@ import 'package:monitorlibrary/data/user.dart';
 import 'package:monitorlibrary/functions.dart';
 import 'package:monitorlibrary/location/loc_bloc.dart';
 
-final AdminBloc bloc = AdminBloc();
+final AdminBloc adminBloc = AdminBloc();
 
 class AdminBloc {
   StreamController<List<Community>> _settController =
@@ -43,7 +43,7 @@ class AdminBloc {
   List<User> _users = List();
   List<Country> _countries = List();
 
-  GeneralBloc() {
+  AdminBloc() {
     checkPermission();
     _setActiveQuestionnaire();
     setActiveUser();
@@ -176,6 +176,12 @@ class AdminBloc {
     _userController.sink.add(_users);
   }
 
+  Future updateUser(User user) async {
+    var res = await DataAPI.addUser(user);
+    _users.add(res);
+    _userController.sink.add(_users);
+  }
+
   Future<List<User>> findUsersByOrganization(String organizationId) async {
     _users.clear();
     var res = await DataAPI.findUsersByOrganization(organizationId);
@@ -202,9 +208,16 @@ class AdminBloc {
 
   Future<Project> addProject(Project project) async {
     var res = await DataAPI.addProject(project);
-    pp('🎽 🎽 🎽 Bloc: addProject: Project adding to stream ...');
+    pp('🎽 🎽 🎽 adminBloc: addProject: Project adding to stream ...');
     _projects.add(res);
     _projController.sink.add(_projects);
+    findProjectsByOrganization(project.organizationId);
+    return res;
+  }
+
+  Future<Project> updateProject(Project project) async {
+    var res = await DataAPI.updateProject(project);
+    pp('🎽 🎽 🎽 adminBloc: updateProject done. findProjectsByOrganization ...');
     findProjectsByOrganization(project.organizationId);
     return res;
   }

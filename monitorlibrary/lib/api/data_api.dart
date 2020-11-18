@@ -60,6 +60,18 @@ class DataAPI {
     }
   }
 
+  static Future<User> updateUser(User user) async {
+    String mURL = await getUrl();
+    Map bag = user.toJson();
+    try {
+      var result = await _callWebAPIPost(mURL + 'updateUser', bag);
+      return User.fromJson(result);
+    } catch (e) {
+      pp(e);
+      throw e;
+    }
+  }
+
   static Future<Project> findProjectById(String projectId) async {
     String mURL = await getUrl();
     Map bag = {
@@ -160,7 +172,8 @@ class DataAPI {
       });
       return list;
     } catch (e) {
-      pp(e);
+      pp('Houston, 😈😈😈😈😈 we have a problem! 😈😈😈😈😈');
+      print(e);
       throw e;
     }
   }
@@ -285,6 +298,18 @@ class DataAPI {
     Map bag = project.toJson();
     try {
       var result = await _callWebAPIPost(mURL + 'addProject', bag);
+      return Project.fromJson(result);
+    } catch (e) {
+      pp(e);
+      throw e;
+    }
+  }
+
+  static Future<Project> updateProject(Project project) async {
+    String mURL = await getUrl();
+    Map bag = project.toJson();
+    try {
+      var result = await _callWebAPIPost(mURL + 'updateProject', bag);
       return Project.fromJson(result);
     } catch (e) {
       pp(e);
@@ -587,7 +612,6 @@ class DataAPI {
 
   static Future _callWebAPIGet(String mUrl) async {
     pp('\n🏈 🏈 🏈 🏈 🏈 DataAPI_callWebAPIGet:  🔆 🔆 🔆 🔆 calling : 💙  $mUrl  💙');
-
     var start = DateTime.now();
     var client = new http.Client();
     var token = await AppAuth.getAuthToken();

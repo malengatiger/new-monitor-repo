@@ -505,9 +505,9 @@ public class MongoGenerator {
         int cnt = 0;
         User mUser = new User("PRIVATE",null, "Administrator", buildEmail("netadmin"),
                 getRandomCellphone(), UUID.randomUUID().toString(), null,
-                "Network", new DateTime().toDateTimeISO().toString(), NETWORK_ADMINISTRATOR);
+                "Network", new DateTime().toDateTimeISO().toString(), NETWORK_ADMINISTRATOR, "pass123");
         User result = userRepository.save(mUser);
-        dataService.createUser(result, "pass123");
+        dataService.createUser(result);
         LOGGER.info(Emoji.FERN + Emoji.FERN + " User saved on MongoDB and Firebase auth "
                 + Emoji.FERN + Emoji.FERN + result.getName());
 
@@ -517,10 +517,10 @@ public class MongoGenerator {
                 if (i == 0) {
                     User m = new User(organization.getOrganizationId(),null,name, buildEmail("orgadmin"),
                             getRandomCellphone(), UUID.randomUUID().toString(), Objects.requireNonNull(organization.getOrganizationId()),
-                            organization.getName(), new DateTime().toDateTimeISO().toString(), ORG_ADMINISTRATOR);
+                            organization.getName(), new DateTime().toDateTimeISO().toString(), ORG_ADMINISTRATOR, "pass123");
                     User result1 = userRepository.save(m);
                     //add user to Firebase
-                    dataService.createUser(result1, "pass123");
+                    dataService.createUser(result1);
                     LOGGER.info(Emoji.FERN + Emoji.FERN + " User saved on MongoDB and Firebase auth " + Emoji.FERN + Emoji.FERN + name);
                     cnt++;
                 }
@@ -528,9 +528,9 @@ public class MongoGenerator {
                 if (i == 1 || i == 2) {
                     User user = new User(organization.getOrganizationId(),null,name, buildEmail("monitor"),
                             getRandomCellphone(), UUID.randomUUID().toString(), Objects.requireNonNull(organization.getOrganizationId()),
-                            organization.getName(), new DateTime().toDateTimeISO().toString(), FIELD_MONITOR);
+                            organization.getName(), new DateTime().toDateTimeISO().toString(), FIELD_MONITOR, "pass123");
                     User result2 = userRepository.save(user);
-                    dataService.createUser(result2, "pass123");
+                    dataService.createUser(result2);
                     LOGGER.info(Emoji.FERN + Emoji.FERN + " User saved on MongoDB and Firebase auth " + Emoji.FERN + Emoji.FERN + name);
                     cnt++;
                 }
@@ -538,9 +538,9 @@ public class MongoGenerator {
                 if (i == 3) {
                     User user = new User(organization.getOrganizationId(),null,name, buildEmail("exec"),
                             getRandomCellphone(), UUID.randomUUID().toString(), Objects.requireNonNull(organization.getOrganizationId()),
-                            organization.getName(), new DateTime().toDateTimeISO().toString(), ORG_EXECUTIVE);
+                            organization.getName(), new DateTime().toDateTimeISO().toString(), ORG_EXECUTIVE,"pass123");
                     User result1 = userRepository.save(user);
-                    dataService.createUser(result1, "pass123");
+                    dataService.createUser(result1);
                     LOGGER.info(Emoji.FERN + Emoji.FERN + " User saved on MongoDB and Firebase auth " + Emoji.FERN + Emoji.FERN + name);
                     cnt++;
                 }

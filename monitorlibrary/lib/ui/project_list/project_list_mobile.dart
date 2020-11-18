@@ -8,6 +8,7 @@ import 'package:monitorlibrary/data/user.dart';
 import 'package:monitorlibrary/functions.dart';
 import 'package:monitorlibrary/ui/mapx.dart';
 import 'package:monitorlibrary/ui/project_detail/project_detail_main.dart';
+import 'package:monitorlibrary/ui/project_edit/project_edit_main.dart';
 import 'package:page_transition/page_transition.dart';
 
 class ProjectListMobile extends StatefulWidget {
@@ -241,13 +242,24 @@ class _ProjectListMobileState extends State<ProjectListMobile>
   }
 
   void _navigateToDetail(Project p) {
-    Navigator.push(
-        context,
-        PageTransition(
-            type: PageTransitionType.scale,
-            alignment: Alignment.topLeft,
-            duration: Duration(seconds: 1),
-            child: ProjectDetailMain(p)));
+    if (user.userType == FIELD_MONITOR) {
+      Navigator.push(
+          context,
+          PageTransition(
+              type: PageTransitionType.scale,
+              alignment: Alignment.topLeft,
+              duration: Duration(seconds: 1),
+              child: ProjectDetailMain(p)));
+    }
+    if (user.userType == ORG_ADMINISTRATOR) {
+      Navigator.push(
+          context,
+          PageTransition(
+              type: PageTransitionType.scale,
+              alignment: Alignment.topLeft,
+              duration: Duration(seconds: 1),
+              child: ProjectEditMain(p)));
+    }
   }
 
   void _navigateToMap() {

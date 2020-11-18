@@ -5,8 +5,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.mongodb.client.MongoClient;
 import com.monitor.backend.models.*;
 import com.monitor.backend.utils.Emoji;
+import lombok.val;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +17,7 @@ import org.springframework.data.geo.Metrics;
 import org.springframework.data.geo.Point;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -22,8 +25,8 @@ import java.util.Map;
 public class ListService {
     public static final Logger LOGGER = LoggerFactory.getLogger(ListService.class.getSimpleName());
     private static final Gson G = new GsonBuilder().setPrettyPrinting().create();
-   @Autowired
-   CountryRepository countryRepository;
+    @Autowired
+    CountryRepository countryRepository;
     @Autowired
     CityRepository cityRepository;
     @Autowired
@@ -49,21 +52,22 @@ public class ListService {
         LOGGER.info(Emoji.HEART_BLUE.concat(Emoji.HEART_BLUE) + " ListService constructed \uD83C\uDF4F");
     }
 
-    static final  double lat = 0.0144927536231884; // degrees latitude per mile
-    static final  double lon = 0.0181818181818182; // degrees longitude per mile
+    static final double lat = 0.0144927536231884; // degrees latitude per mile
+    static final double lon = 0.0181818181818182; // degrees longitude per mile
 
     public User findUserByEmail(String email) throws Exception {
         LOGGER.info(Emoji.GLOBE.concat(Emoji.GLOBE).concat("findUserByEmail ...".concat(email)));
 
         User user = userRepository.findByEmail(email);
 
-       if (user != null) {
-           LOGGER.info(Emoji.GLOBE.concat(Emoji.GLOBE).concat("findUserByEmail ... found: \uD83D\uDC24 " + G.toJson(user)));
-       } else {
-           throw new Exception(Emoji.ALIEN + "User "+email+" not found, probably not registered yet ".concat(Emoji.NOT_OK));
-       }
-       return user;
+        if (user != null) {
+            LOGGER.info(Emoji.GLOBE.concat(Emoji.GLOBE).concat("findUserByEmail ... found: \uD83D\uDC24 " + G.toJson(user)));
+        } else {
+            throw new Exception(Emoji.ALIEN + "User " + email + " not found, probably not registered yet ".concat(Emoji.NOT_OK));
+        }
+        return user;
     }
+
     public List<Organization> getOrganizations() throws Exception {
 
         LOGGER.info(Emoji.GLOBE.concat(Emoji.GLOBE).concat("getOrganizations ..."));
@@ -71,6 +75,7 @@ public class ListService {
         LOGGER.info(Emoji.GLOBE.concat(Emoji.GLOBE).concat("getOrganizations ... found: " + mList.size()));
         return mList;
     }
+
     public List<Community> getCommunities() throws Exception {
 
         LOGGER.info(Emoji.GLOBE.concat(Emoji.GLOBE).concat("getCommunities ..."));
@@ -79,6 +84,7 @@ public class ListService {
 
         return mList;
     }
+
     public List<Project> getProjects() throws Exception {
 
         LOGGER.info(Emoji.GLOBE.concat(Emoji.GLOBE).concat("ListService: getProjects ..."));
@@ -108,6 +114,7 @@ public class ListService {
 
         return mList;
     }
+
     public List<Video> getProjectVideos(String projectId) throws Exception {
 
         LOGGER.info(Emoji.GLOBE.concat(Emoji.GLOBE).concat("getProjectVideos ..."));
@@ -116,6 +123,7 @@ public class ListService {
 
         return mList;
     }
+
     public List<Condition> getProjectConditions(String projectId) throws Exception {
 
         LOGGER.info(Emoji.GLOBE.concat(Emoji.GLOBE).concat("getProjectConditions ..."));
@@ -128,11 +136,11 @@ public class ListService {
     @Autowired
     ProjectPositionRepository projectPositionRepository;
 
-    public List<Project> findProjectsByLocation(double latitude, double longitude, double radiusInKM) throws Exception{
+    public List<Project> findProjectsByLocation(double latitude, double longitude, double radiusInKM) throws Exception {
         LOGGER.info(Emoji.DICE.concat(Emoji.DICE).concat(" findProjectsByLocation ..."));
         Point point = new Point(longitude, latitude);
         Distance distance = new Distance(radiusInKM, Metrics.KILOMETERS);
-        List<Project> projects = projectRepository.findByPositionNear(point,distance);
+        List<Project> projects = projectRepository.findByPositionNear(point, distance);
         LOGGER.info(Emoji.DOLPHIN.concat(Emoji.DOLPHIN).concat(Emoji.DOLPHIN)
                 + " Nearby Projects found: " + projects.size() + " : " + Emoji.RED_APPLE + " radius: " + radiusInKM);
         for (Project project : projects) {
@@ -144,11 +152,77 @@ public class ListService {
                 "findProjectsByLocation: Nearby Projects found: " + projects.size() + " \uD83C\uDF3F"));
         return projects;
     }
-    public List<ProjectPosition> findProjectPositionsByLocation(double latitude, double longitude, double radiusInKM) throws Exception{
+
+    @Autowired
+    MongoClient mongoClient;
+
+    public int countPhotosByProject(String projectId) {
+
+        int cnt = photoRepository.findByProjectId(projectId).size();
+        LOGGER.info(Emoji.HEART_ORANGE.concat(Emoji.HEART_ORANGE)
+                + " countPhotosByProject, \uD83C\uDF3F found: " + cnt);
+        return cnt;
+    }
+
+    public ProjectCount getCountsByProject(String projectId) {
+
+        int photos = photoRepository.findByProjectId(projectId).size();
+        int videos = videoRepository.findByProjectId(projectId).size();
+        val pc = new ProjectCount(projectId, photos, videos);
+
+        LOGGER.info(Emoji.HEART_ORANGE.concat(Emoji.HEART_ORANGE)
+                + " getCountsByProject, \uD83C\uDF3F found: " + G.toJson(pc));
+        return pc;
+    }
+    public UserCount getCountsByUser(String userId) {
+
+        List<Photo> photos = photoRepository.findByUserId(userId);
+        List<Video> videos = videoRepository.findByUserId(userId);
+
+        HashMap<String,String> map = new HashMap<>();
+        for (Photo photo : photos) {
+            map.put(photo.getProjectId(), photo.getProjectId());
+        }
+        for (Video video : videos) {
+            map.put(video.getProjectId(), video.getProjectId());
+        }
+
+        val pc = new UserCount(userId, photos.size(), videos.size(), map.size());
+
+        LOGGER.info(Emoji.HEART_ORANGE.concat(Emoji.HEART_ORANGE)
+                + " getCountsByUser, \uD83C\uDF3F found: " + G.toJson(pc));
+        return pc;
+    }
+
+    public int countVideosByProject(String projectId) {
+
+        int cnt = videoRepository.findByProjectId(projectId).size();
+        LOGGER.info(Emoji.HEART_ORANGE.concat(Emoji.HEART_ORANGE)
+                + " countVideosByProject, \uD83C\uDF3F found: " + cnt);
+        return cnt;
+    }
+
+    public int countPhotosByUser(String userId) {
+
+        int cnt = photoRepository.findByUserId(userId).size();
+        LOGGER.info(Emoji.HEART_ORANGE.concat(Emoji.HEART_ORANGE)
+                + " countPhotosByUser, \uD83C\uDF3F found: " + cnt);
+        return cnt;
+    }
+
+    public int countVideosByUser(String userId) {
+
+        int cnt = videoRepository.findByUserId(userId).size();
+        LOGGER.info(Emoji.HEART_ORANGE.concat(Emoji.HEART_ORANGE)
+                + " countVideosByUser, \uD83C\uDF3F found: " + cnt);
+        return cnt;
+    }
+
+    public List<ProjectPosition> findProjectPositionsByLocation(double latitude, double longitude, double radiusInKM) throws Exception {
         LOGGER.info(Emoji.DICE.concat(Emoji.DICE).concat(" findProjectPositionsByLocation ..."));
         Point point = new Point(longitude, latitude);
         Distance distance = new Distance(radiusInKM, Metrics.KILOMETERS);
-        List<ProjectPosition> positions = projectPositionRepository.findByPositionNear(point,distance);
+        List<ProjectPosition> positions = projectPositionRepository.findByPositionNear(point, distance);
         LOGGER.info(Emoji.DOLPHIN.concat(Emoji.DOLPHIN).concat(Emoji.DOLPHIN)
                 + " Nearby Projects found: " + positions.size() + " : " + Emoji.RED_APPLE + " radius: " + radiusInKM);
 
@@ -156,6 +230,7 @@ public class ListService {
                 "findProjectsByLocation: Nearby ProjectPositions found: " + positions.size() + " \uD83C\uDF3F"));
         return positions;
     }
+
     public List<ProjectPosition> getProjectPositions(String projectId) throws Exception {
         LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS).concat("getProjectPositions: "
                 .concat(Emoji.FLOWER_YELLOW)));
@@ -166,12 +241,12 @@ public class ListService {
         return m;
     }
 
-    public List<City> getNearbyCities(double latitude, double longitude, double radiusInKM) throws Exception{
+    public List<City> getNearbyCities(double latitude, double longitude, double radiusInKM) throws Exception {
 
         LOGGER.info(Emoji.DICE.concat(Emoji.DICE).concat(" getNearbyCities ..."));
         Point point = new Point(longitude, latitude);
         Distance distance = new Distance(radiusInKM, Metrics.KILOMETERS);
-        List<City> cities = cityRepository.findByPositionNear(point,distance);
+        List<City> cities = cityRepository.findByPositionNear(point, distance);
         LOGGER.info(Emoji.DOLPHIN.concat(Emoji.DOLPHIN).concat(Emoji.DOLPHIN)
                 + " Nearby Cities found: " + cities.size() + " : " + Emoji.RED_APPLE + " radius: " + radiusInKM);
         for (City city : cities) {
@@ -181,7 +256,7 @@ public class ListService {
         return cities;
     }
 
-    public List<Project> getOrganizationProjects(String organizationId)  throws Exception{
+    public List<Project> getOrganizationProjects(String organizationId) throws Exception {
 
         LOGGER.info(Emoji.GLOBE.concat(Emoji.GLOBE).concat("getOrganizationReports ..."));
         List<Project> mList = projectRepository.findByOrganizationId(organizationId);
@@ -190,7 +265,7 @@ public class ListService {
         return mList;
     }
 
-    public List<User> getOrganizationUsers(String organizationId)  throws Exception{
+    public List<User> getOrganizationUsers(String organizationId) throws Exception {
 
         LOGGER.info(Emoji.GLOBE.concat(Emoji.GLOBE).concat("getOrganizationUsers ..."));
         List<User> mList = userRepository.findByOrganizationId(organizationId);
@@ -199,7 +274,7 @@ public class ListService {
         return mList;
     }
 
-    public List<User> getUsers()  throws Exception{
+    public List<User> getUsers() throws Exception {
 
         LOGGER.info(Emoji.GLOBE.concat(Emoji.GLOBE).concat("getUsers ..."));
         List<User> mList = (List<User>) userRepository.findAll();
@@ -207,7 +282,8 @@ public class ListService {
 
         return mList;
     }
-    public List<City> getCities()  throws Exception{
+
+    public List<City> getCities() throws Exception {
 
         LOGGER.info(Emoji.GLOBE.concat(Emoji.GLOBE).concat("getCities ..."));
 
@@ -216,7 +292,8 @@ public class ListService {
 
         return mList;
     }
-    public List<Community> findCommunitiesByCountry(String countryId)  throws Exception{
+
+    public List<Community> findCommunitiesByCountry(String countryId) throws Exception {
 
         LOGGER.info(Emoji.GLOBE.concat(Emoji.GLOBE).concat("findCommunitiesByCountry ..."));
 
@@ -225,18 +302,21 @@ public class ListService {
 
         return mList;
     }
+
     public List<Questionnaire> getQuestionnairesByOrganization(String organizationId) throws Exception {
 
         List<Questionnaire> list = questionnaireRepository.findByOrganizationId(organizationId);
         return list;
     }
+
     public List<Project> findProjectsByOrganization(String organizationId) throws Exception {
 
         List<Project> list = projectRepository.findByOrganizationId(organizationId);
         return list;
     }
+
     //
-    public List<Country> getCountries()  throws Exception{
+    public List<Country> getCountries() throws Exception {
 
         LOGGER.info(Emoji.GLOBE.concat(Emoji.GLOBE).concat("getCountries ..."));
 
@@ -253,7 +333,7 @@ public class ListService {
         try {
             return objectMapper.writeValueAsString(hashMap);
         } catch (JsonProcessingException e) {
-           throw new Exception("JSON parsing failed " + Emoji.NOT_OK);
+            throw new Exception("JSON parsing failed " + Emoji.NOT_OK);
         }
     }
 

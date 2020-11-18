@@ -10,8 +10,17 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.UserRecord;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.mongodb.Block;
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.Accumulators;
+import com.mongodb.client.model.Aggregates;
+import com.mongodb.client.model.Filters;
 import com.monitor.backend.models.*;
 import com.monitor.backend.utils.Emoji;
+import org.bson.Document;
+import org.bson.conversions.Bson;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,10 +28,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.Arrays;
 import java.util.UUID;
+
+import static com.mongodb.client.model.Filters.eq;
+import static org.springframework.boot.autoconfigure.condition.ConditionOutcome.match;
 
 @Service
 public class DataService {
@@ -99,12 +109,17 @@ public class DataService {
     public static String getGeoHash(double latitude, double longitude) {
         return GeoHash.geoHashStringWithCharacterPrecision(latitude, longitude, 12);
     }
-
+    public User updateUser(User user) throws Exception {
+        userRepository.save(user);
+        LOGGER.info(Emoji.LEAF.concat(Emoji.LEAF).concat("User updated on database: "
+                + user.getName() + " id: "
+                + user.getUserId()));
+        return user;
+    }
 
     private void addUser(User user) throws Exception {
-        user.setUserId(UUID.randomUUID().toString());
         userRepository.save(user);
-        LOGGER.info(Emoji.LEAF.concat(Emoji.LEAF).concat("User added: "
+        LOGGER.info(Emoji.LEAF.concat(Emoji.LEAF).concat("User added to database: "
                 + user.getName() + " id: "
                 + user.getUserId()));
     }
@@ -131,7 +146,8 @@ public class DataService {
 
         ProjectPosition m = projectPositionRepository.save(projectPosition);
 
-        LOGGER.info(Emoji.LEAF.concat(Emoji.LEAF).concat("ProjectPosition added: " + projectPosition.getProjectId()));
+        LOGGER.info(Emoji.LEAF.concat(Emoji.LEAF)
+                .concat("ProjectPosition added: " + projectPosition.getProjectId()));
         return m;
     }
 
@@ -140,26 +156,42 @@ public class DataService {
         LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS).concat("addProject: "
                 .concat(project.getName()).concat(" ")
                 .concat(Emoji.FLOWER_YELLOW)));
+
         project.setProjectId(UUID.randomUUID().toString());
+        Project m =projectRepository.save(project);
+
+        LOGGER.info(Emoji.LEAF.concat(Emoji.LEAF)
+                .concat("Project added: " + project.getProjectId()));
+        return m;
+    }
+    public Project updateProject(Project project) throws Exception {
+        LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS).concat("updateProject: "
+                .concat(project.getName()).concat(" ")
+                .concat(Emoji.FLOWER_YELLOW)));
 
         Project m =projectRepository.save(project);
 
-        LOGGER.info(Emoji.LEAF.concat(Emoji.LEAF).concat("Project added: " + project.getProjectId()));
+        LOGGER.info(Emoji.LEAF.concat(Emoji.LEAF)
+                .concat("Project added: " + project.getProjectId()));
         return m;
     }
 
     public String addCity(City city) throws Exception {
         city.setCityId(UUID.randomUUID().toString());
         cityRepository.save(city);
-        LOGGER.info(Emoji.LEAF.concat(Emoji.LEAF).concat("City added to database : " +  city.getCityId()));
+        LOGGER.info(Emoji.LEAF.concat(Emoji.LEAF)
+                .concat("City added to database : " +  city.getCityId()));
         return city.getCityId();
     }
 
     public String addCommunity(Community community) throws Exception {
         community.setCommunityId(UUID.randomUUID().toString());
         communityRepository.save(community);
-        LOGGER.info(Emoji.LEAF.concat(Emoji.LEAF).concat("Community: \uD83C\uDF3C " + community.getName()
-                + " added to database: \uD83D\uDC24 " + community.getCommunityId()));
+        LOGGER.info(Emoji.LEAF.concat(Emoji.LEAF)
+                .concat("Community: \uD83C\uDF3C "
+                        + community.getName()
+                + " added to database: \uD83D\uDC24 "
+                        + community.getCommunityId()));
         return community.getCommunityId();
     }
 
@@ -167,7 +199,8 @@ public class DataService {
         country.setCountryId(UUID.randomUUID().toString());
 
         countryRepository.save(country);
-        LOGGER.info(Emoji.LEAF.concat(Emoji.LEAF).concat("Country added: " + country.getCountryId()));
+        LOGGER.info(Emoji.LEAF.concat(Emoji.LEAF)
+                .concat("Country added: " + country.getCountryId()));
         return country.getCountryId();
     }
 
@@ -176,27 +209,30 @@ public class DataService {
         organization.setCreated(new DateTime().toDateTimeISO().toString());
 
         organizationRepository.save(organization);
-        LOGGER.info(Emoji.LEAF.concat(Emoji.LEAF).concat("Organization added: " + organization.getOrganizationId()));
+        LOGGER.info(Emoji.LEAF.concat(Emoji.LEAF)
+                .concat("Organization added: " + organization.getOrganizationId()));
         return organization.getOrganizationId();
     }
 
-    public String createUser(User user, String password) throws Exception {
+    public User createUser(User user) throws Exception {
         FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
         UserRecord.CreateRequest createRequest = new UserRecord.CreateRequest();
         createRequest.setEmail(user.getEmail());
         createRequest.setDisplayName(user.getName());
-        createRequest.setPassword(password);
+        createRequest.setPassword(user.getPassword());
         ApiFuture<UserRecord> userRecord = firebaseAuth.createUserAsync(createRequest);
         String uid = userRecord.get().getUid();
         user.setUserId(uid);
-        LOGGER.info(Emoji.HEART_ORANGE + Emoji.HEART_ORANGE + "Firebase user auth record created: "
-                .concat(" \uD83E\uDDE1 ").concat(user.getName().concat(" \uD83E\uDDE1 ").concat(user.getEmail())
-                        .concat(" \uD83E\uDDE1 ").concat(Objects.requireNonNull(user.getUserId()))));
+        LOGGER.info(Emoji.HEART_ORANGE + Emoji.HEART_ORANGE
+                + "Firebase user auth record created: "
+                .concat(" \uD83E\uDDE1 ").concat(user.getName()
+                        .concat(" \uD83E\uDDE1 ").concat(user.getEmail())
+                        .concat(" \uD83E\uDDE1 ").concat(uid)));
 
 
         addUser(user);
 
-        return uid;
+        return user;
 
     }
 }

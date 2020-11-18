@@ -69,12 +69,6 @@ public class DataController {
         return Emoji.LEAF.concat(Emoji.LEAF.concat("Communities generated " + Emoji.RED_APPLE));
     }
 
-    @PostMapping("/createUser")
-    public String createUser(@RequestParam User user, @RequestParam String password) throws Exception {
-        LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS).concat("createUser: ".concat(user.getName())));
-        return dataService.createUser(user, password);
-    }
-
     @PostMapping("/addOrganization")
     public String addOrganization(Organization organization) throws Exception {
         LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS)
@@ -135,6 +129,11 @@ public class DataController {
         LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS).concat("Adding Project: ".concat(project.getName())));
         return dataService.addProject(project);
     }
+    @PostMapping("/updateProject")
+    public Project updateProject(Project project) throws Exception {
+        LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS).concat("Update Project: ".concat(project.getName())));
+        return dataService.updateProject(project);
+    }
     @PostMapping("/addProjectPosition")
     public ProjectPosition addProjectPosition(@RequestBody ProjectPosition projectPosition)
             throws Exception {
@@ -166,12 +165,20 @@ public class DataController {
     }
 
     @Autowired
-    ListService listService;
+    private ListService listService;
 
 
     @PostMapping("/addUser")
-    public String addUser(User user, String password) throws Exception {
-        LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS).concat("Adding User: ".concat(user.getName())));
-        return dataService.createUser(user, password);
+    public User addUser(User user) throws Exception {
+        LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS)
+                .concat("Adding User: ".concat(user.getName())));
+        return dataService.createUser(user);
     }
+    @PostMapping("/updateUser")
+    public User updateUser(User user) throws Exception {
+        LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS)
+                .concat("Adding User: ".concat(user.getName())));
+        return dataService.updateUser(user);
+    }
+
 }
