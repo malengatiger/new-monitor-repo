@@ -5,6 +5,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:monitorlibrary/auth/app_auth.dart';
 import 'package:monitorlibrary/data/community.dart';
+import 'package:monitorlibrary/data/counters.dart';
 import 'package:monitorlibrary/data/country.dart';
 import 'package:monitorlibrary/data/organization.dart';
 import 'package:monitorlibrary/data/photo.dart';
@@ -66,6 +67,34 @@ class DataAPI {
     try {
       var result = await _callWebAPIPost(mURL + 'updateUser', bag);
       return User.fromJson(result);
+    } catch (e) {
+      pp(e);
+      throw e;
+    }
+  }
+
+  static Future<ProjectCount> getProjectCount(String projectId) async {
+    String mURL = await getUrl();
+    try {
+      var result = await _callWebAPIGet(
+          mURL + 'getCountsByProject?projectId=$projectId');
+      var cnt = ProjectCount.fromJson(result);
+      pp('🌿 🌿 🌿 Project count returned: 🌿 ${cnt.toJson()}');
+      return cnt;
+    } catch (e) {
+      pp(e);
+      throw e;
+    }
+  }
+
+  static Future<UserCount> getUserCount(String userId) async {
+    String mURL = await getUrl();
+    try {
+      var result =
+          await _callWebAPIGet(mURL + 'getCountsByUser?userId=$userId');
+      var cnt = UserCount.fromJson(result);
+      pp('🌿 🌿 🌿 User count returned: 🌿 ${cnt.toJson()}');
+      return cnt;
     } catch (e) {
       pp(e);
       throw e;
