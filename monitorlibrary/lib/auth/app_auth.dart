@@ -37,16 +37,26 @@ class AppAuth {
     var fbUser = await _auth
         .createUserWithEmailAndPassword(email: user.email, password: password)
         .catchError((e) {
-      pp('User create failed');
+      pp('👿👿👿 User create failed : $e');
+      throw e;
     });
     mon.User mUser;
     if (fbUser != null) {
+      pp('AppAuth:  💜 💜 createUser, auth record created, adding to database ...');
+      user.userId = fbUser.user.uid;
       mUser = await DataAPI.addUser(user);
       await Prefs.saveUser(mUser);
       var countries = await DataAPI.getCountries();
       if (countries.isNotEmpty) {
         await Prefs.saveCountry(countries.elementAt(0));
       }
+    } else {
+      throw Exception('👿 👿 👿 Firebase auth record addition failed');
+    }
+    if (mUser != null) {
+      pp('AppAuth:  💜 💜 💜 💜 createUser, after adding to Mongo database ....... ${mUser.toJson()}');
+    } else {
+      pp('AppAuth:  👿👿👿 createUser: this is Houston path, Mongo api call failed ');
     }
     return mUser;
   }

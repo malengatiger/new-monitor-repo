@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:monitorlibrary/data/user.dart' as mon;
+import 'package:monitorlibrary/data/user.dart';
 
-class ProjectListTablet extends StatefulWidget {
-  final mon.User user;
+class UserListTablet extends StatefulWidget {
+  final User user;
 
-  ProjectListTablet(this.user);
+  UserListTablet(this.user);
 
   @override
-  _ProjectListTabletState createState() => _ProjectListTabletState();
+  _UserListTabletState createState() => _UserListTabletState();
 }
 
-class _ProjectListTabletState extends State<ProjectListTablet>
+class _UserListTabletState extends State<UserListTablet>
     with SingleTickerProviderStateMixin {
   AnimationController _controller;
 

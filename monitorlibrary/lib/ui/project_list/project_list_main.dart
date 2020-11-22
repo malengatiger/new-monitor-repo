@@ -1,19 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:monitorlibrary/auth/app_auth.dart';
 import 'package:monitorlibrary/bloc/monitor_bloc.dart';
-import 'package:monitorlibrary/data/user.dart';
-import 'package:monitorlibrary/functions.dart';
+import 'package:monitorlibrary/data/user.dart' as mon;
 import 'package:monitorlibrary/ui/project_list/project_list_desktop.dart';
 import 'package:monitorlibrary/ui/project_list/project_list_mobile.dart';
 import 'package:monitorlibrary/ui/project_list/project_list_tablet.dart';
-import 'package:monitorlibrary/ui/signin.dart';
-import 'package:page_transition/page_transition.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 
 class ProjectListMain extends StatefulWidget {
-  final String type;
+  final mon.User user;
 
-  ProjectListMain(this.type);
+  ProjectListMain(this.user);
 
   @override
   _ProjectListMainState createState() => _ProjectListMainState();
@@ -28,34 +24,15 @@ class _ProjectListMainState extends State<ProjectListMain>
   void initState() {
     _controller = AnimationController(vsync: this);
     super.initState();
-    _checkUser();
+    _loadProjects();
   }
 
-  void _checkUser() async {
+  void _loadProjects() async {
     setState(() {
       isBusy = true;
     });
-    pp('🔐 🔐 🔐 🔐 ... Checking user ......');
-    var signeIn = await AppAuth.isUserSignedIn();
-    pp('ProjectList: 🥦🥦 is user signed in? $signeIn : 🔐 if false, go sign in ...');
-    if (!signeIn) {
-      var result = await Navigator.push(
-          context,
-          PageTransition(
-              type: PageTransitionType.scale,
-              alignment: Alignment.topLeft,
-              duration: Duration(seconds: 1),
-              child: SignIn(widget.type)));
-      if (result != null) {
-        if (result is User) {
-          monitorBloc.getOrganizationProjects(
-              organizationId: result.organizationId);
-        }
-        setState(() {
-          isBusy = false;
-        });
-      }
-    }
+    await monitorBloc.getOrganizationProjects(
+        organizationId: widget.user.organizationId);
 
     setState(() {
       isBusy = false;
@@ -71,18 +48,26 @@ class _ProjectListMainState extends State<ProjectListMain>
   @override
   Widget build(BuildContext context) {
     return isBusy
-        ? Center(
-            child: Container(
-              child: CircularProgressIndicator(
-                strokeWidth: 8,
-                backgroundColor: Colors.pink,
+        ? SafeArea(
+            child: Scaffold(
+              appBar: AppBar(
+                title: Text('Loading projects ...'),
+              ),
+              backgroundColor: Colors.brown[100],
+              body: Center(
+                child: Container(
+                  child: CircularProgressIndicator(
+                    strokeWidth: 8,
+                    backgroundColor: Colors.black,
+                  ),
+                ),
               ),
             ),
           )
         : ScreenTypeLayout(
-            mobile: ProjectListMobile(),
-            tablet: ProjectListTablet(),
-            desktop: ProjectListDesktop(),
+            mobile: ProjectListMobile(widget.user),
+            tablet: ProjectListTablet(widget.user),
+            desktop: ProjectListDesktop(widget.user),
           );
   }
 }

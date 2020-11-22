@@ -15,6 +15,7 @@ class User {
   User(
       {@required this.name,
       @required this.email,
+      @required this.userId,
       @required this.cellphone,
       @required this.created,
       @required this.userType,

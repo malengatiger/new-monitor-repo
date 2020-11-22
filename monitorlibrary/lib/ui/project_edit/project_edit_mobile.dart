@@ -4,6 +4,10 @@ import 'package:monitorlibrary/bloc/admin_bloc.dart';
 import 'package:monitorlibrary/data/project.dart';
 import 'package:monitorlibrary/data/user.dart';
 import 'package:monitorlibrary/functions.dart';
+import 'package:monitorlibrary/snack.dart';
+import 'package:monitorlibrary/ui/project_location/project_location_main.dart';
+import 'package:page_transition/page_transition.dart';
+import 'package:uuid/uuid.dart';
 
 class ProjectEditMobile extends StatefulWidget {
   final Project project;
@@ -18,6 +22,8 @@ class _ProjectEditMobileState extends State<ProjectEditMobile>
   AnimationController _controller;
   var nameController = TextEditingController();
   var descController = TextEditingController();
+  var maxController = TextEditingController(text: '50.0');
+  var isBusy = false;
 
   User admin;
   final _formKey = GlobalKey<FormState>();
@@ -32,12 +38,15 @@ class _ProjectEditMobileState extends State<ProjectEditMobile>
 
   void _getUser() async {
     admin = await Prefs.getUser();
+    pp('🎽 🎽 🎽 We have an admin user? 🎽 🎽 🎽 ${admin.toJson()}');
+    setState(() {});
   }
 
   void _setup() {
     if (widget.project != null) {
       nameController.text = widget.project.name;
       descController.text = widget.project.description;
+      maxController.text = '${widget.project.monitorMaxDistanceInMetres}';
     }
   }
 
@@ -49,45 +58,101 @@ class _ProjectEditMobileState extends State<ProjectEditMobile>
 
   void _submit() async {
     if (_formKey.currentState.validate()) {
-      if (widget.project == null) {
-        pp('😡 😡 😡 _submit new project ......... ${nameController.text}');
-        var user = Project(
-            name: nameController.text,
-            description: descController.text,
-            organizationId: admin.organizationId,
-            organizationName: admin.organizationName,
-            created: DateTime.now().toIso8601String(),
-            projectId: '');
+      setState(() {
+        isBusy = true;
+      });
+      try {
+        Project mProject;
+        if (widget.project == null) {
+          pp('😡 😡 😡 _submit new project ......... ${nameController.text}');
+          var uuid = Uuid();
+          mProject = Project(
+              name: nameController.text,
+              description: descController.text,
+              organizationId: admin.organizationId,
+              organizationName: admin.organizationName,
+              created: DateTime.now().toIso8601String(),
+              monitorMaxDistanceInMetres: double.parse(maxController.text),
+              projectId: uuid.v4());
+          var m = await adminBloc.addProject(mProject);
+          pp('🎽 🎽 🎽 _submit: new project added .........  ${m.toJson()}');
+        } else {
+          pp('😡 😡 😡 _submit existing project for update, soon! 🌸 ......... ');
+          widget.project.name = nameController.text;
+          widget.project.description = descController.text;
+          mProject = widget.project;
+          var m = await adminBloc.updateProject(widget.project);
+          pp('🎽 🎽 🎽 _submit: new project updated .........  ${m.toJson()}');
+        }
+        setState(() {
+          isBusy = false;
+        });
+        _navigateToProjectLocation(mProject);
+      } catch (e) {
+        setState(() {
+          isBusy = false;
+        });
 
-        await adminBloc.addProject(user);
-      } else {
-        pp('😡 😡 😡 _submit existing project for update, soon! 🌸 ......... ');
-        widget.project.name = nameController.text;
-        widget.project.description = descController.text;
-
-        await adminBloc.updateProject(widget.project);
+        AppSnackbar.showErrorSnackbar(
+            scaffoldKey: _key, message: 'Failed: $e', actionLabel: '');
       }
     }
   }
+
+  void _navigateToProjectLocation(Project mProject) {
+    if (mProject == null) {
+      AppSnackbar.showErrorSnackbar(
+          scaffoldKey: _key, message: 'Project is missing', actionLabel: '');
+      return;
+    }
+    pp(' 😡 _navigateToProjectLocation  😡 😡 😡 ${mProject.name}');
+    Navigator.push(
+        context,
+        PageTransition(
+            type: PageTransitionType.scale,
+            alignment: Alignment.bottomRight,
+            duration: Duration(seconds: 1),
+            child: ProjectLocationMain(mProject)));
+  }
+
+  var _key = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        key: _key,
         appBar: AppBar(
           title: Text(
-            'User Editor',
+            'Project Editor',
             style: Styles.whiteSmall,
           ),
+          actions: [
+            IconButton(
+              icon: Icon(Icons.location_on),
+              onPressed: () {
+                if (widget.project != null) {
+                  _navigateToProjectLocation(widget.project);
+                }
+              },
+            )
+          ],
           bottom: PreferredSize(
             child: Column(
               children: [
                 Text(
-                  widget.project == null ? 'New User' : 'Edit User',
+                  widget.project == null ? 'New Project' : 'Edit Project',
                   style: Styles.blackBoldMedium,
                 ),
                 SizedBox(
-                  height: 40,
+                  height: 8,
+                ),
+                Text(
+                  admin == null ? '' : '${admin.organizationName}',
+                  style: Styles.whiteSmall,
+                ),
+                SizedBox(
+                  height: 20,
                 )
               ],
             ),
@@ -105,51 +170,81 @@ class _ProjectEditMobileState extends State<ProjectEditMobile>
                   key: _formKey,
                   child: Column(
                     children: [
+                      SizedBox(
+                        height: 48,
+                      ),
                       TextFormField(
                         controller: nameController,
                         keyboardType: TextInputType.text,
                         decoration: InputDecoration(
-                            icon: Icon(Icons.person),
-                            labelText: 'Organization Name',
-                            hintText: 'Enter Organization Name'),
+                            icon: Icon(Icons.event),
+                            labelText: 'Project Name',
+                            hintText: 'Enter Project Name'),
                         validator: (value) {
                           if (value.isEmpty) {
-                            return 'Please enter Organization name';
+                            return 'Please enter Project name';
                           }
-                          return value;
+                          return null;
                         },
                       ),
                       SizedBox(
-                        height: 4,
+                        height: 8,
                       ),
                       TextFormField(
                         controller: descController,
                         keyboardType: TextInputType.text,
                         decoration: InputDecoration(
-                            icon: Icon(Icons.email_outlined),
+                            icon: Icon(Icons.info_outline),
                             labelText: 'Description',
                             hintText: 'Enter Project Description'),
                         validator: (value) {
                           if (value.isEmpty) {
                             return 'Please enter Project Description';
                           }
-                          return value;
+                          return null;
+                        },
+                      ),
+                      SizedBox(
+                        height: 8,
+                      ),
+                      TextFormField(
+                        controller: maxController,
+                        keyboardType: TextInputType.number,
+                        decoration: InputDecoration(
+                            icon: Icon(Icons.camera_enhance_outlined),
+                            labelText: 'Max Monitor Distance in Metres',
+                            hintText:
+                                'Enter Maximum Monitor Distance in metres'),
+                        validator: (value) {
+                          if (value.isEmpty) {
+                            return 'Please enter Maximum Monitor Distance in Metres';
+                          }
+                          return null;
                         },
                       ),
                       SizedBox(
                         height: 48,
                       ),
-                      RaisedButton(
-                        elevation: 8,
-                        child: Padding(
-                          padding: const EdgeInsets.all(12.0),
-                          child: Text(
-                            'Submit Project',
-                            style: Styles.whiteSmall,
-                          ),
-                        ),
-                        onPressed: _submit,
-                      ),
+                      isBusy
+                          ? Container(
+                              width: 48,
+                              height: 48,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 8,
+                                backgroundColor: Colors.black,
+                              ),
+                            )
+                          : RaisedButton(
+                              elevation: 8,
+                              child: Padding(
+                                padding: const EdgeInsets.all(12.0),
+                                child: Text(
+                                  'Submit Project',
+                                  style: Styles.whiteSmall,
+                                ),
+                              ),
+                              onPressed: _submit,
+                            ),
                       SizedBox(
                         height: 40,
                       ),
@@ -163,6 +258,4 @@ class _ProjectEditMobileState extends State<ProjectEditMobile>
       ),
     );
   }
-
-
 }

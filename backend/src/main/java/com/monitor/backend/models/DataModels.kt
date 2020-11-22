@@ -23,12 +23,26 @@ data class Community(var _partitionKey: String?, @Id var _id: String?, var name:
                      var nearestCities: List<City> = ArrayList()) {
 }
 
-data class User(var _partitionKey: String?, @Id var _id: String?, var name: String, var email: String, var cellphone: String, var userId: String?,
-                var organizationId: String?, var organizationName: String, var created: String, var userType: String, var password:String?) {
+data class User(var _partitionKey: String?,
+                @Id var _id: String?,
+                var name: String,
+                var email: String,
+                var cellphone: String,
+                var userId: String?,
+                var organizationId: String?,
+                var organizationName: String,
+                var created: String,
+                var userType: String,
+                var password:String?) {
 }
 
-data class Organization(var _partitionKey: String?, @Id var _id: String?, var name: String, var countryName: String, var countryId: String,
-                        var organizationId: String?, var created: String) {}
+data class Organization(var _partitionKey: String?,
+                        @Id var _id: String?,
+                        var name: String,
+                        var countryName: String,
+                        var countryId: String,
+                        var organizationId: String?,
+                        var created: String) {}
 
 data class Project(var _partitionKey: String?, @Id var _id: String?,
                    var projectId: String?,
@@ -39,7 +53,7 @@ data class Project(var _partitionKey: String?, @Id var _id: String?,
                    var monitorMaxDistanceInMetres: Double? = 50.0,
                    var created: String,
                    var nearestCities: List<City>?,
-                   var position: Position) {}
+                   var position: Position?) {}
 
 data class Photo(var _partitionKey: String?, @Id var _id: String?,
                  var projectId: String,

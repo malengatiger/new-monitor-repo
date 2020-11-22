@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:monitorlibrary/data/user.dart' as mon;
 
 class ProjectListDesktop extends StatefulWidget {
+  final mon.User user;
+
+  ProjectListDesktop(this.user);
+
   @override
   _ProjectListDesktopState createState() => _ProjectListDesktopState();
 }

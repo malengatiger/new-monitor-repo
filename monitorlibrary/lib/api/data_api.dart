@@ -9,7 +9,6 @@ import 'package:monitorlibrary/data/counters.dart';
 import 'package:monitorlibrary/data/country.dart';
 import 'package:monitorlibrary/data/organization.dart';
 import 'package:monitorlibrary/data/photo.dart';
-import 'package:monitorlibrary/data/position.dart';
 import 'package:monitorlibrary/data/project.dart';
 import 'package:monitorlibrary/data/project_position.dart';
 import 'package:monitorlibrary/data/questionnaire.dart';
@@ -52,6 +51,7 @@ class DataAPI {
   static Future<User> addUser(User user) async {
     String mURL = await getUrl();
     Map bag = user.toJson();
+    pp('DataAPI: ☕️ ☕️ ☕️ bag about to be sent to backend: check name: ☕️ $bag');
     try {
       var result = await _callWebAPIPost(mURL + 'addUser', bag);
       return User.fromJson(result);
@@ -362,20 +362,13 @@ class DataAPI {
     }
   }
 
-  static Future<Project> addPositionsToProject(
-      {String projectId, List<Position> positions}) async {
+  static Future<ProjectPosition> addProjectPosition(
+      {ProjectPosition position}) async {
     String mURL = await getUrl();
-    List mPos = List();
-    positions.forEach((p) {
-      mPos.add(p.toJson());
-    });
-    Map bag = {
-      'projectId': projectId,
-      'settlementId': mPos,
-    };
+    Map bag = position.toJson();
     try {
-      var result = await _callWebAPIPost(mURL + 'addPositionsToProject', bag);
-      return Project.fromJson(result);
+      var result = await _callWebAPIPost(mURL + 'addProjectPosition', bag);
+      return ProjectPosition.fromJson(result);
     } catch (e) {
       pp(e);
       throw e;
@@ -528,6 +521,8 @@ class DataAPI {
   static Future<Organization> addOrganization(Organization org) async {
     String mURL = await getUrl();
     Map bag = org.toJson();
+
+    pp('DataAPI_addOrganization:  🍐 org Bag to be sent, check properties:  🍐 $bag');
     try {
       var result = await _callWebAPIPost(mURL + 'addOrganization', bag);
       return Organization.fromJson(result);
@@ -601,13 +596,13 @@ class DataAPI {
   }
 
   static Future _callWebAPIPost(String mUrl, Map bag) async {
-    pp('\n\n🏈 🏈 🏈 🏈 🏈 DataAPI_callWebAPIPost:  🔆 🔆 🔆 🔆 calling : 💙  $mUrl  💙 print bag ...');
+    pp('\n\n🏈 🏈 🏈 🏈 🏈 DataAPI_callWebAPIPost:  🔆 🔆 🔆 🔆 calling : 💙  $mUrl  💙 ');
 
     var mBag;
     if (bag != null) {
       mBag = json.encode(bag);
     }
-
+    pp(' 🏈 🏈 Bag after json decode call, check properties of mBag:  🏈 🏈 $mBag');
     var start = DateTime.now();
     var client = new http.Client();
     var token = await AppAuth.getAuthToken();
@@ -624,7 +619,8 @@ class DataAPI {
       pp('\n\n❤️️❤️  DataAPI._callWebAPIPost .... : 💙💙 statusCode: 👌👌👌 ${resp.statusCode} 👌👌👌 💙 for $mUrl');
     } else {
       pp('\n\n👿👿👿 DataAPI._callWebAPIPost .... : 🔆 statusCode: 👿👿👿 ${resp.statusCode} 🔆🔆🔆 for $mUrl');
-      throw Exception('🚨 🚨 Status Code 🚨 ${resp.statusCode} 🚨 Exception');
+      throw Exception(
+          '🚨 🚨 Status Code 🚨 ${resp.statusCode} 🚨 ${resp.body}');
     }
     var end = DateTime.now();
     pp('❤️❤️ 💙 DataAPI._callWebAPIPost ### 🔆 elapsed: ${end.difference(start).inSeconds} seconds 🔆 \n\n');

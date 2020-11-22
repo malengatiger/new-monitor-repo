@@ -109,7 +109,7 @@ public class DataService {
     public static String getGeoHash(double latitude, double longitude) {
         return GeoHash.geoHashStringWithCharacterPrecision(latitude, longitude, 12);
     }
-    public User updateUser(User user) throws Exception {
+    public User updateUser(User user) {
         userRepository.save(user);
         LOGGER.info(Emoji.LEAF.concat(Emoji.LEAF).concat("User updated on database: "
                 + user.getName() + " id: "
@@ -117,7 +117,7 @@ public class DataService {
         return user;
     }
 
-    public User addUser(User user) throws Exception {
+    public User addUser(User user) {
        User mUser =  userRepository.save(user);
         LOGGER.info(Emoji.LEAF.concat(Emoji.LEAF).concat("User added to database: "
                 + user.getName() + " id: "
@@ -177,42 +177,42 @@ public class DataService {
         return m;
     }
 
-    public String addCity(City city) throws Exception {
+    public City addCity(City city) throws Exception {
         city.setCityId(UUID.randomUUID().toString());
-        cityRepository.save(city);
+        City c = cityRepository.save(city);
         LOGGER.info(Emoji.LEAF.concat(Emoji.LEAF)
                 .concat("City added to database : " +  city.getCityId()));
-        return city.getCityId();
+        return c;
     }
 
-    public String addCommunity(Community community) throws Exception {
+    public Community addCommunity(Community community) throws Exception {
         community.setCommunityId(UUID.randomUUID().toString());
-        communityRepository.save(community);
+        Community cm = communityRepository.save(community);
         LOGGER.info(Emoji.LEAF.concat(Emoji.LEAF)
                 .concat("Community: \uD83C\uDF3C "
                         + community.getName()
                 + " added to database: \uD83D\uDC24 "
                         + community.getCommunityId()));
-        return community.getCommunityId();
+        return cm;
     }
 
-    public String addCountry(Country country) throws Exception {
+    public Country addCountry(Country country) throws Exception {
         country.setCountryId(UUID.randomUUID().toString());
 
-        countryRepository.save(country);
+        Country m = countryRepository.save(country);
         LOGGER.info(Emoji.LEAF.concat(Emoji.LEAF)
                 .concat("Country added: " + country.getCountryId()));
-        return country.getCountryId();
+        return m;
     }
 
-    public String addOrganization(Organization organization) throws Exception {
+    public Organization addOrganization(Organization organization) throws Exception {
         organization.setOrganizationId(UUID.randomUUID().toString());
         organization.setCreated(new DateTime().toDateTimeISO().toString());
 
-        organizationRepository.save(organization);
+        Organization org = organizationRepository.save(organization);
         LOGGER.info(Emoji.LEAF.concat(Emoji.LEAF)
                 .concat("Organization added: " + organization.getOrganizationId()));
-        return organization.getOrganizationId();
+        return org;
     }
 
     public User createUser(User user) throws Exception {

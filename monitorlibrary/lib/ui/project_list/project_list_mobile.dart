@@ -5,6 +5,7 @@ import 'package:monitorlibrary/bloc/monitor_bloc.dart';
 import 'package:monitorlibrary/bloc/theme_bloc.dart';
 import 'package:monitorlibrary/data/project.dart';
 import 'package:monitorlibrary/data/user.dart';
+import 'package:monitorlibrary/data/user.dart' as mon;
 import 'package:monitorlibrary/functions.dart';
 import 'package:monitorlibrary/ui/mapx.dart';
 import 'package:monitorlibrary/ui/project_detail/project_detail_main.dart';
@@ -12,6 +13,10 @@ import 'package:monitorlibrary/ui/project_edit/project_edit_main.dart';
 import 'package:page_transition/page_transition.dart';
 
 class ProjectListMobile extends StatefulWidget {
+  final mon.User user;
+
+  ProjectListMobile(this.user);
+
   @override
   _ProjectListMobileState createState() => _ProjectListMobileState();
 }
@@ -20,7 +25,7 @@ class _ProjectListMobileState extends State<ProjectListMobile>
     with SingleTickerProviderStateMixin {
   AnimationController _controller;
   var projects = List<Project>();
-  User user;
+  mon.User user;
   bool isBusy = false;
   bool isProjectsByLocation = false;
   var userTypeLabel = 'Unknown User Type';
@@ -115,6 +120,12 @@ class _ProjectListMobileState extends State<ProjectListMobile>
                         _navigateToMap();
                       },
                     ),
+                    IconButton(
+                      icon: Icon(Icons.add),
+                      onPressed: () {
+                        _navigateToDetail(null);
+                      },
+                    ),
                   ],
                   bottom: PreferredSize(
                     child: Column(
@@ -170,72 +181,81 @@ class _ProjectListMobileState extends State<ProjectListMobile>
                       )
                     : Padding(
                         padding: const EdgeInsets.all(12.0),
-                        child: ListView.builder(
-                          itemCount: projects.length,
-                          itemBuilder: (BuildContext context, int index) {
-                            var p = projects.elementAt(index);
-                            return GestureDetector(
-                              onTap: () {
-                                _navigateToDetail(p);
-                              },
-                              child: Card(
-                                elevation: 2,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(12.0),
-                                  child: Column(
-                                    children: [
-                                      Row(
-                                        children: [
-                                          Icon(Icons.settings),
-                                          SizedBox(
-                                            width: 8,
-                                          ),
-                                          Text(
-                                            p.name,
-                                            style: Styles.blackBoldSmall,
-                                          )
-                                        ],
-                                      ),
-                                      SizedBox(
-                                        height: 4,
-                                      ),
-                                      Row(
-                                        children: [
-                                          SizedBox(
-                                            width: 32,
-                                          ),
-                                          Row(
-                                            children: [
-                                              Text('Ratings'),
-                                              SizedBox(
-                                                width: 8,
-                                              ),
-                                              Text(
-                                                '${p.ratings.length}',
-                                                style: Styles.blueBoldSmall,
-                                              ),
-                                              SizedBox(
-                                                width: 20,
-                                              ),
-                                              Text('Photos'),
-                                              SizedBox(
-                                                width: 8,
-                                              ),
-                                              Text(
-                                                '${p.photos.length}',
-                                                style: Styles.pinkBoldSmall,
-                                              ),
-                                            ],
-                                          )
-                                        ],
-                                      ),
-                                    ],
-                                  ),
+                        child: projects.isEmpty
+                            ? Center(
+                                child: Text(
+                                  'Projects Not Found',
+                                  style: Styles.blackBoldMedium,
                                 ),
+                              )
+                            : ListView.builder(
+                                itemCount: projects.length,
+                                itemBuilder: (BuildContext context, int index) {
+                                  var p = projects.elementAt(index);
+                                  return GestureDetector(
+                                    onTap: () {
+                                      _navigateToDetail(p);
+                                    },
+                                    child: Card(
+                                      elevation: 2,
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(12.0),
+                                        child: Column(
+                                          children: [
+                                            Row(
+                                              children: [
+                                                Icon(Icons.settings),
+                                                SizedBox(
+                                                  width: 8,
+                                                ),
+                                                Text(
+                                                  p.name,
+                                                  style: Styles.blackBoldSmall,
+                                                )
+                                              ],
+                                            ),
+                                            SizedBox(
+                                              height: 4,
+                                            ),
+                                            Row(
+                                              children: [
+                                                SizedBox(
+                                                  width: 32,
+                                                ),
+                                                Row(
+                                                  children: [
+                                                    Text('Ratings'),
+                                                    SizedBox(
+                                                      width: 8,
+                                                    ),
+                                                    Text(
+                                                      '${p.ratings.length}',
+                                                      style:
+                                                          Styles.blueBoldSmall,
+                                                    ),
+                                                    SizedBox(
+                                                      width: 20,
+                                                    ),
+                                                    Text('Photos'),
+                                                    SizedBox(
+                                                      width: 8,
+                                                    ),
+                                                    Text(
+                                                      '${p.photos.length}',
+                                                      style:
+                                                          Styles.pinkBoldSmall,
+                                                    ),
+                                                  ],
+                                                )
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                },
                               ),
-                            );
-                          },
-                        ),
                       ));
           }),
     );
