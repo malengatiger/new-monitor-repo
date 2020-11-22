@@ -23,10 +23,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 import java.io.PrintStream;
 import java.lang.reflect.Method;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.logging.Logger;
 
 @SpringBootApplication
@@ -113,13 +110,13 @@ public class MonitorBackendApplication implements ApplicationListener<Applicatio
 
             LOGGER.info(Emoji.FERN + " -------- end of Generator methods ");
 
-            List<User> users = (List<User>) userRepository.findAll(Sort.by("name"));
-            users.sort(new Comparator<User>() {
-                @Override
-                public int compare(User u1, User u2) {
-                    return u1.getUserType().compareTo(u2.getUserType());
-                }
-            });
+            List<User> users = (List<User>) userRepository.findAll(Sort.by("organizationId"));
+//            users.sort(new Comparator<User>() {
+//                @Override
+//                public int compare(User u1, User u2) {
+//                    return Objects.requireNonNull(u1.getOrganizationId()).compareTo(Objects.requireNonNull(u2.getOrganizationId()));
+//                }
+//            });
             for (User user : users) {
                 LOGGER.info(Emoji.PIG + Emoji.PIG + Emoji.PIG + Emoji.PIG +
                         " User: " + user.getName() + " " + Emoji.FERN

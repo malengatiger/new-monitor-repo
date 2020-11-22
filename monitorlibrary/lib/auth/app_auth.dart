@@ -9,42 +9,46 @@ import '../functions.dart';
 class AppAuth {
   static FirebaseAuth _auth;
 
-  static Future<bool> isUserSignedIn() async {
+  static Future isUserSignedIn() async {
     pp('🥦 🥦  😎😎😎😎 AppAuth: isUserSignedIn :: 😎😎😎 about to initialize Firebase; 😎');
     var app = await Firebase.initializeApp();
-    pp('😎😎😎😎 AppAuth: isUserSignedIn :: 😎😎😎 Firebase has been initialized; 😎 or not? 🍀🍀 app: ${app.options.databaseURL}');
+    pp('😎😎😎😎 AppAuth: isUserSignedIn :: 😎😎😎 Firebase has been initialized; '
+        '😎 or not? 🍀🍀 app: ${app.options.databaseURL}');
     _auth = FirebaseAuth.instance;
     var authUser = _auth.currentUser;
     if (authUser == null) {
-      pp('👿👿👿 user is not signed in yet');
-      return false;
+      pp('👿👿👿 user is not signed in yet ....');
+      return null;
     }
     var user = await Prefs.getUser();
     if (authUser == null) {
-      return false;
+      return null;
     } else {
       if (user != null) {
-        return true;
+        pp('🦠🦠🦠 user is signed in. 🦠 .... ${user.toJson()}');
+        return user;
       } else {
-        return false;
+        return null;
       }
     }
   }
 
-  static Future createUser(mon.User user, String password) async {
+  static Future<mon.User> createUser(mon.User user, String password) async {
     var fbUser = await _auth
         .createUserWithEmailAndPassword(email: user.email, password: password)
         .catchError((e) {
       pp('User create failed');
     });
+    mon.User mUser;
     if (fbUser != null) {
-      var mUser = await DataAPI.addUser(user);
+      mUser = await DataAPI.addUser(user);
       await Prefs.saveUser(mUser);
       var countries = await DataAPI.getCountries();
       if (countries.isNotEmpty) {
         await Prefs.saveCountry(countries.elementAt(0));
       }
     }
+    return mUser;
   }
 
   static Future<String> getAuthToken() async {

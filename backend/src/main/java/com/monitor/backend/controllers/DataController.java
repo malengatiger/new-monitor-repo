@@ -172,7 +172,7 @@ public class DataController {
     public User addUser(User user) throws Exception {
         LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS)
                 .concat("Adding User: ".concat(user.getName())));
-        return dataService.createUser(user);
+        return dataService.addUser(user);
     }
     @PostMapping("/updateUser")
     public User updateUser(User user) throws Exception {

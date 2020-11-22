@@ -117,11 +117,12 @@ public class DataService {
         return user;
     }
 
-    private void addUser(User user) throws Exception {
-        userRepository.save(user);
+    public User addUser(User user) throws Exception {
+       User mUser =  userRepository.save(user);
         LOGGER.info(Emoji.LEAF.concat(Emoji.LEAF).concat("User added to database: "
                 + user.getName() + " id: "
                 + user.getUserId()));
+        return mUser;
     }
 
     public void addPhoto(Photo photo) throws Exception {

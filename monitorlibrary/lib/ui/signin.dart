@@ -27,7 +27,14 @@ class _SignInState extends State<SignIn> implements SnackBarListener {
         backgroundColor: Colors.brown[400],
         bottom: PreferredSize(
           preferredSize: Size.fromHeight(80),
-          child: Column(),
+          child: Column(
+            children: [
+              Text(widget.type, style: Styles.whiteBoldMedium),
+              SizedBox(
+                height: 24,
+              )
+            ],
+          ),
         ),
       ),
       backgroundColor: Colors.brown[100],
