@@ -34,6 +34,7 @@ class AppAuth {
   }
 
   static Future<mon.User> createUser(mon.User user, String password) async {
+    pp('AppAuth: 💜 💜 createUser:, auth record to be created ... ${user.toJson()}');
     var fbUser = await _auth
         .createUserWithEmailAndPassword(email: user.email, password: password)
         .catchError((e) {

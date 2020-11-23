@@ -46,7 +46,6 @@ class Project {
     this.projectId = data['projectId'];
     this.description = data['description'];
     this.organizationId = data['organizationId'];
-    this.projectId = data['projectId'];
     this.created = data['created'];
     this.organizationName = data['organizationName'];
     this.monitorMaxDistanceInMetres = data['monitorMaxDistanceInMetres'];

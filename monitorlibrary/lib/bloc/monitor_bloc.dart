@@ -68,7 +68,7 @@ class MonitorBloc {
       {double radiusInKM = 100.5, bool checkUserOrg = true}) async {
     Position pos;
     try {
-      var pos = await locationBloc.getLocation();
+      pos = await locationBloc.getLocation();
       pp('💜 💜 💜 MonitorBloc: current location: 💜 latitude: ${pos.latitude} longitude: ${pos.longitude}');
     } catch (e) {
       pp('MonitorBloc: Location is fucked!');
@@ -78,31 +78,41 @@ class MonitorBloc {
         latitude: pos.latitude,
         longitude: pos.longitude,
         radiusInKM: radiusInKM);
+
     var userProjects = List<Project>();
-    projects.forEach((element) {
-      if (element.organizationId == user.organizationId) {
-        userProjects.add(element);
+    projects.forEach((project) {
+      pp('💜 💜 COMPARING: 💜 💜 project.organizationId: ${project.organizationId} '
+          '🍏 user.organizationId: ${user.organizationId}');
+      if (project.organizationId == user.organizationId) {
+        userProjects.add(project);
       }
     });
 
-    if (checkUserOrg) {
-      _projController.sink.add(userProjects);
-    } else {
-      _projController.sink.add(projects);
-    }
-    pp('💜 💜 💜 MonitorBloc: Projects within radius of $radiusInKM kilometres; found: 💜 ${_projects.length} projects');
-    _projects.forEach((element) {
-      pp('💜 💜 PROJECT: ${element.name} 🍏 ${element.organizationName}');
+    pp('💜 💜 💜 MonitorBloc: Projects within radius of $radiusInKM kilometres; '
+        'found: 💜 ${projects.length} projects');
+    projects.forEach((project) {
+      pp('😡  😡  😡  😡  PROJECT: ${project.name} 🍏 ${project.organizationName}  🍏 ${project.organizationId}');
     });
-    return _projects;
+    pp('💜 💜 💜 MonitorBloc: User Org Projects within radius of $radiusInKM kilometres; '
+        'found: 💜 ${userProjects.length} projects');
+    userProjects.forEach((proj) {
+      pp('💜 💜 PROJECT: ${proj.name} 🍏 ${proj.organizationName}  🍏 ${proj.organizationId}');
+    });
+    if (checkUserOrg) {
+      return userProjects;
+    } else {
+      return projects;
+    }
   }
 
   Future<List<Project>> getOrganizationProjects({String organizationId}) async {
+    pp('💜 💜 💜 MonitorBloc: getOrganizationProjects: for organizationId: $organizationId ; '
+        'user: 💜 ${user.name} user.organizationId: ${user.organizationId} user.organizationName: ${user.organizationName} ');
     _projects = await DataAPI.findProjectsByOrganization(organizationId);
     _projController.sink.add(_projects);
     pp('💜 💜 💜 MonitorBloc: OrganizationProjects found: 💜 ${_projects.length} projects ');
-    _projects.forEach((element) {
-      pp('💜 💜 PROJECT: ${element.name} 🍏 ${element.organizationName}');
+    _projects.forEach((project) {
+      pp('💜 💜 PROJECT: ${project.name} 🍏 ${project.organizationName}  🍏 ${project.organizationId}');
     });
     return _projects;
   }

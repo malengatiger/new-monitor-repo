@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:monitorlibrary/data/project.dart';
 import 'package:monitorlibrary/functions.dart';
-import 'package:monitorlibrary/ui/project_detail/project_detail_desktop.dart';
-import 'package:monitorlibrary/ui/project_detail/project_detail_mobile.dart';
-import 'package:monitorlibrary/ui/project_detail/project_detail_tablet.dart';
+import 'package:monitorlibrary/ui/project_monitor/project_monitor_desktop.dart';
+import 'package:monitorlibrary/ui/project_monitor/project_monitor_mobile.dart';
+import 'package:monitorlibrary/ui/project_monitor/project_monitor_tablet.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 
-class ProjectDetailMain extends StatefulWidget {
+class ProjectMonitorMain extends StatefulWidget {
   final Project project;
 
-  const ProjectDetailMain(this.project);
+  const ProjectMonitorMain(this.project);
   @override
-  _ProjectDetailMainState createState() => _ProjectDetailMainState();
+  _ProjectMonitorMainState createState() => _ProjectMonitorMainState();
 }
 
-class _ProjectDetailMainState extends State<ProjectDetailMain>
+class _ProjectMonitorMainState extends State<ProjectMonitorMain>
     with SingleTickerProviderStateMixin {
   AnimationController _controller;
   bool isBusy = false;
@@ -45,9 +45,9 @@ class _ProjectDetailMainState extends State<ProjectDetailMain>
             ),
           )
         : ScreenTypeLayout(
-            mobile: ProjectDetailMobile(widget.project),
-            tablet: ProjectDetailTablet(widget.project),
-            desktop: ProjectDetailDesktop(widget.project),
+            mobile: ProjectMonitorMobile(widget.project),
+            tablet: ProjectMonitorTablet(widget.project),
+            desktop: ProjectMonitorDesktop(widget.project),
           );
   }
 }

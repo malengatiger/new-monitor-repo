@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:monitorlibrary/data/project.dart';
 
-class ProjectDetailTablet extends StatefulWidget {
+class ProjectMonitorTablet extends StatefulWidget {
   final Project project;
 
-  const ProjectDetailTablet(this.project);
+  const ProjectMonitorTablet(this.project);
   @override
-  _ProjectDetailTabletState createState() => _ProjectDetailTabletState();
+  _ProjectMonitorTabletState createState() => _ProjectMonitorTabletState();
 }
 
-class _ProjectDetailTabletState extends State<ProjectDetailTablet>
+class _ProjectMonitorTabletState extends State<ProjectMonitorTablet>
     with SingleTickerProviderStateMixin {
   AnimationController _controller;
 

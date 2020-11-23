@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:monitorlibrary/api/data_api.dart';
+import 'package:monitorlibrary/bloc/monitor_bloc.dart';
 import 'package:monitorlibrary/data/position.dart' as mon;
 import 'package:monitorlibrary/data/project.dart';
 import 'package:monitorlibrary/data/project_position.dart';
@@ -23,12 +25,14 @@ class _ProjectLocationMobileState extends State<ProjectLocationMobile>
   AnimationController _controller;
   var isBusy = false;
   ProjectPosition _projectPosition;
+  List<ProjectPosition> _projectPositions = [];
 
   @override
   void initState() {
     _controller = AnimationController(vsync: this);
     super.initState();
     _getLocation();
+    _getProjectPositions();
   }
 
   @override
@@ -37,9 +41,50 @@ class _ProjectLocationMobileState extends State<ProjectLocationMobile>
     super.dispose();
   }
 
+  Future<bool> isLocationWithinFiftyMetres() async {
+    var map = Map<double, ProjectPosition>();
+    for (var i = 0; i < _projectPositions.length; i++) {
+      var dist = await locationBloc.getDistanceFromCurrentPosition(
+          latitude:
+              _projectPositions.elementAt(i).position.coordinates.elementAt(1),
+          longitude:
+              _projectPositions.elementAt(i).position.coordinates.elementAt(0));
+      map[dist] = _projectPositions.elementAt(i);
+    }
+    if (map.length == 0) {
+      return false;
+    }
+    var list = map.keys.toList();
+    list.sort();
+    if (list.elementAt(0) < 50.0) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  void _getProjectPositions() async {
+    _projectPositions = await monitorBloc.getProjectPositions(
+        projectId: widget.project.projectId);
+  }
+
   var _key = GlobalKey<ScaffoldState>();
   void _submit() async {
     await _getLocation();
+    var isWithin = await isLocationWithinFiftyMetres();
+    if (isWithin) {
+      AppSnackbar.showErrorSnackbar(
+          scaffoldKey: _key,
+          message: 'This location is too near an existing project location',
+          actionLabel: '');
+      return;
+    }
+
+    List<Placemark> placeMarks =
+        await placemarkFromCoordinates(_position.latitude, _position.longitude);
+    placeMarks.forEach((mark) {
+      pp('💙 💙 💙 Placemark: ${mark.toString()}');
+    });
 
     if (_position == null) {
       AppSnackbar.showErrorSnackbar(
@@ -63,9 +108,11 @@ class _ProjectLocationMobileState extends State<ProjectLocationMobile>
           projectId: widget.project.projectId);
       var m = await DataAPI.addProjectPosition(position: loc);
       pp('🎽 🎽 🎽 _submit: new projectPosition added .........  🍅 ${m.toJson()} 🍅');
+      monitorBloc.getProjectPositions(projectId: widget.project.projectId);
       setState(() {
         isBusy = false;
       });
+
       Navigator.pop(context);
     } catch (e) {
       AppSnackbar.showErrorSnackbar(scaffoldKey: _key, message: 'Failed: $e');

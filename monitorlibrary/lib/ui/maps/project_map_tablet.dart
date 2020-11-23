@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:monitorlibrary/data/project.dart';
+import 'package:monitorlibrary/data/project_position.dart';
 
-class ProjectDetailDesktop extends StatefulWidget {
+class ProjectMapTablet extends StatefulWidget {
   final Project project;
+  final List<ProjectPosition> projectPositions;
+  ProjectMapTablet({this.project, this.projectPositions});
 
-  const ProjectDetailDesktop(this.project);
   @override
-  _ProjectDetailDesktopState createState() => _ProjectDetailDesktopState();
+  _ProjectMapTabletState createState() => _ProjectMapTabletState();
 }
 
-class _ProjectDetailDesktopState extends State<ProjectDetailDesktop>
+class _ProjectMapTabletState extends State<ProjectMapTablet>
     with SingleTickerProviderStateMixin {
   AnimationController _controller;
 

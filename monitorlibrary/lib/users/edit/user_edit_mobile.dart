@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:monitorlibrary/api/sharedprefs.dart';
+import 'package:monitorlibrary/auth/app_auth.dart';
 import 'package:monitorlibrary/bloc/admin_bloc.dart';
+import 'package:monitorlibrary/bloc/monitor_bloc.dart';
 import 'package:monitorlibrary/data/user.dart';
 import 'package:monitorlibrary/functions.dart';
+import 'package:monitorlibrary/snack.dart';
 
 class UserEditMobile extends StatefulWidget {
   final User user;
@@ -21,6 +24,8 @@ class _UserEditMobileState extends State<UserEditMobile>
   var cellphoneController = TextEditingController();
   User admin;
   final _formKey = GlobalKey<FormState>();
+  var _key = GlobalKey<ScaffoldState>();
+  var isBusy = false;
 
   @override
   void initState() {
@@ -32,6 +37,7 @@ class _UserEditMobileState extends State<UserEditMobile>
 
   void _getUser() async {
     admin = await Prefs.getUser();
+    setState(() {});
   }
 
   void _setup() {
@@ -50,25 +56,42 @@ class _UserEditMobileState extends State<UserEditMobile>
 
   void _submit() async {
     if (_formKey.currentState.validate()) {
-      if (widget.user == null) {
-        pp('😡 😡 😡 _submit new user ......... ');
-        var user = User(
-            name: nameController.text,
-            email: emailController.text,
-            cellphone: cellphoneController.text,
-            organizationId: admin.organizationId,
-            organizationName: admin.organizationName,
-            userType: type,
-            created: DateTime.now().toIso8601String());
-        await adminBloc.addUser(user);
-      } else {
-        pp('😡 😡 😡 _submit existing user for update, soon! 🌸 ......... ');
-        widget.user.name = nameController.text;
-        widget.user.email = emailController.text;
-        widget.user.cellphone = cellphoneController.text;
-        widget.user.userType = type;
-        await adminBloc.updateUser(widget.user);
+      setState(() {
+        isBusy = true;
+      });
+      try {
+        if (widget.user == null) {
+          var user = User(
+              name: nameController.text,
+              email: emailController.text,
+              cellphone: cellphoneController.text,
+              organizationId: admin.organizationId,
+              organizationName: admin.organizationName,
+              userType: type,
+              created: DateTime.now().toIso8601String(),
+              userId: 'tbd');
+          pp('😡 😡 😡 _submit new user ......... ${user.toJson()}');
+          await AppAuth.createUser(user, 'pass123');
+          monitorBloc.getOrganizationUsers(organizationId: user.organizationId);
+        } else {
+          widget.user.name = nameController.text;
+          widget.user.email = emailController.text;
+          widget.user.cellphone = cellphoneController.text;
+          widget.user.userType = type;
+          pp('😡 😡 😡 _submit existing user for update, soon! 🌸 ......... ${widget.user.toJson()}');
+          await adminBloc.updateUser(widget.user);
+          monitorBloc.getOrganizationUsers(
+              organizationId: widget.user.organizationId);
+        }
+
+        Navigator.pop(context);
+      } catch (e) {
+        AppSnackbar.showErrorSnackbar(
+            scaffoldKey: _key, message: 'Failed : $e');
       }
+      setState(() {
+        isBusy = false;
+      });
     }
   }
 
@@ -78,6 +101,7 @@ class _UserEditMobileState extends State<UserEditMobile>
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        key: _key,
         appBar: AppBar(
           title: Text(
             'User Editor',
@@ -90,8 +114,17 @@ class _UserEditMobileState extends State<UserEditMobile>
                   widget.user == null ? 'New User' : 'Edit User',
                   style: Styles.blackBoldMedium,
                 ),
+                admin == null
+                    ? Container()
+                    : SizedBox(
+                        height: 8,
+                      ),
+                Text(
+                  admin == null ? '' : admin.organizationName,
+                  style: Styles.whiteSmall,
+                ),
                 SizedBox(
-                  height: 40,
+                  height: 20,
                 )
               ],
             ),
@@ -120,7 +153,7 @@ class _UserEditMobileState extends State<UserEditMobile>
                           if (value.isEmpty) {
                             return 'Please enter full name';
                           }
-                          return value;
+                          return null;
                         },
                       ),
                       SizedBox(
@@ -137,7 +170,7 @@ class _UserEditMobileState extends State<UserEditMobile>
                           if (value.isEmpty) {
                             return 'Please enter email address';
                           }
-                          return value;
+                          return null;
                         },
                       ),
                       SizedBox(
@@ -154,7 +187,7 @@ class _UserEditMobileState extends State<UserEditMobile>
                           if (value.isEmpty) {
                             return 'Please enter cellphone number';
                           }
-                          return value;
+                          return null;
                         },
                       ),
                       SizedBox(
@@ -173,7 +206,7 @@ class _UserEditMobileState extends State<UserEditMobile>
                                 if (value.isEmpty) {
                                   return 'Please enter password';
                                 }
-                                return value;
+                                return null;
                               },
                             )
                           : Container(),
@@ -216,17 +249,26 @@ class _UserEditMobileState extends State<UserEditMobile>
                       SizedBox(
                         height: 16,
                       ),
-                      RaisedButton(
-                        elevation: 8,
-                        child: Padding(
-                          padding: const EdgeInsets.all(12.0),
-                          child: Text(
-                            'Submit User',
-                            style: Styles.whiteSmall,
-                          ),
-                        ),
-                        onPressed: _submit,
-                      ),
+                      isBusy
+                          ? Container(
+                              width: 48,
+                              height: 48,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 8,
+                                backgroundColor: Colors.black,
+                              ),
+                            )
+                          : RaisedButton(
+                              elevation: 8,
+                              child: Padding(
+                                padding: const EdgeInsets.all(12.0),
+                                child: Text(
+                                  'Submit User',
+                                  style: Styles.whiteSmall,
+                                ),
+                              ),
+                              onPressed: _submit,
+                            ),
                       SizedBox(
                         height: 40,
                       ),

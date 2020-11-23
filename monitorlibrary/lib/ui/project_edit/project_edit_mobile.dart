@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:monitorlibrary/api/sharedprefs.dart';
 import 'package:monitorlibrary/bloc/admin_bloc.dart';
+import 'package:monitorlibrary/bloc/monitor_bloc.dart';
 import 'package:monitorlibrary/data/project.dart';
 import 'package:monitorlibrary/data/user.dart';
 import 'package:monitorlibrary/functions.dart';
@@ -87,6 +88,8 @@ class _ProjectEditMobileState extends State<ProjectEditMobile>
         setState(() {
           isBusy = false;
         });
+        monitorBloc.getOrganizationProjects(
+            organizationId: mProject.organizationId);
         _navigateToProjectLocation(mProject);
       } catch (e) {
         setState(() {
@@ -99,20 +102,21 @@ class _ProjectEditMobileState extends State<ProjectEditMobile>
     }
   }
 
-  void _navigateToProjectLocation(Project mProject) {
+  void _navigateToProjectLocation(Project mProject) async {
     if (mProject == null) {
       AppSnackbar.showErrorSnackbar(
           scaffoldKey: _key, message: 'Project is missing', actionLabel: '');
       return;
     }
     pp(' 😡 _navigateToProjectLocation  😡 😡 😡 ${mProject.name}');
-    Navigator.push(
+    await Navigator.push(
         context,
         PageTransition(
             type: PageTransitionType.scale,
             alignment: Alignment.bottomRight,
             duration: Duration(seconds: 1),
             child: ProjectLocationMain(mProject)));
+    Navigator.pop(context);
   }
 
   var _key = GlobalKey<ScaffoldState>();
@@ -234,16 +238,41 @@ class _ProjectEditMobileState extends State<ProjectEditMobile>
                                 backgroundColor: Colors.black,
                               ),
                             )
-                          : RaisedButton(
-                              elevation: 8,
-                              child: Padding(
-                                padding: const EdgeInsets.all(12.0),
-                                child: Text(
-                                  'Submit Project',
-                                  style: Styles.whiteSmall,
+                          : Column(
+                              children: [
+                                widget.project == null
+                                    ? Container()
+                                    : FlatButton(
+                                        // color: Theme.of(context).accentColor,
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(12.0),
+                                          child: Text(
+                                            'Add Location',
+                                            style: Styles.blueMedium,
+                                          ),
+                                        ),
+                                        onPressed: () {
+                                          _navigateToProjectLocation(
+                                              widget.project);
+                                        },
+                                      ),
+                                widget.project == null
+                                    ? Container()
+                                    : SizedBox(
+                                        height: 20,
+                                      ),
+                                RaisedButton(
+                                  elevation: 8,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(12.0),
+                                    child: Text(
+                                      'Submit Project',
+                                      style: Styles.whiteSmall,
+                                    ),
+                                  ),
+                                  onPressed: _submit,
                                 ),
-                              ),
-                              onPressed: _submit,
+                              ],
                             ),
                       SizedBox(
                         height: 40,

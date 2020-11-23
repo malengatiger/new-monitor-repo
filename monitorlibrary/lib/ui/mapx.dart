@@ -75,12 +75,6 @@ class _MonitorMapState extends State<MonitorMap>
     zoom: 14.4746,
   );
 
-  // static final CameraPosition _kLake = CameraPosition(
-  //     bearing: 192.8334901395799,
-  //     target: LatLng(37.43296265331129, -122.08832357078792),
-  //     tilt: 59.440717697143555,
-  //     zoom: 19.151926040649414);
-
   var random = Random(DateTime.now().millisecondsSinceEpoch);
 
   Future<void> _addMarkers() async {
@@ -223,12 +217,6 @@ class _MonitorMapState extends State<MonitorMap>
       // ),
     );
   }
-
-  // Future<void> _goToTheLake() async {
-  //   pp('');
-  //   final GoogleMapController controller = await _mapController.future;
-  //   controller.animateCamera(CameraUpdate.newCameraPosition(_kLake));
-  // }
 
   void _onLongPress(LatLng argument) {
     pp('🔆🔆🔆 _onLongPress ,,,,,,,, $argument');

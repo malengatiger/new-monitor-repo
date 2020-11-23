@@ -29,6 +29,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 
 import static com.mongodb.client.model.Filters.eq;
@@ -146,6 +147,24 @@ public class DataService {
                 .concat(Emoji.FLOWER_YELLOW)));
 
         ProjectPosition m = projectPositionRepository.save(projectPosition);
+        LOGGER.info(Emoji.YELLOW_BIRD + Emoji.YELLOW_BIRD +
+                "ProjectPosition added to: " + m.getProjectName()
+                + " " + Emoji.RAIN_DROPS);
+        List<ProjectPosition> positions =  projectPositionRepository
+                .findByProjectId(projectPosition.getProjectId());
+
+        Project project = projectRepository.findByProjectId(projectPosition.getProjectId());
+        if (project.getPosition() == null) {
+            if (!positions.isEmpty()) {
+                project.setPosition(positions.get(0).getPosition());
+                projectRepository.save(project);
+                LOGGER.info(Emoji.YELLOW_BIRD + Emoji.YELLOW_BIRD +
+                        "Project updated with position: " + project.getName()
+                         + " " + Emoji.RAIN_DROPS);
+            }
+        }
+
+
 
         LOGGER.info(Emoji.LEAF.concat(Emoji.LEAF)
                 .concat("ProjectPosition added: " + projectPosition.getProjectId()));

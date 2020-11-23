@@ -9,16 +9,16 @@ import 'package:monitorlibrary/snack.dart';
 import 'package:monitorlibrary/ui/media/media_house.dart';
 import 'package:page_transition/page_transition.dart';
 
-class ProjectDetailMobile extends StatefulWidget {
+class ProjectMonitorMobile extends StatefulWidget {
   final Project project;
 
-  ProjectDetailMobile(this.project);
+  ProjectMonitorMobile(this.project);
 
   @override
-  _ProjectDetailMobileState createState() => _ProjectDetailMobileState();
+  _ProjectMonitorMobileState createState() => _ProjectMonitorMobileState();
 }
 
-class _ProjectDetailMobileState extends State<ProjectDetailMobile>
+class _ProjectMonitorMobileState extends State<ProjectMonitorMobile>
     with SingleTickerProviderStateMixin {
   AnimationController _controller;
   var isBusy = false;
@@ -249,27 +249,6 @@ class _ProjectDetailMobileState extends State<ProjectDetailMobile>
     });
   }
 
-  /*
-  String origin="somestartLocationStringAddress or lat,long";  // lat,long like 123.34,68.56
-String destination="someEndLocationStringAddress or lat,long";
-if (new LocalPlatform().isAndroid) {
-      final AndroidIntent intent = new AndroidIntent(
-          action: 'action_view',
-          data: Uri.encodeFull(
-              "https://www.google.com/maps/dir/?api=1&origin=" +
-                  origin + "&destination=" + destination + "&travelmode=driving&dir_action=navigate"),
-          package: 'com.google.android.apps.maps');
-      intent.launch();
-    }
-    else {
-        String url = "https://www.google.com/maps/dir/?api=1&origin=" + origin + "&destination=" + destination + "&travelmode=driving&dir_action=navigate";
-        if (await canLaunch(url)) {
-              await launch(url);
-       } else {
-            throw 'Could not launch $url';
-       }
-    }
-   */
   void _navigateToDirections() async {
     pp('🏖 🍎 🍎 🍎 start Google Maps Directions .....');
     var origin =
