@@ -177,7 +177,6 @@ public class DataService {
                 .concat(project.getName()).concat(" ")
                 .concat(Emoji.FLOWER_YELLOW)));
 
-        project.setProjectId(UUID.randomUUID().toString());
         Project m =projectRepository.save(project);
 
         LOGGER.info(Emoji.LEAF.concat(Emoji.LEAF)

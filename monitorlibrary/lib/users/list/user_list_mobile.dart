@@ -57,7 +57,7 @@ class _UserListMobileState extends State<UserListMobile>
             return Scaffold(
               appBar: AppBar(
                 title: Text(
-                  widget.user.name,
+                  'Users',
                   style: Styles.whiteSmall,
                 ),
                 actions: [

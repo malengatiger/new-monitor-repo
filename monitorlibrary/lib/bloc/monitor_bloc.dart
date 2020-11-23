@@ -68,6 +68,9 @@ class MonitorBloc {
       {double radiusInKM = 100.5, bool checkUserOrg = true}) async {
     Position pos;
     try {
+      if (_user == null) {
+        _user = await Prefs.getUser();
+      }
       pos = await locationBloc.getLocation();
       pp('💜 💜 💜 MonitorBloc: current location: 💜 latitude: ${pos.latitude} longitude: ${pos.longitude}');
     } catch (e) {
@@ -106,6 +109,9 @@ class MonitorBloc {
   }
 
   Future<List<Project>> getOrganizationProjects({String organizationId}) async {
+    if (_user == null) {
+      _user = await Prefs.getUser();
+    }
     pp('💜 💜 💜 MonitorBloc: getOrganizationProjects: for organizationId: $organizationId ; '
         'user: 💜 ${user.name} user.organizationId: ${user.organizationId} user.organizationName: ${user.organizationName} ');
     _projects = await DataAPI.findProjectsByOrganization(organizationId);

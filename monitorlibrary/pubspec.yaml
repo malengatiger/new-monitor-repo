@@ -31,7 +31,6 @@ dependencies:
   mongodb_mobile: ^0.0.7
   grouped_buttons: ^1.0.4
   path: ^1.7.0
-  video_player: ^1.0.0
   cached_network_image: ^2.3.3
   flutter_dotenv: ^2.1.0
   page_transition: ^1.1.7+2
@@ -47,6 +46,8 @@ dependencies:
   introduction_screen: ^1.0.9
   uuid: ^2.2.2
   geocoding: ^1.0.5
+  chewie: ^0.12.0
+  video_player: ^1.0.1
 
 dev_dependencies:
   flutter_test:

@@ -92,170 +92,181 @@ class _ProjectListMobileState extends State<ProjectListMobile>
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Scaffold(
-          appBar: AppBar(
-            title: Text(
-              'Projects',
-              style: Styles.whiteSmall,
-            ),
-            actions: [
-              IconButton(
-                icon: Icon(Icons.settings),
-                onPressed: () {
-                  themeBloc.changeToRandomTheme();
-                },
-              ),
-              IconButton(
-                icon: Icon(Icons.location_on_outlined),
-                onPressed: () {
-                  isProjectsByLocation = !isProjectsByLocation;
-                  refreshProjects();
-                },
-              ),
-              IconButton(
-                icon: Icon(Icons.map_outlined),
-                onPressed: () {
-                  _navigateToOrgMap();
-                },
-              ),
-              widget.user.userType == FIELD_MONITOR
-                  ? Container()
-                  : IconButton(
-                      icon: Icon(Icons.add),
-                      onPressed: () {
-                        _navigateToDetail(null);
-                      },
-                    ),
-            ],
-            bottom: PreferredSize(
-              child: Column(
-                children: [
-                  Text(
-                    user == null ? 'Unknown User' : user.name,
-                    style: Styles.whiteBoldMedium,
-                  ),
-                  SizedBox(
-                    height: 8,
-                  ),
-                  Text(
-                    '$userTypeLabel',
-                    style: Styles.blackSmall,
-                  ),
-                  SizedBox(
-                    height: 8,
-                  ),
-                  Text(
-                    user == null ? '' : '${user.organizationName}',
+      child: StreamBuilder<List<Project>>(
+          stream: monitorBloc.projectStream,
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              projects = snapshot.data;
+            }
+            return Scaffold(
+                appBar: AppBar(
+                  title: Text(
+                    'Projects',
                     style: Styles.whiteSmall,
                   ),
-                  SizedBox(
-                    height: 24,
-                  ),
-                ],
-              ),
-              preferredSize: Size.fromHeight(120),
-            ),
-          ),
-          backgroundColor: Colors.brown[100],
-          body: isBusy
-              ? Center(
-                  child: Column(
-                    children: [
-                      SizedBox(
-                        height: 100,
-                      ),
-                      Container(
-                        width: 60,
-                        height: 60,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 8,
-                          backgroundColor: Colors.black,
-                        ),
-                      ),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      Text(isProjectsByLocation
-                          ? 'Finding Projects within 3 KM'
-                          : 'Finding Organization Projects'),
-                    ],
-                  ),
-                )
-              : Padding(
-                  padding: const EdgeInsets.all(12.0),
-                  child: projects.isEmpty
-                      ? Center(
-                          child: Text(
-                            'Projects Not Found',
-                            style: Styles.blackBoldMedium,
+                  actions: [
+                    IconButton(
+                      icon: Icon(Icons.settings),
+                      onPressed: () {
+                        themeBloc.changeToRandomTheme();
+                      },
+                    ),
+                    IconButton(
+                      icon: isProjectsByLocation
+                          ? Icon(Icons.list_alt)
+                          : Icon(Icons.location_on_outlined),
+                      onPressed: () {
+                        isProjectsByLocation = !isProjectsByLocation;
+                        refreshProjects();
+                      },
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.map_outlined),
+                      onPressed: () {
+                        _navigateToOrgMap();
+                      },
+                    ),
+                    widget.user.userType == FIELD_MONITOR
+                        ? Container()
+                        : IconButton(
+                            icon: Icon(Icons.add),
+                            onPressed: () {
+                              _navigateToDetail(null);
+                            },
                           ),
-                        )
-                      : Stack(
+                  ],
+                  bottom: PreferredSize(
+                    child: Column(
+                      children: [
+                        Text(
+                          user == null ? 'Unknown User' : user.name,
+                          style: Styles.whiteBoldMedium,
+                        ),
+                        SizedBox(
+                          height: 8,
+                        ),
+                        Text(
+                          '$userTypeLabel',
+                          style: Styles.blackSmall,
+                        ),
+                        SizedBox(
+                          height: 8,
+                        ),
+                        Text(
+                          user == null ? '' : '${user.organizationName}',
+                          style: Styles.whiteSmall,
+                        ),
+                        SizedBox(
+                          height: 24,
+                        ),
+                      ],
+                    ),
+                    preferredSize: Size.fromHeight(120),
+                  ),
+                ),
+                backgroundColor: Colors.brown[100],
+                body: isBusy
+                    ? Center(
+                        child: Column(
                           children: [
-                            ListView.builder(
-                              itemCount: projects.length,
-                              itemBuilder: (BuildContext context, int index) {
-                                var proj = projects.elementAt(index);
-
-                                return GestureDetector(
-                                  onTap: () {
-                                    pp('🔆 🔆 🔆 💜 💜 Project tapped: ${projects.elementAt(index).name} '
-                                        'at index: $index ');
-                                    _showFuckingActions(
-                                        projects.elementAt(index));
-                                  },
-                                  child: Card(
-                                    elevation: 2,
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(12.0),
-                                      child: Column(
-                                        children: [
-                                          SizedBox(
-                                            height: 24,
-                                          ),
-                                          Row(
-                                            children: [
-                                              Opacity(
-                                                opacity: 0.5,
-                                                child: Icon(
-                                                  Icons.settings,
-                                                  color: Theme.of(context)
-                                                      .primaryColorDark,
-                                                ),
-                                              ),
-                                              SizedBox(
-                                                width: 8,
-                                              ),
-                                              Text(
-                                                proj.name,
-                                                style: Styles.blackBoldSmall,
-                                              )
-                                            ],
-                                          ),
-                                          SizedBox(
-                                            height: 4,
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                );
-                              },
+                            SizedBox(
+                              height: 100,
                             ),
-                            openProjectActions
-                                ? Positioned(
-                                    left: 20,
-                                    bottom: 20,
-                                    child: ProjectActions(
-                                      context: context,
-                                      project: _currentProject,
-                                      user: user,
-                                      listener: this,
-                                    ),
-                                  )
-                                : Container(),
+                            Container(
+                              width: 60,
+                              height: 60,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 8,
+                                backgroundColor: Colors.black,
+                              ),
+                            ),
+                            SizedBox(
+                              height: 20,
+                            ),
+                            Text(isProjectsByLocation
+                                ? 'Finding Projects within 3 KM'
+                                : 'Finding Organization Projects'),
                           ],
-                        ))),
+                        ),
+                      )
+                    : Padding(
+                        padding: const EdgeInsets.all(12.0),
+                        child: projects.isEmpty
+                            ? Center(
+                                child: Text(
+                                  'Projects Not Found',
+                                  style: Styles.blackBoldMedium,
+                                ),
+                              )
+                            : Stack(
+                                children: [
+                                  ListView.builder(
+                                    itemCount: projects.length,
+                                    itemBuilder:
+                                        (BuildContext context, int index) {
+                                      var proj = projects.elementAt(index);
+
+                                      return GestureDetector(
+                                        onTap: () {
+                                          pp('🔆 🔆 🔆 💜 💜 Project tapped: ${projects.elementAt(index).name} '
+                                              'at index: $index ');
+                                          _showFuckingActions(
+                                              projects.elementAt(index));
+                                        },
+                                        child: Card(
+                                          elevation: 2,
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(12.0),
+                                            child: Column(
+                                              children: [
+                                                SizedBox(
+                                                  height: 24,
+                                                ),
+                                                Row(
+                                                  children: [
+                                                    Opacity(
+                                                      opacity: 0.5,
+                                                      child: Icon(
+                                                        Icons.settings,
+                                                        color: Theme.of(context)
+                                                            .primaryColorDark,
+                                                      ),
+                                                    ),
+                                                    SizedBox(
+                                                      width: 8,
+                                                    ),
+                                                    Text(
+                                                      proj.name,
+                                                      style:
+                                                          Styles.blackBoldSmall,
+                                                    )
+                                                  ],
+                                                ),
+                                                SizedBox(
+                                                  height: 4,
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                  openProjectActions
+                                      ? Positioned(
+                                          left: 20,
+                                          bottom: 20,
+                                          child: ProjectActions(
+                                            context: context,
+                                            project: _currentProject,
+                                            user: user,
+                                            listener: this,
+                                          ),
+                                        )
+                                      : Container(),
+                                ],
+                              )));
+          }),
     );
   }
 

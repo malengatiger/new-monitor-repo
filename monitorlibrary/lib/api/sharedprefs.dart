@@ -45,8 +45,7 @@ class Prefs {
     }
     var jx = json.decode(string);
     var user = new User.fromJson(jx);
-    pp("🌽 🌽 🌽 Prefs.getUser 🧩  ${user.email} retrieved");
-    prettyPrint(user.toJson(), " 🏈 Saved User retrieved from Prefs   🏈");
+    pp("🌽 🌽 🌽 Prefs.getUser 🧩  ${user.name} retrieved");
     return user;
   }
 

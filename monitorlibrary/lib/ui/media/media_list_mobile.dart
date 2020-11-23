@@ -5,6 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:monitorlibrary/bloc/monitor_bloc.dart';
 import 'package:monitorlibrary/data/photo.dart';
 import 'package:monitorlibrary/data/project.dart';
+import 'package:monitorlibrary/ui/media/full_photo/full_photo_main.dart';
+import 'package:monitorlibrary/ui/media/video/video_main.dart';
+import 'package:page_transition/page_transition.dart';
 
 import '../../functions.dart';
 
@@ -85,7 +88,11 @@ class _MediaListMobileState extends State<MediaListMobile>
       suitcases.add(sc);
     });
     suitcases.sort((a, b) => a.date.compareTo(b.date));
+    latest = getFormattedDateShortest(suitcases.first.date, context);
+    earliest = getFormattedDateShortest(suitcases.last.date, context);
   }
+
+  String latest, earliest;
 
   @override
   Widget build(BuildContext context) {
@@ -140,10 +147,45 @@ class _MediaListMobileState extends State<MediaListMobile>
                       ),
                     ],
                   ),
+                  SizedBox(
+                    height: 28,
+                  ),
+                  Row(
+                    children: [
+                      Text(
+                        'Latest:',
+                        style: Styles.blackTiny,
+                      ),
+                      SizedBox(
+                        width: 8,
+                      ),
+                      Text(
+                        latest == null ? 'some date' : latest,
+                        style: Styles.whiteBoldSmall,
+                      ),
+                      SizedBox(
+                        width: 28,
+                      ),
+                      Text(
+                        'Earliest:',
+                        style: Styles.blackTiny,
+                      ),
+                      SizedBox(
+                        width: 8,
+                      ),
+                      Text(
+                        earliest == null ? 'some date' : earliest,
+                        style: Styles.whiteBoldSmall,
+                      )
+                    ],
+                  ),
+                  SizedBox(
+                    height: 12,
+                  ),
                 ],
               ),
             ),
-            preferredSize: Size.fromHeight(60),
+            preferredSize: Size.fromHeight(120),
           ),
         ),
         backgroundColor: Colors.brown[100],
@@ -198,9 +240,23 @@ class _MediaListMobileState extends State<MediaListMobile>
 
   void _onMediaTapped(Suitcase suitcase) {
     if (suitcase.video != null) {
-      pp('🦠 🦠 🦠 _onMediaTapped: Play video from ${suitcase.video.url}');
+      pp('🦠 🦠 🦠 _onMediaTapped: Play video from 🦠 ${suitcase.video.url} 🦠');
+      Navigator.push(
+          context,
+          PageTransition(
+              type: PageTransitionType.scale,
+              alignment: Alignment.bottomRight,
+              duration: Duration(seconds: 1),
+              child: VideoMain(suitcase.video)));
     } else {
-      pp(' 🍎 🍎 🍎 _onMediaTapped:  show full image  from ${suitcase.photo.url}');
+      pp(' 🍎 🍎 🍎 _onMediaTapped: show full image from 🍎 ${suitcase.photo.url} 🍎');
+      Navigator.push(
+          context,
+          PageTransition(
+              type: PageTransitionType.scale,
+              alignment: Alignment.bottomRight,
+              duration: Duration(seconds: 1),
+              child: FullPhotoMain(suitcase.photo)));
     }
   }
 }
