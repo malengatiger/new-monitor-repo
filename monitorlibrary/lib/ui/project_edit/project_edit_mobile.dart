@@ -181,7 +181,10 @@ class _ProjectEditMobileState extends State<ProjectEditMobile>
                         controller: nameController,
                         keyboardType: TextInputType.text,
                         decoration: InputDecoration(
-                            icon: Icon(Icons.event),
+                            icon: Icon(
+                              Icons.event,
+                              color: Theme.of(context).primaryColor,
+                            ),
                             labelText: 'Project Name',
                             hintText: 'Enter Project Name'),
                         validator: (value) {
@@ -198,7 +201,10 @@ class _ProjectEditMobileState extends State<ProjectEditMobile>
                         controller: descController,
                         keyboardType: TextInputType.text,
                         decoration: InputDecoration(
-                            icon: Icon(Icons.info_outline),
+                            icon: Icon(
+                              Icons.info_outline,
+                              color: Theme.of(context).primaryColor,
+                            ),
                             labelText: 'Description',
                             hintText: 'Enter Project Description'),
                         validator: (value) {
@@ -215,7 +221,10 @@ class _ProjectEditMobileState extends State<ProjectEditMobile>
                         controller: maxController,
                         keyboardType: TextInputType.number,
                         decoration: InputDecoration(
-                            icon: Icon(Icons.camera_enhance_outlined),
+                            icon: Icon(
+                              Icons.camera_enhance_outlined,
+                              color: Theme.of(context).primaryColor,
+                            ),
                             labelText: 'Max Monitor Distance in Metres',
                             hintText:
                                 'Enter Maximum Monitor Distance in metres'),

@@ -44,7 +44,7 @@ class _ProjectMapMobileState extends State<ProjectMapMobile>
 
   GoogleMapController googleMapController;
   Future<void> _addMarkers() async {
-    pp('💜 💜 💜 _addMarkers ....... 🍎 ${widget.projectPositions.length}');
+    pp('💜 💜 💜 💜 💜 💜 ProjectMapMobile: _addMarkers: ....... 🍎 ${widget.projectPositions.length}');
     markers.clear();
     widget.projectPositions.forEach((projectPosition) {
       final MarkerId markerId =
@@ -56,8 +56,9 @@ class _ProjectMapMobileState extends State<ProjectMapMobile>
           projectPosition.position.coordinates.elementAt(1),
           projectPosition.position.coordinates.elementAt(0),
         ),
-        infoWindow:
-            InfoWindow(title: projectPosition.projectName, snippet: '*'),
+        infoWindow: InfoWindow(
+            title: projectPosition.projectName,
+            snippet: 'Project Located Here'),
         onTap: () {
           _onMarkerTapped(projectPosition);
         },
@@ -83,7 +84,7 @@ class _ProjectMapMobileState extends State<ProjectMapMobile>
   }
 
   void _onMarkerTapped(ProjectPosition projectPosition) {
-    pp('💜 💜 💜 _onMarkerTapped ....... ${projectPosition.projectName}');
+    pp('💜 💜 💜 💜 💜 💜 ProjectMapMobile: _onMarkerTapped ....... ${projectPosition.projectName}');
   }
 
   @override

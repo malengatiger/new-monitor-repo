@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:focused_menu/focused_menu.dart';
+import 'package:focused_menu/modals.dart';
 import 'package:monitorlibrary/api/sharedprefs.dart';
 import 'package:monitorlibrary/bloc/monitor_bloc.dart';
 import 'package:monitorlibrary/bloc/theme_bloc.dart';
@@ -9,8 +11,8 @@ import 'package:monitorlibrary/data/user.dart';
 import 'package:monitorlibrary/data/user.dart' as mon;
 import 'package:monitorlibrary/functions.dart';
 import 'package:monitorlibrary/ui/maps/project_map_main.dart';
-import 'package:monitorlibrary/ui/mapx.dart';
 import 'package:monitorlibrary/ui/media/media_list_main.dart';
+import 'package:monitorlibrary/ui/monitor_map_mobile.dart';
 import 'package:monitorlibrary/ui/project_edit/project_edit_main.dart';
 import 'package:monitorlibrary/ui/project_monitor/project_monitor_main.dart';
 import 'package:page_transition/page_transition.dart';
@@ -139,8 +141,15 @@ class _ProjectListMobileState extends State<ProjectListMobile>
                     child: Column(
                       children: [
                         Text(
-                          user == null ? 'Unknown User' : user.name,
+                          user == null ? 'Unknown User' : user.organizationName,
                           style: Styles.whiteBoldMedium,
+                        ),
+                        SizedBox(
+                          height: 32,
+                        ),
+                        Text(
+                          user == null ? '' : '${user.name}',
+                          style: Styles.whiteSmall,
                         ),
                         SizedBox(
                           height: 8,
@@ -150,18 +159,11 @@ class _ProjectListMobileState extends State<ProjectListMobile>
                           style: Styles.blackSmall,
                         ),
                         SizedBox(
-                          height: 8,
-                        ),
-                        Text(
-                          user == null ? '' : '${user.organizationName}',
-                          style: Styles.whiteSmall,
-                        ),
-                        SizedBox(
                           height: 24,
                         ),
                       ],
                     ),
-                    preferredSize: Size.fromHeight(120),
+                    preferredSize: Size.fromHeight(160),
                   ),
                 ),
                 backgroundColor: Colors.brown[100],
@@ -206,12 +208,30 @@ class _ProjectListMobileState extends State<ProjectListMobile>
                                         (BuildContext context, int index) {
                                       var proj = projects.elementAt(index);
 
-                                      return GestureDetector(
-                                        onTap: () {
-                                          pp('🔆 🔆 🔆 💜 💜 Project tapped: ${projects.elementAt(index).name} '
-                                              'at index: $index ');
-                                          _showFuckingActions(
-                                              projects.elementAt(index));
+                                      return FocusedMenuHolder(
+                                        menuItems: [
+                                          FocusedMenuItem(
+                                              title: Text('Edit'),
+                                              trailingIcon: Icon(Icons.create),
+                                              onPressed: () {
+                                                _navigateToDetail(proj);
+                                              }),
+                                          FocusedMenuItem(
+                                              title: Text('Map'),
+                                              trailingIcon: Icon(Icons.map),
+                                              onPressed: () {
+                                                _navigateToOrgMap();
+                                              }),
+                                          FocusedMenuItem(
+                                              title: Text('Media'),
+                                              trailingIcon: Icon(Icons.camera),
+                                              onPressed: () {
+                                                _navigateToMedia(proj);
+                                              }),
+                                        ],
+                                        animateMenuItems: true,
+                                        onPressed: () {
+                                          pp('.... 💛️ 💛️ 💛️ not sure what I pressed ...');
                                         },
                                         child: Card(
                                           elevation: 2,
@@ -229,7 +249,7 @@ class _ProjectListMobileState extends State<ProjectListMobile>
                                                       child: Icon(
                                                         Icons.settings,
                                                         color: Theme.of(context)
-                                                            .primaryColorDark,
+                                                            .primaryColor,
                                                       ),
                                                     ),
                                                     SizedBox(
@@ -252,18 +272,6 @@ class _ProjectListMobileState extends State<ProjectListMobile>
                                       );
                                     },
                                   ),
-                                  openProjectActions
-                                      ? Positioned(
-                                          left: 20,
-                                          bottom: 20,
-                                          child: ProjectActions(
-                                            context: context,
-                                            project: _currentProject,
-                                            user: user,
-                                            listener: this,
-                                          ),
-                                        )
-                                      : Container(),
                                 ],
                               )));
           }),
@@ -293,6 +301,16 @@ class _ProjectListMobileState extends State<ProjectListMobile>
     }
   }
 
+  void _navigateToMedia(Project p) {
+    Navigator.push(
+        context,
+        PageTransition(
+            type: PageTransitionType.scale,
+            alignment: Alignment.topLeft,
+            duration: Duration(milliseconds: 1500),
+            child: MediaListMain(p)));
+  }
+
   void _navigateToOrgMap() {
     pp('_navigateToOrgMap: ');
     Navigator.push(
@@ -301,7 +319,7 @@ class _ProjectListMobileState extends State<ProjectListMobile>
             type: PageTransitionType.scale,
             alignment: Alignment.topLeft,
             duration: Duration(milliseconds: 1500),
-            child: MonitorMap()));
+            child: MonitorMapMobile()));
   }
 
   @override
@@ -385,11 +403,11 @@ class ProjectActions extends StatelessWidget {
       elevation: 16,
       color: Colors.brown[50],
       child: Padding(
-        padding: const EdgeInsets.all(28.0),
+        padding: const EdgeInsets.all(12.0),
         child: Column(
           children: [
             SizedBox(
-              height: 24,
+              height: 8,
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
@@ -397,7 +415,7 @@ class ProjectActions extends StatelessWidget {
                 IconButton(
                   icon: Icon(
                     Icons.close,
-                    color: Theme.of(context).primaryColorDark,
+                    color: Theme.of(context).primaryColor,
                   ),
                   onPressed: () {
                     listener.onActionsClose();
@@ -413,80 +431,65 @@ class ProjectActions extends StatelessWidget {
               style: Styles.blackBoldSmall,
             ),
             SizedBox(
-              height: 16,
+              height: 24,
             ),
-            Column(
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    _navigateToDetail();
-                  },
-                  child: Row(
-                    children: [
-                      IconButton(
-                        icon: Icon(Icons.edit),
-                        onPressed: () {
-                          _navigateToDetail();
-                        },
-                      ),
-                      SizedBox(
-                        width: 8,
-                      ),
-                      Text('Edit or Monitor'),
-                    ],
+            GestureDetector(
+              onTap: () {
+                _navigateToDetail();
+              },
+              child: Row(
+                children: [
+                  Icon(Icons.edit),
+                  SizedBox(
+                    width: 8,
                   ),
-                ),
-                SizedBox(
-                  height: 8,
-                ),
-                GestureDetector(
-                  onTap: () {
-                    _navigateToProjectMap();
-                  },
-                  child: Row(
-                    children: [
-                      IconButton(
-                        icon: Icon(
-                          Icons.location_on,
-                          color: Theme.of(context).primaryColor,
-                        ),
-                        onPressed: () {
-                          _navigateToProjectMap();
-                        },
-                      ),
-                      SizedBox(
-                        width: 8,
-                      ),
-                      Text('Project on Map'),
-                    ],
-                  ),
-                ),
-                SizedBox(
-                  height: 8,
-                ),
-                GestureDetector(
-                  onTap: () {
-                    _navigateToMediaList();
-                  },
-                  child: Row(
-                    children: [
-                      IconButton(
-                        icon: Icon(Icons.camera_alt),
-                        onPressed: () {
-                          _navigateToMediaList();
-                        },
-                      ),
-                      SizedBox(
-                        width: 8,
-                      ),
-                      Text('Photos & Videos'),
-                    ],
-                  ),
-                ),
-              ],
+                  Text(
+                      '${user.userType == ORG_ADMINISTRATOR ? 'Edit' : 'Monitor'}'),
+                ],
+              ),
             ),
             SizedBox(
               height: 24,
+            ),
+            GestureDetector(
+              onTap: () {
+                _navigateToProjectMap();
+              },
+              child: Row(
+                children: [
+                  Icon(Icons.map_outlined),
+                  SizedBox(
+                    width: 8,
+                  ),
+                  SizedBox(
+                    width: 8,
+                  ),
+                  Text('Project on Map'),
+                ],
+              ),
+            ),
+            SizedBox(
+              height: 24,
+            ),
+            GestureDetector(
+              onTap: () {
+                _navigateToMediaList();
+              },
+              child: Row(
+                children: [
+                  Icon(Icons.camera_alt),
+                  SizedBox(
+                    width: 8,
+                  ),
+                  SizedBox(
+                    width: 8,
+                  ),
+                  Text('Photos & Videos'),
+                ],
+              ),
+            ),
+            SizedBox(
+              height: 12,
             ),
           ],
         ),

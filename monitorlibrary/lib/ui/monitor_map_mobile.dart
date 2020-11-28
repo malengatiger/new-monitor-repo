@@ -1,7 +1,9 @@
 import 'dart:async';
 import 'dart:math';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:monitorlibrary/api/sharedprefs.dart';
 import 'package:monitorlibrary/bloc/monitor_bloc.dart';
@@ -10,12 +12,12 @@ import 'package:monitorlibrary/data/project_position.dart';
 import 'package:monitorlibrary/data/user.dart';
 import 'package:monitorlibrary/functions.dart';
 
-class MonitorMap extends StatefulWidget {
+class MonitorMapMobile extends StatefulWidget {
   @override
-  _MonitorMapState createState() => _MonitorMapState();
+  _MonitorMapMobileState createState() => _MonitorMapMobileState();
 }
 
-class _MonitorMapState extends State<MonitorMap>
+class _MonitorMapMobileState extends State<MonitorMapMobile>
     with SingleTickerProviderStateMixin {
   AnimationController _controller;
   List<ProjectPosition> projectPositions = [];
@@ -27,11 +29,23 @@ class _MonitorMapState extends State<MonitorMap>
   BitmapDescriptor markerIcon =
       BitmapDescriptor.fromAsset('assets/mapicons/construction.png');
 
+  bool isPortrait = true;
+
   @override
   void initState() {
     _controller = AnimationController(vsync: this);
     super.initState();
     _getUser();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
+    super.dispose();
   }
 
   void _getUser() async {
@@ -90,8 +104,9 @@ class _MonitorMapState extends State<MonitorMap>
           projectPosition.position.coordinates.elementAt(1),
           projectPosition.position.coordinates.elementAt(0),
         ),
-        infoWindow:
-            InfoWindow(title: projectPosition.projectName, snippet: '*'),
+        infoWindow: InfoWindow(
+            title: projectPosition.projectName,
+            snippet: 'Project Located Here'),
         onTap: () {
           _onMarkerTapped(projectPosition);
         },
@@ -113,6 +128,17 @@ class _MonitorMapState extends State<MonitorMap>
 
   @override
   Widget build(BuildContext context) {
+    if (isPortrait) {
+      SystemChrome.setPreferredOrientations([
+        DeviceOrientation.portraitUp,
+        DeviceOrientation.portraitDown,
+      ]);
+    } else {
+      SystemChrome.setPreferredOrientations([
+        DeviceOrientation.landscapeRight,
+        DeviceOrientation.landscapeLeft,
+      ]);
+    }
     return new Scaffold(
       body: Stack(
         children: [
@@ -177,33 +203,58 @@ class _MonitorMapState extends State<MonitorMap>
               : Positioned(
                   left: 8,
                   top: 40,
-                  child: Card(
-                    elevation: 16,
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                        children: [
-                          Text(
-                            user == null ? '' : user.organizationName,
-                            style: Styles.blackBoldSmall,
-                          ),
-                          SizedBox(
-                            height: 4,
-                          ),
-                          Row(
-                            children: [
-                              Text('Project Points',
-                                  style: Styles.greyLabelSmall),
-                              SizedBox(
-                                width: 20,
-                              ),
-                              Text(
-                                '${projectPositions.length}',
-                                style: Styles.pinkBoldSmall,
-                              )
-                            ],
-                          ),
-                        ],
+                  child: GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        isPortrait = !isPortrait;
+                      });
+                    },
+                    child: Card(
+                      elevation: 16,
+                      child: Padding(
+                        padding: const EdgeInsets.only(
+                            left: 16, right: 8, top: 8, bottom: 8),
+                        child: Column(
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                Text(
+                                  user == null ? '' : user.organizationName,
+                                  style: Styles.blackBoldSmall,
+                                ),
+                                SizedBox(
+                                  width: 8,
+                                ),
+                                IconButton(
+                                  icon: Icon(Icons.cancel),
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                ),
+                              ],
+                            ),
+                            SizedBox(
+                              height: 8,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Text('Projects', style: Styles.greyLabelSmall),
+                                SizedBox(
+                                  width: 20,
+                                ),
+                                Text(
+                                  '${projects.length}',
+                                  style: Styles.pinkBoldSmall,
+                                )
+                              ],
+                            ),
+                            SizedBox(
+                              height: 8,
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -228,5 +279,9 @@ class _MonitorMapState extends State<MonitorMap>
 
   void _onMarkerDragEnd(ProjectPosition projectPosition, LatLng position) {
     pp('💜 💜 💜 _onMarkerDragEnd ....... ${projectPosition.projectName} LatLng: $position');
+  }
+
+  void _navigateToMedia() {
+    Navigator.pop(context);
   }
 }

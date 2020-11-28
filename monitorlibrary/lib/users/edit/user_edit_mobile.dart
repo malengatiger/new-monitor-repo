@@ -32,10 +32,10 @@ class _UserEditMobileState extends State<UserEditMobile>
     _controller = AnimationController(vsync: this);
     super.initState();
     _setup();
-    _getUser();
+    _getAdministrator();
   }
 
-  void _getUser() async {
+  void _getAdministrator() async {
     admin = await Prefs.getUser();
     setState(() {});
   }
@@ -45,6 +45,7 @@ class _UserEditMobileState extends State<UserEditMobile>
       nameController.text = widget.user.name;
       emailController.text = widget.user.email;
       cellphoneController.text = widget.user.cellphone;
+      _setTypeRadio();
     }
   }
 
@@ -97,6 +98,23 @@ class _UserEditMobileState extends State<UserEditMobile>
 
   int userType = -1;
 
+  void _setTypeRadio() {
+    if (widget.user != null) {
+      if (widget.user.userType == FIELD_MONITOR) {
+        type = FIELD_MONITOR;
+        userType = 0;
+      }
+      if (widget.user.userType == ORG_ADMINISTRATOR) {
+        type = ORG_ADMINISTRATOR;
+        userType = 1;
+      }
+      if (widget.user.userType == ORG_EXECUTIVE) {
+        type = ORG_EXECUTIVE;
+        userType = 2;
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -146,7 +164,10 @@ class _UserEditMobileState extends State<UserEditMobile>
                         controller: nameController,
                         keyboardType: TextInputType.text,
                         decoration: InputDecoration(
-                            icon: Icon(Icons.person),
+                            icon: Icon(
+                              Icons.person,
+                              color: Theme.of(context).primaryColor,
+                            ),
                             labelText: 'Name',
                             hintText: 'Enter Full Name'),
                         validator: (value) {
@@ -163,7 +184,10 @@ class _UserEditMobileState extends State<UserEditMobile>
                         controller: emailController,
                         keyboardType: TextInputType.emailAddress,
                         decoration: InputDecoration(
-                            icon: Icon(Icons.email_outlined),
+                            icon: Icon(
+                              Icons.email_outlined,
+                              color: Theme.of(context).primaryColor,
+                            ),
                             labelText: 'Email Address',
                             hintText: 'Enter Email Address'),
                         validator: (value) {
@@ -180,7 +204,10 @@ class _UserEditMobileState extends State<UserEditMobile>
                         controller: cellphoneController,
                         keyboardType: TextInputType.phone,
                         decoration: InputDecoration(
-                            icon: Icon(Icons.phone),
+                            icon: Icon(
+                              Icons.phone,
+                              color: Theme.of(context).primaryColor,
+                            ),
                             labelText: 'Cellphone',
                             hintText: 'Cellphone'),
                         validator: (value) {
@@ -199,7 +226,10 @@ class _UserEditMobileState extends State<UserEditMobile>
                               keyboardType: TextInputType.text,
                               obscureText: false,
                               decoration: InputDecoration(
-                                  icon: Icon(Icons.person),
+                                  icon: Icon(
+                                    Icons.lock,
+                                    color: Theme.of(context).primaryColor,
+                                  ),
                                   labelText: 'Password',
                                   hintText: 'Password'),
                               validator: (value) {
@@ -213,34 +243,37 @@ class _UserEditMobileState extends State<UserEditMobile>
                       SizedBox(
                         height: 12,
                       ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: <Widget>[
-                          Radio(
-                            value: 0,
-                            groupValue: userType,
-                            onChanged: _handleRadioValueChange,
-                          ),
-                          Text(
-                            'Monitor',
-                            style: Styles.blackTiny,
-                          ),
-                          Radio(
-                            value: 1,
-                            groupValue: userType,
-                            onChanged: _handleRadioValueChange,
-                          ),
-                          Text('Admin', style: Styles.blackTiny),
-                          Radio(
-                            value: 2,
-                            groupValue: userType,
-                            onChanged: _handleRadioValueChange,
-                          ),
-                          Text(
-                            'Executive',
-                            style: Styles.blackTiny,
-                          ),
-                        ],
+                      Container(
+                        color: Colors.brown[50],
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: <Widget>[
+                            Radio(
+                              value: 0,
+                              groupValue: userType,
+                              onChanged: _handleRadioValueChange,
+                            ),
+                            Text(
+                              'Monitor',
+                              style: Styles.blackTiny,
+                            ),
+                            Radio(
+                              value: 1,
+                              groupValue: userType,
+                              onChanged: _handleRadioValueChange,
+                            ),
+                            Text('Admin', style: Styles.blackTiny),
+                            Radio(
+                              value: 2,
+                              groupValue: userType,
+                              onChanged: _handleRadioValueChange,
+                            ),
+                            Text(
+                              'Executive',
+                              style: Styles.blackTiny,
+                            ),
+                          ],
+                        ),
                       ),
                       Text(
                         type == null ? '' : type,

@@ -117,12 +117,12 @@ class ThemeUtil {
 
     _themes.add(ThemeData(
       fontFamily: GoogleFonts.raleway().fontFamily,
-      primaryColor: Colors.indigo.shade400,
+      primaryColor: Colors.indigo.shade500,
       accentColor: Colors.pink,
       cardColor: Colors.white,
       backgroundColor: Colors.brown.shade100,
       appBarTheme: AppBarTheme(
-          color: Colors.indigo.shade300, brightness: Brightness.dark),
+          color: Colors.indigo.shade400, brightness: Brightness.dark),
       buttonColor: Colors.blue,
     ));
     _themes.add(ThemeData(
@@ -131,7 +131,7 @@ class ThemeUtil {
       accentColor: Colors.teal,
       cardColor: Colors.white,
       backgroundColor: Colors.brown.shade200,
-      appBarTheme: AppBarTheme(elevation: 8, color: Colors.pink.shade200),
+      appBarTheme: AppBarTheme(elevation: 8, color: Colors.pink.shade400),
       buttonColor: Colors.indigo,
     ));
     _themes.add(ThemeData(
@@ -140,7 +140,7 @@ class ThemeUtil {
       accentColor: Colors.purple,
       cardColor: Colors.white,
       backgroundColor: Colors.brown.shade100,
-      appBarTheme: AppBarTheme(color: Colors.teal.shade300),
+      appBarTheme: AppBarTheme(color: Colors.teal.shade400),
       buttonColor: Colors.pink,
     ));
     _themes.add(ThemeData(
@@ -149,7 +149,7 @@ class ThemeUtil {
       accentColor: Colors.yellow.shade900,
       cardColor: Colors.white,
       backgroundColor: Colors.brown.shade100,
-      appBarTheme: AppBarTheme(color: Colors.brown.shade300),
+      appBarTheme: AppBarTheme(color: Colors.brown.shade400),
       buttonColor: Colors.blue,
     ));
     _themes.add(ThemeData(
@@ -158,7 +158,7 @@ class ThemeUtil {
       accentColor: Colors.teal,
       cardColor: Colors.white,
       backgroundColor: Colors.brown.shade100,
-      appBarTheme: AppBarTheme(color: Colors.lime.shade300),
+      appBarTheme: AppBarTheme(color: Colors.lime.shade400),
       buttonColor: Colors.brown,
     ));
     _themes.add(ThemeData(
@@ -167,7 +167,7 @@ class ThemeUtil {
       accentColor: Colors.red,
       cardColor: Colors.white,
       backgroundColor: Colors.brown.shade100,
-      appBarTheme: AppBarTheme(color: Colors.blue.shade300),
+      appBarTheme: AppBarTheme(color: Colors.blue.shade400),
       buttonColor: Colors.blue,
     ));
     _themes.add(ThemeData(
@@ -176,7 +176,7 @@ class ThemeUtil {
       accentColor: Colors.teal,
       cardColor: Colors.white,
       backgroundColor: Colors.brown.shade100,
-      appBarTheme: AppBarTheme(color: Colors.blueGrey.shade300),
+      appBarTheme: AppBarTheme(color: Colors.blueGrey.shade400),
       buttonColor: Colors.pink,
     ));
     _themes.add(ThemeData(
@@ -185,7 +185,7 @@ class ThemeUtil {
       accentColor: Colors.teal,
       cardColor: Colors.white,
       backgroundColor: Colors.brown.shade100,
-      appBarTheme: AppBarTheme(color: Colors.purple.shade300),
+      appBarTheme: AppBarTheme(color: Colors.purple.shade400),
       buttonColor: Colors.pink,
     ));
     _themes.add(ThemeData(
@@ -194,7 +194,7 @@ class ThemeUtil {
       accentColor: Colors.teal,
       cardColor: Colors.white,
       backgroundColor: Colors.brown.shade100,
-      appBarTheme: AppBarTheme(color: Colors.amber.shade300),
+      appBarTheme: AppBarTheme(color: Colors.amber.shade400),
       buttonColor: Colors.pink,
     ));
     _themes.add(ThemeData(
@@ -203,7 +203,7 @@ class ThemeUtil {
       accentColor: Colors.brown,
       cardColor: Colors.white,
       backgroundColor: Colors.brown.shade100,
-      appBarTheme: AppBarTheme(color: Colors.deepOrange.shade300),
+      appBarTheme: AppBarTheme(color: Colors.deepOrange.shade400),
       buttonColor: Colors.deepOrange,
     ));
     _themes.add(ThemeData(
@@ -212,7 +212,7 @@ class ThemeUtil {
       accentColor: Colors.teal,
       cardColor: Colors.white,
       backgroundColor: Colors.brown.shade100,
-      appBarTheme: AppBarTheme(color: Colors.orange.shade300),
+      appBarTheme: AppBarTheme(color: Colors.orange.shade400),
       buttonColor: Colors.pink,
     ));
     final darkTheme = ThemeData(

@@ -87,9 +87,11 @@ class _MediaListMobileState extends State<MediaListMobile>
       var sc = Suitcase(video: element, date: element.created);
       suitcases.add(sc);
     });
-    suitcases.sort((a, b) => a.date.compareTo(b.date));
-    latest = getFormattedDateShortest(suitcases.first.date, context);
-    earliest = getFormattedDateShortest(suitcases.last.date, context);
+    if (suitcases.isNotEmpty) {
+      suitcases.sort((a, b) => b.date.compareTo(a.date));
+      latest = getFormattedDateShortest(suitcases.first.date, context);
+      earliest = getFormattedDateShortest(suitcases.last.date, context);
+    }
   }
 
   String latest, earliest;
