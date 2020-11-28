@@ -114,6 +114,22 @@ public class ListService {
 
         return mList;
     }
+    public List<Photo> getUserProjectPhotos(String userId) throws Exception {
+
+        LOGGER.info(Emoji.GLOBE.concat(Emoji.GLOBE).concat("getUserProjectPhotos ..."));
+        List<Photo> mList = photoRepository.findByUserId(userId);
+        LOGGER.info(Emoji.GLOBE.concat(Emoji.GLOBE).concat("getUserProjectPhotos ... found: " + mList.size()));
+
+        return mList;
+    }
+    public List<Video> getUserProjectVideos(String userId) throws Exception {
+
+        LOGGER.info(Emoji.GLOBE.concat(Emoji.GLOBE).concat("getUserProjectVideos ..."));
+        List<Video> mList = videoRepository.findByUserId(userId);
+        LOGGER.info(Emoji.GLOBE.concat(Emoji.GLOBE).concat("getUserProjectVideos ... found: " + mList.size()));
+
+        return mList;
+    }
 
     public List<Video> getProjectVideos(String projectId) throws Exception {
 

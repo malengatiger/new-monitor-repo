@@ -147,6 +147,13 @@ class MonitorBloc {
     return _photos;
   }
 
+  Future<List<Photo>> getUserProjectPhotos({String userId}) async {
+    _photos = await DataAPI.getUserProjectPhotos(userId);
+    _photoController.sink.add(_photos);
+    pp('💜 💜 💜 MonitorBloc: getUserProjectPhotos found: 💜 ${_photos.length} photos ');
+    return _photos;
+  }
+
   Future<List<Photo>> getOrganizationPhotos({String organizationId}) async {
     await getOrganizationProjects(organizationId: organizationId);
     for (var i = 0; i < _projects.length; i++) {
@@ -177,6 +184,13 @@ class MonitorBloc {
     _videos = await DataAPI.findVideosById(projectId);
     _videoController.sink.add(_videos);
     pp('💜 💜 💜 MonitorBloc: getProjectVideos found: 💜 ${_videos.length} videos ');
+    return _videos;
+  }
+
+  Future<List<Video>> getUserProjectVideos({String userId}) async {
+    _videos = await DataAPI.getUserProjectVideos(userId);
+    _videoController.sink.add(_videos);
+    pp('💜 💜 💜 MonitorBloc: getUserProjectVideos found: 💜 ${_videos.length} videos ');
     return _videos;
   }
 

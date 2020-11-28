@@ -114,6 +114,7 @@ class _ProjectMonitorMobileState extends State<ProjectMonitorMobile>
                     isWithinDistance
                         ? RaisedButton(
                             elevation: isWithinDistance ? 16 : 1,
+                            color: Theme.of(context).primaryColor,
                             onPressed: () async {
                               isWithinDistance = await _checkProjectDistance();
                               if (isWithinDistance) {

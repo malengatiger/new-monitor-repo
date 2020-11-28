@@ -152,6 +152,40 @@ class DataAPI {
     }
   }
 
+  static Future<List<Photo>> getUserProjectPhotos(String userId) async {
+    String mURL = await getUrl();
+
+    try {
+      var result =
+          await _callWebAPIGet(mURL + 'getUserProjectPhotos?userId=$userId');
+      List<Photo> list = List();
+      result.forEach((m) {
+        list.add(Photo.fromJson(m));
+      });
+      return list;
+    } catch (e) {
+      pp(e);
+      throw e;
+    }
+  }
+
+  static Future<List<Video>> getUserProjectVideos(String userId) async {
+    String mURL = await getUrl();
+
+    try {
+      var result =
+          await _callWebAPIGet(mURL + 'getUserProjectVideos?userId=$userId');
+      List<Video> list = List();
+      result.forEach((m) {
+        list.add(Video.fromJson(m));
+      });
+      return list;
+    } catch (e) {
+      pp(e);
+      throw e;
+    }
+  }
+
   static Future<List<Video>> findVideosById(String projectId) async {
     String mURL = await getUrl();
 

@@ -206,13 +206,27 @@ public class ListController {
                 .concat("getCountsByUser: " + userId));
         return listService.getCountsByUser(userId);
     }
-    
+    //getUserProjectPhotos
     @GetMapping("/getProjectPhotos")
     public List<Photo> getProjectPhotos(String projectId)
             throws Exception {
         LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS)
-                .concat("getProjectPositions: " + projectId));
+                .concat("getProjectPhotos: " + projectId));
         return listService.getProjectPhotos(projectId);
+    }
+    @GetMapping("/getUserProjectPhotos")
+    public List<Photo> getUserProjectPhotos(String userId)
+            throws Exception {
+        LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS)
+                .concat("getUserProjectPhotos: " + userId));
+        return listService.getUserProjectPhotos(userId);
+    }
+    @GetMapping("/getUserProjectVideos")
+    public List<Video> getUserProjectVideos(String userId)
+            throws Exception {
+        LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS)
+                .concat("getUserProjectVideos: " + userId));
+        return listService.getUserProjectVideos(userId);
     }
     @GetMapping("/getProjectVideos")
     public List<Video> getProjectVideos(String projectId)
