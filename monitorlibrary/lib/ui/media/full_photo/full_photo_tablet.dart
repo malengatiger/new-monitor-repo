@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:monitorlibrary/data/photo.dart';
+import 'package:monitorlibrary/data/project.dart';
 
 class FullPhotoTablet extends StatefulWidget {
   final Photo photo;
+  final Project project;
 
-  FullPhotoTablet(this.photo);
+  FullPhotoTablet(this.photo, this.project);
 
   @override
   _FullPhotoTabletState createState() => _FullPhotoTabletState();

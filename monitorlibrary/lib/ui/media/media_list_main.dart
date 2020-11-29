@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:monitorlibrary/api/sharedprefs.dart';
 import 'package:monitorlibrary/bloc/monitor_bloc.dart';
 import 'package:monitorlibrary/data/project.dart';
 import 'package:monitorlibrary/functions.dart';
@@ -32,9 +33,18 @@ class _MediaListMainState extends State<MediaListMain>
     setState(() {
       isBusy = true;
     });
-    pp('MediaListMain: 💜 💜 💜 getting media for ${widget.project.name}');
-    await monitorBloc.getProjectPhotos(projectId: widget.project.projectId);
-    await monitorBloc.getProjectVideos(projectId: widget.project.projectId);
+    if (widget.project != null) {
+      pp('MediaListMain: 💜 💜 💜 getting media for PROJECT: ${widget.project.name}');
+      await monitorBloc.getProjectPhotos(projectId: widget.project.projectId);
+      await monitorBloc.getProjectVideos(projectId: widget.project.projectId);
+    } else {
+      var user = await Prefs.getUser();
+      pp('MediaListMain: 💜 💜 💜 getting media for ORGANIZATION: ${user.organizationName}');
+      await monitorBloc.getOrganizationPhotos(
+          organizationId: user.organizationId);
+      await monitorBloc.getOrganizationVideos(
+          organizationId: user.organizationId);
+    }
     setState(() {
       isBusy = false;
     });
@@ -52,7 +62,10 @@ class _MediaListMainState extends State<MediaListMain>
         ? SafeArea(
             child: Scaffold(
               appBar: AppBar(
-                title: Text('Loading project media ...'),
+                title: Text(
+                  'Loading project media ...',
+                  style: Styles.whiteSmall,
+                ),
               ),
               body: Center(
                 child: Container(

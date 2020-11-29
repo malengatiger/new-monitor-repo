@@ -156,6 +156,7 @@ class MonitorBloc {
 
   Future<List<Photo>> getOrganizationPhotos({String organizationId}) async {
     await getOrganizationProjects(organizationId: organizationId);
+    _photos.clear();
     for (var i = 0; i < _projects.length; i++) {
       var photos =
           await DataAPI.findPhotosByProject(_projects.elementAt(i).projectId);
@@ -169,6 +170,7 @@ class MonitorBloc {
 
   Future<List<Video>> getOrganizationVideos({String organizationId}) async {
     await getOrganizationProjects(organizationId: organizationId);
+    _videos.clear();
     for (var i = 0; i < _projects.length; i++) {
       var videos =
           await DataAPI.findVideosById(_projects.elementAt(i).projectId);

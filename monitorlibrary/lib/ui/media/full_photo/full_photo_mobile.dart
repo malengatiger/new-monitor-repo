@@ -2,12 +2,16 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:monitorlibrary/data/photo.dart';
+import 'package:monitorlibrary/data/project.dart';
 import 'package:monitorlibrary/functions.dart';
+import 'package:monitorlibrary/ui/maps/project_map_main.dart';
+import 'package:page_transition/page_transition.dart';
 
 class FullPhotoMobile extends StatefulWidget {
   final Photo photo;
+  final Project project;
 
-  FullPhotoMobile(this.photo);
+  FullPhotoMobile(this.photo, this.project);
 
   @override
   _FullPhotoMobileState createState() => _FullPhotoMobileState();
@@ -99,21 +103,30 @@ class _FullPhotoMobileState extends State<FullPhotoMobile>
                 ),
               ),
             ),
-            Positioned(
-              right: 40,
-              bottom: 28,
-              child: FloatingActionButton(
-                elevation: 8,
-                backgroundColor: Theme.of(context).primaryColor,
-                child: Icon(
-                  Icons.map,
-                  color: Colors.white,
-                ),
-                onPressed: () {
-                  pp(' 😡  😡  😡  😡  😡 Go do something, Joe!');
-                },
-              ),
-            )
+            widget.project == null
+                ? Container()
+                : Positioned(
+                    right: 40,
+                    bottom: 28,
+                    child: FloatingActionButton(
+                      elevation: 8,
+                      backgroundColor: Theme.of(context).primaryColor,
+                      child: Icon(
+                        Icons.map,
+                        color: Colors.white,
+                      ),
+                      onPressed: () {
+                        pp(' 😡  😡  😡  😡  😡 Go do something, Joe!');
+                        Navigator.push(
+                            context,
+                            PageTransition(
+                                type: PageTransitionType.scale,
+                                alignment: Alignment.bottomRight,
+                                duration: Duration(seconds: 1),
+                                child: ProjectMapMain(widget.project)));
+                      },
+                    ),
+                  )
           ],
         ),
       ),

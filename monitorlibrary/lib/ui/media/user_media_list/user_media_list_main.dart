@@ -59,7 +59,10 @@ class _UserMediaListMainState extends State<UserMediaListMain>
         ? SafeArea(
             child: Scaffold(
               appBar: AppBar(
-                title: Text('Loading project media ...'),
+                title: Text(
+                  'Loading project media ...',
+                  style: Styles.whiteSmall,
+                ),
               ),
               body: Center(
                 child: Container(

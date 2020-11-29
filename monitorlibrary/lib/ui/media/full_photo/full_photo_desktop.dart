@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:monitorlibrary/data/photo.dart';
+import 'package:monitorlibrary/data/project.dart';
 
 class FullPhotoDesktop extends StatefulWidget {
   final Photo photo;
+  final Project project;
 
-  FullPhotoDesktop(this.photo);
+  FullPhotoDesktop(this.photo, this.project);
 
   @override
   _FullPhotoDesktopState createState() => _FullPhotoDesktopState();

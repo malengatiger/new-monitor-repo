@@ -258,7 +258,7 @@ class _UserMediaListMobileState extends State<UserMediaListMobile>
               type: PageTransitionType.scale,
               alignment: Alignment.bottomRight,
               duration: Duration(seconds: 1),
-              child: FullPhotoMain(suitcase.photo)));
+              child: FullPhotoMain(suitcase.photo, null)));
     }
   }
 }

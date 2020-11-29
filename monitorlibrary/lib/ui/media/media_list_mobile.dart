@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:monitorlibrary/api/sharedprefs.dart';
 import 'package:monitorlibrary/bloc/monitor_bloc.dart';
 import 'package:monitorlibrary/data/photo.dart';
 import 'package:monitorlibrary/data/project.dart';
@@ -58,10 +59,18 @@ class _MediaListMobileState extends State<MediaListMobile>
     setState(() {
       isBusy = true;
     });
-    _photos =
-        await monitorBloc.getProjectPhotos(projectId: widget.project.projectId);
-    _videos =
-        await monitorBloc.getProjectVideos(projectId: widget.project.projectId);
+    if (widget.project != null) {
+      _photos = await monitorBloc.getProjectPhotos(
+          projectId: widget.project.projectId);
+      _videos = await monitorBloc.getProjectVideos(
+          projectId: widget.project.projectId);
+    } else {
+      var user = await Prefs.getUser();
+      _photos = await monitorBloc.getOrganizationPhotos(
+          organizationId: user.organizationId);
+      _videos = await monitorBloc.getOrganizationVideos(
+          organizationId: user.organizationId);
+    }
     _processMedia();
     setState(() {
       isBusy = false;
@@ -103,7 +112,7 @@ class _MediaListMobileState extends State<MediaListMobile>
         key: _key,
         appBar: AppBar(
           title: Text(
-            widget.project.name,
+            widget.project == null ? '' : widget.project.name,
             style: Styles.whiteBoldSmall,
           ),
           actions: [
@@ -258,7 +267,7 @@ class _MediaListMobileState extends State<MediaListMobile>
               type: PageTransitionType.scale,
               alignment: Alignment.bottomRight,
               duration: Duration(seconds: 1),
-              child: FullPhotoMain(suitcase.photo)));
+              child: FullPhotoMain(suitcase.photo, widget.project)));
     }
   }
 }

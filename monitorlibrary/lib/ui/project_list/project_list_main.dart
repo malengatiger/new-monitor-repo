@@ -6,6 +6,8 @@ import 'package:monitorlibrary/ui/project_list/project_list_mobile.dart';
 import 'package:monitorlibrary/ui/project_list/project_list_tablet.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 
+import '../../functions.dart';
+
 class ProjectListMain extends StatefulWidget {
   final mon.User user;
 
@@ -51,7 +53,10 @@ class _ProjectListMainState extends State<ProjectListMain>
         ? SafeArea(
             child: Scaffold(
               appBar: AppBar(
-                title: Text('Loading projects ...'),
+                title: Text(
+                  'Loading projects ...',
+                  style: Styles.whiteSmall,
+                ),
               ),
               backgroundColor: Colors.brown[100],
               body: Center(

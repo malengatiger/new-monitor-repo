@@ -272,6 +272,7 @@ class _ProjectEditMobileState extends State<ProjectEditMobile>
                                       ),
                                 RaisedButton(
                                   elevation: 8,
+                                  color: Theme.of(context).primaryColor,
                                   child: Padding(
                                     padding: const EdgeInsets.all(12.0),
                                     child: Text(
