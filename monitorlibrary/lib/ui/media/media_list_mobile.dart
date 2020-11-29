@@ -6,8 +6,10 @@ import 'package:monitorlibrary/api/sharedprefs.dart';
 import 'package:monitorlibrary/bloc/monitor_bloc.dart';
 import 'package:monitorlibrary/data/photo.dart';
 import 'package:monitorlibrary/data/project.dart';
+import 'package:monitorlibrary/data/user.dart';
 import 'package:monitorlibrary/ui/media/full_photo/full_photo_main.dart';
 import 'package:monitorlibrary/ui/media/video/video_main.dart';
+import 'package:monitorlibrary/ui/project_monitor/project_monitor_main.dart';
 import 'package:page_transition/page_transition.dart';
 
 import '../../functions.dart';
@@ -28,6 +30,7 @@ class _MediaListMobileState extends State<MediaListMobile>
   StreamSubscription<List<Video>> videoStreamSubscription;
   var _photos = List<Photo>();
   var _videos = List<Video>();
+  User user;
 
   @override
   void initState() {
@@ -38,6 +41,7 @@ class _MediaListMobileState extends State<MediaListMobile>
 
   void _listen() async {
     pp('🔆 🔆 🔆 🔆 💜 💜 💜 Listening to streams from monitorBloc ....');
+    user = await Prefs.getUser();
 
     photoStreamSubscription = monitorBloc.photoStream.listen((value) {
       pp('🔆 🔆 🔆 💜 💜 _MediaListMobileState: Photos from stream controller: 💙 ${value.length}');
@@ -119,6 +123,10 @@ class _MediaListMobileState extends State<MediaListMobile>
             IconButton(
               icon: Icon(Icons.refresh),
               onPressed: _refresh,
+            ),
+            IconButton(
+              icon: Icon(Icons.add_a_photo),
+              onPressed: _navigateToMonitor,
             )
           ],
           bottom: PreferredSize(
@@ -143,7 +151,7 @@ class _MediaListMobileState extends State<MediaListMobile>
                         width: 28,
                       ),
                       Text(
-                        'Visual Project Monitoring',
+                        'Visual Project Monitor',
                         style: Styles.whiteBoldSmall,
                       ),
                       SizedBox(
@@ -161,35 +169,37 @@ class _MediaListMobileState extends State<MediaListMobile>
                   SizedBox(
                     height: 28,
                   ),
-                  Row(
-                    children: [
-                      Text(
-                        'Latest:',
-                        style: Styles.blackTiny,
-                      ),
-                      SizedBox(
-                        width: 8,
-                      ),
-                      Text(
-                        latest == null ? 'some date' : latest,
-                        style: Styles.whiteBoldSmall,
-                      ),
-                      SizedBox(
-                        width: 28,
-                      ),
-                      Text(
-                        'Earliest:',
-                        style: Styles.blackTiny,
-                      ),
-                      SizedBox(
-                        width: 8,
-                      ),
-                      Text(
-                        earliest == null ? 'some date' : earliest,
-                        style: Styles.whiteBoldSmall,
-                      )
-                    ],
-                  ),
+                  suitcases.isEmpty
+                      ? Container()
+                      : Row(
+                          children: [
+                            Text(
+                              'Latest:',
+                              style: Styles.blackTiny,
+                            ),
+                            SizedBox(
+                              width: 8,
+                            ),
+                            Text(
+                              latest == null ? 'some date' : latest,
+                              style: Styles.whiteBoldSmall,
+                            ),
+                            SizedBox(
+                              width: 28,
+                            ),
+                            Text(
+                              'Earliest:',
+                              style: Styles.blackTiny,
+                            ),
+                            SizedBox(
+                              width: 8,
+                            ),
+                            Text(
+                              earliest == null ? 'some date' : earliest,
+                              style: Styles.whiteBoldSmall,
+                            )
+                          ],
+                        ),
                   SizedBox(
                     height: 12,
                   ),
@@ -269,6 +279,16 @@ class _MediaListMobileState extends State<MediaListMobile>
               duration: Duration(seconds: 1),
               child: FullPhotoMain(suitcase.photo, widget.project)));
     }
+  }
+
+  void _navigateToMonitor() {
+    Navigator.push(
+        context,
+        PageTransition(
+            type: PageTransitionType.scale,
+            alignment: Alignment.topLeft,
+            duration: Duration(milliseconds: 1500),
+            child: ProjectMonitorMain(widget.project)));
   }
 }
 

@@ -75,7 +75,8 @@ class _ProjectLocationMobileState extends State<ProjectLocationMobile>
     if (isWithin) {
       AppSnackbar.showErrorSnackbar(
           scaffoldKey: _key,
-          message: 'This location is too near an existing project location',
+          message:
+              'This location is already recorded for ${widget.project.name}',
           actionLabel: '');
       return;
     }

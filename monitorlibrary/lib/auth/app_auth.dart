@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/material.dart';
 import 'package:monitorlibrary/api/data_api.dart';
 import 'package:monitorlibrary/api/sharedprefs.dart';
 import 'package:monitorlibrary/data/user.dart' as mon;
@@ -33,8 +34,12 @@ class AppAuth {
     }
   }
 
-  static Future<mon.User> createUser(mon.User user, String password) async {
-    pp('AppAuth: 💜 💜 createUser:, auth record to be created ... ${user.toJson()}');
+  static Future<mon.User> createUser(
+      {@required mon.User user,
+      @required String password,
+      @required bool isLocalAdmin,
+      @required User admin}) async {
+    pp('AppAuth: 💜 💜 createUser: auth record to be created ... ${user.toJson()}');
     var fbUser = await _auth
         .createUserWithEmailAndPassword(email: user.email, password: password)
         .catchError((e) {
@@ -43,13 +48,21 @@ class AppAuth {
     });
     mon.User mUser;
     if (fbUser != null) {
-      pp('AppAuth:  💜 💜 createUser, auth record created, adding to database ...');
       user.userId = fbUser.user.uid;
       mUser = await DataAPI.addUser(user);
-      await Prefs.saveUser(mUser);
-      var countries = await DataAPI.getCountries();
-      if (countries.isNotEmpty) {
-        await Prefs.saveCountry(countries.elementAt(0));
+      pp('AppAuth: 💜 💜 createUser: added to database ... 💛️ 💛️ ${mUser.toJson()}');
+
+      if (isLocalAdmin) {
+        pp('AppAuth: 💜 💜 createUser: saving user to local cache: '
+            '💛️ 💛️ isLocalAdmin: $isLocalAdmin 💛️ 💛️');
+        await Prefs.saveUser(mUser);
+        var countries = await DataAPI.getCountries();
+        if (countries.isNotEmpty) {
+          await Prefs.saveCountry(countries.elementAt(0));
+        }
+      } else {
+        pp('AppAuth: 💜 💜 createUser:  '
+            '💛️ 💛️ isLocalAdmin: $isLocalAdmin 💛️ 💛️ normal user (non-original user)');
       }
     } else {
       throw Exception('👿 👿 👿 Firebase auth record addition failed');
@@ -57,7 +70,7 @@ class AppAuth {
     if (mUser != null) {
       pp('AppAuth:  💜 💜 💜 💜 createUser, after adding to Mongo database ....... ${mUser.toJson()}');
     } else {
-      pp('AppAuth:  👿👿👿 createUser: this is Houston path, Mongo api call failed ');
+      pp('AppAuth: 👿👿👿 createUser: this is Houston path, Mongo api call failed ');
     }
     return mUser;
   }

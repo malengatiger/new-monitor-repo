@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:focused_menu/focused_menu.dart';
+import 'package:focused_menu/modals.dart';
 import 'package:monitorlibrary/bloc/monitor_bloc.dart';
 import 'package:monitorlibrary/data/user.dart';
 import 'package:monitorlibrary/functions.dart';
@@ -89,13 +91,16 @@ class _UserListMobileState extends State<UserListMobile>
                         Row(
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
-                            Text('User List'),
+                            Text(
+                              'User List',
+                              style: Styles.blackTiny,
+                            ),
                             SizedBox(
                               width: 12,
                             ),
                             Text(
                               '${_users.length}',
-                              style: Styles.blackBoldLarge,
+                              style: Styles.whiteBoldSmall,
                             ),
                             SizedBox(
                               width: 12,
@@ -108,7 +113,7 @@ class _UserListMobileState extends State<UserListMobile>
                       ],
                     ),
                   ),
-                  preferredSize: Size.fromHeight(120),
+                  preferredSize: Size.fromHeight(100),
                 ),
               ),
               backgroundColor: Colors.brown[100],
@@ -126,51 +131,79 @@ class _UserListMobileState extends State<UserListMobile>
                         itemCount: _users.length,
                         itemBuilder: (BuildContext context, int index) {
                           var user = _users.elementAt(index);
-                          return Card(
-                            elevation: 2,
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Column(
-                                children: [
-                                  ListTile(
-                                    leading: Icon(
-                                      Icons.person,
-                                      color: Theme.of(context).primaryColor,
-                                    ),
-                                    subtitle: Text(
-                                      user.email,
-                                      style: Styles.greyLabelSmall,
-                                    ),
-                                    title: Text(
-                                      user.name,
-                                      style: Styles.blackBoldSmall,
-                                    ),
+                          var mType = 'Field Monitor';
+                          switch (user.userType) {
+                            case ORG_ADMINISTRATOR:
+                              mType = 'Team Administrator';
+                              break;
+                            case ORG_EXECUTIVE:
+                              mType = 'Executive';
+                              break;
+                            case FIELD_MONITOR:
+                              mType = 'Field Monitor';
+                              break;
+                          }
+                          return FocusedMenuHolder(
+                            menuItems: [
+                              FocusedMenuItem(
+                                  title: Text('Edit User'),
+                                  trailingIcon: Icon(
+                                    Icons.create,
+                                    color: Theme.of(context).primaryColor,
                                   ),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: [
-                                      IconButton(
-                                        icon: Icon(Icons.create),
-                                        onPressed: () {
-                                          _navigateToUserEdit(user);
-                                        },
-                                      ),
-                                      SizedBox(
-                                        width: 60,
-                                      ),
-                                      IconButton(
-                                        icon: Icon(Icons
-                                            .report_gmailerrorred_outlined),
-                                        onPressed: () {
-                                          _navigateToUserReport(user);
-                                        },
-                                      ),
-                                      SizedBox(
-                                        width: 12,
-                                      ),
-                                    ],
+                                  onPressed: () {
+                                    _navigateToUserEdit(user);
+                                  }),
+                              FocusedMenuItem(
+                                  title: Text('View Report'),
+                                  trailingIcon: Icon(
+                                    Icons.report,
+                                    color: Theme.of(context).primaryColor,
                                   ),
-                                ],
+                                  onPressed: () {
+                                    _navigateToUserReport(user);
+                                  }),
+                            ],
+                            animateMenuItems: true,
+                            onPressed: () {
+                              pp('.... 💛️ 💛️ 💛️ not sure what I pressed ...');
+                            },
+                            child: Card(
+                              elevation: 2,
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Column(
+                                  children: [
+                                    ListTile(
+                                      leading: Icon(
+                                        Icons.person,
+                                        color: Theme.of(context).primaryColor,
+                                      ),
+                                      subtitle: Text(
+                                        user.email,
+                                        style: Styles.greyLabelSmall,
+                                      ),
+                                      title: Text(
+                                        user.name,
+                                        style: Styles.blackBoldSmall,
+                                      ),
+                                    ),
+                                    Row(
+                                      children: [
+                                        SizedBox(
+                                          width: 72,
+                                        ),
+                                        Text(
+                                          mType,
+                                          style: Styles.greyLabelTiny,
+                                        ),
+                                      ],
+                                    ),
+                                    SizedBox(
+                                      height: 12,
+                                    )
+                                  ],
+                                ),
                               ),
                             ),
                           );

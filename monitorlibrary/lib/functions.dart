@@ -80,6 +80,11 @@ class Styles {
   static const large = 32.0;
   static const reallyLarge = 52.0;
 
+  static TextStyle greyLabelTiny = TextStyle(
+    fontWeight: FontWeight.bold,
+    fontSize: tiny,
+    color: Colors.grey,
+  );
   static TextStyle greyLabelSmall = TextStyle(
     fontWeight: FontWeight.bold,
     fontSize: small,

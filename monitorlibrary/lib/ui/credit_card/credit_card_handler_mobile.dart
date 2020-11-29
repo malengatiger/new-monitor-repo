@@ -2,27 +2,35 @@ import 'package:flutter/material.dart';
 import 'package:flutter_credit_card/credit_card_form.dart';
 import 'package:flutter_credit_card/credit_card_model.dart';
 import 'package:flutter_credit_card/credit_card_widget.dart';
+import 'package:monitorlibrary/data/user.dart';
 import 'package:monitorlibrary/functions.dart';
+import 'package:monitorlibrary/snack.dart';
 
 class CreditCardHandlerMobile extends StatefulWidget {
+  final User user;
+
+  const CreditCardHandlerMobile({Key key, this.user}) : super(key: key);
   @override
   _CreditCardHandlerMobileState createState() =>
       _CreditCardHandlerMobileState();
 }
 
 class _CreditCardHandlerMobileState extends State<CreditCardHandlerMobile>
-    with SingleTickerProviderStateMixin {
+    with SingleTickerProviderStateMixin
+    implements SnackBarListener {
   AnimationController _controller;
   String cardNumber = '';
   String expiryDate = '';
   String cardHolderName = '';
   String cvvCode = '';
   bool isCvvFocused = false;
+  var _key = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
     _controller = AnimationController(vsync: this);
     super.initState();
+    cardHolderName = widget.user.name;
   }
 
   @override
@@ -35,11 +43,25 @@ class _CreditCardHandlerMobileState extends State<CreditCardHandlerMobile>
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        key: _key,
         resizeToAvoidBottomInset: true,
         appBar: AppBar(
-          title: Text('Credit Card Handling'),
+          title: Text(
+            'Service Subscription',
+            style: Styles.whiteSmall,
+          ),
           bottom: PreferredSize(
-            child: Column(),
+            child: Column(
+              children: [
+                Text(
+                  '${widget.user.organizationName}',
+                  style: Styles.whiteSmall,
+                ),
+                SizedBox(
+                  height: 8,
+                )
+              ],
+            ),
             preferredSize: Size.fromHeight(20),
           ),
         ),
@@ -53,6 +75,7 @@ class _CreditCardHandlerMobileState extends State<CreditCardHandlerMobile>
                     cardHolderName: cardHolderName,
                     cvvCode: cvvCode,
                     textStyle: Styles.whiteSmall,
+                    cardBgColor: Theme.of(context).primaryColor,
                     showBackView: isCvvFocused),
                 Expanded(
                   child: SingleChildScrollView(
@@ -69,10 +92,11 @@ class _CreditCardHandlerMobileState extends State<CreditCardHandlerMobile>
                     child: Container(
                       child: Card(
                         elevation: 8,
-                        child: ElevatedButton(
+                        child: RaisedButton(
+                          color: Theme.of(context).accentColor,
                           child: Padding(
                             padding: const EdgeInsets.only(
-                                left: 24.0, right: 24, top: 12, bottom: 12),
+                                left: 32, right: 32, top: 12, bottom: 12),
                             child: Text(
                               'Submit Card',
                               style: Styles.whiteSmall,
@@ -93,7 +117,9 @@ class _CreditCardHandlerMobileState extends State<CreditCardHandlerMobile>
   var _formKey = GlobalKey<FormState>();
   bool showSubmit = false;
   void _onChange(CreditCardModel creditCardModel) {
-    pp('😡 😡 😡 Credit Card Details changed ${creditCardModel.toString()}');
+    pp('😡 😡 😡 Credit Card Details changed '
+        'cardHolderName: ${creditCardModel.cardHolderName} 💙 cardNumber: ${creditCardModel.cardNumber} '
+        ' 💙 expiryDate: ${creditCardModel.expiryDate} 💙 cvv: ${creditCardModel.cvvCode}');
     int cnt = 0;
     if (creditCardModel.cardNumber.isNotEmpty) {
       cnt++;
@@ -123,6 +149,18 @@ class _CreditCardHandlerMobileState extends State<CreditCardHandlerMobile>
   }
 
   void _submit() {
-    pp('😡 😡 😡 Credit Card about to be submitted ');
+    pp('😡 😡 😡 Credit Card about to be submitted here 💙 💙 💙 💙 💙');
+    AppSnackbar.showSnackbarWithAction(
+        scaffoldKey: _key,
+        message: 'Payment made',
+        textColor: Colors.white,
+        backgroundColor: Colors.teal[600],
+        listener: this,
+        actionLabel: 'Close');
+  }
+
+  @override
+  onActionPressed(int action) {
+    Navigator.pop(context);
   }
 }

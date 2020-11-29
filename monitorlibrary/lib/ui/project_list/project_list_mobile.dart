@@ -38,7 +38,12 @@ class _ProjectListMobileState extends State<ProjectListMobile>
   void initState() {
     _controller = AnimationController(vsync: this);
     super.initState();
-    _getUser();
+    user = widget.user;
+    if (user == null) {
+      _getUser();
+    } else {
+      _setUserType();
+    }
   }
 
   void _getUser() async {
@@ -46,22 +51,26 @@ class _ProjectListMobileState extends State<ProjectListMobile>
       isBusy = true;
     });
     user = await Prefs.getUser();
-    setState(() {
-      switch (user.userType) {
-        case FIELD_MONITOR:
-          userTypeLabel = 'Field Monitor';
-          break;
-        case ORG_ADMINISTRATOR:
-          userTypeLabel = 'Administrator';
-          break;
-      }
-    });
+    _setUserType();
 
     if (user != null) {
       await refreshProjects();
     }
     setState(() {
       isBusy = false;
+    });
+  }
+
+  void _setUserType() {
+    setState(() {
+      switch (user.userType) {
+        case FIELD_MONITOR:
+          userTypeLabel = 'Field Monitor';
+          break;
+        case ORG_ADMINISTRATOR:
+          userTypeLabel = 'Team Administrator';
+          break;
+      }
     });
   }
 
@@ -87,6 +96,50 @@ class _ProjectListMobileState extends State<ProjectListMobile>
     setState(() {
       isBusy = false;
     });
+  }
+
+  Project _currentProject;
+  bool openProjectActions = false;
+  void _navigateToDetail(Project p) {
+    if (user.userType == FIELD_MONITOR) {
+      Navigator.push(
+          context,
+          PageTransition(
+              type: PageTransitionType.scale,
+              alignment: Alignment.topLeft,
+              duration: Duration(milliseconds: 1500),
+              child: ProjectMonitorMain(p)));
+    }
+    if (user.userType == ORG_ADMINISTRATOR) {
+      Navigator.push(
+          context,
+          PageTransition(
+              type: PageTransitionType.scale,
+              alignment: Alignment.topLeft,
+              duration: Duration(milliseconds: 1500),
+              child: ProjectEditMain(p)));
+    }
+  }
+
+  void _navigateToMedia(Project p) {
+    Navigator.push(
+        context,
+        PageTransition(
+            type: PageTransitionType.scale,
+            alignment: Alignment.topLeft,
+            duration: Duration(milliseconds: 1500),
+            child: MediaListMain(p)));
+  }
+
+  void _navigateToOrgMap() {
+    pp('_navigateToOrgMap: ');
+    Navigator.push(
+        context,
+        PageTransition(
+            type: PageTransitionType.scale,
+            alignment: Alignment.topLeft,
+            duration: Duration(milliseconds: 1500),
+            child: MonitorMapMobile()));
   }
 
   @override
@@ -126,7 +179,7 @@ class _ProjectListMobileState extends State<ProjectListMobile>
                         _navigateToOrgMap();
                       },
                     ),
-                    widget.user.userType == FIELD_MONITOR
+                    user.userType == FIELD_MONITOR
                         ? Container()
                         : IconButton(
                             icon: Icon(Icons.add),
@@ -150,18 +203,18 @@ class _ProjectListMobileState extends State<ProjectListMobile>
                           style: Styles.whiteSmall,
                         ),
                         SizedBox(
-                          height: 8,
+                          height: 2,
                         ),
                         Text(
                           '$userTypeLabel',
-                          style: Styles.blackSmall,
+                          style: Styles.blackTiny,
                         ),
                         SizedBox(
-                          height: 24,
+                          height: 20,
                         ),
                       ],
                     ),
-                    preferredSize: Size.fromHeight(160),
+                    preferredSize: Size.fromHeight(140),
                   ),
                 ),
                 backgroundColor: Colors.brown[100],
@@ -207,6 +260,8 @@ class _ProjectListMobileState extends State<ProjectListMobile>
                                       var proj = projects.elementAt(index);
 
                                       return FocusedMenuHolder(
+                                        menuOffset: 20,
+                                        duration: Duration(milliseconds: 300),
                                         menuItems: [
                                           FocusedMenuItem(
                                               title: Text('Edit'),
@@ -250,7 +305,7 @@ class _ProjectListMobileState extends State<ProjectListMobile>
                                             child: Column(
                                               children: [
                                                 SizedBox(
-                                                  height: 24,
+                                                  height: 12,
                                                 ),
                                                 Row(
                                                   children: [
@@ -273,7 +328,7 @@ class _ProjectListMobileState extends State<ProjectListMobile>
                                                   ],
                                                 ),
                                                 SizedBox(
-                                                  height: 4,
+                                                  height: 12,
                                                 ),
                                               ],
                                             ),
@@ -286,49 +341,5 @@ class _ProjectListMobileState extends State<ProjectListMobile>
                               )));
           }),
     );
-  }
-
-  Project _currentProject;
-  bool openProjectActions = false;
-  void _navigateToDetail(Project p) {
-    if (user.userType == FIELD_MONITOR) {
-      Navigator.push(
-          context,
-          PageTransition(
-              type: PageTransitionType.scale,
-              alignment: Alignment.topLeft,
-              duration: Duration(milliseconds: 1500),
-              child: ProjectMonitorMain(p)));
-    }
-    if (user.userType == ORG_ADMINISTRATOR) {
-      Navigator.push(
-          context,
-          PageTransition(
-              type: PageTransitionType.scale,
-              alignment: Alignment.topLeft,
-              duration: Duration(milliseconds: 1500),
-              child: ProjectEditMain(p)));
-    }
-  }
-
-  void _navigateToMedia(Project p) {
-    Navigator.push(
-        context,
-        PageTransition(
-            type: PageTransitionType.scale,
-            alignment: Alignment.topLeft,
-            duration: Duration(milliseconds: 1500),
-            child: MediaListMain(p)));
-  }
-
-  void _navigateToOrgMap() {
-    pp('_navigateToOrgMap: ');
-    Navigator.push(
-        context,
-        PageTransition(
-            type: PageTransitionType.scale,
-            alignment: Alignment.topLeft,
-            duration: Duration(milliseconds: 1500),
-            child: MonitorMapMobile()));
   }
 }

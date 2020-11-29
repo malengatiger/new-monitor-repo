@@ -28,12 +28,14 @@ class _ProjectMonitorMobileState extends State<ProjectMonitorMobile>
   void initState() {
     _controller = AnimationController(vsync: this);
     super.initState();
-    pp(' 🌸 🌸 ProjectDetailMobile: initState  🌸 🌸 '
-        '${widget.project.name} ${widget.project.organizationName}');
     _getProjectPositions();
   }
 
   void _getProjectPositions() async {
+    if (widget.project == null) {
+      pp('Fucking widget.project is null. 🍎🍎🍎🍎🍎 wtf?');
+      return;
+    }
     setState(() {
       isBusy = true;
     });

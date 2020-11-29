@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:monitorlibrary/data/user.dart';
 
 class CreditCardHandlerDesktop extends StatefulWidget {
+  final User user;
+
+  const CreditCardHandlerDesktop({Key key, this.user}) : super(key: key);
   @override
   _CreditCardHandlerDesktopState createState() =>
       _CreditCardHandlerDesktopState();

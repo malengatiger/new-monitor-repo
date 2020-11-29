@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:monitorlibrary/data/project.dart';
-import 'package:monitorlibrary/functions.dart';
 import 'package:monitorlibrary/ui/project_monitor/project_monitor_desktop.dart';
 import 'package:monitorlibrary/ui/project_monitor/project_monitor_mobile.dart';
 import 'package:monitorlibrary/ui/project_monitor/project_monitor_tablet.dart';
@@ -23,8 +22,6 @@ class _ProjectMonitorMainState extends State<ProjectMonitorMain>
   void initState() {
     _controller = AnimationController(vsync: this);
     super.initState();
-    pp(' 🌸 🌸 ProjectDetailMain: initState  🌸 🌸 '
-        '${widget.project.name} ${widget.project.organizationName}');
   }
 
   @override
@@ -36,11 +33,14 @@ class _ProjectMonitorMainState extends State<ProjectMonitorMain>
   @override
   Widget build(BuildContext context) {
     return isBusy
-        ? Center(
-            child: Container(
-              child: CircularProgressIndicator(
-                strokeWidth: 16,
-                backgroundColor: Colors.pink,
+        ? Scaffold(
+            appBar: AppBar(),
+            body: Center(
+              child: Container(
+                child: CircularProgressIndicator(
+                  strokeWidth: 16,
+                  backgroundColor: Colors.pink,
+                ),
               ),
             ),
           )

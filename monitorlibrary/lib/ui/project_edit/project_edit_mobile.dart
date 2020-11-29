@@ -132,14 +132,16 @@ class _ProjectEditMobileState extends State<ProjectEditMobile>
             style: Styles.whiteSmall,
           ),
           actions: [
-            IconButton(
-              icon: Icon(Icons.location_on),
-              onPressed: () {
-                if (widget.project != null) {
-                  _navigateToProjectLocation(widget.project);
-                }
-              },
-            )
+            widget.project == null
+                ? Container()
+                : IconButton(
+                    icon: Icon(Icons.location_on),
+                    onPressed: () {
+                      if (widget.project != null) {
+                        _navigateToProjectLocation(widget.project);
+                      }
+                    },
+                  )
           ],
           bottom: PreferredSize(
             child: Column(
@@ -175,7 +177,7 @@ class _ProjectEditMobileState extends State<ProjectEditMobile>
                   child: Column(
                     children: [
                       SizedBox(
-                        height: 48,
+                        height: 0,
                       ),
                       TextFormField(
                         controller: nameController,
@@ -199,7 +201,10 @@ class _ProjectEditMobileState extends State<ProjectEditMobile>
                       ),
                       TextFormField(
                         controller: descController,
-                        keyboardType: TextInputType.text,
+                        keyboardType: TextInputType.multiline,
+                        minLines: 2, //Normal textInputField will be displayed
+                        maxLines:
+                            6, // when user presses enter it will adapt to it
                         decoration: InputDecoration(
                             icon: Icon(
                               Icons.info_outline,
@@ -251,36 +256,43 @@ class _ProjectEditMobileState extends State<ProjectEditMobile>
                               children: [
                                 widget.project == null
                                     ? Container()
-                                    : FlatButton(
-                                        // color: Theme.of(context).accentColor,
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(12.0),
-                                          child: Text(
-                                            'Add Location',
-                                            style: Styles.blueMedium,
+                                    : Container(
+                                        width: 220,
+                                        child: RaisedButton(
+                                          elevation: 8,
+                                          color: Theme.of(context).accentColor,
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(12.0),
+                                            child: Text(
+                                              'Add Location',
+                                              style: Styles.whiteSmall,
+                                            ),
                                           ),
+                                          onPressed: () {
+                                            _navigateToProjectLocation(
+                                                widget.project);
+                                          },
                                         ),
-                                        onPressed: () {
-                                          _navigateToProjectLocation(
-                                              widget.project);
-                                        },
                                       ),
                                 widget.project == null
                                     ? Container()
                                     : SizedBox(
                                         height: 20,
                                       ),
-                                RaisedButton(
-                                  elevation: 8,
-                                  color: Theme.of(context).primaryColor,
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(12.0),
-                                    child: Text(
-                                      'Submit Project',
-                                      style: Styles.whiteSmall,
+                                Container(
+                                  width: 220,
+                                  child: RaisedButton(
+                                    elevation: 8,
+                                    color: Theme.of(context).primaryColor,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(12.0),
+                                      child: Text(
+                                        'Submit Project',
+                                        style: Styles.whiteSmall,
+                                      ),
                                     ),
+                                    onPressed: _submit,
                                   ),
-                                  onPressed: _submit,
                                 ),
                               ],
                             ),
