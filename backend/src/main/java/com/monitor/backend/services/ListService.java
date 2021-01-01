@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.mongodb.client.MongoClient;
+import com.monitor.backend.data.Project;
 import com.monitor.backend.models.*;
 import com.monitor.backend.utils.Emoji;
 import lombok.val;
@@ -20,6 +21,7 @@ import org.springframework.stereotype.Service;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import com.monitor.backend.data.*;
 
 @Service
 public class ListService {
@@ -85,10 +87,10 @@ public class ListService {
         return mList;
     }
 
-    public List<Project> getProjects() throws Exception {
+    public List<com.monitor.backend.data.Project> getProjects() throws Exception {
 
         LOGGER.info(Emoji.GLOBE.concat(Emoji.GLOBE).concat("ListService: getProjects ..."));
-        List<Project> mList = (List<Project>) projectRepository.findAll();
+        List<com.monitor.backend.data.Project> mList = (List<com.monitor.backend.data.Project>) projectRepository.findAll();
 
         LOGGER.info(Emoji.GLOBE.concat(Emoji.GLOBE).concat("ListService: getProjects ... found:" +
                 " \uD83D\uDC24 " + mList.size()));
@@ -152,14 +154,14 @@ public class ListService {
     @Autowired
     ProjectPositionRepository projectPositionRepository;
 
-    public List<Project> findProjectsByLocation(double latitude, double longitude, double radiusInKM) throws Exception {
+    public List<com.monitor.backend.data.Project> findProjectsByLocation(double latitude, double longitude, double radiusInKM) throws Exception {
         LOGGER.info(Emoji.DICE.concat(Emoji.DICE).concat(" findProjectsByLocation ..."));
         Point point = new Point(longitude, latitude);
         Distance distance = new Distance(radiusInKM, Metrics.KILOMETERS);
-        List<Project> projects = projectRepository.findByPositionNear(point, distance);
+        List<com.monitor.backend.data.Project> projects = projectRepository.findByPositionNear(point, distance);
         LOGGER.info(Emoji.DOLPHIN.concat(Emoji.DOLPHIN).concat(Emoji.DOLPHIN)
                 + " Nearby Projects found: " + projects.size() + " : " + Emoji.RED_APPLE + " radius: " + radiusInKM);
-        for (Project project : projects) {
+        for (com.monitor.backend.data.Project project : projects) {
             LOGGER.info(Emoji.DOLPHIN.concat(Emoji.DOLPHIN) + project.getName() + ", "
                     + project.getOrganizationId() + " "
                     + Emoji.COFFEE);
@@ -184,7 +186,7 @@ public class ListService {
 
         int photos = photoRepository.findByProjectId(projectId).size();
         int videos = videoRepository.findByProjectId(projectId).size();
-        val pc = new ProjectCount(projectId, photos, videos);
+        val pc = new ProjectCount(projectId, photos, videos, 0);
 
         LOGGER.info(Emoji.HEART_ORANGE.concat(Emoji.HEART_ORANGE)
                 + " getCountsByProject, \uD83C\uDF3F found: " + G.toJson(pc));
@@ -272,10 +274,10 @@ public class ListService {
         return cities;
     }
 
-    public List<Project> getOrganizationProjects(String organizationId) throws Exception {
+    public List<com.monitor.backend.data.Project> getOrganizationProjects(String organizationId) throws Exception {
 
         LOGGER.info(Emoji.GLOBE.concat(Emoji.GLOBE).concat("getOrganizationReports ..."));
-        List<Project> mList = projectRepository.findByOrganizationId(organizationId);
+        List<com.monitor.backend.data.Project> mList = projectRepository.findByOrganizationId(organizationId);
         LOGGER.info(Emoji.GLOBE.concat(Emoji.GLOBE).concat("getOrganizationProjects ... found: " + mList.size()));
 
         return mList;
@@ -337,7 +339,7 @@ public class ListService {
         return list;
     }
 
-    public List<Project> findProjectsByOrganization(String organizationId) throws Exception {
+    public List<com.monitor.backend.data.Project> findProjectsByOrganization(String organizationId) throws Exception {
 
         List<Project> list = projectRepository.findByOrganizationId(organizationId);
         return list;

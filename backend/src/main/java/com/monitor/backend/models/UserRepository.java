@@ -1,5 +1,6 @@
 package com.monitor.backend.models;
 
+import com.monitor.backend.data.User;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
 import java.util.List;

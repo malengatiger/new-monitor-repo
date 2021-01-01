@@ -1,9 +1,8 @@
 package com.monitor.backend.models;
 
-import com.monitor.backend.models.City;
+import com.monitor.backend.data.City;
 import org.springframework.data.geo.Distance;
 import org.springframework.data.geo.Point;
-import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
 import java.util.List;

@@ -7,12 +7,12 @@ import com.google.cloud.firestore.QuerySnapshot;
 import com.google.firebase.auth.ExportedUserRecord;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.ListUsersPage;
-import com.google.firebase.cloud.FirestoreClient;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.IndexOptions;
 import com.mongodb.client.model.Indexes;
+import com.monitor.backend.data.*;
 import com.monitor.backend.models.*;
 import com.monitor.backend.services.DataService;
 import com.monitor.backend.services.ListService;
@@ -28,7 +28,6 @@ import java.io.FileReader;
 import java.util.*;
 import java.util.logging.Logger;
 
-import static com.monitor.backend.models.DataModelsKt.*;
 
 @Service
 public class MongoGenerator {
@@ -59,10 +58,10 @@ public class MongoGenerator {
         cords.add(latitudeHarties);
         Country c1 = new Country("PUBLIC",null,
                 UUID.randomUUID().toString(), "South Africa", "ZAR",
-                new Position("Point", cords));
+                new  com.monitor.backend.data.Position("Point", cords));
         Country c2 = new Country("PUBLIC",null,
                 UUID.randomUUID().toString(), "Zimbabwe", "ZIM",
-                new Position("Point", cords));
+                new  com.monitor.backend.data.Position("Point", cords));
 
         if (countryRepository == null) {
             throw new Exception("CountryRepository is NULL");
@@ -123,8 +122,8 @@ public class MongoGenerator {
             Object obj = parser.parse(new FileReader("cities.json"));
             JSONObject jsonObject = (JSONObject) obj;
             for (Object o : jsonObject.keySet()) {
-                Double latitude = null;
-                Double longitude = null;
+                Double latitude;
+                Double longitude;
                 String key = (String) o;
                 JSONObject object = (JSONObject) jsonObject.get(key);
                 String cityName = (String) object.get("name");
@@ -150,7 +149,8 @@ public class MongoGenerator {
                         }
                         cords.add(longitude);
                         cords.add(latitude);
-                        City city = new City("PUBLIC",null, cityName.trim(), UUID.randomUUID().toString(), country, province,
+                        City city = new City("PUBLIC",null, cityName.trim(),
+                                UUID.randomUUID().toString(), country.getCountryId(), province,
                                 new Position("Point", cords));
                         mCities.add(city);
                     }
@@ -436,10 +436,10 @@ public class MongoGenerator {
                 monitorMaxDistanceInMetres = 50.0;
             }
 
-            Position pos = new Position("Point", coordinates);
+            com.monitor.backend.data.Position pos = new  com.monitor.backend.data.Position("Point", coordinates);
 
 
-            Project p0 = new Project(organization.getOrganizationId(),null,
+            com.monitor.backend.data.Project p0 = new Project(organization.getOrganizationId(),null,
                     UUID.randomUUID().toString(),
                     loc.name, Objects.requireNonNull(organization.getOrganizationId()),
                     testProjectDesc,
@@ -505,7 +505,7 @@ public class MongoGenerator {
         int cnt = 0;
         User mUser = new User("PRIVATE",null, "Administrator", buildEmail("netadmin"),
                 getRandomCellphone(), UUID.randomUUID().toString(), null,
-                "Network", new DateTime().toDateTimeISO().toString(), NETWORK_ADMINISTRATOR, "pass123");
+                "Network", new DateTime().toDateTimeISO().toString(), Type.UserType.ORG_ADMINISTRATOR, "pass123");
         User result = userRepository.save(mUser);
         dataService.createUser(result);
         LOGGER.info(Emoji.FERN + Emoji.FERN + " User saved on MongoDB and Firebase auth "
@@ -517,7 +517,7 @@ public class MongoGenerator {
                 if (i == 0) {
                     User m = new User(organization.getOrganizationId(),null,name, buildEmail("orgadmin"),
                             getRandomCellphone(), UUID.randomUUID().toString(), Objects.requireNonNull(organization.getOrganizationId()),
-                            organization.getName(), new DateTime().toDateTimeISO().toString(), ORG_ADMINISTRATOR, "pass123");
+                            organization.getName(), new DateTime().toDateTimeISO().toString(), Type.UserType.ORG_ADMINISTRATOR, "pass123");
                     User result1 = userRepository.save(m);
                     //add user to Firebase
                     dataService.createUser(result1);
@@ -528,7 +528,7 @@ public class MongoGenerator {
                 if (i == 1 || i == 2) {
                     User user = new User(organization.getOrganizationId(),null,name, buildEmail("monitor"),
                             getRandomCellphone(), UUID.randomUUID().toString(), Objects.requireNonNull(organization.getOrganizationId()),
-                            organization.getName(), new DateTime().toDateTimeISO().toString(), FIELD_MONITOR, "pass123");
+                            organization.getName(), new DateTime().toDateTimeISO().toString(), Type.UserType.FIELD_MONITOR, "pass123");
                     User result2 = userRepository.save(user);
                     dataService.createUser(result2);
                     LOGGER.info(Emoji.FERN + Emoji.FERN + " User saved on MongoDB and Firebase auth " + Emoji.FERN + Emoji.FERN + name);
@@ -538,7 +538,7 @@ public class MongoGenerator {
                 if (i == 3) {
                     User user = new User(organization.getOrganizationId(),null,name, buildEmail("exec"),
                             getRandomCellphone(), UUID.randomUUID().toString(), Objects.requireNonNull(organization.getOrganizationId()),
-                            organization.getName(), new DateTime().toDateTimeISO().toString(), ORG_EXECUTIVE,"pass123");
+                            organization.getName(), new DateTime().toDateTimeISO().toString(), Type.UserType.EXECUTIVE,"pass123");
                     User result1 = userRepository.save(user);
                     dataService.createUser(result1);
                     LOGGER.info(Emoji.FERN + Emoji.FERN + " User saved on MongoDB and Firebase auth " + Emoji.FERN + Emoji.FERN + name);

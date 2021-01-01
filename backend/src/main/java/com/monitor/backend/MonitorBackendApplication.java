@@ -2,6 +2,8 @@ package com.monitor.backend;
 
 import com.monitor.backend.controllers.DataController;
 import com.monitor.backend.controllers.ListController;
+import com.monitor.backend.data.Project;
+import com.monitor.backend.data.User;
 import com.monitor.backend.models.*;
 import com.monitor.backend.services.DataService;
 import com.monitor.backend.services.ListService;
@@ -135,7 +137,7 @@ public class MonitorBackendApplication implements ApplicationListener<Applicatio
                         + " " + user.getEmail()+ " " + Emoji.YELLOW_DIAMOND + " " + user.getUserType()
                          + " " + Emoji.RED_TRIANGLE + " " + user.getOrganizationName());
             }
-            List<Project> projects = (List<Project>) projectRepository.findAll(Sort.by("organizationName"));
+            List<com.monitor.backend.data.Project> projects = (List<com.monitor.backend.data.Project>) projectRepository.findAll(Sort.by("organizationName"));
 
             for (Project project : projects) {
                 LOGGER.info(Emoji.WINE + Emoji.WINE + Emoji.WINE + Emoji.WINE +

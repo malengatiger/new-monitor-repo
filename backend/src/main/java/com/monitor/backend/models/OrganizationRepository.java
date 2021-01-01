@@ -1,5 +1,6 @@
 package com.monitor.backend.models;
 
+import com.monitor.backend.data.Organization;
 import org.springframework.data.geo.Distance;
 import org.springframework.data.geo.Point;
 import org.springframework.data.repository.PagingAndSortingRepository;

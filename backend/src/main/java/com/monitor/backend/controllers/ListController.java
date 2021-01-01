@@ -2,6 +2,7 @@ package com.monitor.backend.controllers;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.monitor.backend.data.*;
 import com.monitor.backend.services.MongoDataService;
 import com.monitor.backend.utils.Emoji;
 import com.monitor.backend.models.*;
@@ -38,7 +39,7 @@ public class ListController {
         LOGGER.info(Emoji.DOLPHIN.concat(Emoji.DOLPHIN) + " findUserByEmail found: " + user.getName());
         return user;
     }
-    //user.1596685142563@monitor.com
+
     @GetMapping("/getOrganizations")
     public List<Organization> getOrganizations() throws Exception {
         LOGGER.info(Emoji.DICE.concat(Emoji.DICE).concat(" getOrganizations ..."));
@@ -53,10 +54,11 @@ public class ListController {
         LOGGER.info(Emoji.DOLPHIN.concat(Emoji.DOLPHIN) + " Communities found: " + communities.size());
         return communities;
     }
+
     @GetMapping("/getProjects")
-    public List<Project> getProjects() throws Exception {
+    public List<com.monitor.backend.data.Project> getProjects() throws Exception {
         LOGGER.info(Emoji.DICE.concat(Emoji.DICE).concat("ListController: getProjects ..."));
-        List<Project> projects =  listService.getProjects();
+        List<com.monitor.backend.data.Project> projects =  listService.getProjects();
         LOGGER.info(Emoji.DOLPHIN.concat(Emoji.DOLPHIN)
                 + "ListController: Projects found: \uD83D\uDC24 " + projects.size());
         return projects;
@@ -74,7 +76,6 @@ public class ListController {
                 + "ListController: Cities found: \uD83D\uDC24 " + cities.size());
         return cities;
     }
-    ///findSettlementsByCountry
 
     @GetMapping("/findCommunitiesByCountry")
     public List<Community> findCommunitiesByCountry(@RequestParam String countryId) throws Exception {
@@ -100,14 +101,15 @@ public class ListController {
         LOGGER.info(Emoji.DOLPHIN.concat(Emoji.DOLPHIN) + " Organizations found: " + orgs.size());
         return orgs;
     }
+
     @GetMapping("/getOrganizationProjects")
-    public List<Project> getOrganizationProjects(@RequestParam  String organizationId) throws Exception {
+    public List<com.monitor.backend.data.Project> getOrganizationProjects(@RequestParam  String organizationId) throws Exception {
         LOGGER.info(Emoji.DICE.concat(Emoji.DICE).concat(" getOrganizationProjects ..."));
-        List<Project> projects = listService.getOrganizationProjects(organizationId);
+        List<com.monitor.backend.data.Project> projects = listService.getOrganizationProjects(organizationId);
         LOGGER.info(Emoji.DOLPHIN.concat(Emoji.DOLPHIN) + " Projects found: " + projects.size());
         return projects;
     }
-    //getQuestionnairesByOrganization
+
     @GetMapping("/getQuestionnairesByOrganization")
     public List<Questionnaire> getQuestionnairesByOrganization(@RequestParam  String organizationId) throws Exception {
         LOGGER.info(Emoji.DICE.concat(Emoji.DICE).concat(" getOrganizationUsers ..."));
@@ -130,9 +132,9 @@ public class ListController {
     }
 
     @GetMapping("/findProjectsByOrganization")
-    public List<Project> findProjectsByOrganization(@RequestParam  String organizationId) throws Exception {
+    public List<com.monitor.backend.data.Project> findProjectsByOrganization(@RequestParam  String organizationId) throws Exception {
         LOGGER.info(Emoji.DICE.concat(Emoji.DICE).concat(" findProjectsByOrganization ... id: ".concat(organizationId)));
-        List<Project>  users = listService.findProjectsByOrganization(organizationId);
+        List<com.monitor.backend.data.Project>  users = listService.findProjectsByOrganization(organizationId);
         LOGGER.info(Emoji.DOLPHIN.concat(Emoji.DOLPHIN) + " findProjectsByOrganization found: " + users.size());
         return users;
     }
@@ -145,7 +147,7 @@ public class ListController {
     }
 
     @GetMapping("/findProjectsByLocation")
-    public List<Project> findProjectsByLocation(double latitude, double longitude, double radiusInKM) throws Exception {
+    public List<com.monitor.backend.data.Project> findProjectsByLocation(double latitude, double longitude, double radiusInKM) throws Exception {
         LOGGER.info(Emoji.DICE.concat(Emoji.DICE).concat(" findProjectsByLocation ..."));
         List<Project> projects =  listService.findProjectsByLocation(latitude, longitude, radiusInKM);
         LOGGER.info(Emoji.DOLPHIN.concat(Emoji.DOLPHIN) + " Nearby Projects found: " + projects.size());

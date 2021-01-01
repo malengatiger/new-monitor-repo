@@ -1,6 +1,6 @@
 package com.monitor.backend.services;
 
-import com.monitor.backend.models.City;
+import com.monitor.backend.data.City;
 import com.monitor.backend.models.CityRepository;
 import com.monitor.backend.utils.Emoji;
 import com.monitor.backend.utils.MongoGenerator;

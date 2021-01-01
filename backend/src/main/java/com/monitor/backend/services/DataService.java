@@ -10,17 +10,9 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.UserRecord;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.mongodb.Block;
-import com.mongodb.client.MongoClient;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
-import com.mongodb.client.model.Accumulators;
-import com.mongodb.client.model.Aggregates;
-import com.mongodb.client.model.Filters;
+import com.monitor.backend.data.*;
 import com.monitor.backend.models.*;
 import com.monitor.backend.utils.Emoji;
-import org.bson.Document;
-import org.bson.conversions.Bson;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,7 +20,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -178,18 +169,18 @@ public class DataService {
     }
 
 
-    public Project addProject(Project project) throws Exception {
+    public com.monitor.backend.data.Project addProject(com.monitor.backend.data.Project project) throws Exception {
         LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS).concat("addProject: "
                 .concat(project.getName()).concat(" ")
                 .concat(Emoji.FLOWER_YELLOW)));
 
-        Project m =projectRepository.save(project);
+        com.monitor.backend.data.Project m =projectRepository.save(project);
 
         LOGGER.info(Emoji.LEAF.concat(Emoji.LEAF)
                 .concat("Project added: " + project.getProjectId()));
         return m;
     }
-    public Project updateProject(Project project) throws Exception {
+    public com.monitor.backend.data.Project updateProject(com.monitor.backend.data.Project project) throws Exception {
         LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS).concat("updateProject: "
                 .concat(project.getName()).concat(" ")
                 .concat(Emoji.FLOWER_YELLOW)));

@@ -1,5 +1,6 @@
 package com.monitor.backend.controllers;
 
+import com.monitor.backend.data.*;
 import com.monitor.backend.models.*;
 import com.monitor.backend.services.DataService;
 import com.monitor.backend.services.ListService;
@@ -10,7 +11,6 @@ import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.logging.Logger;
 
 
@@ -65,12 +65,12 @@ public class DataController {
     @Autowired
     MongoDataService mongoDataService;
     @PostMapping("/addProject")
-    public Project addProject(@RequestBody Project project) throws Exception {
+    public com.monitor.backend.data.Project addProject(@RequestBody com.monitor.backend.data.Project project) throws Exception {
         LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS).concat("Adding Project: ".concat(project.getName())));
         return dataService.addProject(project);
     }
     @PostMapping("/updateProject")
-    public Project updateProject(@RequestBody Project project) throws Exception {
+    public com.monitor.backend.data.Project updateProject(@RequestBody Project project) throws Exception {
         LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS).concat("Update Project: ".concat(project.getName())));
         return dataService.updateProject(project);
     }
