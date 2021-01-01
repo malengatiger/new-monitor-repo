@@ -3,9 +3,11 @@ package com.monitor.backend.utils;
 import com.google.api.core.ApiFuture;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseToken;
+import com.monitor.backend.services.DataService;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -25,6 +27,9 @@ public class MonitorAuthenticationFilter extends OncePerRequestFilter {
     }
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MonitorAuthenticationFilter.class);
+
+    @Autowired
+    private DataService dataService;
 
     @Override
     protected void doFilterInternal(@NotNull HttpServletRequest httpServletRequest,
@@ -59,6 +64,7 @@ public class MonitorAuthenticationFilter extends OncePerRequestFilter {
         String token = m.substring(7);
         LOGGER.info(Emoji.ANGRY + Emoji.ANGRY + Emoji.ANGRY + "Firebase token: " + token + Emoji.RED_APPLE );
         try {
+            dataService.initializeFirebase();
             ApiFuture<FirebaseToken> future = FirebaseAuth.getInstance().verifyIdTokenAsync(token, true);
             FirebaseToken mToken = future.get();
             LOGGER.info("\uD83D\uDE21 \uD83D\uDE21 \uD83D\uDE21 Authentication executed, uid: "
@@ -72,6 +78,8 @@ public class MonitorAuthenticationFilter extends OncePerRequestFilter {
                     "FirebaseAuthException happened: \uD83C\uDF4E " + e.getMessage();
             System.out.println(msg);
             throw new ServletException(msg);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
     }

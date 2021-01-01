@@ -4,4 +4,7 @@ gcloud builds submit --tag gcr.io/monitor-2021/monitor
 
 gcloud run deploy --image gcr.io/monitor-2021/monitor --platform managed
 
+ https://monitor-ohgfaci24a-ew.a.run.app
+
+
 /////////  🔷 🔷 🔷 🔷 🔷 🔷 Google Cloud Run  🔷 🔷 🔷 🔷 🔷 🔷////////

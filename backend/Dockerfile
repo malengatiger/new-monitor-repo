@@ -1,6 +1,6 @@
 # Use the official maven/Java 8 image to create a build artifact.
 # https://hub.docker.com/_/maven
-FROM maven:3.6-jdk-11 as builder
+FROM maven:3.5-jdk-8-alpine as builder
 
 # Copy local code to the container image.
 WORKDIR /app
@@ -14,13 +14,12 @@ RUN mvn package -DskipTests
 # It's important to use OpenJDK 8u191 or above that has container support enabled.
 # https://hub.docker.com/r/adoptopenjdk/openjdk8
 # https://docs.docker.com/develop/develop-images/multistage-build/#use-multi-stage-builds
-FROM adoptopenjdk/openjdk11:alpine-slim
-
+FROM adoptopenjdk/openjdk8:jdk8u202-b08-alpine-slim
 
 # Copy the jar to the production image from the builder stage.
-COPY --from=builder /app/target/backend-0.0.1-SNAPSHOT.jar /monitor.jar
+COPY --from=builder /app/target/backend-0.0.1-SNAPSHOT.jar /mon.jar
 
 # Run the web service on container startup.
 
-CMD ["java","-Djava.security.egd=file:/dev/./urandom","-Dserver.port=${PORT}","-jar","/monitor.jar"]
+CMD ["java","-Djava.security.egd=file:/dev/./urandom","-Dserver.port=${PORT}","-jar","/mon.jar"]
 

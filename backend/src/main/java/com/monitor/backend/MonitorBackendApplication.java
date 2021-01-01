@@ -106,7 +106,7 @@ public class MonitorBackendApplication implements ApplicationListener<Applicatio
 
         try {
             LOGGER.info(Emoji.BURGER.concat(Emoji.BURGER) +
-                    " monitorMaxDistanceInMetres: " + monitorMaxDistanceInMetres);
+                    " monitorMaxDistanceInMetres: 500 " );
             dataService.initializeFirebase();
 
             LOGGER.info(Emoji.PRETZEL.concat(Emoji.PRETZEL) + " -------- PRINT SERVICE METHODS AVAILABLE --------- ");
@@ -182,8 +182,8 @@ public class MonitorBackendApplication implements ApplicationListener<Applicatio
     @Autowired
     MongoGenerator mongoGenerator;
 
-    @Value("${monitorMaxDistanceInMetres}")
-    private double monitorMaxDistanceInMetres;
+//    @Value("${monitorMaxDistanceInMetres}")
+//    private double monitorMaxDistanceInMetres;
 
     @Override
     public void run(String... args) throws Exception {

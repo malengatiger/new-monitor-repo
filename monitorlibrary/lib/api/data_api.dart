@@ -737,6 +737,7 @@ class DataAPI {
       var msg =
           '😡 😡 The response is not 200; it is ${resp.statusCode}, NOT GOOD, throwing up !! 🥪 🥙 🌮  😡';
       pp(msg);
+      print(resp.body);
       throw Exception(msg);
     }
   }

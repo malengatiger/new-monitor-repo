@@ -412,8 +412,8 @@ public class MongoGenerator {
         generateUsers(true);
     }
 
-    @Value("${monitorMaxDistanceInMetres}")
-    private double monitorMaxDistanceInMetres;
+    //@Value("${monitorMaxDistanceInMetres}")
+    private static final double monitorMaxDistanceInMetres = 500.0;
 
     public void generateProjects() {
         setLocations();
@@ -432,14 +432,12 @@ public class MongoGenerator {
             List<Double> coordinates = new ArrayList<>();
             coordinates.add(loc.longitude);
             coordinates.add(loc.latitude);
-            if (monitorMaxDistanceInMetres == 0.0) {
-                monitorMaxDistanceInMetres = 50.0;
-            }
-
-            com.monitor.backend.data.Position pos = new  com.monitor.backend.data.Position("Point", coordinates);
 
 
-            com.monitor.backend.data.Project p0 = new Project(organization.getOrganizationId(),null,
+            Position pos = new Position("Point", coordinates);
+
+
+            Project p0 = new Project(organization.getOrganizationId(),null,
                     UUID.randomUUID().toString(),
                     loc.name, Objects.requireNonNull(organization.getOrganizationId()),
                     testProjectDesc,

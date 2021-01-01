@@ -26,8 +26,8 @@ MongoDatabase database = mongoClient.getDatabase("test");
 public class MongoDataService {
     private static final Logger LOGGER = Logger.getLogger(MongoGenerator.class.getSimpleName());
 
-    @Value("${mongo}")
-    private String mongo;
+//    @Value("${mongo}")
+//    private String mongo;
 
     @Autowired
     CityRepository cityRepository;
