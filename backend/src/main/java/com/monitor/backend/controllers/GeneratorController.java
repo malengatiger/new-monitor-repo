@@ -8,13 +8,11 @@ import com.monitor.backend.utils.Emoji;
 import com.monitor.backend.utils.MongoGenerator;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.logging.Logger;
 
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
 public class GeneratorController {
     private static final Logger LOGGER = Logger.getLogger(GeneratorController.class.getSimpleName());

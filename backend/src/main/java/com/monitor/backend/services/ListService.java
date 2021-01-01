@@ -283,13 +283,25 @@ public class ListService {
 
     public List<User> getOrganizationUsers(String organizationId) throws Exception {
 
-        LOGGER.info(Emoji.GLOBE.concat(Emoji.GLOBE).concat("getOrganizationUsers ..."));
         List<User> mList = userRepository.findByOrganizationId(organizationId);
         LOGGER.info(Emoji.GLOBE.concat(Emoji.GLOBE).concat("getOrganizationUsers ... found: " + mList.size()));
 
         return mList;
     }
+    public List<Photo> getOrganizationPhotos(String organizationId) throws Exception {
 
+        List<Photo> mList = photoRepository.findByOrganizationId(organizationId);
+        LOGGER.info(Emoji.GLOBE.concat(Emoji.GLOBE).concat("getOrganizationPhotos ... found: " + mList.size()));
+
+        return mList;
+    }
+    public List<Video> getOrganizationVideos(String organizationId) throws Exception {
+
+        List<Video> mList = videoRepository.findByOrganizationId(organizationId);
+        LOGGER.info(Emoji.GLOBE.concat(Emoji.GLOBE).concat("getOrganizationVideos ... found: " + mList.size()));
+
+        return mList;
+    }
     public List<User> getUsers() throws Exception {
 
         LOGGER.info(Emoji.GLOBE.concat(Emoji.GLOBE).concat("getUsers ..."));

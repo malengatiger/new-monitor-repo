@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:monitorlibrary/data/position.dart';
 
 class Photo {
-  String url, thumbnailUrl, caption, created;
-  String userId;
+  String url, thumbnailUrl, caption, created, photoId;
+  String userId, organizationId;
   String userName;
   Position projectPosition;
   double distanceFromProjectPosition;
@@ -19,6 +19,8 @@ class Photo {
       @required this.distanceFromProjectPosition,
       @required this.projectId,
       @required this.thumbnailUrl,
+      @required this.photoId,
+      @required this.organizationId,
       @required this.projectName});
 
   Photo.fromJson(Map data) {
@@ -26,7 +28,9 @@ class Photo {
     this.thumbnailUrl = data['thumbnailUrl'];
     this.caption = data['caption'];
     this.created = data['created'];
+    this.organizationId = data['organizationId'];
     this.userId = data['userId'];
+    this.photoId = data['photoId'];
     this.userName = data['userName'];
     this.distanceFromProjectPosition = data['distanceFromProjectPosition'];
     this.projectId = data['projectId'];
@@ -41,6 +45,8 @@ class Photo {
       'caption': caption,
       'created': created,
       'userId': userId,
+      'organizationId': organizationId,
+      'photoId': photoId,
       'userName': userName,
       'distanceFromProjectPosition': distanceFromProjectPosition,
       'projectId': projectId,
@@ -54,8 +60,8 @@ class Photo {
 }
 
 class Video {
-  String url, caption, created, thumbnailUrl;
-  String userId, userName;
+  String url, caption, created, thumbnailUrl, videoId;
+  String userId, userName, organizationId;
   Position projectPosition;
   double distanceFromProjectPosition;
   String projectId, projectName;
@@ -79,6 +85,10 @@ class Video {
       @required
           this.thumbnailUrl,
       @required
+          this.videoId,
+      @required
+          this.organizationId,
+      @required
           this.projectName}); // Video({@required this.url, this.userId, @required this.created});
 
   Video.fromJson(Map data) {
@@ -86,8 +96,9 @@ class Video {
     this.caption = data['caption'];
     this.created = data['created'];
     this.userId = data['userId'];
+    this.organizationId = data['organizationId'];
     this.thumbnailUrl = data['thumbnailUrl'];
-
+    this.videoId = data['videoId'];
     this.userName = data['userName'];
     this.distanceFromProjectPosition = data['distanceFromProjectPosition'];
     this.projectId = data['projectId'];
@@ -102,6 +113,8 @@ class Video {
       'caption': caption,
       'created': created,
       'userId': userId,
+      'videoId': videoId,
+      'organizationId': organizationId,
       'userName': userName,
       'thumbnailUrl': thumbnailUrl,
       'distanceFromProjectPosition': distanceFromProjectPosition,

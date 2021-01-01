@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.logging.Logger;
 
+
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
 public class DataController {
     private static final Logger LOGGER = Logger.getLogger(DataController.class.getSimpleName());
@@ -37,7 +39,7 @@ public class DataController {
     @PostMapping("/addOrganization")
     public Organization addOrganization(@RequestBody Organization organization) throws Exception {
         LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS)
-                .concat("Adding Organization: ".concat(organization.getName())));
+                .concat(".... Adding Organization: ".concat(organization.getName())));
         return dataService.addOrganization(organization);
     }
 

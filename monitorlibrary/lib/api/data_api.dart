@@ -241,6 +241,46 @@ class DataAPI {
     }
   }
 
+  static Future<List<Photo>> getOrganizationPhotos(
+      String organizationId) async {
+    pp('🍏 🍏 🍏 DataAPI: getOrganizationPhotos: 🍏 id: $organizationId');
+    String mURL = await getUrl();
+    var cmd = 'getOrganizationPhotos';
+    var url = '$mURL$cmd?organizationId=$organizationId';
+    try {
+      List result = await _callWebAPIGet(url);
+      List<Photo> list = List();
+      result.forEach((m) {
+        list.add(Photo.fromJson(m));
+      });
+      return list;
+    } catch (e) {
+      pp('Houston, 😈😈😈😈😈 we have a problem! 😈😈😈😈😈');
+      print(e);
+      throw e;
+    }
+  }
+
+  static Future<List<Video>> getOrganizationVideos(
+      String organizationId) async {
+    pp('🍏 🍏 🍏 DataAPI: getOrganizationVideos: 🍏 id: $organizationId');
+    String mURL = await getUrl();
+    var cmd = 'getOrganizationVideos';
+    var url = '$mURL$cmd?organizationId=$organizationId';
+    try {
+      List result = await _callWebAPIGet(url);
+      List<Video> list = List();
+      result.forEach((m) {
+        list.add(Video.fromJson(m));
+      });
+      return list;
+    } catch (e) {
+      pp('Houston, 😈😈😈😈😈 we have a problem! 😈😈😈😈😈');
+      print(e);
+      throw e;
+    }
+  }
+
   static Future<List<Project>> findProjectsByLocation(
       {double latitude, double longitude, double radiusInKM}) async {
     pp('🍏 🍏 🍏 DataAPI: findProjectsByLocation: 🍏 radiusInKM: $radiusInKM');
@@ -640,6 +680,7 @@ class DataAPI {
     var start = DateTime.now();
     var client = new http.Client();
     var token = await AppAuth.getAuthToken();
+    pp('❤️️❤️  DataAPI._callWebAPIPost .... token: ❤️ $token ❤️');
     headers['Authorization'] = 'Bearer $token';
 
     var resp = await client
@@ -650,9 +691,9 @@ class DataAPI {
         )
         .whenComplete(() {});
     if (resp.statusCode == 200) {
-      pp('\n\n❤️️❤️  DataAPI._callWebAPIPost .... : 💙💙 statusCode: 👌👌👌 ${resp.statusCode} 👌👌👌 💙 for $mUrl');
+      pp('❤️️❤️  DataAPI._callWebAPIPost .... : 💙💙 statusCode: 👌👌👌 ${resp.statusCode} 👌👌👌 💙 for $mUrl');
     } else {
-      pp('\n\n👿👿👿 DataAPI._callWebAPIPost .... : 🔆 statusCode: 👿👿👿 ${resp.statusCode} 🔆🔆🔆 for $mUrl');
+      pp('👿👿👿 DataAPI._callWebAPIPost .... : 🔆 statusCode: 👿👿👿 ${resp.statusCode} 🔆🔆🔆 for $mUrl');
       throw Exception(
           '🚨 🚨 Status Code 🚨 ${resp.statusCode} 🚨 ${resp.body}');
     }
@@ -674,6 +715,7 @@ class DataAPI {
     var start = DateTime.now();
     var client = new http.Client();
     var token = await AppAuth.getAuthToken();
+    pp('❤️️❤️  DataAPI._callWebAPIGet .... token: ❤️ $token ❤️');
     headers['Authorization'] = 'Bearer $token';
 
     var resp = await client

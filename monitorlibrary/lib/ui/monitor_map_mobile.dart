@@ -57,20 +57,21 @@ class _MonitorMapMobileState extends State<MonitorMapMobile>
     setState(() {
       isBusy = false;
     });
-    _getData();
+    _getData(false);
   }
 
-  void _getData() async {
+  void _getData(bool forceRefresh) async {
     setState(() {
       isBusy = true;
     });
     user = await Prefs.getUser();
     projects = await monitorBloc.getOrganizationProjects(
-        organizationId: user.organizationId);
+        organizationId: user.organizationId, forceRefresh: forceRefresh);
 
     for (var i = 0; i < projects.length; i++) {
       var pos = await monitorBloc.getProjectPositions(
-          projectId: projects.elementAt(i).projectId);
+          projectId: projects.elementAt(i).projectId,
+          forceRefresh: forceRefresh);
       projectPositions.addAll(pos);
     }
 

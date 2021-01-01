@@ -26,7 +26,7 @@ class _ProjectListMainState extends State<ProjectListMain>
   void initState() {
     _controller = AnimationController(vsync: this);
     super.initState();
-    _loadProjects();
+    // _loadProjects();
   }
 
   void _loadProjects() async {

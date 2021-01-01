@@ -127,11 +127,17 @@ public class DataService {
     }
 
     public void addPhoto(Photo photo) throws Exception {
+        if (photo.getPhotoId() == null) {
+            photo.setPhotoId(UUID.randomUUID().toString());
+        }
         photoRepository.save(photo);
         LOGGER.info(Emoji.LEAF.concat(Emoji.LEAF).concat("Photo added: " + photo.get_id()));
         photo.get_id();
     }
     public void addVideo(Video video) throws Exception {
+        if (video.getVideoId() == null) {
+            video.setVideoId(UUID.randomUUID().toString());
+        }
         videoRepository.save(video);
         LOGGER.info(Emoji.LEAF.concat(Emoji.LEAF).concat("Video added: " + video.get_id()));
         video.get_id();

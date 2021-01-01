@@ -192,26 +192,31 @@ class _MediaHouseState extends State<MediaHouse>
                               value: isVideo,
                             ),
                             SizedBox(
-                              width: 80,
+                              width: 40,
                             ),
-                            RaisedButton(
-                              color: isVideo ? Colors.pink : Colors.indigo,
-                              elevation: 8,
-                              child: Padding(
-                                padding: const EdgeInsets.all(12.0),
-                                child: Text(
-                                  isVideo ? 'Shoot Video' : 'Take Picture',
-                                  style: Styles.whiteSmall,
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                RaisedButton(
+                                  color: isVideo ? Colors.pink : Colors.indigo,
+                                  elevation: 8,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text(
+                                      isVideo ? 'Shoot Video' : 'Take Picture',
+                                      style: Styles.whiteSmall,
+                                    ),
+                                  ),
+                                  onPressed: () {
+                                    if (isVideo) {
+                                      _openVideoCamera();
+                                    } else {
+                                      _openImageCamera();
+                                    }
+                                  },
                                 ),
-                              ),
-                              onPressed: () {
-                                if (isVideo) {
-                                  _openVideoCamera();
-                                } else {
-                                  _openImageCamera();
-                                }
-                              },
-                            ),
+                              ],
+                            )
                           ],
                         ),
                         SizedBox(

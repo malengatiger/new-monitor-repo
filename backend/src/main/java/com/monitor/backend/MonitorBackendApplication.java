@@ -7,6 +7,7 @@ import com.monitor.backend.services.DataService;
 import com.monitor.backend.services.ListService;
 import com.monitor.backend.utils.Emoji;
 import com.monitor.backend.utils.MongoGenerator;
+import org.jetbrains.annotations.NotNull;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,10 +17,13 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
+import org.springframework.context.annotation.Bean;
 import org.springframework.core.env.Environment;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.io.PrintStream;
 import java.lang.reflect.Method;
@@ -79,6 +83,19 @@ public class MonitorBackendApplication implements ApplicationListener<Applicatio
     @Autowired
     private ProjectRepository projectRepository;
 
+    @Bean
+    public WebMvcConfigurer corsConfigurer() {
+        LOGGER.info("\uD83D\uDC2C \uD83D\uDC2C \uD83D\uDD36 \uD83D\uDD36 corsConfigurer setting up CORS! \uD83D\uDD36 \uD83D\uDC2C ");
+
+        return new WebMvcConfigurer() {
+            @Override
+            public void addCorsMappings(@NotNull CorsRegistry registry) {
+                registry.addMapping("/**").allowedOrigins("http://localhost:3001")
+                .allowedHeaders("*");
+                LOGGER.info("\uD83D\uDC2C \uD83D\uDC2C \uD83D\uDD36 \uD83D\uDD36 corsConfigurer CORS mapping set");
+            }
+        };
+    }
 
     @Override
     public void onApplicationEvent(ApplicationReadyEvent applicationReadyEvent) {
@@ -111,12 +128,7 @@ public class MonitorBackendApplication implements ApplicationListener<Applicatio
             LOGGER.info(Emoji.FERN + " -------- end of Generator methods ");
 
             List<User> users = (List<User>) userRepository.findAll(Sort.by("organizationId"));
-//            users.sort(new Comparator<User>() {
-//                @Override
-//                public int compare(User u1, User u2) {
-//                    return Objects.requireNonNull(u1.getOrganizationId()).compareTo(Objects.requireNonNull(u2.getOrganizationId()));
-//                }
-//            });
+
             for (User user : users) {
                 LOGGER.info(Emoji.PIG + Emoji.PIG + Emoji.PIG + Emoji.PIG +
                         " User: " + user.getName() + " " + Emoji.FERN

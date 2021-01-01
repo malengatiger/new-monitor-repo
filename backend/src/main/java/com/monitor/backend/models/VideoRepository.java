@@ -8,5 +8,6 @@ public interface VideoRepository extends PagingAndSortingRepository<Video, Strin
 
     List<Video> findByProjectId(String projectId);
     List<Video> findByUserId(String userId);
+    List<Video> findByOrganizationId(String organizationId);
 
 }

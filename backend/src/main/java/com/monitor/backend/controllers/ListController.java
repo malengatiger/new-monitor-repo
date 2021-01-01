@@ -9,12 +9,14 @@ import com.monitor.backend.services.ListService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
 public class ListController {
     public static final Logger LOGGER = LoggerFactory.getLogger(ListController.class.getSimpleName());
@@ -113,12 +115,18 @@ public class ListController {
         LOGGER.info(Emoji.DOLPHIN.concat(Emoji.DOLPHIN) + " Questionnaires found: " + users.size());
         return users;
     }
+
     @GetMapping("/getOrganizationUsers")
     public List<User> getOrganizationUsers(@RequestParam  String organizationId) throws Exception {
-        LOGGER.info(Emoji.DICE.concat(Emoji.DICE).concat(" getOrganizationUsers ..."));
-        List<User>  users = listService.getOrganizationUsers(organizationId);
-        LOGGER.info(Emoji.DOLPHIN.concat(Emoji.DOLPHIN) + " Users found: " + users.size());
-        return users;
+        return listService.getOrganizationUsers(organizationId);
+    }
+    @GetMapping("/getOrganizationPhotos")
+    public List<Photo> getOrganizationPhotos(@RequestParam  String organizationId) throws Exception {
+        return listService.getOrganizationPhotos(organizationId);
+    }
+    @GetMapping("/getOrganizationVideos")
+    public List<Video> getOrganizationVideos(@RequestParam  String organizationId) throws Exception {
+        return listService.getOrganizationVideos(organizationId);
     }
 
     @GetMapping("/findProjectsByOrganization")
