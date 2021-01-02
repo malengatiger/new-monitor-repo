@@ -18,7 +18,7 @@ class _ProjectLocationMainState extends State<ProjectLocationMain> {
   @override
   void initState() {
     super.initState();
-    _getProjectLocations();
+   // _getProjectLocations();
   }
 
   var isBusy = false;

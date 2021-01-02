@@ -29,17 +29,17 @@ class _ProjectListMainState extends State<ProjectListMain>
     // _loadProjects();
   }
 
-  void _loadProjects() async {
-    setState(() {
-      isBusy = true;
-    });
-    await monitorBloc.getOrganizationProjects(
-        organizationId: widget.user.organizationId);
-
-    setState(() {
-      isBusy = false;
-    });
-  }
+  // void _loadProjects() async {
+  //   setState(() {
+  //     isBusy = true;
+  //   });
+  //   await monitorBloc.getOrganizationProjects(
+  //       organizationId: widget.user.organizationId);
+  //
+  //   setState(() {
+  //     isBusy = false;
+  //   });
+  // }
 
   @override
   void dispose() {

@@ -53,9 +53,13 @@ class _MediaHouseState extends State<MediaHouse>
   void _getUser() async {
     user = await Prefs.getUser();
     //todo - test apia
-    await monitorBloc.getProjectPhotos(projectId: widget.project.projectId);
-    await monitorBloc.getProjectVideos(projectId: widget.project.projectId);
-    await monitorBloc.getProjectPositions(projectId: widget.project.projectId);
+    try {
+      await monitorBloc.getProjectPhotos(projectId: widget.project.projectId);
+      await monitorBloc.getProjectVideos(projectId: widget.project.projectId);
+      await monitorBloc.getProjectPositions(projectId: widget.project.projectId);
+    } catch (e) {
+      AppSnackbar.showErrorSnackbar(scaffoldKey: _key, message: 'Data refresh failed');
+    }
   }
 
   @override

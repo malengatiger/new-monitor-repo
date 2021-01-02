@@ -23,6 +23,7 @@ class _ProjectMonitorMobileState extends State<ProjectMonitorMobile>
   AnimationController _controller;
   var isBusy = false;
   var _key = GlobalKey<ScaffoldState>();
+  var positions = List<ProjectPosition>();
 
   @override
   void initState() {
@@ -39,8 +40,12 @@ class _ProjectMonitorMobileState extends State<ProjectMonitorMobile>
     setState(() {
       isBusy = true;
     });
-    var positions = await monitorBloc.getProjectPositions(
-        projectId: widget.project.projectId);
+    try {
+      positions = await monitorBloc.getProjectPositions(
+          projectId: widget.project.projectId);
+    } catch (e) {
+      AppSnackbar.showErrorSnackbar(scaffoldKey: _key, message: 'Data refresh failed');
+    }
 
     setState(() {
       widget.project.projectPositions = positions;

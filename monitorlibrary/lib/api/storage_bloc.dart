@@ -12,6 +12,7 @@ import 'package:monitorlibrary/data/project.dart';
 import 'package:monitorlibrary/data/user.dart';
 import 'package:monitorlibrary/location/loc_bloc.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:uuid/uuid.dart';
 
 import '../functions.dart';
 import 'data_api.dart';
@@ -225,6 +226,7 @@ class StorageBloc {
         longitude: projectPosition.coordinates[0]);
 
     pp('🎽 🎽 🎽 🎽 StorageBloc: _writePhoto : 🎽 🎽 adding photo ..... 😡😡 distance: $distance 😡😡');
+    var u = Uuid();
     var photo = Photo(
         url: fileUrl,
         caption: 'tbd',
@@ -235,7 +237,9 @@ class StorageBloc {
         distanceFromProjectPosition: distance,
         projectId: project.projectId,
         thumbnailUrl: thumbnailUrl,
-        projectName: project.name);
+        projectName: project.name,
+        organizationId: _user.organizationId,
+        photoId: u.v4());
 
     var result = await DataAPI.addPhoto(photo);
     pp('🎽 🎽 🎽 🎽 🎁 🎁 StorageBloc: Photo has been added to database: 🎁 $result');
@@ -247,11 +251,15 @@ class StorageBloc {
       String fileUrl,
       String thumbnailUrl}) async {
     pp('🎽 🎽 🎽 🎽 StorageBloc: _writeVideo : 🎽 🎽 adding video .....');
+    if (_user == null) {
+      await getUser();
+    }
     var distance = await locationBloc.getDistanceFromCurrentPosition(
         latitude: projectPosition.coordinates[1],
         longitude: projectPosition.coordinates[0]);
 
     pp('🎽 🎽 🎽 🎽 StorageBloc: _writeVideo : 🎽 🎽 adding video ..... 😡😡 distance: $distance 😡😡');
+    var u = Uuid();
     var video = Video(
         url: fileUrl,
         caption: 'tbd',
@@ -262,7 +270,9 @@ class StorageBloc {
         distanceFromProjectPosition: distance,
         projectId: project.projectId,
         thumbnailUrl: thumbnailUrl,
-        projectName: project.name);
+        projectName: project.name,
+        organizationId: _user.organizationId,
+        videoId: u.v4());
 
     var result = await DataAPI.addVideo(video);
     pp('🎽 🎽 🎽 🎽 🎁 🎁 Video has been added to database: 🎁 $result');

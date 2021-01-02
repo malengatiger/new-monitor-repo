@@ -10,6 +10,7 @@ import 'package:monitorlibrary/ui/media/video/video_main.dart';
 import 'package:page_transition/page_transition.dart';
 
 import '../../../functions.dart';
+import '../../../snack.dart';
 
 class UserMediaListMobile extends StatefulWidget {
   final User user;
@@ -58,11 +59,16 @@ class _UserMediaListMobileState extends State<UserMediaListMobile>
     setState(() {
       isBusy = true;
     });
-    _photos =
-        await monitorBloc.getUserProjectPhotos(userId: widget.user.userId);
-    _videos =
-        await monitorBloc.getUserProjectVideos(userId: widget.user.userId);
-    _processMedia();
+    try {
+      _photos =
+          await monitorBloc.getUserProjectPhotos(userId: widget.user.userId);
+      _videos =
+          await monitorBloc.getUserProjectVideos(userId: widget.user.userId);
+      _processMedia();
+    } catch (e) {
+      AppSnackbar.showErrorSnackbar(
+          scaffoldKey: _key, message: 'Data refresh failed');
+    }
     setState(() {
       isBusy = false;
     });

@@ -72,12 +72,17 @@ class _UserEditMobileState extends State<UserEditMobile>
               created: DateTime.now().toIso8601String(),
               userId: 'tbd');
           pp('😡 😡 😡 _submit new user ......... ${user.toJson()}');
-          await AppAuth.createUser(
-              user: user,
-              password: 'pass123',
-              isLocalAdmin: admin == null ? true : false);
+          try {
+            await AppAuth.createUser(
+                user: user,
+                password: 'pass123',
+                isLocalAdmin: admin == null ? true : false);
 
-          monitorBloc.getOrganizationUsers(organizationId: user.organizationId);
+            monitorBloc.getOrganizationUsers(
+                organizationId: user.organizationId);
+          } catch (e) {
+            AppSnackbar.showErrorSnackbar(scaffoldKey: _key, message: 'User create failed');
+          }
         } else {
           widget.user.name = nameController.text;
           widget.user.email = emailController.text;
@@ -85,9 +90,13 @@ class _UserEditMobileState extends State<UserEditMobile>
           widget.user.userType = type;
           pp('😡 😡 😡 _submit existing user for update, soon! 🌸 ......... ${widget.user.toJson()}');
 
-          await adminBloc.updateUser(widget.user);
-          monitorBloc.getOrganizationUsers(
-              organizationId: widget.user.organizationId);
+          try {
+            await adminBloc.updateUser(widget.user);
+            monitorBloc.getOrganizationUsers(
+                organizationId: widget.user.organizationId);
+          } catch (e) {
+            AppSnackbar.showErrorSnackbar(scaffoldKey: _key, message: 'Update failed');
+          }
         }
 
         Navigator.pop(context);

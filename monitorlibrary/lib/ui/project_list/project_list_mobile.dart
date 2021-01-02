@@ -16,6 +16,8 @@ import 'package:monitorlibrary/ui/project_edit/project_edit_main.dart';
 import 'package:monitorlibrary/ui/project_monitor/project_monitor_main.dart';
 import 'package:page_transition/page_transition.dart';
 
+import '../../snack.dart';
+
 class ProjectListMobile extends StatefulWidget {
   final mon.User user;
 
@@ -84,16 +86,21 @@ class _ProjectListMobileState extends State<ProjectListMobile>
         isBusy = true;
       });
     }
-    if (isProjectsByLocation) {
-      projects = await monitorBloc.getProjectsWithinRadius(
-          radiusInKM: 3.0, checkUserOrg: true);
-      pp('🦠 🦠 🦠 🦠 🦠  ProjectList: Projects within given radius ; '
-          'found: 💜 ${projects.length} projects');
-    } else {
-      projects = await monitorBloc.getOrganizationProjects(
-          organizationId: user.organizationId, forceRefresh: forceRefresh);
-      pp('🦠 🦠 🦠 🦠 🦠  ProjectList: Organization Projects '
-          'found: 💜 ${projects.length} projects');
+    try {
+      if (isProjectsByLocation) {
+        projects = await monitorBloc.getProjectsWithinRadius(
+            radiusInKM: 3.0, checkUserOrg: true);
+        pp('🦠 🦠 🦠 🦠 🦠  ProjectList: Projects within given radius ; '
+            'found: 💜 ${projects.length} projects');
+      } else {
+        projects = await monitorBloc.getOrganizationProjects(
+            organizationId: user.organizationId, forceRefresh: forceRefresh);
+        pp('🦠 🦠 🦠 🦠 🦠  ProjectList: Organization Projects '
+            'found: 💜 ${projects.length} projects');
+      }
+    } catch (e) {
+      AppSnackbar.showErrorSnackbar(
+          scaffoldKey: _key, message: 'Data refresh failed');
     }
     if (mounted) {
       setState(() {
@@ -187,6 +194,7 @@ class _ProjectListMobileState extends State<ProjectListMobile>
     }
   }
 
+  var _key = GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -197,6 +205,7 @@ class _ProjectListMobileState extends State<ProjectListMobile>
               projects = snapshot.data;
             }
             return Scaffold(
+                key: _key,
                 appBar: AppBar(
                   title: Text(
                     'Projects',
@@ -238,7 +247,7 @@ class _ProjectListMobileState extends State<ProjectListMobile>
                       children: [
                         Text(
                           user == null ? 'Unknown User' : user.organizationName,
-                          style: Styles.whiteBoldMedium,
+                          style: Styles.blackBoldSmall,
                         ),
                         SizedBox(
                           height: 32,
@@ -302,14 +311,51 @@ class _ProjectListMobileState extends State<ProjectListMobile>
                                     itemCount: projects.length,
                                     itemBuilder:
                                         (BuildContext context, int index) {
-                                      selectedProject =
+                                      var selectedProject =
                                           projects.elementAt(index);
-                                      _buildMenuItems();
 
                                       return FocusedMenuHolder(
                                         menuOffset: 20,
                                         duration: Duration(milliseconds: 300),
-                                        menuItems: menuItems,
+                                        menuItems: [
+                                          FocusedMenuItem(
+                                              title: Text('Map'),
+                                              trailingIcon: Icon(
+                                                Icons.map,
+                                                color: Theme.of(context)
+                                                    .primaryColor,
+                                              ),
+                                              onPressed: () {
+                                                _navigateToOrgMap();
+                                              }),
+                                          FocusedMenuItem(
+                                              title: Text('Media'),
+                                              trailingIcon: Icon(
+                                                Icons.camera,
+                                                color: Theme.of(context)
+                                                    .primaryColor,
+                                              ),
+                                              onPressed: () {
+                                                _navigateToMedia(
+                                                    selectedProject);
+                                              }),
+                                          user == null
+                                              ? Container()
+                                              : user.userType ==
+                                                      ORG_ADMINISTRATOR
+                                                  ? FocusedMenuItem(
+                                                      title: Text('Edit'),
+                                                      trailingIcon: Icon(
+                                                        Icons.create,
+                                                        color: Theme.of(context)
+                                                            .primaryColor,
+                                                      ),
+                                                      onPressed: () {
+                                                        _navigateToDetail(
+                                                            selectedProject);
+                                                      })
+                                                  : Container(),
+                                        ],
                                         animateMenuItems: true,
                                         onPressed: () {
                                           pp('.... 💛️ 💛️ 💛️ not sure what I pressed ...');

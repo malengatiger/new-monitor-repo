@@ -12,6 +12,8 @@ import 'package:monitorlibrary/data/project_position.dart';
 import 'package:monitorlibrary/data/user.dart';
 import 'package:monitorlibrary/functions.dart';
 
+import '../snack.dart';
+
 class MonitorMapMobile extends StatefulWidget {
   @override
   _MonitorMapMobileState createState() => _MonitorMapMobileState();
@@ -64,19 +66,24 @@ class _MonitorMapMobileState extends State<MonitorMapMobile>
     setState(() {
       isBusy = true;
     });
-    user = await Prefs.getUser();
-    projects = await monitorBloc.getOrganizationProjects(
-        organizationId: user.organizationId, forceRefresh: forceRefresh);
+    try {
+      user = await Prefs.getUser();
+      projects = await monitorBloc.getOrganizationProjects(
+          organizationId: user.organizationId, forceRefresh: forceRefresh);
 
-    for (var i = 0; i < projects.length; i++) {
-      var pos = await monitorBloc.getProjectPositions(
-          projectId: projects.elementAt(i).projectId,
-          forceRefresh: forceRefresh);
-      projectPositions.addAll(pos);
+      for (var i = 0; i < projects.length; i++) {
+        var pos = await monitorBloc.getProjectPositions(
+            projectId: projects.elementAt(i).projectId,
+            forceRefresh: forceRefresh);
+        projectPositions.addAll(pos);
+      }
+
+      pp('💜 💜 💜 Project positions found: 🍎 ${projectPositions.length}');
+      _addMarkers();
+    } catch (e) {
+      AppSnackbar.showErrorSnackbar(
+          scaffoldKey: _key, message: 'Data refresh failed');
     }
-
-    pp('💜 💜 💜 Project positions found: 🍎 ${projectPositions.length}');
-    _addMarkers();
     setState(() {
       isBusy = false;
     });
@@ -127,6 +134,8 @@ class _MonitorMapMobileState extends State<MonitorMapMobile>
     googleMapController.animateCamera(CameraUpdate.newCameraPosition(_first));
   }
 
+  var _key = GlobalKey<ScaffoldState>();
+
   @override
   Widget build(BuildContext context) {
     if (isPortrait) {
@@ -145,6 +154,7 @@ class _MonitorMapMobileState extends State<MonitorMapMobile>
         children: [
           isBusy
               ? Scaffold(
+                  key: _key,
                   appBar: AppBar(
                     title: Text('Project Map'),
                     bottom: PreferredSize(

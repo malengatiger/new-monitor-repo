@@ -7,6 +7,7 @@ import 'package:monitorlibrary/functions.dart';
 import 'package:monitorlibrary/users/report/user_rpt_main.dart';
 import 'package:page_transition/page_transition.dart';
 
+import '../../snack.dart';
 import '../edit/user_edit_main.dart';
 
 class UserListMobile extends StatefulWidget {
@@ -22,6 +23,7 @@ class _UserListMobileState extends State<UserListMobile>
   AnimationController _controller;
   bool isBusy = false;
   var _users = List<User>();
+  var _key = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
@@ -34,8 +36,13 @@ class _UserListMobileState extends State<UserListMobile>
     setState(() {
       isBusy = true;
     });
-    await monitorBloc.getOrganizationUsers(
-        organizationId: widget.user.organizationId);
+    try {
+      await monitorBloc.getOrganizationUsers(
+          organizationId: widget.user.organizationId);
+    } catch (e) {
+      AppSnackbar.showErrorSnackbar(
+          scaffoldKey: _key, message: 'Data refresh failed');
+    }
     setState(() {
       isBusy = false;
     });
@@ -57,6 +64,7 @@ class _UserListMobileState extends State<UserListMobile>
               _users = snapshot.data;
             }
             return Scaffold(
+              key: _key,
               appBar: AppBar(
                 title: Text(
                   'Users',

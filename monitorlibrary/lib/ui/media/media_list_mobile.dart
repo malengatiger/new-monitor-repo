@@ -13,6 +13,7 @@ import 'package:monitorlibrary/ui/project_monitor/project_monitor_main.dart';
 import 'package:page_transition/page_transition.dart';
 
 import '../../functions.dart';
+import '../../snack.dart';
 
 class MediaListMobile extends StatefulWidget {
   final Project project;
@@ -43,39 +44,41 @@ class _MediaListMobileState extends State<MediaListMobile>
     pp('🔆 🔆 🔆 🔆 💜 💜 💜 Listening to streams from monitorBloc ....');
     user = await Prefs.getUser();
 
-    photoStreamSubscription = monitorBloc.photoStream.listen((value) {
+    photoStreamSubscription = monitorBloc.projectPhotoStream.listen((value) {
       pp('🔆 🔆 🔆 💜 💜 _MediaListMobileState: Photos from stream controller: 💙 ${value.length}');
       _photos = value;
       _processMedia();
-      setState(() {});
+      if (mounted) {
+        setState(() {});
+      }
     });
-    videoStreamSubscription = monitorBloc.videoStream.listen((value) {
+    videoStreamSubscription = monitorBloc.projectVideoStream.listen((value) {
       pp('🔆 🔆 🔆 💜 💜 _MediaListMobileState: Videos from stream controller: 🏈 ${value.length}');
       _videos = value;
       _processMedia();
-      setState(() {});
+      if (mounted) {
+        setState(() {});
+      }
     });
-    _refresh();
+
+    if (mounted) {
+      _refresh(false);
+    }
   }
 
-  Future<void> _refresh() async {
+  Future<void> _refresh(bool forceRefresh) async {
     pp('🔆 🔆 🔆 💜 💜 _MediaListMobileState: _refresh ...');
     setState(() {
       isBusy = true;
     });
-    if (widget.project != null) {
-      _photos = await monitorBloc.getProjectPhotos(
-          projectId: widget.project.projectId);
-      _videos = await monitorBloc.getProjectVideos(
-          projectId: widget.project.projectId);
-    } else {
-      var user = await Prefs.getUser();
-      _photos = await monitorBloc.getOrganizationPhotos(
-          organizationId: user.organizationId);
-      _videos = await monitorBloc.getOrganizationVideos(
-          organizationId: user.organizationId);
+    try {
+      await monitorBloc.refreshProjectData(
+          projectId: widget.project.projectId, forceRefresh: forceRefresh);
+      _processMedia();
+    } catch (e) {
+      AppSnackbar.showErrorSnackbar(
+          scaffoldKey: _key, message: 'Data refresh failed');
     }
-    _processMedia();
     setState(() {
       isBusy = false;
     });
@@ -122,7 +125,9 @@ class _MediaListMobileState extends State<MediaListMobile>
           actions: [
             IconButton(
               icon: Icon(Icons.refresh),
-              onPressed: _refresh,
+              onPressed: () {
+                _refresh(true);
+              },
             ),
             IconButton(
               icon: Icon(Icons.add_a_photo),

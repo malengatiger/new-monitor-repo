@@ -108,7 +108,7 @@ class AppSnackbar {
       {@required GlobalKey<ScaffoldState> scaffoldKey,
       @required String message,
       SnackBarListener listener,
-      String actionLabel}) {
+      String actionLabel = ''}) {
     if (scaffoldKey == null || scaffoldKey.currentState == null) {
       pp('AppSnackbar.showErrorSnackbar --- currentState is NULL, quit ..');
       return;

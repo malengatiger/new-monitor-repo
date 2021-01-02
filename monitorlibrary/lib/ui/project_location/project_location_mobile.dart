@@ -26,6 +26,7 @@ class _ProjectLocationMobileState extends State<ProjectLocationMobile>
   var isBusy = false;
   ProjectPosition _projectPosition;
   List<ProjectPosition> _projectPositions = [];
+  var _key = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
@@ -64,11 +65,15 @@ class _ProjectLocationMobileState extends State<ProjectLocationMobile>
   }
 
   void _getProjectPositions() async {
-    _projectPositions = await monitorBloc.getProjectPositions(
-        projectId: widget.project.projectId);
+    try {
+      _projectPositions = await monitorBloc.getProjectPositions(
+          projectId: widget.project.projectId);
+    } catch (e) {
+      AppSnackbar.showErrorSnackbar(
+          scaffoldKey: _key, message: 'Data refresh failed');
+    }
   }
 
-  var _key = GlobalKey<ScaffoldState>();
   void _submit() async {
     await _getLocation();
     var isWithin = await isLocationWithinFiftyMetres();
@@ -107,9 +112,14 @@ class _ProjectLocationMobileState extends State<ProjectLocationMobile>
               type: 'Point',
               coordinates: [_position.longitude, _position.latitude]),
           projectId: widget.project.projectId);
-      var m = await DataAPI.addProjectPosition(position: loc);
-      pp('🎽 🎽 🎽 _submit: new projectPosition added .........  🍅 ${m.toJson()} 🍅');
-      monitorBloc.getProjectPositions(projectId: widget.project.projectId);
+      try {
+        var m = await DataAPI.addProjectPosition(position: loc);
+        pp('🎽 🎽 🎽 _submit: new projectPosition added .........  🍅 ${m.toJson()} 🍅');
+        monitorBloc.getProjectPositions(projectId: widget.project.projectId);
+      } catch (e) {
+        AppSnackbar.showErrorSnackbar(
+            scaffoldKey: _key, message: 'Project Position failed');
+      }
       setState(() {
         isBusy = false;
       });
@@ -121,6 +131,7 @@ class _ProjectLocationMobileState extends State<ProjectLocationMobile>
   }
 
   Position _position;
+
   Future _getLocation() async {
     setState(() {
       isBusy = true;

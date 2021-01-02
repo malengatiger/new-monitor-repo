@@ -34,6 +34,12 @@ class MonitorBloc {
       StreamController.broadcast();
   StreamController<List<Photo>> _photoController = StreamController.broadcast();
   StreamController<List<Video>> _videoController = StreamController.broadcast();
+
+  StreamController<List<Photo>> _projectPhotoController =
+      StreamController.broadcast();
+  StreamController<List<Video>> _projectVideoideoController =
+      StreamController.broadcast();
+
   StreamController<List<ProjectPosition>> _projPositionsController =
       StreamController.broadcast();
   StreamController<List<Country>> _countryController =
@@ -42,6 +48,9 @@ class MonitorBloc {
   StreamController<Questionnaire> _activeQuestionnaireController =
       StreamController.broadcast();
   StreamController<User> _activeUserController = StreamController.broadcast();
+
+  Stream get projectPhotoStream => _projectPhotoController.stream;
+  Stream get projectVideoStream => _projectVideoideoController.stream;
 
   Stream get reportStream => _reportController.stream;
   Stream get settlementStream => _communityController.stream;
@@ -174,15 +183,15 @@ class MonitorBloc {
 
   Future<List<Photo>> getProjectPhotos(
       {String projectId, bool forceRefresh = false}) async {
-    _photos = await LocalDBAPI.getProjectPhotos(projectId);
-    if (_photos.isEmpty || forceRefresh) {
-      _photos = await DataAPI.findPhotosByProject(projectId);
-      await LocalDBAPI.addPhotos(photos: _photos);
+    var photos = await LocalDBAPI.getProjectPhotos(projectId);
+    if (photos.isEmpty || forceRefresh) {
+      photos = await DataAPI.findPhotosByProject(projectId);
+      await LocalDBAPI.addPhotos(photos: photos);
     }
-    _photoController.sink.add(_photos);
-    pp('💜 💜 💜 MonitorBloc: getProjectPhotos found: 💜 ${_photos.length} photos ');
+    _projectPhotoController.sink.add(photos);
+    pp('💜 💜 💜 MonitorBloc: getProjectPhotos found: 💜 ${photos.length} photos ');
 
-    return _photos;
+    return photos;
   }
 
   Future<List<Photo>> getUserProjectPhotos({String userId}) async {
@@ -194,39 +203,56 @@ class MonitorBloc {
 
   Future<List<Photo>> getOrganizationPhotos(
       {String organizationId, bool forceRefresh = false}) async {
+    try {
     _photos = await LocalDBAPI.getPhotos();
     if (_photos.isEmpty || forceRefresh) {
       _photos = await DataAPI.getOrganizationPhotos(organizationId);
     }
     _photoController.sink.add(_photos);
     pp('💜 💜 💜 MonitorBloc: getOrganizationPhotos found: 💜 ${_photos.length} photos ');
+    } catch (e) {
+      pp('💜 💜 💜 MonitorBloc: getOrganizationVideos FAILED');
+      throw e;
+    }
 
     return _photos;
   }
 
   Future<List<Video>> getOrganizationVideos(
       {String organizationId, bool forceRefresh = false}) async {
-    _videos = await LocalDBAPI.getVideos();
-    if (_videos.isEmpty || forceRefresh) {
-      _videos = await DataAPI.getOrganizationVideos(organizationId);
+    try {
+      _videos = await LocalDBAPI.getVideos();
+      if (_videos.isEmpty || forceRefresh) {
+        _videos = await DataAPI.getOrganizationVideos(organizationId);
+      }
+      _videoController.sink.add(_videos);
+      pp('💜 💜 💜 MonitorBloc: getOrganizationVideos found: 💜 ${_videos
+          .length} videos ');
+    } catch (e) {
+      pp('💜 💜 💜 MonitorBloc: getOrganizationVideos FAILED');
+      throw e;
     }
-    _videoController.sink.add(_videos);
-    pp('💜 💜 💜 MonitorBloc: getOrganizationVideos found: 💜 ${_videos.length} videos ');
 
     return _videos;
   }
 
   Future<List<Video>> getProjectVideos(
       {String projectId, bool forceRefresh = false}) async {
-    _videos = await LocalDBAPI.getProjectVideos(projectId);
-    if (_videos.isEmpty || forceRefresh) {
-      _videos = await DataAPI.findVideosById(projectId);
-      await LocalDBAPI.addVideos(videos: _videos);
+    var videos = await LocalDBAPI.getProjectVideos(projectId);
+    if (videos.isEmpty || forceRefresh) {
+      videos = await DataAPI.findVideosById(projectId);
+      await LocalDBAPI.addVideos(videos: videos);
     }
-    _videoController.sink.add(_videos);
-    pp('💜 💜 💜 MonitorBloc: getProjectVideos found: 💜 ${_videos.length} videos ');
+    _projectVideoideoController.sink.add(videos);
+    pp('💜 💜 💜 MonitorBloc: getProjectVideos found: 💜 ${videos.length} videos ');
 
-    return _videos;
+    return videos;
+  }
+
+  Future refreshProjectData({String projectId, bool forceRefresh}) async {
+    await getProjectPhotos(projectId: projectId, forceRefresh: forceRefresh);
+    await getProjectVideos(projectId: projectId, forceRefresh: forceRefresh);
+    return null;
   }
 
   Future<List<Video>> getUserProjectVideos({String userId}) async {
