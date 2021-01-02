@@ -1,9 +1,11 @@
 package com.monitor.backend.controllers;
 
+import com.google.firebase.messaging.FirebaseMessagingException;
 import com.monitor.backend.data.*;
 import com.monitor.backend.models.*;
 import com.monitor.backend.services.DataService;
 import com.monitor.backend.services.ListService;
+import com.monitor.backend.services.MessageService;
 import com.monitor.backend.services.MongoDataService;
 import com.monitor.backend.utils.Emoji;
 import com.monitor.backend.utils.MongoGenerator;
@@ -64,10 +66,13 @@ public class DataController {
 
     @Autowired
     MongoDataService mongoDataService;
+
     @PostMapping("/addProject")
     public com.monitor.backend.data.Project addProject(@RequestBody com.monitor.backend.data.Project project) throws Exception {
         LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS).concat("Adding Project: ".concat(project.getName())));
-        return dataService.addProject(project);
+        String result =  dataService.addProject(project);
+        LOGGER.info(Emoji.LEAF+Emoji.LEAF+ result);
+        return project;
     }
     @PostMapping("/updateProject")
     public com.monitor.backend.data.Project updateProject(@RequestBody Project project) throws Exception {
@@ -87,22 +92,35 @@ public class DataController {
     public Photo addPhoto(@RequestBody Photo photo) throws Exception {
         LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS)
                 .concat("Adding Photo ... " + photo.getProjectName()));
-         dataService.addPhoto(photo);
+         String result = dataService.addPhoto(photo);
+        LOGGER.info(Emoji.LEAF+Emoji.LEAF+ result);
          return photo;
     }
     @PostMapping("/addVideo")
     public Video addVideo(@RequestBody Video video) throws Exception {
         LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS)
                 .concat("Adding Video ... " + video.getProjectName()));
-         dataService.addVideo(video);
+         String result = dataService.addVideo(video);
+        LOGGER.info(Emoji.LEAF+Emoji.LEAF+ result);
          return video;
     }
     @PostMapping("/addCondition")
     public Condition addCondition(@RequestBody Condition condition) throws Exception {
         LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS)
                 .concat("Adding Condition ... " + condition.getProjectName()));
-         dataService.addCondition(condition);
+         String result = dataService.addCondition(condition);
+        LOGGER.info(Emoji.LEAF+Emoji.LEAF+ result);
          return condition;
+    }
+    @Autowired
+    MessageService messageService;
+    @PostMapping("/sendMessage")
+    public String sendMessage(@RequestBody OrgMessage orgMessage) throws Exception {
+        LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS)
+                .concat("Sending FCM message ... " + orgMessage.getMessage()));
+        String result = dataService.addOrgMessage(orgMessage);
+        LOGGER.info(Emoji.LEAF+Emoji.LEAF+ result);
+        return result;
     }
 
     @Autowired
@@ -110,7 +128,7 @@ public class DataController {
 
 
     @PostMapping("/addUser")
-    public User addUser(@RequestBody User user) {
+    public User addUser(@RequestBody User user) throws FirebaseMessagingException {
         LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS)
                 .concat(".... Adding User: ".concat(user.getName())));
         return dataService.addUser(user);

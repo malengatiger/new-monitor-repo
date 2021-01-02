@@ -131,7 +131,7 @@ class MonitorBloc {
       await LocalDBAPI.addProjects(projects: _projects);
     }
     _projController.sink.add(_projects);
-    pp('💜 💜 💜 MonitorBloc: OrganizationProjects found: 💜 ${_projects.length} projects ');
+    pp('💜 💜 MonitorBloc: OrganizationProjects found: 💜 ${_projects.length} projects 💜');
     _projects.forEach((project) {
       pp('💜 💜 PROJECT: ${project.name} 🍏 ${project.organizationName}  🍏 ${project.organizationId}');
     });
@@ -143,7 +143,7 @@ class MonitorBloc {
     if (_user == null) {
       _user = await Prefs.getUser();
     }
-    pp('💜 💜 💜 MonitorBloc:refreshDashboardData ....');
+    pp('💜 💜 💜 💜 💜 💜 MonitorBloc:refreshDashboardData .... 💜 💜 💜 💜 💜 💜');
     await getOrganizationUsers(
         organizationId: _user.organizationId, forceRefresh: forceRefresh);
     await getOrganizationProjects(
@@ -159,13 +159,14 @@ class MonitorBloc {
     _users = await LocalDBAPI.getUsers();
     if (_users.isEmpty || forceRefresh) {
       _users = await DataAPI.findUsersByOrganization(organizationId);
+      await LocalDBAPI.addUsers(users: _users);
     }
     _userController.sink.add(_users);
     pp('💜 💜 💜 MonitorBloc: getOrganizationUsers found: 💜 ${_users.length} users ');
     _users.forEach((element) {
-      pp('😲 😡  USER: ${element.name} 🍏 ${element.organizationName}');
+      pp('😲 😡  USER:  🍏 ${element.name} 🍏 ${element.organizationName}');
     });
-    await LocalDBAPI.addUsers(users: _users);
+
     return _users;
   }
 
@@ -204,14 +205,15 @@ class MonitorBloc {
   Future<List<Photo>> getOrganizationPhotos(
       {String organizationId, bool forceRefresh = false}) async {
     try {
-    _photos = await LocalDBAPI.getPhotos();
-    if (_photos.isEmpty || forceRefresh) {
-      _photos = await DataAPI.getOrganizationPhotos(organizationId);
-    }
-    _photoController.sink.add(_photos);
-    pp('💜 💜 💜 MonitorBloc: getOrganizationPhotos found: 💜 ${_photos.length} photos ');
+      _photos = await LocalDBAPI.getPhotos();
+      if (_photos.isEmpty || forceRefresh) {
+        _photos = await DataAPI.getOrganizationPhotos(organizationId);
+        await LocalDBAPI.addPhotos(photos: _photos);
+      }
+      _photoController.sink.add(_photos);
+      pp('💜 💜 💜 MonitorBloc: getOrganizationPhotos found: 💜 ${_photos.length} photos 💜 ');
     } catch (e) {
-      pp('💜 💜 💜 MonitorBloc: getOrganizationVideos FAILED');
+      pp('💜 💜 💜 MonitorBloc: getOrganizationPhotos FAILED');
       throw e;
     }
 
@@ -226,8 +228,7 @@ class MonitorBloc {
         _videos = await DataAPI.getOrganizationVideos(organizationId);
       }
       _videoController.sink.add(_videos);
-      pp('💜 💜 💜 MonitorBloc: getOrganizationVideos found: 💜 ${_videos
-          .length} videos ');
+      pp('💜 💜 💜 MonitorBloc: getOrganizationVideos found: 💜 ${_videos.length} videos ');
     } catch (e) {
       pp('💜 💜 💜 MonitorBloc: getOrganizationVideos FAILED');
       throw e;

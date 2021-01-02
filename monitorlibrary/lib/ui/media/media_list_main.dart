@@ -35,11 +35,12 @@ class _MediaListMainState extends State<MediaListMain>
     });
     if (widget.project != null) {
       pp('MediaListMain: 💜 💜 💜 getting media for PROJECT: ${widget.project.name}');
-      await monitorBloc.refreshProjectData(projectId: widget.project.projectId);
+      await monitorBloc.refreshProjectData(
+          projectId: widget.project.projectId, forceRefresh: false);
     } else {
       var user = await Prefs.getUser();
       pp('MediaListMain: 💜 💜 💜 getting media for ORGANIZATION: ${user.organizationName}');
-      await monitorBloc.refreshDashboardData();
+      await monitorBloc.refreshDashboardData(forceRefresh: false);
     }
     setState(() {
       isBusy = false;

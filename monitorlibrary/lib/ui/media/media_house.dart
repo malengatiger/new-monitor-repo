@@ -56,9 +56,11 @@ class _MediaHouseState extends State<MediaHouse>
     try {
       await monitorBloc.getProjectPhotos(projectId: widget.project.projectId);
       await monitorBloc.getProjectVideos(projectId: widget.project.projectId);
-      await monitorBloc.getProjectPositions(projectId: widget.project.projectId);
+      await monitorBloc.getProjectPositions(
+          projectId: widget.project.projectId);
     } catch (e) {
-      AppSnackbar.showErrorSnackbar(scaffoldKey: _key, message: 'Data refresh failed');
+      AppSnackbar.showErrorSnackbar(
+          scaffoldKey: _key, message: 'Data refresh failed');
     }
   }
 
@@ -145,27 +147,34 @@ class _MediaHouseState extends State<MediaHouse>
                       children: [
                         isUploading
                             ? Padding(
-                                padding: const EdgeInsets.all(12.0),
-                                child: Row(
-                                  children: [
-                                    Text(
-                                      '$bytesTransferred',
-                                      style: Styles.blackTiny,
+                                padding: const EdgeInsets.all(8.0),
+                                child: Container(
+                                  color: Colors.white,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Row(
+                                      children: [
+                                        Text(
+                                          '$bytesTransferred',
+                                          style: Styles.blackTiny,
+                                        ),
+                                        SizedBox(
+                                          width: 4,
+                                        ),
+                                        Text('of'),
+                                        SizedBox(
+                                          width: 4,
+                                        ),
+                                        Text('$totalByteCount',
+                                            style: Styles.blackTiny),
+                                        SizedBox(
+                                          width: 4,
+                                        ),
+                                        Text('downloaded',
+                                            style: Styles.blackTiny),
+                                      ],
                                     ),
-                                    SizedBox(
-                                      width: 4,
-                                    ),
-                                    Text('of'),
-                                    SizedBox(
-                                      width: 4,
-                                    ),
-                                    Text('$totalByteCount',
-                                        style: Styles.blackTiny),
-                                    SizedBox(
-                                      width: 4,
-                                    ),
-                                    Text('downloaded', style: Styles.blackTiny),
-                                  ],
+                                  ),
                                 ),
                               )
                             : Container(),

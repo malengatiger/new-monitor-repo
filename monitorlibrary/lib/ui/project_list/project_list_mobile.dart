@@ -5,13 +5,12 @@ import 'package:focused_menu/focused_menu.dart';
 import 'package:focused_menu/modals.dart';
 import 'package:monitorlibrary/api/sharedprefs.dart';
 import 'package:monitorlibrary/bloc/monitor_bloc.dart';
-import 'package:monitorlibrary/bloc/theme_bloc.dart';
 import 'package:monitorlibrary/data/project.dart';
 import 'package:monitorlibrary/data/user.dart';
 import 'package:monitorlibrary/data/user.dart' as mon;
 import 'package:monitorlibrary/functions.dart';
+import 'package:monitorlibrary/ui/maps/project_map_main.dart';
 import 'package:monitorlibrary/ui/media/media_list_main.dart';
-import 'package:monitorlibrary/ui/monitor_map_mobile.dart';
 import 'package:monitorlibrary/ui/project_edit/project_edit_main.dart';
 import 'package:monitorlibrary/ui/project_monitor/project_monitor_main.dart';
 import 'package:page_transition/page_transition.dart';
@@ -55,7 +54,6 @@ class _ProjectListMobileState extends State<ProjectListMobile>
     });
     user = await Prefs.getUser();
     _setUserType();
-    _buildMenuItems();
     setState(() {
       isBusy = false;
     });
@@ -142,21 +140,23 @@ class _ProjectListMobileState extends State<ProjectListMobile>
             child: MediaListMain(p)));
   }
 
-  void _navigateToOrgMap() {
+  void _navigateToOrgMap(Project p) {
     pp('_navigateToOrgMap: ');
-    Navigator.push(
-        context,
-        PageTransition(
-            type: PageTransitionType.scale,
-            alignment: Alignment.topLeft,
-            duration: Duration(milliseconds: 1500),
-            child: MonitorMapMobile()));
+    if (p != null) {
+      Navigator.push(
+          context,
+          PageTransition(
+              type: PageTransitionType.scale,
+              alignment: Alignment.topLeft,
+              duration: Duration(milliseconds: 1500),
+              child: ProjectMapMain(
+                p,
+              )));
+    }
   }
 
-  List<FocusedMenuItem> menuItems = [];
-  Project selectedProject;
-  void _buildMenuItems() {
-    menuItems.clear();
+  List<FocusedMenuItem> getPopUpMenuItems(Project p) {
+    List<FocusedMenuItem> menuItems = [];
     menuItems.add(
       FocusedMenuItem(
           title: Text('Map'),
@@ -165,7 +165,7 @@ class _ProjectListMobileState extends State<ProjectListMobile>
             color: Theme.of(context).primaryColor,
           ),
           onPressed: () {
-            _navigateToOrgMap();
+            _navigateToOrgMap(p);
           }),
     );
     menuItems.add(
@@ -176,25 +176,66 @@ class _ProjectListMobileState extends State<ProjectListMobile>
             color: Theme.of(context).primaryColor,
           ),
           onPressed: () {
-            _navigateToMedia(selectedProject);
+            _navigateToMedia(p);
           }),
     );
-    if (user.userType == 'ORG_ADMINISTRATOR') {
-      menuItems.add(
-        FocusedMenuItem(
-            title: Text('Edit'),
-            trailingIcon: Icon(
-              Icons.create,
-              color: Theme.of(context).primaryColor,
-            ),
-            onPressed: () {
-              _navigateToDetail(selectedProject);
-            }),
-      );
+    if (user.userType == ORG_ADMINISTRATOR) {
+      menuItems.add(FocusedMenuItem(
+          title: Text('Edit'),
+          trailingIcon: Icon(
+            Icons.create,
+            color: Theme.of(context).primaryColor,
+          ),
+          onPressed: () {
+            if (user.userType == ORG_ADMINISTRATOR) {
+              _navigateToDetail(p);
+            }
+          }));
     }
+    return menuItems;
   }
 
   var _key = GlobalKey<ScaffoldState>();
+  List<IconButton> _getActions() {
+    List<IconButton> list = [];
+    // list.add(IconButton(
+    //   icon: Icon(Icons.settings),
+    //   onPressed: () {
+    //     themeBloc.changeToRandomTheme();
+    //   },
+    // ));
+    list.add(IconButton(
+      icon: isProjectsByLocation
+          ? Icon(Icons.list_alt)
+          : Icon(Icons.location_on_outlined),
+      onPressed: () {
+        isProjectsByLocation = !isProjectsByLocation;
+        refreshProjects(true);
+      },
+    ));
+    if (projects.isNotEmpty) {
+      list.add(
+        IconButton(
+          icon: Icon(Icons.map_outlined),
+          onPressed: () {
+            _navigateToOrgMap(null);
+          },
+        ),
+      );
+    }
+    if (user.userType == ORG_ADMINISTRATOR) {
+      list.add(
+        IconButton(
+          icon: Icon(Icons.add),
+          onPressed: () {
+            _navigateToDetail(null);
+          },
+        ),
+      );
+    }
+    return list;
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -209,39 +250,9 @@ class _ProjectListMobileState extends State<ProjectListMobile>
                 appBar: AppBar(
                   title: Text(
                     'Projects',
-                    style: Styles.whiteSmall,
+                    style: Styles.whiteTiny,
                   ),
-                  actions: [
-                    IconButton(
-                      icon: Icon(Icons.settings),
-                      onPressed: () {
-                        themeBloc.changeToRandomTheme();
-                      },
-                    ),
-                    IconButton(
-                      icon: isProjectsByLocation
-                          ? Icon(Icons.list_alt)
-                          : Icon(Icons.location_on_outlined),
-                      onPressed: () {
-                        isProjectsByLocation = !isProjectsByLocation;
-                        refreshProjects(true);
-                      },
-                    ),
-                    IconButton(
-                      icon: Icon(Icons.map_outlined),
-                      onPressed: () {
-                        _navigateToOrgMap();
-                      },
-                    ),
-                    user.userType == FIELD_MONITOR
-                        ? Container()
-                        : IconButton(
-                            icon: Icon(Icons.add),
-                            onPressed: () {
-                              _navigateToDetail(null);
-                            },
-                          ),
-                  ],
+                  actions: _getActions(),
                   bottom: PreferredSize(
                     child: Column(
                       children: [
@@ -268,7 +279,7 @@ class _ProjectListMobileState extends State<ProjectListMobile>
                         ),
                       ],
                     ),
-                    preferredSize: Size.fromHeight(140),
+                    preferredSize: Size.fromHeight(120),
                   ),
                 ),
                 backgroundColor: Colors.brown[100],
@@ -280,8 +291,8 @@ class _ProjectListMobileState extends State<ProjectListMobile>
                               height: 100,
                             ),
                             Container(
-                              width: 60,
-                              height: 60,
+                              width: 48,
+                              height: 48,
                               child: CircularProgressIndicator(
                                 strokeWidth: 8,
                                 backgroundColor: Colors.black,
@@ -317,45 +328,8 @@ class _ProjectListMobileState extends State<ProjectListMobile>
                                       return FocusedMenuHolder(
                                         menuOffset: 20,
                                         duration: Duration(milliseconds: 300),
-                                        menuItems: [
-                                          FocusedMenuItem(
-                                              title: Text('Map'),
-                                              trailingIcon: Icon(
-                                                Icons.map,
-                                                color: Theme.of(context)
-                                                    .primaryColor,
-                                              ),
-                                              onPressed: () {
-                                                _navigateToOrgMap();
-                                              }),
-                                          FocusedMenuItem(
-                                              title: Text('Media'),
-                                              trailingIcon: Icon(
-                                                Icons.camera,
-                                                color: Theme.of(context)
-                                                    .primaryColor,
-                                              ),
-                                              onPressed: () {
-                                                _navigateToMedia(
-                                                    selectedProject);
-                                              }),
-                                          user == null
-                                              ? Container()
-                                              : user.userType ==
-                                                      ORG_ADMINISTRATOR
-                                                  ? FocusedMenuItem(
-                                                      title: Text('Edit'),
-                                                      trailingIcon: Icon(
-                                                        Icons.create,
-                                                        color: Theme.of(context)
-                                                            .primaryColor,
-                                                      ),
-                                                      onPressed: () {
-                                                        _navigateToDetail(
-                                                            selectedProject);
-                                                      })
-                                                  : Container(),
-                                        ],
+                                        menuItems:
+                                            getPopUpMenuItems(selectedProject),
                                         animateMenuItems: true,
                                         onPressed: () {
                                           pp('.... 💛️ 💛️ 💛️ not sure what I pressed ...');

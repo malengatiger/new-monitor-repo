@@ -11,6 +11,7 @@ import '../../functions.dart';
 class ProjectMapMobile extends StatefulWidget {
   final Project project;
   final List<ProjectPosition> projectPositions;
+
   ProjectMapMobile({this.project, this.projectPositions});
 
   @override

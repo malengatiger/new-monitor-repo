@@ -3,12 +3,13 @@ import 'package:monitorlibrary/api/sharedprefs.dart';
 import 'package:monitorlibrary/auth/app_auth.dart';
 import 'package:monitorlibrary/bloc/admin_bloc.dart';
 import 'package:monitorlibrary/bloc/monitor_bloc.dart';
+import 'package:monitorlibrary/data/user.dart' as ar;
 import 'package:monitorlibrary/data/user.dart';
 import 'package:monitorlibrary/functions.dart';
 import 'package:monitorlibrary/snack.dart';
 
 class UserEditMobile extends StatefulWidget {
-  final User user;
+  final ar.User user;
   const UserEditMobile(this.user);
 
   @override
@@ -22,7 +23,7 @@ class _UserEditMobileState extends State<UserEditMobile>
   var emailController = TextEditingController();
   var passwordController = TextEditingController();
   var cellphoneController = TextEditingController();
-  User admin;
+  ar.User admin;
   final _formKey = GlobalKey<FormState>();
   var _key = GlobalKey<ScaffoldState>();
   var isBusy = false;
@@ -62,7 +63,7 @@ class _UserEditMobileState extends State<UserEditMobile>
       });
       try {
         if (widget.user == null) {
-          var user = User(
+          var user = ar.User(
               name: nameController.text,
               email: emailController.text,
               cellphone: cellphoneController.text,
@@ -74,14 +75,17 @@ class _UserEditMobileState extends State<UserEditMobile>
           pp('😡 😡 😡 _submit new user ......... ${user.toJson()}');
           try {
             await AppAuth.createUser(
-                user: user,
-                password: 'pass123',
-                isLocalAdmin: admin == null ? true : false);
+              user: user,
+              password: 'pass123',
+              isLocalAdmin: admin == null ? true : false,
+            );
 
-            monitorBloc.getOrganizationUsers(
-                organizationId: user.organizationId);
+            var list = await monitorBloc.getOrganizationUsers(
+                organizationId: user.organizationId, forceRefresh: true);
+            Navigator.pop(context, list);
           } catch (e) {
-            AppSnackbar.showErrorSnackbar(scaffoldKey: _key, message: 'User create failed');
+            AppSnackbar.showErrorSnackbar(
+                scaffoldKey: _key, message: 'User create failed');
           }
         } else {
           widget.user.name = nameController.text;
@@ -92,14 +96,14 @@ class _UserEditMobileState extends State<UserEditMobile>
 
           try {
             await adminBloc.updateUser(widget.user);
-            monitorBloc.getOrganizationUsers(
+            var list = await monitorBloc.getOrganizationUsers(
                 organizationId: widget.user.organizationId);
+            Navigator.pop(context, list);
           } catch (e) {
-            AppSnackbar.showErrorSnackbar(scaffoldKey: _key, message: 'Update failed');
+            AppSnackbar.showErrorSnackbar(
+                scaffoldKey: _key, message: 'Update failed');
           }
         }
-
-        Navigator.pop(context);
       } catch (e) {
         AppSnackbar.showErrorSnackbar(
             scaffoldKey: _key, message: 'Failed : $e');

@@ -29,19 +29,21 @@ class _UserListMobileState extends State<UserListMobile>
   void initState() {
     _controller = AnimationController(vsync: this);
     super.initState();
-    _getData();
+    _getData(false);
   }
 
-  void _getData() async {
+  void _getData(bool forceRefresh) async {
     setState(() {
       isBusy = true;
     });
     try {
-      await monitorBloc.getOrganizationUsers(
-          organizationId: widget.user.organizationId);
+      _users = await monitorBloc.getOrganizationUsers(
+          organizationId: widget.user.organizationId,
+          forceRefresh: forceRefresh);
+      _users.sort((a, b) => (a.name.compareTo(b.name)));
     } catch (e) {
       AppSnackbar.showErrorSnackbar(
-          scaffoldKey: _key, message: 'Data refresh failed');
+          scaffoldKey: _key, message: 'Organization user refresh failed');
     }
     setState(() {
       isBusy = false;
@@ -52,6 +54,61 @@ class _UserListMobileState extends State<UserListMobile>
   void dispose() {
     _controller.dispose();
     super.dispose();
+  }
+
+  List<IconButton> getIconButtons() {
+    List<IconButton> list = [];
+    list.add(IconButton(
+      icon: Icon(Icons.refresh),
+      onPressed: () {
+        _getData(true);
+      },
+    ));
+    if (widget.user.userType == ORG_ADMINISTRATOR) {
+      list.add(IconButton(
+        icon: Icon(Icons.add),
+        onPressed: () {
+          _navigateToUserEdit(null);
+        },
+      ));
+    }
+    return list;
+  }
+
+  List<FocusedMenuItem> _getMenuItems(User user) {
+    List<FocusedMenuItem> list = [];
+    if (widget.user.userType == ORG_ADMINISTRATOR) {
+      list.add(FocusedMenuItem(
+          title: Text('Edit User'),
+          trailingIcon: Icon(
+            Icons.create,
+            color: Theme.of(context).primaryColor,
+          ),
+          onPressed: () {
+            _navigateToUserEdit(user);
+          }));
+      list.add(FocusedMenuItem(
+          title: Text('View Report'),
+          trailingIcon: Icon(
+            Icons.report,
+            color: Theme.of(context).primaryColor,
+          ),
+          onPressed: () {
+            _navigateToUserReport(user);
+          }));
+    } else {
+      list.add(FocusedMenuItem(
+          title: Text('Send Work Message'),
+          trailingIcon: Icon(
+            Icons.send,
+            color: Theme.of(context).primaryColor,
+          ),
+          onPressed: () {
+            AppSnackbar.showErrorSnackbar(
+                scaffoldKey: _key, message: 'Feature Under Construction');
+          }));
+    }
+    return list;
   }
 
   @override
@@ -67,23 +124,10 @@ class _UserListMobileState extends State<UserListMobile>
               key: _key,
               appBar: AppBar(
                 title: Text(
-                  'Users',
-                  style: Styles.whiteSmall,
+                  'Organization Users',
+                  style: Styles.whiteTiny,
                 ),
-                actions: [
-                  IconButton(
-                    icon: Icon(Icons.refresh),
-                    onPressed: () {
-                      _getData();
-                    },
-                  ),
-                  IconButton(
-                    icon: Icon(Icons.add),
-                    onPressed: () {
-                      _navigateToUserEdit(null);
-                    },
-                  ),
-                ],
+                actions: getIconButtons(),
                 bottom: PreferredSize(
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
@@ -100,7 +144,7 @@ class _UserListMobileState extends State<UserListMobile>
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
                             Text(
-                              'User List',
+                              'Admins & Field Monitors',
                               style: Styles.blackTiny,
                             ),
                             SizedBox(
@@ -152,26 +196,7 @@ class _UserListMobileState extends State<UserListMobile>
                               break;
                           }
                           return FocusedMenuHolder(
-                            menuItems: [
-                              FocusedMenuItem(
-                                  title: Text('Edit User'),
-                                  trailingIcon: Icon(
-                                    Icons.create,
-                                    color: Theme.of(context).primaryColor,
-                                  ),
-                                  onPressed: () {
-                                    _navigateToUserEdit(user);
-                                  }),
-                              FocusedMenuItem(
-                                  title: Text('View Report'),
-                                  trailingIcon: Icon(
-                                    Icons.report,
-                                    color: Theme.of(context).primaryColor,
-                                  ),
-                                  onPressed: () {
-                                    _navigateToUserReport(user);
-                                  }),
-                            ],
+                            menuItems: _getMenuItems(user),
                             animateMenuItems: true,
                             onPressed: () {
                               pp('.... 💛️ 💛️ 💛️ not sure what I pressed ...');
@@ -223,14 +248,23 @@ class _UserListMobileState extends State<UserListMobile>
     );
   }
 
-  void _navigateToUserEdit(User user) {
-    Navigator.push(
+  void _navigateToUserEdit(User user) async {
+    var list = await Navigator.push(
         context,
         PageTransition(
             type: PageTransitionType.scale,
             alignment: Alignment.topLeft,
             duration: Duration(seconds: 1),
             child: UserEditMain(user)));
+    pp('UserListMobile: 💛️ 💛️ Back from user edit, check if we need to refresh? list: ${list.length}');
+
+    if (list != null) {
+      if (mounted) {
+        _users = list;
+        _users.sort((a, b) => (a.name.compareTo(b.name)));
+        setState(() {});
+      }
+    }
   }
 
   void _navigateToUserReport(User user) {

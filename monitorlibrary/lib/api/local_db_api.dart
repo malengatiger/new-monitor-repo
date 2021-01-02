@@ -140,7 +140,7 @@ class LocalDBAPI {
       list.add(mm);
     });
 
-    pp('🔵 🔵 🔵 🔵 🔵 🔵 🔵 getPhotos: 🦠 ${list.length}');
+    pp('🔵 🔵 🔵 🔵 🔵 🔵 🔵 LocalDBAPI: getPhotos: 🦠 ${list.length} 🦠');
     return list;
   }
 
@@ -232,7 +232,7 @@ class LocalDBAPI {
       list.add(mm);
     });
 
-    pp('🔵 🔵 🔵 🔵 🔵 🔵 🔵 getUsers: 🦠 ${list.length}');
+    pp('🔵 🔵 🔵 🔵 🔵 🔵 🔵 LocalDBAPI:getUsers: 🦠 ${list.length}');
     return list;
   }
 
@@ -250,7 +250,7 @@ class LocalDBAPI {
       'value': user.userId,
     });
     var del = await MobMongo.delete(c);
-    pp('🍎 🍎 🍎 addUser: 🌼 1 user deleted...: del $del  🔵 🔵 ');
+    pp('🍎 🍎 🍎 LocalDBAPI:addUser: 🌼 user deleted?? ...: del $del  🔵 🔵 ');
     Carrier ca = Carrier(
         db: databaseName, collection: Constants.DB_USERS, data: user.toJson());
     var res = await MobMongo.insert(ca);
@@ -305,7 +305,7 @@ class LocalDBAPI {
       'value': photo.photoId,
     });
     var del = await MobMongo.delete(c);
-    pp('🍎 🍎 🍎 addPhoto: 🌼 1 photo deleted...: del: $del  🔵 🔵 ');
+    pp('🍎 🍎 🍎 addPhoto: 🌼 photo deleted ????  del: $del  🔵 🔵 ');
     Carrier ca = Carrier(
         db: databaseName,
         collection: Constants.DB_PHOTOS,

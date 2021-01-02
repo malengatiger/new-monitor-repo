@@ -42,7 +42,7 @@ class Project {
 
   Project.fromJson(Map data) {
     this.name = data['name'];
-    this._id = data['_id'];
+
     this.projectId = data['projectId'];
     this.description = data['description'];
     this.organizationId = data['organizationId'];
@@ -143,7 +143,6 @@ class Project {
     }
     Map<String, dynamic> map = {
       'name': name,
-      '_id': _id,
       'projectId': projectId,
       'description': description,
       'organizationId': organizationId,

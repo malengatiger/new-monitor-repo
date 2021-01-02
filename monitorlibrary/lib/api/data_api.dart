@@ -229,13 +229,14 @@ class DataAPI {
     var url = '$mURL$cmd?organizationId=$organizationId';
     try {
       List result = await _callWebAPIGet(url);
+      pp('🍏 🍏 🍏 DataAPI: findProjectsByOrganization: 🍏 result: ${result.length} projects');
       List<Project> list = List();
       result.forEach((m) {
         list.add(Project.fromJson(m));
       });
       return list;
     } catch (e) {
-      pp('Houston, 😈😈😈😈😈 we have a problem! 😈😈😈😈😈');
+      pp('Houston, 😈😈😈😈😈 we have a problem! 😈😈😈😈😈 $e');
       print(e);
       throw e;
     }

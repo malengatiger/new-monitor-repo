@@ -2,10 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:monitorlibrary/bloc/monitor_bloc.dart';
 import 'package:monitorlibrary/data/project.dart';
 import 'package:monitorlibrary/data/project_position.dart';
+import 'package:monitorlibrary/functions.dart';
 import 'package:monitorlibrary/ui/maps/project_map_desktop.dart';
 import 'package:monitorlibrary/ui/maps/project_map_mobile.dart';
 import 'package:monitorlibrary/ui/maps/project_map_tablet.dart';
 import 'package:responsive_builder/responsive_builder.dart';
+
+import '../../snack.dart';
 
 class ProjectMapMain extends StatefulWidget {
   final Project project;
@@ -19,6 +22,7 @@ class ProjectMapMain extends StatefulWidget {
 class _ProjectMapMainState extends State<ProjectMapMain> {
   var isBusy = false;
   var _positions = List<ProjectPosition>();
+  var _key = GlobalKey<ScaffoldState>();
   @override
   void initState() {
     super.initState();
@@ -29,8 +33,13 @@ class _ProjectMapMainState extends State<ProjectMapMain> {
     setState(() {
       isBusy = true;
     });
-    _positions = await monitorBloc.getProjectPositions(
-        projectId: widget.project.projectId);
+    try {
+      _positions = await monitorBloc.getProjectPositions(
+          projectId: widget.project.projectId, forceRefresh: false);
+    } catch (e) {
+      AppSnackbar.showErrorSnackbar(
+          scaffoldKey: _key, message: 'Data refresh failed');
+    }
     setState(() {
       isBusy = false;
     });
@@ -41,15 +50,19 @@ class _ProjectMapMainState extends State<ProjectMapMain> {
     return isBusy
         ? SafeArea(
             child: Scaffold(
+              key: _key,
               appBar: AppBar(
-                title: Text('Loading Project map locations'),
+                title: Text(
+                  'Loading Project locations',
+                  style: Styles.whiteTiny,
+                ),
               ),
               body: Center(
                 child: Container(
-                  width: 60,
-                  height: 60,
+                  width: 48,
+                  height: 48,
                   child: CircularProgressIndicator(
-                    strokeWidth: 8,
+                    strokeWidth: 12,
                     backgroundColor: Colors.black,
                   ),
                 ),

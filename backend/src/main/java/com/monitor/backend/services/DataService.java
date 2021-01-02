@@ -11,28 +11,22 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.UserRecord;
+import com.google.firebase.messaging.FirebaseMessagingException;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonParser;
 import com.monitor.backend.data.*;
 import com.monitor.backend.models.*;
 import com.monitor.backend.utils.Emoji;
 import org.joda.time.DateTime;
-import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
-
-import static com.mongodb.client.model.Filters.eq;
-import static org.springframework.boot.autoconfigure.condition.ConditionOutcome.match;
 
 @Service
 public class DataService {
@@ -67,6 +61,10 @@ public class DataService {
     OrganizationRepository organizationRepository;
     @Autowired
     ProjectPositionRepository projectPositionRepository;
+    @Autowired
+    OrgMessageRepository orgMessageRepository;
+    @Autowired
+    MessageService messageService;
 
 
     private boolean isInitialized = false;
@@ -136,34 +134,41 @@ public class DataService {
         return user;
     }
 
-    public User addUser(User user) {
+    public User addUser(User user) throws FirebaseMessagingException {
        User mUser =  userRepository.save(user);
+        String result = messageService.sendMessage(user);
         LOGGER.info(Emoji.LEAF.concat(Emoji.LEAF).concat("User added to database: "
-                + user.getName() + " id: "
-                + user.getUserId()));
+                + user.getName() + " result: "
+                + result));
+
         return mUser;
     }
 
-    public void addPhoto(Photo photo) throws Exception {
+    public String addPhoto(Photo photo) throws Exception {
         if (photo.getPhotoId() == null) {
             photo.setPhotoId(UUID.randomUUID().toString());
         }
         photoRepository.save(photo);
         LOGGER.info(Emoji.LEAF.concat(Emoji.LEAF).concat("Photo added: " + photo.get_id()));
-        photo.get_id();
+        return messageService.sendMessage(photo);
     }
-    public void addVideo(Video video) throws Exception {
+    public String addVideo(Video video) throws Exception {
         if (video.getVideoId() == null) {
             video.setVideoId(UUID.randomUUID().toString());
         }
         videoRepository.save(video);
         LOGGER.info(Emoji.LEAF.concat(Emoji.LEAF).concat("Video added: " + video.get_id()));
-        video.get_id();
+        return messageService.sendMessage(video);
     }
-    public void addCondition(Condition condition) throws Exception {
+    public String addCondition(Condition condition) throws Exception {
         conditionRepository.save(condition);
         LOGGER.info(Emoji.LEAF.concat(Emoji.LEAF).concat("Condition added: " + condition.get_id()));
-        condition.get_id();
+        return messageService.sendMessage(condition);
+    }
+    public String addOrgMessage(OrgMessage orgMessage) throws Exception {
+        orgMessageRepository.save(orgMessage);
+        LOGGER.info(Emoji.LEAF.concat(Emoji.LEAF).concat("OrgMessage added: " + orgMessage.getMessage()));
+        return messageService.sendMessage(orgMessage);
     }
 
     public ProjectPosition addProjectPosition(ProjectPosition projectPosition) throws Exception {
@@ -196,16 +201,16 @@ public class DataService {
     }
 
 
-    public com.monitor.backend.data.Project addProject(com.monitor.backend.data.Project project) throws Exception {
+    public String addProject(Project project) throws Exception {
         LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS).concat("addProject: "
                 .concat(project.getName()).concat(" ")
                 .concat(Emoji.FLOWER_YELLOW)));
 
-        com.monitor.backend.data.Project m =projectRepository.save(project);
+       project =projectRepository.save(project);
 
         LOGGER.info(Emoji.LEAF.concat(Emoji.LEAF)
                 .concat("Project added: " + project.getProjectId()));
-        return m;
+        return messageService.sendMessage(project);
     }
     public com.monitor.backend.data.Project updateProject(com.monitor.backend.data.Project project) throws Exception {
         LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS).concat("updateProject: "
@@ -257,7 +262,7 @@ public class DataService {
         return org;
     }
 
-    public User createUser(User user) throws Exception {
+    public void createUser(User user) throws Exception {
         FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
         UserRecord.CreateRequest createRequest = new UserRecord.CreateRequest();
         createRequest.setEmail(user.getEmail());
@@ -274,8 +279,6 @@ public class DataService {
 
 
         addUser(user);
-
-        return user;
 
     }
 }
