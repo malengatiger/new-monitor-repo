@@ -1,5 +1,7 @@
 package com.monitor.backend.data;
 
+import java.util.List;
+
 public class ProjectPosition {
 
     private String projectId;
@@ -7,16 +9,40 @@ public class ProjectPosition {
     private String projectName;
     private String caption;
     private String created;
+    private Placemark placemark;
+    private List<City> nearestCities;
 
-    public ProjectPosition() {
-    }
 
-    public ProjectPosition(String projectId, Position position, String projectName, String caption, String created) {
+    public ProjectPosition(String projectId, Position position, String projectName,
+                           String caption, String created,
+                           Placemark placemark, List<City> nearestCities) {
         this.projectId = projectId;
         this.position = position;
         this.projectName = projectName;
         this.caption = caption;
         this.created = created;
+        this.placemark = placemark;
+        this.nearestCities = nearestCities;
+    }
+
+
+    public ProjectPosition() {
+    }
+
+    public List<City> getNearestCities() {
+        return nearestCities;
+    }
+
+    public void setNearestCities(List<City> nearestCities) {
+        this.nearestCities = nearestCities;
+    }
+
+    public Placemark getPlacemark() {
+        return placemark;
+    }
+
+    public void setPlacemark(Placemark placemark) {
+        this.placemark = placemark;
     }
 
     public String getProjectId() {

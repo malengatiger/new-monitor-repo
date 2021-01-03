@@ -89,7 +89,7 @@ class _ProjectEditMobileState extends State<ProjectEditMobile>
           isBusy = false;
         });
         monitorBloc.getOrganizationProjects(
-            organizationId: mProject.organizationId);
+            organizationId: mProject.organizationId, forceRefresh: true);
         _navigateToProjectLocation(mProject);
       } catch (e) {
         setState(() {

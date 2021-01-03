@@ -451,7 +451,7 @@ public class MongoGenerator {
                     pos,
                     p0.getName(),
                     "tbd",
-                    new DateTime().toDateTimeISO().toString());
+                    new DateTime().toDateTimeISO().toString(), null, new ArrayList<>());
             projectPositionRepository.save(pPos);
 
             LOGGER.info(" \uD83E\uDD6C \uD83E\uDD6C \uD83E\uDD6C " +

@@ -3,6 +3,7 @@ import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:monitorlibrary/api/data_api.dart';
 import 'package:monitorlibrary/bloc/monitor_bloc.dart';
+import 'package:monitorlibrary/data/city.dart';
 import 'package:monitorlibrary/data/position.dart' as mon;
 import 'package:monitorlibrary/data/project.dart';
 import 'package:monitorlibrary/data/project_position.dart';
@@ -27,6 +28,7 @@ class _ProjectLocationMobileState extends State<ProjectLocationMobile>
   ProjectPosition _projectPosition;
   List<ProjectPosition> _projectPositions = [];
   var _key = GlobalKey<ScaffoldState>();
+  static const mx = '💙 💙 💙 ProjectLocation Mobile: ';
 
   @override
   void initState() {
@@ -88,9 +90,11 @@ class _ProjectLocationMobileState extends State<ProjectLocationMobile>
 
     List<Placemark> placeMarks =
         await placemarkFromCoordinates(_position.latitude, _position.longitude);
-    placeMarks.forEach((mark) {
-      pp('💙 💙 💙 Placemark: ${mark.toString()}');
-    });
+    List<City> cities = await DataAPI.findCitiesByLocation(
+        latitude: _position.latitude,
+        longitude: _position.longitude,
+        radiusInKM: 10.0);
+    pp('$mx Cities found for project position: ${cities.length}');
 
     if (_position == null) {
       AppSnackbar.showErrorSnackbar(
@@ -103,19 +107,27 @@ class _ProjectLocationMobileState extends State<ProjectLocationMobile>
       isBusy = true;
     });
     try {
-      pp('🏀 🏀 🏀 submitting current position ..........');
+      pp('$mx submitting current position ..........');
+      Placemark pm;
+      if (placeMarks.isNotEmpty) {
+        pm = placeMarks.first;
+        pp('$mx Placemark for project location: ${pm.toString()}');
+      }
       var loc = ProjectPosition(
+          placemark: pm,
           projectName: widget.project.name,
           caption: 'tbd',
           created: DateTime.now().toIso8601String(),
           position: mon.Position(
               type: 'Point',
               coordinates: [_position.longitude, _position.latitude]),
-          projectId: widget.project.projectId);
+          projectId: widget.project.projectId,
+          nearestCities: cities);
       try {
         var m = await DataAPI.addProjectPosition(position: loc);
-        pp('🎽 🎽 🎽 _submit: new projectPosition added .........  🍅 ${m.toJson()} 🍅');
-        monitorBloc.getProjectPositions(projectId: widget.project.projectId);
+        pp('$mx  _submit: new projectPosition added .........  🍅 ${m.toJson()} 🍅');
+        await monitorBloc.getProjectPositions(
+            projectId: widget.project.projectId);
       } catch (e) {
         AppSnackbar.showErrorSnackbar(
             scaffoldKey: _key, message: 'Project Position failed');

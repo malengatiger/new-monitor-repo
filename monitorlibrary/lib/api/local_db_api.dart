@@ -20,7 +20,7 @@ class LocalDBAPI {
   static String databaseName = 'MonDB001a';
 
   static Future setDatabaseName({@required String name}) async {
-    pp('🔵 🔵 🔵 🔵 🔵 🔵 🔵 setDatabaseName: $name MongoDB Mobile .. . 🔵 🔵 🔵 🔵 🔵 🔵 🔵 ');
+    pp('$mx setDatabaseName: $name MongoDB Mobile .. . $mx ');
     if (name == null) {
       throw Exception('The database name cannot be null');
     }
@@ -28,7 +28,7 @@ class LocalDBAPI {
   }
 
   static Future setAppID() async {
-    pp('\n\n🍎 🍎 🍎  setting MongoDB Mobile appID  🍎 🍎 🍎  🍎 🍎 🍎 ');
+    pp('\n\n$mx  setting MongoDB Mobile appID  $mx  $mx ');
     try {
       var res = await MobMongo.setAppID({
         'appID': APP_ID,
@@ -36,7 +36,7 @@ class LocalDBAPI {
       });
       pp(res);
     } on PlatformException catch (f) {
-      pp('👿👿👿👿👿👿👿👿 PlatformException 🍎 🍎 🍎 - $f');
+      pp('👿👿👿👿👿👿👿👿 PlatformException $mx - $f');
       throw Exception(f.message);
     }
   }
@@ -49,7 +49,7 @@ class LocalDBAPI {
     if (dbConnected) {
       return null;
     }
-    pp('🔵 🔵 🔵 🔵 🔵 🔵 🔵 Connecting to MongoDB Mobile .. . 🔵 🔵 🔵 🔵 🔵 🔵 🔵 ');
+    pp('$mx Connecting to MongoDB Mobile .. . $mx ');
     try {
       await MobMongo.setAppID({
         'appID': APP_ID,
@@ -59,7 +59,7 @@ class LocalDBAPI {
       await _createIndices();
 
       dbConnected = true;
-      pp('🔵 🔵 🔵 🔵 🔵 🔵 🔵  👌 Connected to MongoDB Mobile. 🥬 DATABASE: $databaseName  🥬 APP_ID: $APP_ID  👌 👌 👌 '
+      pp('$mx  👌 Connected to MongoDB Mobile. 🥬 DATABASE: $databaseName  🥬 APP_ID: $APP_ID  👌 👌 👌 '
           ' necessary indices created for routes and landmarks 🧩 🧩 🧩');
     } on PlatformException catch (e) {
       pp('👿👿👿👿👿👿👿👿👿👿 ${e.message}  👿👿👿👿');
@@ -140,7 +140,7 @@ class LocalDBAPI {
       list.add(mm);
     });
 
-    pp('🔵 🔵 🔵 🔵 🔵 🔵 🔵 LocalDBAPI: getPhotos: 🦠 ${list.length} 🦠');
+    pp('$mx LocalDBAPI: getPhotos: 🦠 ${list.length} 🦠');
     return list;
   }
 
@@ -155,7 +155,7 @@ class LocalDBAPI {
       list.add(mm);
     });
 
-    pp('🔵 🔵 🔵 🔵 🔵 🔵 🔵 getVideos: 🦠 ${list.length}');
+    pp('$mx getVideos: 🦠 ${list.length}');
     return list;
   }
 
@@ -174,7 +174,7 @@ class LocalDBAPI {
       }
     });
 
-    pp('🔵 🔵 🔵 🔵 🔵 🔵 🔵 getProjectPhotos: 🦠 ${list.length}');
+    pp('$mx getProjectPhotos: 🦠 ${list.length}');
     return list;
   }
 
@@ -193,7 +193,7 @@ class LocalDBAPI {
       }
     });
 
-    pp('🔵 🔵 🔵 🔵 🔵 🔵 🔵 getProjectVideos: 🦠 ${list.length}');
+    pp('$mx getProjectVideos: 🦠 ${list.length}');
     return list;
   }
 
@@ -215,10 +215,11 @@ class LocalDBAPI {
       }
     });
 
-    pp('🔵 🔵 🔵 🔵 🔵 🔵 🔵 getProjectPositions: 🦠 ${list.length}');
+    pp('$mx getProjectPositions: 🦠 ${list.length}');
     return list;
   }
 
+  static const mx = '🍎 🍎 🍎 LocalDBAPI: 🍎 ';
   static Future<List<User>> getUsers() async {
     await _connectToLocalDB();
     Carrier carrier = Carrier(
@@ -232,7 +233,7 @@ class LocalDBAPI {
       list.add(mm);
     });
 
-    pp('🔵 🔵 🔵 🔵 🔵 🔵 🔵 LocalDBAPI:getUsers: 🦠 ${list.length}');
+    pp('$mx LocalDBAPI:getUsers: 🦠 ${list.length}');
     return list;
   }
 
@@ -250,12 +251,12 @@ class LocalDBAPI {
       'value': user.userId,
     });
     var del = await MobMongo.delete(c);
-    pp('🍎 🍎 🍎 LocalDBAPI:addUser: 🌼 user deleted?? ...: del $del  🔵 🔵 ');
+    pp('$mx LocalDBAPI:addUser: 🌼 user deleted?? ...: del $del  🔵 🔵 ');
     Carrier ca = Carrier(
         db: databaseName, collection: Constants.DB_USERS, data: user.toJson());
     var res = await MobMongo.insert(ca);
 
-    pp('🍎 🍎 🍎 addUser: 🌼 1 user added...: res: $res  🔵 🔵 ');
+    pp('$mx addUser: 🌼 1 user added...: res: $res  🔵 🔵 ');
     return cnt;
   }
 
@@ -274,7 +275,7 @@ class LocalDBAPI {
       'value': project.projectId,
     });
     var del = await MobMongo.delete(c);
-    pp('🍎 🍎 🍎 addProject: 🌼 ${project.name} deleted? ...: del: $del  🔵 🔵 ');
+    pp('$mx addProject: 🌼 ${project.name} deleted? ...: del: $del  🔵 🔵 ');
 
     try {
       Carrier ca = Carrier(
@@ -283,9 +284,9 @@ class LocalDBAPI {
           data: project.toJson());
 
       var res = await MobMongo.insert(ca);
-      pp('🍎 🍎 🍎 addProject: 🌼  ${project.name} added...: res: $res  🔵 🔵 ');
+      pp('$mx addProject: 🌼  ${project.name} added...: res: $res  🔵 🔵 ');
     } catch (e) {
-      pp('addProject: .... 👺👺👺👺 We are fucked! 👺👺👺👺 ${e.message}');
+      pp('LocalDBAPI: addProject: .... 👺👺👺👺 We are fucked! 👺👺👺👺 ${e.message}');
     }
     return 0;
   }
@@ -305,14 +306,14 @@ class LocalDBAPI {
       'value': photo.photoId,
     });
     var del = await MobMongo.delete(c);
-    pp('🍎 🍎 🍎 addPhoto: 🌼 photo deleted ????  del: $del  🔵 🔵 ');
+    pp('$mx addPhoto: 🌼 photo deleted ????  del: $del  🔵 🔵 ');
     Carrier ca = Carrier(
         db: databaseName,
         collection: Constants.DB_PHOTOS,
         data: photo.toJson());
     var res = await MobMongo.insert(ca);
 
-    pp('🍎 🍎 🍎 addPhoto: 🌼 1 photo added...: res $res  🔵 🔵 ');
+    pp('$mx addPhoto: 🌼 1 photo added...: res $res  🔵 🔵 ');
     return 0;
   }
 
@@ -331,7 +332,7 @@ class LocalDBAPI {
       'value': video.videoId,
     });
     var del = await MobMongo.delete(c);
-    pp('🍎 🍎 🍎 addVideo: 🌼 1 video deleted...: del $del  🔵 🔵 ');
+    pp('$mx addVideo: 🌼 1 video deleted...: del $del  🔵 🔵 ');
 
     Carrier ca = Carrier(
         db: databaseName,
@@ -339,7 +340,49 @@ class LocalDBAPI {
         data: video.toJson());
     var res = await MobMongo.insert(ca);
 
-    pp('🍎 🍎 🍎 addVideo: 🌼 1 video added...: res $res  🔵 🔵 ');
+    pp('$mx addVideo: 🌼 1 video added...: res $res  🔵 🔵 ');
+    return 0;
+  }
+
+  static Future<int> addCondition({@required Condition condition}) async {
+    await _connectToLocalDB();
+
+    Carrier c =
+        Carrier(db: databaseName, collection: Constants.DB_CONDITIONS, id: {
+      'field': 'created',
+      'value': condition.created,
+    });
+    var del = await MobMongo.delete(c);
+    pp('$mx addCondition: 🌼 video deleted ?? ...: del $del  🔵 🔵 ');
+
+    Carrier ca = Carrier(
+        db: databaseName,
+        collection: Constants.DB_CONDITIONS,
+        data: condition.toJson());
+    var res = await MobMongo.insert(ca);
+
+    pp('$mx addCondition: 🌼 1 video added...: res $res  🔵 🔵 ');
+    return 0;
+  }
+
+  static Future<int> addOrgMessage({@required OrgMessage message}) async {
+    await _connectToLocalDB();
+
+    Carrier c =
+        Carrier(db: databaseName, collection: Constants.DB_ORG_MESSAGES, id: {
+      'field': 'created',
+      'value': message.created,
+    });
+    var del = await MobMongo.delete(c);
+    pp('$mx addOrgMessage: 🌼 message deleted ?? ...: del $del  🔵 🔵 ');
+
+    Carrier ca = Carrier(
+        db: databaseName,
+        collection: Constants.DB_ORG_MESSAGES,
+        data: message.toJson());
+    var res = await MobMongo.insert(ca);
+
+    pp('$mx addOrgMessage: 🌼 1 OrgMessage added...: res $res  🔵 🔵 ');
     return 0;
   }
 
@@ -363,7 +406,7 @@ class LocalDBAPI {
           'value': projectPosition.created,
         });
     var del = await MobMongo.delete(c);
-    pp('🍎 🍎 🍎 addProjectPosition: 🌼 1 record deleted?...: del $del  🔵 🔵 ');
+    pp('$mx addProjectPosition: 🌼 1 record deleted?...: del $del  🔵 🔵 ');
 
     Carrier ca = Carrier(
         db: databaseName,
@@ -371,7 +414,7 @@ class LocalDBAPI {
         data: projectPosition.toJson());
     var res = await MobMongo.insert(ca);
 
-    pp('🍎 🍎 🍎 addProjectPosition: 🌼 1 record added...: res $res  🔵 🔵 ');
+    pp('$mx addProjectPosition: 🌼 1 record added...: res $res  🔵 🔵 ');
     return 0;
   }
 

@@ -213,7 +213,7 @@ class MonitorBloc {
       _photoController.sink.add(_photos);
       pp('💜 💜 💜 MonitorBloc: getOrganizationPhotos found: 💜 ${_photos.length} photos 💜 ');
     } catch (e) {
-      pp('💜 💜 💜 MonitorBloc: getOrganizationPhotos FAILED');
+      pp('😈😈😈😈😈 MonitorBloc: getOrganizationPhotos FAILED: 😈😈😈😈😈 $e');
       throw e;
     }
 

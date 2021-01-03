@@ -54,3 +54,35 @@ const ORG_ADMINISTRATOR = 'ORG_ADMINISTRATOR';
 const ORG_EXECUTIVE = 'ORG_EXECUTIVE';
 const NETWORK_ADMINISTRATOR = 'NETWORK_ADMINISTRATOR';
 const ORG_OWNER = 'ORG_OWNER';
+
+class OrgMessage {
+  /*
+   private String organizationId, userId, message, created;
+   */
+  String name, userId, message, created, organizationId;
+
+  OrgMessage(
+      {@required this.name,
+      @required this.message,
+      @required this.userId,
+      @required this.created,
+      @required this.organizationId});
+
+  OrgMessage.fromJson(Map data) {
+    this.name = data['name'];
+    this.userId = data['userId'];
+    this.message = data['message'];
+    this.created = data['created'];
+    this.organizationId = data['organizationId'];
+  }
+  Map<String, dynamic> toJson() {
+    Map<String, dynamic> map = {
+      'name': name,
+      'userId': userId,
+      'message': message,
+      'created': created,
+      'organizationId': organizationId,
+    };
+    return map;
+  }
+}

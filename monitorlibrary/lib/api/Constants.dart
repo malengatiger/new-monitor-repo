@@ -11,5 +11,7 @@ class Constants {
       DB_ORGANIZATIONS = 'organizations',
       DB_QUESTIONNAIRES = 'questionnaires',
       DB_PHOTOS = 'photos',
+      DB_CONDITIONS = 'conditions',
+      DB_ORG_MESSAGES = 'orgMessages',
       DB_VIDEOS = 'videos';
 }

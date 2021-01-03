@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:monitorlibrary/auth/app_auth.dart';
+import 'package:monitorlibrary/data/city.dart';
 import 'package:monitorlibrary/data/community.dart';
 import 'package:monitorlibrary/data/counters.dart';
 import 'package:monitorlibrary/data/country.dart';
@@ -250,6 +251,7 @@ class DataAPI {
     var url = '$mURL$cmd?organizationId=$organizationId';
     try {
       List result = await _callWebAPIGet(url);
+      pp('🍏 🍏 🍏 DataAPI: getOrganizationPhotos: 🍏 found: ${result.length} org photos');
       List<Photo> list = List();
       result.forEach((m) {
         list.add(Photo.fromJson(m));
@@ -295,6 +297,27 @@ class DataAPI {
       result.forEach((m) {
         list.add(Project.fromJson(m));
       });
+      return list;
+    } catch (e) {
+      pp(e);
+      throw e;
+    }
+  }
+
+  static Future<List<City>> findCitiesByLocation(
+      {double latitude, double longitude, double radiusInKM}) async {
+    pp('🍏 🍏 🍏 DataAPI: findCitiesByLocation: 🍏 radiusInKM: $radiusInKM');
+    String mURL = await getUrl();
+    var cmd = 'findCitiesByLocation';
+    var url =
+        '$mURL$cmd?latitude=$latitude&longitude=$longitude&radiusInKM=$radiusInKM';
+    try {
+      List result = await _callWebAPIGet(url);
+      List<City> list = List();
+      result.forEach((m) {
+        list.add(City.fromJson(m));
+      });
+      pp('🍏 🍏 🍏 DataAPI: findCitiesByLocation: 🍏 found: ${list.length} cities');
       return list;
     } catch (e) {
       pp(e);

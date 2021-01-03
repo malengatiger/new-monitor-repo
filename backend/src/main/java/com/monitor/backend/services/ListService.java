@@ -171,6 +171,23 @@ public class ListService {
         return projects;
     }
 
+    public List<City> findCitiesByLocation(double latitude, double longitude, double radiusInKM) throws Exception {
+        LOGGER.info(Emoji.DICE.concat(Emoji.DICE).concat(" findCitiesByLocation ..."));
+        Point point = new Point(longitude, latitude);
+        Distance distance = new Distance(radiusInKM, Metrics.KILOMETERS);
+        List<City> cities = cityRepository.findByPositionNear(point, distance);
+        LOGGER.info(Emoji.DOLPHIN.concat(Emoji.DOLPHIN).concat(Emoji.DOLPHIN)
+                + " Nearby Cities found: " + cities.size() + " : " + Emoji.RED_APPLE + " radius: " + radiusInKM);
+        for (City city : cities) {
+            LOGGER.info(Emoji.DOLPHIN.concat(Emoji.DOLPHIN) + city.getName() + ", " + Emoji.DOLPHIN
+                    + city.getCityId() + " "
+                    + Emoji.COFFEE);
+        }
+        LOGGER.info(Emoji.HEART_ORANGE.concat(Emoji.HEART_ORANGE).concat(
+                "findCitiesByLocation: Nearby Cities found: " + cities.size() + " \uD83C\uDF3F"));
+        return cities;
+    }
+
     @Autowired
     MongoClient mongoClient;
 

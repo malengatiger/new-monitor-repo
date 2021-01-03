@@ -12,6 +12,7 @@ import 'package:monitorlibrary/functions.dart';
 import 'package:monitorlibrary/ui/maps/project_map_main.dart';
 import 'package:monitorlibrary/ui/media/media_list_main.dart';
 import 'package:monitorlibrary/ui/project_edit/project_edit_main.dart';
+import 'package:monitorlibrary/ui/project_location/project_location_main.dart';
 import 'package:monitorlibrary/ui/project_monitor/project_monitor_main.dart';
 import 'package:page_transition/page_transition.dart';
 
@@ -130,6 +131,16 @@ class _ProjectListMobileState extends State<ProjectListMobile>
     }
   }
 
+  void _navigateToProjectLocation(Project p) {
+    Navigator.push(
+        context,
+        PageTransition(
+            type: PageTransitionType.scale,
+            alignment: Alignment.topLeft,
+            duration: Duration(milliseconds: 1500),
+            child: ProjectLocationMain(p)));
+  }
+
   void _navigateToMedia(Project p) {
     Navigator.push(
         context,
@@ -191,6 +202,17 @@ class _ProjectListMobileState extends State<ProjectListMobile>
               _navigateToDetail(p);
             }
           }));
+      menuItems.add(FocusedMenuItem(
+          title: Text('Add Project Location'),
+          trailingIcon: Icon(
+            Icons.location_pin,
+            color: Theme.of(context).primaryColor,
+          ),
+          onPressed: () {
+            if (user.userType == ORG_ADMINISTRATOR) {
+              _navigateToProjectLocation(p);
+            }
+          }));
     }
     return menuItems;
   }
@@ -227,6 +249,14 @@ class _ProjectListMobileState extends State<ProjectListMobile>
       list.add(
         IconButton(
           icon: Icon(Icons.add),
+          onPressed: () {
+            _navigateToDetail(null);
+          },
+        ),
+      );
+      list.add(
+        IconButton(
+          icon: Icon(Icons.location_pin),
           onPressed: () {
             _navigateToDetail(null);
           },

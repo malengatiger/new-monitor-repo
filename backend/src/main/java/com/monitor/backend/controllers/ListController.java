@@ -153,6 +153,13 @@ public class ListController {
         LOGGER.info(Emoji.DOLPHIN.concat(Emoji.DOLPHIN) + " Nearby Projects found: " + projects.size());
         return projects;
     }
+    @GetMapping("/findCitiesByLocation")
+    public List<City> findCitiesByLocation(double latitude, double longitude, double radiusInKM) throws Exception {
+        LOGGER.info(Emoji.DICE.concat(Emoji.DICE).concat(" findCitiesByLocation ..."));
+        List<City> cities =  listService.findCitiesByLocation(latitude, longitude, radiusInKM);
+        LOGGER.info(Emoji.DOLPHIN.concat(Emoji.DOLPHIN) + " Nearby cities found: " + cities.size());
+        return cities;
+    }
     @GetMapping("/findProjectPositionsByLocation")
     public List<ProjectPosition> findProjectPositionsByLocation(double latitude, double longitude, double radiusInKM) throws Exception {
         LOGGER.info(Emoji.DICE.concat(Emoji.DICE).concat(" findProjectsByLocation ..."));
