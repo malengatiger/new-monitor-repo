@@ -118,10 +118,7 @@ class _MediaListMobileState extends State<MediaListMobile>
       child: Scaffold(
         key: _key,
         appBar: AppBar(
-          title: Text(
-            widget.project == null ? '' : widget.project.name,
-            style: Styles.whiteBoldSmall,
-          ),
+          title: Container(),
           actions: [
             IconButton(
               icon: Icon(Icons.refresh),
@@ -139,6 +136,13 @@ class _MediaListMobileState extends State<MediaListMobile>
               padding: const EdgeInsets.all(12.0),
               child: Column(
                 children: [
+                  Text(
+                    widget.project == null ? '' : widget.project.name,
+                    style: Styles.whiteBoldSmall,
+                  ),
+                  SizedBox(
+                    height: 28,
+                  ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
@@ -156,15 +160,15 @@ class _MediaListMobileState extends State<MediaListMobile>
                         width: 28,
                       ),
                       Text(
-                        'Visual Project Monitor',
-                        style: Styles.whiteBoldSmall,
+                        'Photos & Videos',
+                        style: Styles.blackTiny,
                       ),
                       SizedBox(
-                        width: 48,
+                        width: 8,
                       ),
                       Text(
                         '${suitcases.length}',
-                        style: Styles.blackBoldMedium,
+                        style: Styles.whiteBoldSmall,
                       ),
                       SizedBox(
                         width: 12,
@@ -220,9 +224,28 @@ class _MediaListMobileState extends State<MediaListMobile>
             suitcases.isEmpty
                 ? Center(
                     child: Container(
-                      child: Text(
-                        'No media found',
-                        style: Styles.blackBoldMedium,
+                      child: Column(
+                        children: [
+                          SizedBox(
+                            height: 120,
+                          ),
+                          Text(
+                            'No media found',
+                            style: Styles.blackBoldMedium,
+                          ),
+                          SizedBox(
+                            height: 60,
+                          ),
+                          Card(
+                            elevation: 8,
+                            child: Padding(
+                              padding: const EdgeInsets.all(20.0),
+                              child: IconButton(
+                                  icon: Icon(Icons.add_a_photo),
+                                  onPressed: _navigateToMonitor),
+                            ),
+                          )
+                        ],
                       ),
                     ),
                   )

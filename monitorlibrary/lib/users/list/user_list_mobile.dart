@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:focused_menu/focused_menu.dart';
 import 'package:focused_menu/modals.dart';
+import 'package:monitorlibrary/bloc/fcm_bloc.dart';
 import 'package:monitorlibrary/bloc/monitor_bloc.dart';
 import 'package:monitorlibrary/data/user.dart';
 import 'package:monitorlibrary/functions.dart';
@@ -30,6 +31,19 @@ class _UserListMobileState extends State<UserListMobile>
     _controller = AnimationController(vsync: this);
     super.initState();
     _getData(false);
+    _listen();
+  }
+
+  void _listen() {
+    fcmBloc.userStream.listen((User user) {
+      if (mounted) {
+        AppSnackbar.showSnackbar(
+            scaffoldKey: _key,
+            message: 'User has been added OK',
+            textColor: Colors.white,
+            backgroundColor: Theme.of(context).primaryColor);
+      }
+    });
   }
 
   void _getData(bool forceRefresh) async {

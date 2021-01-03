@@ -4,6 +4,7 @@ import 'package:flutter/rendering.dart';
 import 'package:focused_menu/focused_menu.dart';
 import 'package:focused_menu/modals.dart';
 import 'package:monitorlibrary/api/sharedprefs.dart';
+import 'package:monitorlibrary/bloc/fcm_bloc.dart';
 import 'package:monitorlibrary/bloc/monitor_bloc.dart';
 import 'package:monitorlibrary/data/project.dart';
 import 'package:monitorlibrary/data/user.dart';
@@ -46,7 +47,20 @@ class _ProjectListMobileState extends State<ProjectListMobile>
     } else {
       _setUserType();
     }
+    _listen();
     refreshProjects(false);
+  }
+
+  void _listen() {
+    fcmBloc.projectStream.listen((Project project) {
+      if (mounted) {
+        AppSnackbar.showSnackbar(
+            scaffoldKey: _key,
+            message: 'Project added: ${project.name}',
+            textColor: Colors.white,
+            backgroundColor: Theme.of(context).primaryColor);
+      }
+    });
   }
 
   void _getUser() async {
@@ -170,7 +184,7 @@ class _ProjectListMobileState extends State<ProjectListMobile>
     List<FocusedMenuItem> menuItems = [];
     menuItems.add(
       FocusedMenuItem(
-          title: Text('Map'),
+          title: Text('Project Map'),
           trailingIcon: Icon(
             Icons.map,
             color: Theme.of(context).primaryColor,
@@ -181,7 +195,7 @@ class _ProjectListMobileState extends State<ProjectListMobile>
     );
     menuItems.add(
       FocusedMenuItem(
-          title: Text('Media'),
+          title: Text('Photos & Videos'),
           trailingIcon: Icon(
             Icons.camera,
             color: Theme.of(context).primaryColor,
@@ -192,7 +206,7 @@ class _ProjectListMobileState extends State<ProjectListMobile>
     );
     if (user.userType == ORG_ADMINISTRATOR) {
       menuItems.add(FocusedMenuItem(
-          title: Text('Edit'),
+          title: Text('Edit Project'),
           trailingIcon: Icon(
             Icons.create,
             color: Theme.of(context).primaryColor,
