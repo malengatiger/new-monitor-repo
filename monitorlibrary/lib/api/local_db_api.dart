@@ -178,6 +178,25 @@ class LocalDBAPI {
     return list;
   }
 
+  static Future<List<Photo>> getUserPhotos(String userId) async {
+    await _connectToLocalDB();
+    Carrier carrier =
+        Carrier(db: databaseName, collection: Constants.DB_PHOTOS, query: {
+      "eq": {"userId": userId}
+    });
+    List results = await MobMongo.query(carrier);
+    List<Photo> list = List();
+    results.forEach((r) {
+      var mm = Photo.fromJson(json.decode(r));
+      if (mm.projectId == userId) {
+        list.add(mm);
+      }
+    });
+
+    pp('$mx getProjectPhotos: 🦠 ${list.length}');
+    return list;
+  }
+
   static Future<List<Video>> getProjectVideos(String projectId) async {
     await _connectToLocalDB();
     Carrier carrier =
@@ -194,6 +213,25 @@ class LocalDBAPI {
     });
 
     pp('$mx getProjectVideos: 🦠 ${list.length}');
+    return list;
+  }
+
+  static Future<List<Video>> getUserVideos(String userId) async {
+    await _connectToLocalDB();
+    Carrier carrier =
+        Carrier(db: databaseName, collection: Constants.DB_VIDEOS, query: {
+      "eq": {"userId": userId}
+    });
+    List results = await MobMongo.query(carrier);
+    List<Video> list = List();
+    results.forEach((r) {
+      var mm = Video.fromJson(json.decode(r));
+      if (mm.projectId == userId) {
+        list.add(mm);
+      }
+    });
+
+    pp('$mx getUserVideos: 🦠 ${list.length}');
     return list;
   }
 

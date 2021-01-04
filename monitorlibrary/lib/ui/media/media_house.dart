@@ -211,7 +211,9 @@ class _MediaHouseState extends State<MediaHouse>
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: [
                                 RaisedButton(
-                                  color: isVideo ? Colors.pink : Colors.indigo,
+                                  color: isVideo
+                                      ? Colors.pink[300]
+                                      : Colors.indigo[300],
                                   elevation: 8,
                                   child: Padding(
                                     padding: const EdgeInsets.all(8.0),

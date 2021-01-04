@@ -195,13 +195,6 @@ class MonitorBloc {
     return photos;
   }
 
-  Future<List<Photo>> getUserProjectPhotos({String userId}) async {
-    _photos = await DataAPI.getUserProjectPhotos(userId);
-    _photoController.sink.add(_photos);
-    pp('💜 💜 💜 MonitorBloc: getUserProjectPhotos found: 💜 ${_photos.length} photos ');
-    return _photos;
-  }
-
   Future<List<Photo>> getOrganizationPhotos(
       {String organizationId, bool forceRefresh = false}) async {
     try {
@@ -256,11 +249,39 @@ class MonitorBloc {
     return null;
   }
 
-  Future<List<Video>> getUserProjectVideos({String userId}) async {
-    _videos = await DataAPI.getUserProjectVideos(userId);
+  Future<List<Photo>> getUserProjectPhotos(
+      {String userId, bool forceRefresh}) async {
+    _photos = await LocalDBAPI.getUserPhotos(userId);
+    if (_photos.isEmpty || forceRefresh) {
+      _photos = await DataAPI.getUserProjectPhotos(userId);
+      await LocalDBAPI.addPhotos(photos: _photos);
+    }
+    _photoController.sink.add(_photos);
+    pp('💜 💜 💜 MonitorBloc: getUserProjectPhotos found: 💜 ${_photos.length} photos ');
+    return _photos;
+  }
+
+  Future<List<Video>> getUserProjectVideos(
+      {String userId, bool forceRefresh}) async {
+    _videos = await LocalDBAPI.getUserVideos(userId);
+    if (_videos.isEmpty || forceRefresh) {
+      _videos = await DataAPI.getUserProjectVideos(userId);
+      await LocalDBAPI.addVideos(videos: _videos);
+    }
     _videoController.sink.add(_videos);
     pp('💜 💜 💜 MonitorBloc: getUserProjectVideos found: 💜 ${_videos.length} videos ');
     return _videos;
+  }
+
+  Future refreshUserData(
+      {String userId, String organizationId, bool forceRefresh}) async {
+    pp('💜 💜 💜 MonitorBloc: refreshUserData ... ');
+    await getOrganizationProjects(
+        organizationId: organizationId, forceRefresh: forceRefresh);
+    await getOrganizationUsers(
+        organizationId: organizationId, forceRefresh: forceRefresh);
+    await getUserProjectPhotos(userId: userId, forceRefresh: forceRefresh);
+    await getUserProjectVideos(userId: userId, forceRefresh: forceRefresh);
   }
 
   void _initialize() async {
