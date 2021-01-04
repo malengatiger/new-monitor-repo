@@ -131,17 +131,17 @@ class SpecialSnack {
 
     scaffoldKey.currentState.showSnackBar(SnackBar(
       content: Container(
-        height: 200,
+        height: 260,
         child: Column(
           children: [
             Image.network(
               photo.thumbnailUrl,
-              width: 120,
-              height: 120,
+              width: 160,
+              height: 160,
               fit: BoxFit.fill,
             ),
             SizedBox(
-              height: 2,
+              height: 8,
             ),
             Text(
               '${photo.userName} : ${getFormattedDateShortWithTime(photo.created, scaffoldKey.currentContext)}',
@@ -152,7 +152,7 @@ class SpecialSnack {
             ),
             RaisedButton(
                 elevation: 8,
-                color: Theme.of(scaffoldKey.currentContext).accentColor,
+                color: Theme.of(scaffoldKey.currentContext).primaryColor,
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text('Close'),
@@ -178,8 +178,6 @@ class SpecialSnack {
   static showVideoSnackbar(
       {@required GlobalKey<ScaffoldState> scaffoldKey,
       @required Video video,
-      Color textColor,
-      Color backgroundColor,
       @required SpecialSnackListener listener,
       int durationMinutes}) {
     if (scaffoldKey.currentState == null) {
@@ -190,33 +188,54 @@ class SpecialSnack {
 
     scaffoldKey.currentState.showSnackBar(SnackBar(
       content: Container(
-        height: 100,
+        height: 140,
+        color: Colors.brown[100],
         child: Column(
           children: [
-            Text('Video added OK'),
             SizedBox(
-              width: 2,
+              height: 24,
+            ),
+            Text(
+              'Organization Video added OK',
+              style: Styles.blackBoldSmall,
+            ),
+            SizedBox(
+              height: 8,
             ),
             Text(
               '${getFormattedDateShortWithTime(video.created, scaffoldKey.currentContext)}',
               style: Styles.blackTiny,
             ),
+            SizedBox(
+              height: 4,
+            ),
             Text(
               '${video.userName}',
-              style: Styles.blackTiny,
+              style: Styles.blackBoldSmall,
             ),
+            SizedBox(
+              height: 4,
+            ),
+            FlatButton(
+                onPressed: () {
+                  listener.onClose();
+                },
+                child: Text(
+                  'Close',
+                  style: Styles.blueSmall,
+                )),
           ],
         ),
       ),
       duration:
           Duration(minutes: durationMinutes == null ? 1 : durationMinutes),
-      backgroundColor: backgroundColor,
-      action: SnackBarAction(
-        label: 'Close',
-        onPressed: () {
-          listener.onClose();
-        },
-      ),
+      backgroundColor: Colors.brown[100],
+      // action: SnackBarAction(
+      //   label: 'Close',
+      //   onPressed: () {
+      //     listener.onClose();
+      //   },
+      // ),
     ));
   }
 
