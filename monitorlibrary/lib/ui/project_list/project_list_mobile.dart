@@ -204,6 +204,15 @@ class _ProjectListMobileState extends State<ProjectListMobile>
             _navigateToMedia(p);
           }),
     );
+    menuItems.add(FocusedMenuItem(
+        title: Text('Add Project Location'),
+        trailingIcon: Icon(
+          Icons.location_pin,
+          color: Theme.of(context).primaryColor,
+        ),
+        onPressed: () {
+          _navigateToProjectLocation(p);
+        }));
     if (user.userType == ORG_ADMINISTRATOR) {
       menuItems.add(FocusedMenuItem(
           title: Text('Edit Project'),
@@ -212,20 +221,7 @@ class _ProjectListMobileState extends State<ProjectListMobile>
             color: Theme.of(context).primaryColor,
           ),
           onPressed: () {
-            if (user.userType == ORG_ADMINISTRATOR) {
-              _navigateToDetail(p);
-            }
-          }));
-      menuItems.add(FocusedMenuItem(
-          title: Text('Add Project Location'),
-          trailingIcon: Icon(
-            Icons.location_pin,
-            color: Theme.of(context).primaryColor,
-          ),
-          onPressed: () {
-            if (user.userType == ORG_ADMINISTRATOR) {
-              _navigateToProjectLocation(p);
-            }
+            _navigateToDetail(p);
           }));
     }
     return menuItems;

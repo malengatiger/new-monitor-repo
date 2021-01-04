@@ -571,6 +571,25 @@ String getFormattedDateShortest(String date, BuildContext context) {
   }
 }
 
+String getFormattedDateShortestWithTime(String date, BuildContext context) {
+  Locale myLocale = Localizations.localeOf(context);
+
+  initializeDateFormatting();
+  var format = new DateFormat('dd-MM-yyyy HH:mm', myLocale.toString());
+  try {
+    if (date.contains('GMT')) {
+      var mDate = getLocalDateFromGMT(date, context);
+      return format.format(mDate);
+    } else {
+      var mDate = DateTime.parse(date);
+      return format.format(mDate.toLocal());
+    }
+  } catch (e) {
+    pp(e);
+    return 'NoDate';
+  }
+}
+
 int getIntDate(String date, BuildContext context) {
   pp('\n---------------> getIntDate $date'); //Sun, 28 Oct 2018 23:59:49 GMT
   assert(context != null);

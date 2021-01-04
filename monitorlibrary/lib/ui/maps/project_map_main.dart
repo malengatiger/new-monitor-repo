@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:monitorlibrary/bloc/monitor_bloc.dart';
+import 'package:monitorlibrary/data/photo.dart';
 import 'package:monitorlibrary/data/project.dart';
 import 'package:monitorlibrary/data/project_position.dart';
 import 'package:monitorlibrary/functions.dart';
@@ -12,8 +13,9 @@ import '../../snack.dart';
 
 class ProjectMapMain extends StatefulWidget {
   final Project project;
+  final Photo photo;
 
-  ProjectMapMain(this.project);
+  ProjectMapMain(this.project, {this.photo});
 
   @override
   _ProjectMapMainState createState() => _ProjectMapMainState();
@@ -73,6 +75,7 @@ class _ProjectMapMainState extends State<ProjectMapMain> {
             mobile: ProjectMapMobile(
               project: widget.project,
               projectPositions: _positions,
+              photo: widget.photo,
             ),
             tablet: ProjectMapTablet(
               project: widget.project,

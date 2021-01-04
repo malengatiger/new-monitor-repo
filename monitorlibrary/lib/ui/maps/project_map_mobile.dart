@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:monitorlibrary/data/photo.dart';
 import 'package:monitorlibrary/data/project.dart';
 import 'package:monitorlibrary/data/project_position.dart';
 
@@ -11,8 +12,10 @@ import '../../functions.dart';
 class ProjectMapMobile extends StatefulWidget {
   final Project project;
   final List<ProjectPosition> projectPositions;
+  final Photo photo;
 
-  ProjectMapMobile({this.project, this.projectPositions});
+  ProjectMapMobile(
+      {@required this.project, @required this.projectPositions, this.photo});
 
   @override
   _ProjectMapMobileState createState() => _ProjectMapMobileState();
@@ -111,6 +114,37 @@ class _ProjectMapMobileState extends State<ProjectMapMobile>
               myLocationEnabled: true,
               markers: Set<Marker>.of(markers.values),
             ),
+            widget.photo != null
+                ? Positioned(
+                    left: 12,
+                    top: 12,
+                    child: Card(
+                      elevation: 8,
+                      color: Colors.black26,
+                      child: Container(
+                        height: 180,
+                        width: 160,
+                        child: Column(
+                          children: [
+                            SizedBox(
+                              height: 12,
+                            ),
+                            Image.network(
+                              widget.photo.thumbnailUrl,
+                              width: 140,
+                              height: 140,
+                              fit: BoxFit.fill,
+                            ),
+                            Text(
+                              '${getFormattedDateShortestWithTime(widget.photo.created, context)}',
+                              style: Styles.whiteTiny,
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                  )
+                : Container(),
           ],
         ),
       ),

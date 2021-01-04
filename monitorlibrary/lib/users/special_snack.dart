@@ -131,7 +131,7 @@ class SpecialSnack {
 
     scaffoldKey.currentState.showSnackBar(SnackBar(
       content: Container(
-        height: 260,
+        height: 280,
         child: Column(
           children: [
             Image.network(

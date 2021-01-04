@@ -136,7 +136,7 @@ class _ProjectLocationMobileState extends State<ProjectLocationMobile>
         isBusy = false;
       });
 
-      Navigator.pop(context);
+      Navigator.pop(context, loc);
     } catch (e) {
       AppSnackbar.showErrorSnackbar(scaffoldKey: _key, message: 'Failed: $e');
     }

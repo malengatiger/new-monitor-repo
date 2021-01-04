@@ -6,7 +6,6 @@ import 'package:flutter/services.dart';
 import 'package:image/image.dart' as img;
 import 'package:monitorlibrary/api/sharedprefs.dart';
 import 'package:monitorlibrary/api/storage_bloc.dart';
-import 'package:monitorlibrary/bloc/monitor_bloc.dart';
 import 'package:monitorlibrary/data/position.dart';
 import 'package:monitorlibrary/data/project.dart';
 import 'package:monitorlibrary/data/project_position.dart';
@@ -52,16 +51,6 @@ class _MediaHouseState extends State<MediaHouse>
 
   void _getUser() async {
     user = await Prefs.getUser();
-    //todo - test apia
-    try {
-      await monitorBloc.getProjectPhotos(projectId: widget.project.projectId);
-      await monitorBloc.getProjectVideos(projectId: widget.project.projectId);
-      await monitorBloc.getProjectPositions(
-          projectId: widget.project.projectId);
-    } catch (e) {
-      AppSnackbar.showErrorSnackbar(
-          scaffoldKey: _key, message: 'Data refresh failed');
-    }
   }
 
   @override
@@ -240,7 +229,7 @@ class _MediaHouseState extends State<MediaHouse>
                       ],
                     ),
                   ),
-                  preferredSize: Size.fromHeight(140),
+                  preferredSize: Size.fromHeight(120),
                 ),
               ),
               backgroundColor:

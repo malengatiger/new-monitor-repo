@@ -118,7 +118,7 @@ public class ListService {
     }
     public List<Photo> getUserProjectPhotos(String userId) throws Exception {
 
-        LOGGER.info(Emoji.GLOBE.concat(Emoji.GLOBE).concat("getUserProjectPhotos ..."));
+        LOGGER.info(Emoji.GLOBE.concat(Emoji.GLOBE).concat("getUserProjectPhotos ...userId: " + userId));
         List<Photo> mList = photoRepository.findByUserId(userId);
         LOGGER.info(Emoji.GLOBE.concat(Emoji.GLOBE).concat("getUserProjectPhotos ... found: " + mList.size()));
 
@@ -126,7 +126,7 @@ public class ListService {
     }
     public List<Video> getUserProjectVideos(String userId) throws Exception {
 
-        LOGGER.info(Emoji.GLOBE.concat(Emoji.GLOBE).concat("getUserProjectVideos ..."));
+        LOGGER.info(Emoji.GLOBE.concat(Emoji.GLOBE).concat("getUserProjectVideos...userId: " + userId));
         List<Video> mList = videoRepository.findByUserId(userId);
         LOGGER.info(Emoji.GLOBE.concat(Emoji.GLOBE).concat("getUserProjectVideos ... found: " + mList.size()));
 

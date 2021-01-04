@@ -123,7 +123,10 @@ class _FullPhotoMobileState extends State<FullPhotoMobile>
                                 type: PageTransitionType.scale,
                                 alignment: Alignment.bottomRight,
                                 duration: Duration(seconds: 1),
-                                child: ProjectMapMain(widget.project)));
+                                child: ProjectMapMain(
+                                  widget.project,
+                                  photo: widget.photo,
+                                )));
                       },
                     ),
                   )

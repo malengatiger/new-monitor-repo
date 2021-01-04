@@ -262,18 +262,36 @@ class _MediaListMobileState extends State<MediaListMobile>
                           _onMediaTapped(suitcase);
                         },
                         child: Container(
-                          height: 120,
-                          width: 120,
+                          height: 200,
+                          width: 200,
                           child: suitcase.video != null
-                              ? Image.asset(
-                                  'assets/video3.png',
-                                  width: 160,
-                                  height: 160,
-                                  fit: BoxFit.fill,
+                              ? Column(
+                                  children: [
+                                    Image.asset(
+                                      'assets/video3.png',
+                                      width: 100,
+                                      height: 100,
+                                      fit: BoxFit.fill,
+                                    ),
+                                    Text(
+                                      '${getFormattedDateShortestWithTime(suitcase.video.created, context)}',
+                                      style: Styles.blackTiny,
+                                    )
+                                  ],
                                 )
-                              : Image.network(
-                                  suitcase.photo.thumbnailUrl,
-                                  fit: BoxFit.fill,
+                              : Column(
+                                  children: [
+                                    Image.network(
+                                      suitcase.photo.thumbnailUrl,
+                                      fit: BoxFit.fill,
+                                      width: 100,
+                                      height: 100,
+                                    ),
+                                    Text(
+                                      '${getFormattedDateShortestWithTime(suitcase.photo.created, context)}',
+                                      style: Styles.blackTiny,
+                                    )
+                                  ],
                                 ),
                         ),
                       );

@@ -7,6 +7,7 @@ import 'package:monitorlibrary/functions.dart';
 import 'package:monitorlibrary/location/loc_bloc.dart';
 import 'package:monitorlibrary/snack.dart';
 import 'package:monitorlibrary/ui/media/media_house.dart';
+import 'package:monitorlibrary/ui/project_location/project_location_main.dart';
 import 'package:page_transition/page_transition.dart';
 
 class ProjectMonitorMobile extends StatefulWidget {
@@ -189,19 +190,24 @@ class _ProjectMonitorMobileState extends State<ProjectMonitorMobile>
     );
   }
 
+  // ignore: missing_return
   Future<ProjectPosition> _findNearestProjectPosition() async {
     var bags = List<BagX>();
-    if (widget.project.projectPositions.length == 1) {
-      return widget.project.projectPositions.first;
+    if (widget.project.projectPositions.isEmpty) {
+      _navigateToProjectLocation();
+    } else {
+      if (widget.project.projectPositions.length == 1) {
+        return widget.project.projectPositions.first;
+      }
+      widget.project.projectPositions.forEach((pos) async {
+        var distance = await locationBloc.getDistanceFromCurrentPosition(
+            latitude: widget.project.position.coordinates[1],
+            longitude: widget.project.position.coordinates[0]);
+        bags.add(BagX(distance, pos));
+      });
+      bags.sort((a, b) => a.distance.compareTo(b.distance));
+      return bags.first.position;
     }
-    widget.project.projectPositions.forEach((pos) async {
-      var distance = await locationBloc.getDistanceFromCurrentPosition(
-          latitude: widget.project.position.coordinates[1],
-          longitude: widget.project.position.coordinates[0]);
-      bags.add(BagX(distance, pos));
-    });
-    bags.sort((a, b) => a.distance.compareTo(b.distance));
-    return bags.first.position;
   }
 
   bool isWithinDistance = false;
@@ -274,6 +280,26 @@ class _ProjectMonitorMobileState extends State<ProjectMonitorMobile>
             "&travelmode=driving&dir_action=navigate"),
         package: 'com.google.android.apps.maps');
     intent.launch();
+  }
+
+  void _navigateToProjectLocation() async {
+    pp('🏖 🍎 🍎 🍎 ... _navigateToProjectLocation ....');
+    var projectPosition = await Navigator.push(
+        context,
+        PageTransition(
+            type: PageTransitionType.scale,
+            alignment: Alignment.topLeft,
+            duration: Duration(seconds: 1),
+            child: ProjectLocationMain(widget.project)));
+    if (projectPosition != null) {
+      if (projectPosition is ProjectPosition) {
+        if (widget.project.projectPositions == null) {
+          widget.project.projectPositions = [];
+        }
+        widget.project.projectPositions.add(projectPosition);
+        _checkProjectDistance();
+      }
+    }
   }
 }
 
