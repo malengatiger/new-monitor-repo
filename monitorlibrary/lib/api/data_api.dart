@@ -637,7 +637,7 @@ class DataAPI {
     var command = "findUserByEmail?email=$email";
 
     try {
-      pp('🐤🐤🐤🐤 DataAPI : ... 🥏 calling _callWebAPIPost .. 🥏 findUserByEmail $email ');
+      pp('🐤🐤🐤🐤 DataAPI : ... 🥏 calling _callWebAPIPost .. 🥏 findUserByEmail $mURL$command ');
       var result = await _callWebAPIGet(
         '$mURL$command',
       );
@@ -739,18 +739,19 @@ class DataAPI {
     var start = DateTime.now();
     var client = new http.Client();
     var token = await AppAuth.getAuthToken();
-    pp('❤️️❤️  DataAPI._callWebAPIGet .... token: ❤️ $token ❤️');
+    pp('🏈 🏈 🏈 🏈 🏈️  DataAPI._callWebAPIGet .... token: 💙️ $token 💙');
     headers['Authorization'] = 'Bearer $token';
-
+    pp('🏈 🏈 🏈 🏈 🏈  DataAPI._callWebAPIGet .... :  😡  😡  😡 check the headers for the auth token: 💙 💙 💙 $headers 💙 💙 💙 ');
     var resp = await client
         .get(
           mUrl,
           headers: headers,
         )
         .whenComplete(() {});
-    pp('\n\n❤️️❤️  DataAPI._callWebAPIGet .... : 💙 statusCode: 👌👌👌 ${resp.statusCode} 👌👌👌 💙 for $mUrl');
+
+    pp('🏈 🏈 🏈 🏈 🏈  DataAPI._callWebAPIGet .... : 💙 statusCode: 👌👌👌 ${resp.statusCode} 👌👌👌 💙 for $mUrl');
     var end = DateTime.now();
-    pp('❤️❤️  DataAPI._callWebAPIGet ### 🔆 elapsed: ${end.difference(start).inSeconds} seconds 🔆 \n\n');
+    pp('🏈 🏈 🏈 🏈 🏈  DataAPI._callWebAPIGet ### 🔆 elapsed: ${end.difference(start).inSeconds} seconds 🔆 \n\n');
     sendError(resp);
     var mJson = json.decode(resp.body);
     return mJson;
@@ -759,9 +760,8 @@ class DataAPI {
   static void sendError(http.Response resp) {
     if (resp.statusCode != 200) {
       var msg =
-          '😡 😡 The response is not 200; it is ${resp.statusCode}, NOT GOOD, throwing up !! 🥪 🥙 🌮  😡';
+          '😡 😡 The response is not 200; it is ${resp.statusCode}, NOT GOOD, throwing up !! 🥪 🥙 🌮  😡 ${resp.body}';
       pp(msg);
-      print(resp.body);
       throw Exception(msg);
     }
   }

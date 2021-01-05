@@ -92,8 +92,10 @@ public class MonitorBackendApplication implements ApplicationListener<Applicatio
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(@NotNull CorsRegistry registry) {
-                registry.addMapping("/**").allowedOrigins("http://localhost:3001")
-                .allowedHeaders("*");
+                registry.addMapping("/**")
+                        .allowedOrigins("*")
+                        .allowedHeaders("*");
+
                 LOGGER.info("\uD83D\uDC2C \uD83D\uDC2C \uD83D\uDD36 \uD83D\uDD36 corsConfigurer CORS mapping set");
             }
         };

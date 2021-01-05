@@ -7,6 +7,7 @@ import 'package:monitorlibrary/api/sharedprefs.dart';
 import 'package:monitorlibrary/data/photo.dart';
 import 'package:monitorlibrary/data/project.dart';
 import 'package:monitorlibrary/data/user.dart';
+import 'package:universal_platform/universal_platform.dart';
 
 import '../functions.dart';
 
@@ -47,21 +48,27 @@ class FCMBloc {
 
   void initialize() async {
     pp("$mm initialize ...........................");
-    messaging.setAutoInitEnabled(true);
-    messaging.configure(
-      onMessage: (Map<String, dynamic> message) async {
-        pp("$mm onMessage: 🍎 🍎  🍎 🍎  🍎 🍎  🍎 🍎  🍎 🍎 FCM message rolling in ... 🍎 🍎 ");
-        handleMessage(message);
-      },
-      onBackgroundMessage: myBackgroundMessageHandler,
-      onLaunch: (Map<String, dynamic> message) async {
-        pp("$mm onLaunch: $message");
-      },
-      onResume: (Map<String, dynamic> message) async {
-        pp("$mm onResume: $message");
-      },
-    );
-    subscribeToTopics();
+    var android = UniversalPlatform.isAndroid;
+    var ios = UniversalPlatform.isIOS;
+    if (android || ios) {
+      messaging.setAutoInitEnabled(true);
+      messaging.configure(
+        onMessage: (Map<String, dynamic> message) async {
+          pp("$mm onMessage: 🍎 🍎  🍎 🍎  🍎 🍎  🍎 🍎  🍎 🍎 FCM message rolling in ... 🍎 🍎 ");
+          handleMessage(message);
+        },
+        onBackgroundMessage: myBackgroundMessageHandler,
+        onLaunch: (Map<String, dynamic> message) async {
+          pp("$mm onLaunch: $message");
+        },
+        onResume: (Map<String, dynamic> message) async {
+          pp("$mm onResume: $message");
+        },
+      );
+      subscribeToTopics();
+    } else {
+      pp('App is running on the web - 👿 👿 👿 firebase messaging NOT initialized 👿 👿 👿 ');
+    }
   }
 
   Future subscribeToTopics() async {

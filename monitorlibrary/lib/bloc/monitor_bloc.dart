@@ -13,6 +13,7 @@ import 'package:monitorlibrary/data/questionnaire.dart';
 import 'package:monitorlibrary/data/user.dart';
 import 'package:monitorlibrary/functions.dart';
 import 'package:monitorlibrary/location/loc_bloc.dart';
+import 'package:universal_platform/universal_platform.dart';
 
 final MonitorBloc monitorBloc = MonitorBloc();
 
@@ -69,10 +70,10 @@ class MonitorBloc {
   List<Questionnaire> _questionnaires = List();
   List<Project> _projects = List();
   List<ProjectPosition> _projectPositions = List();
-  List<Photo> _photos = List();
-  List<Video> _videos = List();
-  List<User> _users = List();
-  List<Country> _countries = List();
+  List<Photo> _photos = [];
+  List<Video> _videos = [];
+  List<User> _users = [];
+  List<Country> _countries = [];
 
   Future<List<Project>> getProjectsWithinRadius(
       {double radiusInKM = 100.5, bool checkUserOrg = true}) async {
@@ -92,7 +93,7 @@ class MonitorBloc {
         longitude: pos.longitude,
         radiusInKM: radiusInKM);
 
-    var userProjects = List<Project>();
+    var userProjects = [];
     projects.forEach((project) {
       pp('💜 💜 COMPARING: 💜 💜 project.organizationId: ${project.organizationId} '
           '🍏 user.organizationId: ${user.organizationId}');
@@ -125,10 +126,15 @@ class MonitorBloc {
     }
     pp('💜 💜 💜 MonitorBloc: getOrganizationProjects: for organizationId: $organizationId ; '
         'user: 💜 ${user.name} user.organizationId: ${user.organizationId} user.organizationName: ${user.organizationName} ');
-    _projects = await LocalDBAPI.getProjects();
+    var android = UniversalPlatform.isAndroid;
+    if (android) {
+      _projects = await LocalDBAPI.getProjects();
+    } else {
+      _projects.clear();
+    }
     if (_projects.isEmpty || forceRefresh) {
       _projects = await DataAPI.findProjectsByOrganization(organizationId);
-      await LocalDBAPI.addProjects(projects: _projects);
+      if (android) await LocalDBAPI.addProjects(projects: _projects);
     }
     _projController.sink.add(_projects);
     pp('💜 💜 MonitorBloc: OrganizationProjects found: 💜 ${_projects.length} projects 💜');
@@ -156,10 +162,15 @@ class MonitorBloc {
 
   Future<List<User>> getOrganizationUsers(
       {String organizationId, bool forceRefresh = false}) async {
-    _users = await LocalDBAPI.getUsers();
+    var android = UniversalPlatform.isAndroid;
+    if (android) {
+      _users = await LocalDBAPI.getUsers();
+    } else {
+      _users.clear();
+    }
     if (_users.isEmpty || forceRefresh) {
       _users = await DataAPI.findUsersByOrganization(organizationId);
-      await LocalDBAPI.addUsers(users: _users);
+      if (android) await LocalDBAPI.addUsers(users: _users);
     }
     _userController.sink.add(_users);
     pp('💜 💜 💜 MonitorBloc: getOrganizationUsers found: 💜 ${_users.length} users ');
@@ -172,10 +183,16 @@ class MonitorBloc {
 
   Future<List<ProjectPosition>> getProjectPositions(
       {String projectId, bool forceRefresh}) async {
-    _projectPositions = await LocalDBAPI.getProjectPositions(projectId);
+    var android = UniversalPlatform.isAndroid;
+    if (android) {
+      _projectPositions = await LocalDBAPI.getProjectPositions(projectId);
+    } else {
+      _projectPositions.clear();
+    }
     if (_projectPositions.isEmpty || forceRefresh) {
       _projectPositions = await DataAPI.findProjectPositionsById(projectId);
-      await LocalDBAPI.addProjectPositions(positions: _projectPositions);
+      if (android)
+        await LocalDBAPI.addProjectPositions(positions: _projectPositions);
     }
     _projPositionsController.sink.add(_projectPositions);
     pp('💜 💜 💜 MonitorBloc: getProjectPositions found: 💜 ${_projectPositions.length} projectPositions ');
@@ -184,10 +201,15 @@ class MonitorBloc {
 
   Future<List<Photo>> getProjectPhotos(
       {String projectId, bool forceRefresh = false}) async {
-    var photos = await LocalDBAPI.getProjectPhotos(projectId);
+    var android = UniversalPlatform.isAndroid;
+    List<Photo> photos = [];
+    if (android) {
+      photos = await LocalDBAPI.getProjectPhotos(projectId);
+    }
+
     if (photos.isEmpty || forceRefresh) {
       photos = await DataAPI.findPhotosByProject(projectId);
-      await LocalDBAPI.addPhotos(photos: photos);
+      if (android) await LocalDBAPI.addPhotos(photos: photos);
     }
     _projectPhotoController.sink.add(photos);
     pp('💜 💜 💜 MonitorBloc: getProjectPhotos found: 💜 ${photos.length} photos ');
@@ -198,10 +220,16 @@ class MonitorBloc {
   Future<List<Photo>> getOrganizationPhotos(
       {String organizationId, bool forceRefresh = false}) async {
     try {
-      _photos = await LocalDBAPI.getPhotos();
+      var android = UniversalPlatform.isAndroid;
+      if (android) {
+        _photos = await LocalDBAPI.getPhotos();
+      } else {
+        _photos.clear();
+      }
+
       if (_photos.isEmpty || forceRefresh) {
         _photos = await DataAPI.getOrganizationPhotos(organizationId);
-        await LocalDBAPI.addPhotos(photos: _photos);
+        if (android) await LocalDBAPI.addPhotos(photos: _photos);
       }
       _photoController.sink.add(_photos);
       pp('💜 💜 💜 MonitorBloc: getOrganizationPhotos found: 💜 ${_photos.length} photos 💜 ');
@@ -216,9 +244,15 @@ class MonitorBloc {
   Future<List<Video>> getOrganizationVideos(
       {String organizationId, bool forceRefresh = false}) async {
     try {
-      _videos = await LocalDBAPI.getVideos();
+      var android = UniversalPlatform.isAndroid;
+      if (android) {
+        _videos = await LocalDBAPI.getVideos();
+      } else {
+        _videos.clear();
+      }
       if (_videos.isEmpty || forceRefresh) {
         _videos = await DataAPI.getOrganizationVideos(organizationId);
+        if (android) await LocalDBAPI.addVideos(videos: _videos);
       }
       _videoController.sink.add(_videos);
       pp('💜 💜 💜 MonitorBloc: getOrganizationVideos found: 💜 ${_videos.length} videos ');
@@ -232,10 +266,14 @@ class MonitorBloc {
 
   Future<List<Video>> getProjectVideos(
       {String projectId, bool forceRefresh = false}) async {
-    var videos = await LocalDBAPI.getProjectVideos(projectId);
+    List<Video> videos = [];
+    var android = UniversalPlatform.isAndroid;
+    if (android) {
+      videos = await LocalDBAPI.getProjectVideos(projectId);
+    }
     if (videos.isEmpty || forceRefresh) {
       videos = await DataAPI.findVideosById(projectId);
-      await LocalDBAPI.addVideos(videos: videos);
+      if (android) await LocalDBAPI.addVideos(videos: videos);
     }
     _projectVideoideoController.sink.add(videos);
     pp('💜 💜 💜 MonitorBloc: getProjectVideos found: 💜 ${videos.length} videos ');
@@ -251,10 +289,16 @@ class MonitorBloc {
 
   Future<List<Photo>> getUserProjectPhotos(
       {String userId, bool forceRefresh}) async {
-    _photos = await LocalDBAPI.getUserPhotos(userId);
+    var android = UniversalPlatform.isAndroid;
+    if (android) {
+      _photos = await LocalDBAPI.getUserPhotos(userId);
+    } else {
+      _photos.clear();
+    }
+
     if (_photos.isEmpty || forceRefresh) {
       _photos = await DataAPI.getUserProjectPhotos(userId);
-      await LocalDBAPI.addPhotos(photos: _photos);
+      if (android) await LocalDBAPI.addPhotos(photos: _photos);
     }
     _photoController.sink.add(_photos);
     pp('💜 💜 💜 MonitorBloc: getUserProjectPhotos found: 💜 ${_photos.length} photos ');
@@ -263,10 +307,16 @@ class MonitorBloc {
 
   Future<List<Video>> getUserProjectVideos(
       {String userId, bool forceRefresh}) async {
-    _videos = await LocalDBAPI.getUserVideos(userId);
+    var android = UniversalPlatform.isAndroid;
+    if (android) {
+      _videos = await LocalDBAPI.getUserVideos(userId);
+    } else {
+      _videos.clear();
+    }
+
     if (_videos.isEmpty || forceRefresh) {
       _videos = await DataAPI.getUserProjectVideos(userId);
-      await LocalDBAPI.addVideos(videos: _videos);
+      if (android) await LocalDBAPI.addVideos(videos: _videos);
     }
     _videoController.sink.add(_videos);
     pp('💜 💜 💜 MonitorBloc: getUserProjectVideos found: 💜 ${_videos.length} videos ');

@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:monitorlibrary/api/data_api.dart';
 import 'package:monitorlibrary/api/sharedprefs.dart';
 import 'package:monitorlibrary/data/user.dart' as mon;
@@ -15,14 +16,14 @@ class AppAuth {
     var app = await Firebase.initializeApp();
     pp('😎😎😎😎 AppAuth: isUserSignedIn :: 😎😎😎 Firebase has been initialized; '
         '😎 or not? 🍀🍀 app: ${app.options.databaseURL}');
-    _auth = FirebaseAuth.instance;
-    var authUser = _auth.currentUser;
-    if (authUser == null) {
-      pp('👿👿👿 user is not signed in yet ....');
-      return null;
-    }
+    // _auth = FirebaseAuth.instance;
+    // var authUser = _auth.currentUser;
+    // if (authUser == null) {
+    //   pp('👿👿👿 👿👿👿 user is not signed in yet .... 👿👿👿 👿👿👿 ');
+    //   return null;
+    // }
     var user = await Prefs.getUser();
-    if (authUser == null) {
+    if (user == null) {
       return null;
     } else {
       if (user != null) {
@@ -75,6 +76,7 @@ class AppAuth {
   }
 
   static Future<String> getAuthToken() async {
+    _auth = FirebaseAuth.instance;
     var token = await _auth.currentUser.getIdToken();
     return token;
   }
@@ -82,13 +84,19 @@ class AppAuth {
   static Future signIn(String email, String password, String type) async {
     pp('🔐 🔐 🔐 🔐 Auth signing in $email 🌸 $password  🔐 🔐 🔐 🔐');
 
+    //var token = await _getAdminAuthenticationToken();
+    _auth = FirebaseAuth.instance;
     var fbUser = await _auth
         .signInWithEmailAndPassword(email: email, password: password)
+        .whenComplete(() => () {
+              pp('🔐 🔐 🔐 🔐 signInWithEmailAndPassword.whenComplete ..... 🔐 🔐 🔐 🔐');
+            })
         .catchError((e) {
       pp('👿👿👿 Firebase sign in failed, 👿 message below');
       pp(e);
       throw e;
     });
+    pp('🔐 🔐 🔐 🔐 Firebase auth user to be checked ......... ');
     if (fbUser != null) {
       pp('🔐 🔐 🔐 🔐 Auth finding user by email $email 🔐 🔐 🔐 🔐');
       var user = await DataAPI.findUserByEmail(fbUser.user.email);
@@ -97,7 +105,7 @@ class AppAuth {
         throw Exception("User not found on Firebase auth 👿 👿 👿 ");
       }
       if (user.userType != type) {
-        pp('👎🏽 👎🏽 👎🏽 There is a fuck up somewhere, user type is WRONG! 👿');
+        pp('👎🏽 👎🏽 👎🏽 There is a fuck up somewhere, user type ${user.userType} is WRONG! 👿 The app is the wrong one!! 👿 👿 👿 ');
         throw Exception("Incorrect SignIn. The app is the wrong one 👎🏽 👎🏽");
       } else {
         pp('🐤🐤🐤🐤 User found on database. Yeah! 🐤 🐤 🐤');
@@ -112,8 +120,26 @@ class AppAuth {
         pp('👿 👿 Country not found');
       }
       return user;
+    } else {
+      pp('👿 👿 👿 Bub, we have problems here, no Firebase User found 👿 👿 👿 ');
+      throw Exception('Firebase user not found');
     }
   }
 
   static Future getCountry() async {}
+
+  static Future _getAdminAuthenticationToken() async {
+    await DotEnv().load('.env');
+    var email = DotEnv().env['email'];
+    var password = DotEnv().env['password'];
+    _auth = FirebaseAuth.instance;
+
+    var res = await _auth.signInWithEmailAndPassword(
+        email: email, password: password);
+    if (res.user != null) {
+      return await res.user.getIdToken();
+    } else {
+      return null;
+    }
+  }
 }

@@ -155,7 +155,10 @@ class SpecialSnack {
                 color: Theme.of(scaffoldKey.currentContext).primaryColor,
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Text('Close'),
+                  child: Text(
+                    'Close',
+                    style: Styles.whiteTiny,
+                  ),
                 ),
                 onPressed: () {
                   listener.onClose();
@@ -216,13 +219,15 @@ class SpecialSnack {
             SizedBox(
               height: 4,
             ),
-            FlatButton(
+            RaisedButton(
+                elevation: 4,
+                color: Theme.of(scaffoldKey.currentState.context).primaryColor,
                 onPressed: () {
                   listener.onClose();
                 },
                 child: Text(
                   'Close',
-                  style: Styles.blueSmall,
+                  style: Styles.whiteTiny,
                 )),
           ],
         ),
