@@ -81,8 +81,9 @@ class _MonitorMapMobileState extends State<MonitorMapMobile>
       pp('💜 💜 💜 Project positions found: 🍎 ${projectPositions.length}');
       _addMarkers();
     } catch (e) {
+      print(e);
       AppSnackbar.showErrorSnackbar(
-          scaffoldKey: _key, message: 'Data refresh failed');
+          scaffoldKey: _key, message: 'Data refresh failed: $e');
     }
     setState(() {
       isBusy = false;

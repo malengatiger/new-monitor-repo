@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:monitorlibrary/api/data_api.dart';
 import 'package:monitorlibrary/api/local_db_api.dart';
 import 'package:monitorlibrary/api/sharedprefs.dart';
 import 'package:monitorlibrary/data/photo.dart';
@@ -33,6 +34,7 @@ class FCMBloc {
   Stream<Condition> get conditionStream => _conditionController.stream;
   Stream<OrgMessage> get messageStream => _messageController.stream;
 
+  User user;
   void closeStreams() {
     _userController.close();
     _projectController.close();
@@ -48,13 +50,21 @@ class FCMBloc {
 
   void initialize() async {
     pp("$mm initialize ...........................");
+    user = await Prefs.getUser();
     var android = UniversalPlatform.isAndroid;
     var ios = UniversalPlatform.isIOS;
+
     if (android || ios) {
       messaging.setAutoInitEnabled(true);
+
+      messaging.onTokenRefresh.listen((newToken) {
+        pp("$mm onTokenRefresh: 🍎 🍎  🍎 🍎  🍎 🍎  🍎 🍎  🍎 🍎 token: $newToken ... 🍎 🍎 ");
+        _updateUser(newToken);
+      });
+
       messaging.configure(
         onMessage: (Map<String, dynamic> message) async {
-          pp("$mm onMessage: 🍎 🍎  🍎 🍎  🍎 🍎  🍎 🍎  🍎 🍎 FCM message rolling in ... 🍎 🍎 ");
+          pp("$mm onMessage: 🍎 🍎  🍎 🍎  🍎 🍎  🍎 🍎  🍎 🍎 ... FCM message rolling in ... 🍎 🍎 ");
           handleMessage(message);
         },
         onBackgroundMessage: myBackgroundMessageHandler,
@@ -65,7 +75,15 @@ class FCMBloc {
           pp("$mm onResume: $message");
         },
       );
-      subscribeToTopics();
+
+      await subscribeToTopics();
+
+      if (user != null) {
+        var token = await messaging.getToken();
+        if (token != user.fcmRegistration) {
+          await _updateUser(token);
+        }
+      }
     } else {
       pp('App is running on the web - 👿 👿 👿 firebase messaging NOT initialized 👿 👿 👿 ');
     }
@@ -136,12 +154,23 @@ class FCMBloc {
         var m = jsonDecode(data['message']);
         var msg = OrgMessage.fromJson(m);
         await LocalDBAPI.addOrgMessage(message: msg);
-        _messageController.sink.add(msg);
+        if (user.userId != msg.adminId) {
+          _messageController.sink.add(msg);
+        }
       }
     } else {
       pp('👿 👿 👿 No data structure found in FCM message  👿  wtf?  👿 $message');
     }
     return null;
+  }
+
+  Future _updateUser(String newToken) async {
+    if (user != null) {
+      pp("$mm updateUser: 🍎 🍎  🍎 🍎  🍎 🍎  🍎 🍎  🍎 USER: 🍎 ${user.toJson()} ... 🍎 🍎 ");
+      user.fcmRegistration = newToken;
+      await DataAPI.updateUser(user);
+      await Prefs.saveUser(user);
+    }
   }
 }
 

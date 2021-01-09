@@ -238,20 +238,20 @@ class _MediaHouseState extends State<MediaHouse>
                 children: [
                   GridView.builder(
                     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 3,
+                        crossAxisCount: 2,
                         mainAxisSpacing: 1,
                         crossAxisSpacing: 1),
                     itemCount: mediaBags.length,
                     itemBuilder: (BuildContext context, int index) {
                       var item = mediaBags.elementAt(index);
                       return Container(
-                        height: 120,
-                        width: 120,
+                        height: 180,
+                        width: 180,
                         child: item.isVideo
                             ? Image.asset(
                                 'assets/video3.png',
-                                width: 160,
-                                height: 160,
+                                width: 180,
+                                height: 180,
                                 fit: BoxFit.fill,
                               )
                             : Image.file(

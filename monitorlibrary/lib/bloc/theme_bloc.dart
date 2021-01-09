@@ -122,49 +122,49 @@ class ThemeUtil {
       cardColor: Colors.white,
       backgroundColor: Colors.brown.shade100,
       appBarTheme: AppBarTheme(
-          color: Colors.indigo.shade400, brightness: Brightness.dark),
+          color: Colors.indigo.shade300, brightness: Brightness.dark),
       buttonColor: Colors.blue,
     ));
     _themes.add(ThemeData(
       fontFamily: GoogleFonts.raleway().fontFamily,
-      primaryColor: Colors.pink,
-      accentColor: Colors.teal,
+      primaryColor: Colors.pink.shade300,
+      accentColor: Colors.teal.shade400,
       cardColor: Colors.white,
-      backgroundColor: Colors.brown.shade200,
-      appBarTheme: AppBarTheme(elevation: 8, color: Colors.pink.shade400),
+      backgroundColor: Colors.brown.shade100,
+      appBarTheme: AppBarTheme(elevation: 8, color: Colors.pink.shade300),
       buttonColor: Colors.indigo,
     ));
     _themes.add(ThemeData(
       fontFamily: GoogleFonts.raleway().fontFamily,
-      primaryColor: Colors.teal,
-      accentColor: Colors.purple,
+      primaryColor: Colors.teal.shade300,
+      accentColor: Colors.purple.shade300,
       cardColor: Colors.white,
       backgroundColor: Colors.brown.shade100,
-      appBarTheme: AppBarTheme(color: Colors.teal.shade400),
-      buttonColor: Colors.pink,
+      appBarTheme: AppBarTheme(color: Colors.teal.shade300),
+      buttonColor: Colors.pink.shade400,
     ));
     _themes.add(ThemeData(
       fontFamily: GoogleFonts.raleway().fontFamily,
-      primaryColor: Colors.brown,
-      accentColor: Colors.yellow.shade900,
+      primaryColor: Colors.brown.shade300,
+      accentColor: Colors.yellow.shade300,
       cardColor: Colors.white,
       backgroundColor: Colors.brown.shade100,
-      appBarTheme: AppBarTheme(color: Colors.brown.shade400),
-      buttonColor: Colors.blue,
-    ));
-    _themes.add(ThemeData(
-      fontFamily: GoogleFonts.raleway().fontFamily,
-      primaryColor: Colors.lime.shade800,
-      accentColor: Colors.teal,
-      cardColor: Colors.white,
-      backgroundColor: Colors.brown.shade100,
-      appBarTheme: AppBarTheme(color: Colors.lime.shade400),
+      appBarTheme: AppBarTheme(color: Colors.brown.shade300),
       buttonColor: Colors.brown,
     ));
     _themes.add(ThemeData(
       fontFamily: GoogleFonts.raleway().fontFamily,
-      primaryColor: Colors.blue,
-      accentColor: Colors.red,
+      primaryColor: Colors.amber.shade800,
+      accentColor: Colors.teal,
+      cardColor: Colors.white,
+      backgroundColor: Colors.brown.shade100,
+      appBarTheme: AppBarTheme(color: Colors.amber.shade700),
+      buttonColor: Colors.brown,
+    ));
+    _themes.add(ThemeData(
+      fontFamily: GoogleFonts.raleway().fontFamily,
+      primaryColor: Colors.blue.shade400,
+      accentColor: Colors.red.shade300,
       cardColor: Colors.white,
       backgroundColor: Colors.brown.shade100,
       appBarTheme: AppBarTheme(color: Colors.blue.shade400),
@@ -172,7 +172,7 @@ class ThemeUtil {
     ));
     _themes.add(ThemeData(
       fontFamily: GoogleFonts.raleway().fontFamily,
-      primaryColor: Colors.blueGrey,
+      primaryColor: Colors.blueGrey.shade400,
       accentColor: Colors.teal,
       cardColor: Colors.white,
       backgroundColor: Colors.brown.shade100,
@@ -181,60 +181,115 @@ class ThemeUtil {
     ));
     _themes.add(ThemeData(
       fontFamily: GoogleFonts.raleway().fontFamily,
-      primaryColor: Colors.purple,
+      primaryColor: Colors.purple.shade500,
       accentColor: Colors.teal,
       cardColor: Colors.white,
       backgroundColor: Colors.brown.shade100,
-      appBarTheme: AppBarTheme(color: Colors.purple.shade400),
+      appBarTheme: AppBarTheme(color: Colors.purple.shade300),
       buttonColor: Colors.pink,
+    ));
+    _themes.add(ThemeData(
+      fontFamily: GoogleFonts.raleway().fontFamily,
+      primaryColor: Colors.deepPurple.shade300,
+      accentColor: Colors.teal,
+      cardColor: Colors.white,
+      backgroundColor: Colors.brown.shade100,
+      appBarTheme: AppBarTheme(color: Colors.deepPurple.shade300),
+      buttonColor: Colors.pink,
+    ));
+    _themes.add(ThemeData(
+      fontFamily: GoogleFonts.raleway().fontFamily,
+      primaryColor: Colors.deepOrange.shade300,
+      accentColor: Colors.brown,
+      cardColor: Colors.white,
+      backgroundColor: Colors.brown.shade100,
+      appBarTheme: AppBarTheme(color: Colors.deepOrange.shade300),
+      buttonColor: Colors.deepOrange.shade400,
+    ));
+    _themes.add(ThemeData(
+      fontFamily: GoogleFonts.raleway().fontFamily,
+      primaryColor: Colors.orange.shade400,
+      accentColor: Colors.teal,
+      cardColor: Colors.white,
+      backgroundColor: Colors.brown.shade100,
+      appBarTheme: AppBarTheme(color: Colors.orange.shade300),
+      buttonColor: Colors.orange,
+    ));
+    _themes.add(ThemeData(
+      fontFamily: GoogleFonts.raleway().fontFamily,
+      primaryColor: Colors.red.shade300,
+      accentColor: Colors.teal,
+      cardColor: Colors.white,
+      backgroundColor: Colors.brown.shade100,
+      appBarTheme: AppBarTheme(color: Colors.red.shade300),
+      buttonColor: Colors.red.shade400,
+    ));
+    _themes.add(ThemeData(
+      fontFamily: GoogleFonts.raleway().fontFamily,
+      primaryColor: Colors.green.shade300,
+      accentColor: Colors.yellow,
+      cardColor: Colors.white,
+      backgroundColor: Colors.brown.shade100,
+      appBarTheme: AppBarTheme(color: Colors.green.shade300),
+      buttonColor: Colors.green.shade400,
     ));
     _themes.add(ThemeData(
       fontFamily: GoogleFonts.raleway().fontFamily,
       primaryColor: Colors.amber.shade700,
-      accentColor: Colors.teal,
+      accentColor: Colors.red,
       cardColor: Colors.white,
       backgroundColor: Colors.brown.shade100,
-      appBarTheme: AppBarTheme(color: Colors.amber.shade400),
-      buttonColor: Colors.pink,
+      appBarTheme: AppBarTheme(color: Colors.amber.shade700),
+      buttonColor: Colors.amber.shade900,
     ));
     _themes.add(ThemeData(
       fontFamily: GoogleFonts.raleway().fontFamily,
-      primaryColor: Colors.deepOrange,
-      accentColor: Colors.brown,
+      primaryColor: Colors.grey.shade600,
+      accentColor: Colors.yellow,
       cardColor: Colors.white,
       backgroundColor: Colors.brown.shade100,
-      appBarTheme: AppBarTheme(color: Colors.deepOrange.shade400),
-      buttonColor: Colors.deepOrange,
+      appBarTheme: AppBarTheme(color: Colors.grey.shade600),
+      buttonColor: Colors.pink.shade400,
     ));
     _themes.add(ThemeData(
       fontFamily: GoogleFonts.raleway().fontFamily,
-      primaryColor: Colors.orange,
+      primaryColor: Colors.lime.shade700,
       accentColor: Colors.teal,
       cardColor: Colors.white,
       backgroundColor: Colors.brown.shade100,
-      appBarTheme: AppBarTheme(color: Colors.orange.shade400),
-      buttonColor: Colors.pink,
+      appBarTheme: AppBarTheme(color: Colors.lime.shade700),
+      buttonColor: Colors.lime.shade900,
     ));
-    final darkTheme = ThemeData(
-      primarySwatch: Colors.grey,
-      primaryColor: Colors.black,
-      brightness: Brightness.dark,
-      backgroundColor: const Color(0xFF212121),
-      accentColor: Colors.white,
-      accentIconTheme: IconThemeData(color: Colors.black),
-      dividerColor: Colors.black12,
-    );
-    _themes.add(darkTheme);
-
-    final lightTheme = ThemeData(
-      primarySwatch: Colors.grey,
-      primaryColor: Colors.white,
-      brightness: Brightness.light,
-      backgroundColor: const Color(0xFFE5E5E5),
-      accentColor: Colors.black,
-      accentIconTheme: IconThemeData(color: Colors.white),
-      dividerColor: Colors.white54,
-    );
-    _themes.add(lightTheme);
+    _themes.add(ThemeData(
+      fontFamily: GoogleFonts.raleway().fontFamily,
+      primaryColor: Colors.indigo.shade300,
+      accentColor: Colors.green,
+      cardColor: Colors.white,
+      backgroundColor: Colors.brown.shade100,
+      appBarTheme: AppBarTheme(color: Colors.indigo.shade300),
+      buttonColor: Colors.indigo.shade400,
+    ));
+    //
+    // final darkTheme = ThemeData(
+    //   primarySwatch: Colors.grey,
+    //   primaryColor: Colors.black,
+    //   brightness: Brightness.dark,
+    //   backgroundColor: const Color(0xFF212121),
+    //   accentColor: Colors.white,
+    //   accentIconTheme: IconThemeData(color: Colors.black),
+    //   dividerColor: Colors.black12,
+    // );
+    // _themes.add(darkTheme);
+    //
+    // final lightTheme = ThemeData(
+    //   primarySwatch: Colors.grey,
+    //   primaryColor: Colors.white,
+    //   brightness: Brightness.light,
+    //   backgroundColor: const Color(0xFFE5E5E5),
+    //   accentColor: Colors.black,
+    //   accentIconTheme: IconThemeData(color: Colors.white),
+    //   dividerColor: Colors.white54,
+    // );
+    // _themes.add(lightTheme);
   }
 }

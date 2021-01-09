@@ -45,8 +45,9 @@ class _ProjectMonitorMobileState extends State<ProjectMonitorMobile>
       positions = await monitorBloc.getProjectPositions(
           projectId: widget.project.projectId, forceRefresh: false);
     } catch (e) {
+      print(e);
       AppSnackbar.showErrorSnackbar(
-          scaffoldKey: _key, message: 'Data refresh failed');
+          scaffoldKey: _key, message: 'Data refresh failed: $e');
     }
 
     setState(() {

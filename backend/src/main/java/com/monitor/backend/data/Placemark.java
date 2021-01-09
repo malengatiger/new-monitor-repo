@@ -1,20 +1,6 @@
 package com.monitor.backend.data;
 
-/*
-Placemark({
-    this.name,
-    this.street,
-    this.isoCountryCode,
-    this.country,
-    this.postalCode,
-    this.administrativeArea,
-    this.subAdministrativeArea,
-    this.locality,
-    this.subLocality,
-    this.thoroughfare,
-    this.subThoroughfare,
-  });
- */
+
 public class Placemark {
     String name, street, isoCountryCode, country, postalCode, administrativeArea,
             locality, subLocality, subThoroughfare, thoroughfare;

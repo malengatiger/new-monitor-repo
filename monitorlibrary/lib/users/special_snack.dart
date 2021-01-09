@@ -11,52 +11,67 @@ class SpecialSnack {
   static showUserSnackbar(
       {@required GlobalKey<ScaffoldState> scaffoldKey,
       @required User user,
-      Color textColor,
-      Color backgroundColor,
       @required SpecialSnackListener listener,
       int durationMinutes}) {
     if (scaffoldKey.currentState == null) {
       pp('SpecialSnack.showUserSnackbar --- currentState is NULL, quit ..');
       return;
     }
-    scaffoldKey.currentState.removeCurrentSnackBar();
-
-    scaffoldKey.currentState.showSnackBar(SnackBar(
+    ScaffoldMessenger.of(scaffoldKey.currentState.context)
+        .removeCurrentSnackBar();
+    ScaffoldMessenger.of(scaffoldKey.currentState.context)
+        .showSnackBar(SnackBar(
       content: Container(
-        height: 100,
-        child: Column(
-          children: [
-            Text(
-              '${user.name}',
-              style: Styles.whiteBoldSmall,
-            ),
-            SizedBox(
-              height: 2,
-            ),
-            Text(
-              'User added to organization',
-              style: Styles.whiteTiny,
-            ),
-            Text(
-              '${user.userType}',
-              style: Styles.blackTiny,
-            ),
-            Text(
-              '${getFormattedDateShortWithTime(user.created, scaffoldKey.currentContext)}',
-              style: Styles.blackTiny,
-            ),
-          ],
+        height: 120,
+        child: Padding(
+          padding: const EdgeInsets.all(12.0),
+          child: Column(
+            children: [
+              SizedBox(
+                height: 24,
+              ),
+              Text(
+                '${user.name}',
+                style: Styles.blackBoldSmall,
+              ),
+              SizedBox(
+                height: 2,
+              ),
+              Text(
+                'User added to organization',
+                style: Styles.blackTiny,
+              ),
+              Text(
+                '${user.userType}',
+                style: Styles.blackTiny,
+              ),
+              Text(
+                '${getFormattedDateShortWithTime(user.created, scaffoldKey.currentContext)}',
+                style: Styles.blackTiny,
+              ),
+              SizedBox(
+                height: 12,
+              ),
+              RaisedButton(
+                  elevation: 8,
+                  color: Theme.of(scaffoldKey.currentContext).primaryColor,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      'Close',
+                      style: Styles.whiteTiny,
+                    ),
+                  ),
+                  onPressed: () {
+                    listener.onClose();
+                  })
+            ],
+          ),
         ),
       ),
       duration:
           Duration(minutes: durationMinutes == null ? 1 : durationMinutes),
-      backgroundColor: backgroundColor,
-      action: SnackBarAction(
-        label: 'Close',
-        onPressed: () {
-          listener.onClose();
-        },
-      ),
+      backgroundColor: Colors.brown[100],
     ));
   }
 
@@ -71,50 +86,67 @@ class SpecialSnack {
       pp('SpecialSnack.showProjectSnackbar --- currentState is NULL, quit ..');
       return;
     }
-    scaffoldKey.currentState.removeCurrentSnackBar();
-
-    scaffoldKey.currentState.showSnackBar(SnackBar(
+    ScaffoldMessenger.of(scaffoldKey.currentState.context)
+        .removeCurrentSnackBar();
+    ScaffoldMessenger.of(scaffoldKey.currentState.context)
+        .showSnackBar(SnackBar(
       content: Container(
-        height: 100,
-        child: Column(
-          children: [
-            Text(
-              '${project.name}',
-              style: Styles.whiteBoldSmall,
-            ),
-            SizedBox(
-              height: 2,
-            ),
-            Text(
-              'Project added to organization',
-              style: Styles.whiteTiny,
-            ),
-            Text(
-              '${project.description}',
-              style: Styles.whiteTiny,
-            ),
-            SizedBox(
-              height: 2,
-            ),
-            Text(
-              '${getFormattedDateShortWithTime(project.created, scaffoldKey.currentContext)}',
-              style: Styles.blackTiny,
-            ),
-            SizedBox(
-              height: 2,
-            ),
-          ],
+        height: 164,
+        child: Padding(
+          padding: const EdgeInsets.all(12.0),
+          child: Column(
+            children: [
+              SizedBox(
+                height: 4,
+              ),
+              Text(
+                'Project added to organization',
+                style: Styles.blackTiny,
+              ),
+              SizedBox(
+                height: 4,
+              ),
+              Text(
+                '${project.name}',
+                style: Styles.blackBoldSmall,
+              ),
+              SizedBox(
+                height: 4,
+              ),
+              Text(
+                '${project.description}',
+                style: Styles.blackTiny,
+              ),
+              SizedBox(
+                height: 4,
+              ),
+              Text(
+                '${getFormattedDateShortWithTime(project.created, scaffoldKey.currentContext)}',
+                style: Styles.blackTiny,
+              ),
+              SizedBox(
+                height: 4,
+              ),
+              RaisedButton(
+                  elevation: 8,
+                  color: Theme.of(scaffoldKey.currentContext).primaryColor,
+                  child: Padding(
+                    padding: const EdgeInsets.all(4.0),
+                    child: Text(
+                      'Close',
+                      style: Styles.whiteTiny,
+                    ),
+                  ),
+                  onPressed: () {
+                    listener.onClose();
+                  })
+            ],
+          ),
         ),
       ),
       duration:
           Duration(minutes: durationMinutes == null ? 1 : durationMinutes),
-      backgroundColor: backgroundColor,
-      action: SnackBarAction(
-        label: 'Close',
-        onPressed: () {
-          listener.onClose();
-        },
-      ),
+      backgroundColor: Colors.brown[100],
     ));
   }
 
@@ -127,54 +159,75 @@ class SpecialSnack {
       pp('SpecialSnack.showPhotoSnackbar --- currentState is NULL, quit ..');
       return;
     }
-    scaffoldKey.currentState.removeCurrentSnackBar();
-
-    scaffoldKey.currentState.showSnackBar(SnackBar(
+    ScaffoldMessenger.of(scaffoldKey.currentState.context)
+        .removeCurrentSnackBar();
+    ScaffoldMessenger.of(scaffoldKey.currentState.context)
+        .showSnackBar(SnackBar(
       content: Container(
-        height: 280,
-        child: Column(
-          children: [
-            Image.network(
-              photo.thumbnailUrl,
-              width: 160,
-              height: 160,
-              fit: BoxFit.fill,
-            ),
-            SizedBox(
-              height: 8,
-            ),
-            Text(
-              '${photo.userName} : ${getFormattedDateShortWithTime(photo.created, scaffoldKey.currentContext)}',
-              style: Styles.blackTiny,
-            ),
-            SizedBox(
-              height: 2,
-            ),
-            RaisedButton(
-                elevation: 8,
-                color: Theme.of(scaffoldKey.currentContext).primaryColor,
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                    'Close',
-                    style: Styles.whiteTiny,
+        height: 300,
+        child: Card(
+          elevation: 8,
+          child: Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: Column(
+              children: [
+                Container(
+                  height: 16,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      IconButton(
+                          icon: Icon(Icons.close),
+                          onPressed: () {
+                            listener.onClose();
+                          })
+                    ],
                   ),
                 ),
-                onPressed: () {
-                  listener.onClose();
-                })
-          ],
+                Image.network(
+                  photo.thumbnailUrl,
+                  width: 152,
+                  height: 152,
+                  fit: BoxFit.fill,
+                ),
+                SizedBox(
+                  height: 8,
+                ),
+                Text(
+                  '${photo.userName} : ${getFormattedDateShortWithTime(photo.created, scaffoldKey.currentContext)}',
+                  style: Styles.blackTiny,
+                ),
+                SizedBox(
+                  height: 8,
+                ),
+                Text(
+                  '${photo.projectName}',
+                  style: Styles.blueBoldSmall,
+                ),
+                SizedBox(
+                  height: 4,
+                ),
+                RaisedButton(
+                    elevation: 8,
+                    color: Theme.of(scaffoldKey.currentContext).primaryColor,
+                    child: Padding(
+                      padding: const EdgeInsets.all(4.0),
+                      child: Text(
+                        'Close',
+                        style: Styles.whiteTiny,
+                      ),
+                    ),
+                    onPressed: () {
+                      listener.onClose();
+                    })
+              ],
+            ),
+          ),
         ),
       ),
       duration:
           Duration(minutes: durationMinutes == null ? 1 : durationMinutes),
       backgroundColor: Colors.brown[100],
-      // action: SnackBarAction(
-      //   label: 'Close',
-      //   onPressed: () {
-      //     listener.onClose();
-      //   },
-      // ),
     ));
   }
 
@@ -187,9 +240,11 @@ class SpecialSnack {
       pp('SpecialSnack.showVideoSnackbar --- currentState is NULL, quit ..');
       return;
     }
-    scaffoldKey.currentState.removeCurrentSnackBar();
 
-    scaffoldKey.currentState.showSnackBar(SnackBar(
+    ScaffoldMessenger.of(scaffoldKey.currentState.context)
+        .removeCurrentSnackBar();
+    ScaffoldMessenger.of(scaffoldKey.currentState.context)
+        .showSnackBar(SnackBar(
       content: Container(
         height: 140,
         color: Colors.brown[100],
@@ -199,7 +254,7 @@ class SpecialSnack {
               height: 24,
             ),
             Text(
-              'Organization Video added OK',
+              'Project Video added OK',
               style: Styles.blackBoldSmall,
             ),
             SizedBox(
@@ -225,9 +280,12 @@ class SpecialSnack {
                 onPressed: () {
                   listener.onClose();
                 },
-                child: Text(
-                  'Close',
-                  style: Styles.whiteTiny,
+                child: Padding(
+                  padding: const EdgeInsets.all(4.0),
+                  child: Text(
+                    'Close',
+                    style: Styles.whiteTiny,
+                  ),
                 )),
           ],
         ),
@@ -247,41 +305,155 @@ class SpecialSnack {
   static showMessageSnackbar(
       {@required GlobalKey<ScaffoldState> scaffoldKey,
       @required OrgMessage message,
-      Color textColor,
-      Color backgroundColor,
       @required SpecialSnackListener listener,
       int durationMinutes}) {
     if (scaffoldKey.currentState == null) {
       pp('SpecialSnack.showVideoSnackbar --- currentState is NULL, quit ..');
       return;
     }
-    scaffoldKey.currentState.removeCurrentSnackBar();
 
-    scaffoldKey.currentState.showSnackBar(SnackBar(
+    ScaffoldMessenger.of(scaffoldKey.currentState.context)
+        .removeCurrentSnackBar();
+    ScaffoldMessenger.of(scaffoldKey.currentState.context)
+        .showSnackBar(SnackBar(
       content: Container(
-        height: 100,
-        child: Column(
-          children: [
-            Text('${message.message}'),
-            SizedBox(
-              height: 2,
+        height: 260,
+        child: Card(
+          elevation: 8,
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    IconButton(
+                        icon: Icon(
+                          Icons.close,
+                          color: Theme.of(scaffoldKey.currentState.context)
+                              .primaryColor,
+                        ),
+                        onPressed: () {
+                          listener.onClose();
+                        })
+                  ],
+                ),
+                Row(
+                  children: [
+                    Text(
+                      'Message: ',
+                      style: Styles.greyLabelTiny,
+                    ),
+                    SizedBox(
+                      width: 8,
+                    ),
+                    Text(
+                      '${message.message}',
+                      style: Styles.blackBoldSmall,
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: 8,
+                ),
+                Row(
+                  children: [
+                    SizedBox(
+                      width: 52,
+                      child: Text(
+                        'From: ',
+                        style: Styles.greyLabelTiny,
+                      ),
+                    ),
+                    SizedBox(
+                      width: 8,
+                    ),
+                    Text(
+                      '${message.adminName}',
+                      style: Styles.blackBoldSmall,
+                    )
+                  ],
+                ),
+                Row(
+                  children: [
+                    SizedBox(
+                      width: 52,
+                      child: Text(
+                        'To: ',
+                        style: Styles.greyLabelTiny,
+                      ),
+                    ),
+                    SizedBox(
+                      width: 8,
+                    ),
+                    Text(
+                      '${message.name}',
+                      style: Styles.blackBoldSmall,
+                    )
+                  ],
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                Row(
+                  children: [
+                    Text(
+                      'Project: ',
+                      style: Styles.greyLabelTiny,
+                    ),
+                    SizedBox(
+                      width: 8,
+                    ),
+                    Text(
+                      '${message.projectName}',
+                      style: Styles.blueBoldSmall,
+                    )
+                  ],
+                ),
+                SizedBox(
+                  height: 16,
+                ),
+                Row(
+                  children: [
+                    Text(
+                      'Frequency: ',
+                      style: Styles.greyLabelTiny,
+                    ),
+                    SizedBox(
+                      width: 8,
+                    ),
+                    Text(
+                      '${message.frequency}',
+                      style: Styles.pinkBoldSmall,
+                    )
+                  ],
+                ),
+                SizedBox(
+                  height: 4,
+                ),
+                Row(
+                  children: [
+                    Text(
+                      'Sent: ',
+                      style: Styles.greyLabelTiny,
+                    ),
+                    SizedBox(
+                      width: 8,
+                    ),
+                    Text(
+                      '${getFormattedDateShortWithTime(message.created, scaffoldKey.currentContext)}',
+                      style: Styles.blackTiny,
+                    ),
+                  ],
+                ),
+              ],
             ),
-            Text(
-              '${getFormattedDateShortWithTime(message.created, scaffoldKey.currentContext)}',
-              style: Styles.blackTiny,
-            ),
-          ],
+          ),
         ),
       ),
       duration:
           Duration(minutes: durationMinutes == null ? 1 : durationMinutes),
-      backgroundColor: backgroundColor,
-      action: SnackBarAction(
-        label: 'Close',
-        onPressed: () {
-          listener.onClose();
-        },
-      ),
+      backgroundColor: Colors.brown[100],
     ));
   }
 }

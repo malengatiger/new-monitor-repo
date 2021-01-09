@@ -40,50 +40,49 @@ public class MonitorAuthenticationFilter extends OncePerRequestFilter {
         LOGGER.info(Emoji.ANGRY + Emoji.ANGRY + Emoji.ANGRY + Emoji.BELL + "Authenticating this url: " + Emoji.BELL + " " + url);
 
         //todo - KILL this after testing
-        doFilter(httpServletRequest, httpServletResponse, filterChain);
+       // doFilter(httpServletRequest, httpServletResponse, filterChain);
 
         //TODO - 🔺 🔺 🔺 allow the following calls ONLY if in dev !!!! 🔺
-//        if (url.contains("generate") || url.contains("ping")) {
-//            LOGGER.info(Emoji.ANGRY + "this request is not subject to authentication: "
-//                    + Emoji.HAND2 + url);
-//            doFilter(httpServletRequest, httpServletResponse, filterChain);
-//            return;
-//        }
-//        Enumeration<String> mm = httpServletRequest.getHeaderNames();
-//        while (mm.hasMoreElements()) {
-//            String name = mm.nextElement();
-//            LOGGER.info(Emoji.ANGRY + Emoji.ANGRY + Emoji.ANGRY
-//                    + " Header from request: " + Emoji.RED_APPLE  + name);
-//        }
-//
-//        String m = httpServletRequest.getHeader("Authorization");
-//        if (m == null) {
-//            String msg = "\uD83D\uDC7F \uD83D\uDC7F \uD83D\uDC7F " +
-//                    "Authorization Header is missing. Needs JWT token! \uD83C\uDF4E "
-//                    + httpServletRequest.getQueryString() + " \uD83C\uDF4E \uD83C\uDF4E";
-//            LOGGER.info(msg);
-//            throw new ServletException("\uD83D\uDC7F \uD83D\uDC7F \uD83D\uDC7F Not Authorized; Piss off! \uD83D\uDC7F \uD83D\uDC7F \uD83D\uDC7F");
-//        }
-//        String token = m.substring(7);
-//        LOGGER.info(Emoji.ANGRY + Emoji.ANGRY + Emoji.ANGRY + "Firebase token: " + token + Emoji.RED_APPLE );
-//        try {
-//            dataService.initializeFirebase();
-//            ApiFuture<FirebaseToken> future = FirebaseAuth.getInstance().verifyIdTokenAsync(token, true);
-//            FirebaseToken mToken = future.get();
-//            LOGGER.info("\uD83D\uDE21 \uD83D\uDE21 \uD83D\uDE21 Authentication executed, uid: "
-//                    + mToken.getUid() + " \uD83D\uDE21 email: " + mToken.getEmail()
-//                    + "  \uD83C\uDF38" +
-//                    " \uD83C\uDF4E request authenticated OK!! \uD83C\uDF4E");
-//            doFilter(httpServletRequest, httpServletResponse, filterChain);
-//
-//        } catch (InterruptedException | ExecutionException e) {
-//            String msg = "\uD83D\uDD06 \uD83D\uDD06 \uD83D\uDD06 " +
-//                    "FirebaseAuthException happened: \uD83C\uDF4E " + e.getMessage();
-//            System.out.println(msg);
-//            throw new ServletException(msg);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
+        if (url.contains("generate") || url.contains("ping")) {
+            LOGGER.info(Emoji.ANGRY + "this request is not subject to authentication: "
+                    + Emoji.HAND2 + url);
+            doFilter(httpServletRequest, httpServletResponse, filterChain);
+            return;
+        }
+
+        Enumeration<String> mm = httpServletRequest.getHeaderNames();
+        while (mm.hasMoreElements()) {
+            String name = mm.nextElement();
+            LOGGER.info(Emoji.ANGRY + Emoji.ANGRY + Emoji.ANGRY
+                    + " Header from request: " + Emoji.RED_APPLE  + name);
+        }
+
+        String m = httpServletRequest.getHeader("Authorization");
+        if (m == null) {
+            String msg = "\uD83D\uDC7F \uD83D\uDC7F \uD83D\uDC7F " +
+                    "Authorization Header is missing. Needs JWT token! \uD83C\uDF4E "
+                    + httpServletRequest.getQueryString() + " \uD83C\uDF4E \uD83C\uDF4E";
+            LOGGER.info(msg);
+            throw new ServletException("\uD83D\uDC7F \uD83D\uDC7F \uD83D\uDC7F Not Authorized; Piss off! \uD83D\uDC7F \uD83D\uDC7F \uD83D\uDC7F");
+        }
+        String token = m.substring(7);
+        LOGGER.info(Emoji.ANGRY + Emoji.ANGRY + Emoji.ANGRY + "Firebase token: " + token + Emoji.RED_APPLE );
+        try {
+            dataService.initializeFirebase();
+            ApiFuture<FirebaseToken> future = FirebaseAuth.getInstance().verifyIdTokenAsync(token, true);
+            FirebaseToken mToken = future.get();
+            LOGGER.info("\uD83D\uDE21 \uD83D\uDE21 \uD83D\uDE21 Authentication executed, uid: "
+                    + mToken.getUid() + " \uD83D\uDE21 email: " + mToken.getEmail()
+                    + "  \uD83C\uDF38" +
+                    " \uD83C\uDF4E request authenticated OK!! \uD83C\uDF4E");
+            doFilter(httpServletRequest, httpServletResponse, filterChain);
+
+        } catch (Exception e) {
+            String msg = "\uD83D\uDD06 \uD83D\uDD06 \uD83D\uDD06 " +
+                    "FirebaseAuthException happened: \uD83C\uDF4E " + e.getMessage();
+            System.out.println(msg);
+            throw new ServletException(msg);
+        }
 
     }
 

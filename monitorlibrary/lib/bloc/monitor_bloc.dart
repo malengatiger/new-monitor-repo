@@ -93,24 +93,21 @@ class MonitorBloc {
         longitude: pos.longitude,
         radiusInKM: radiusInKM);
 
-    var userProjects = [];
+    List<Project> userProjects = [];
+
+    pp('🍏 🍏 🍏 MonitorBloc: Projects within radius of  🍏 $radiusInKM  🍏 kilometres; '
+        'found: 💜 ${projects.length} projects');
     projects.forEach((project) {
-      pp('💜 💜 COMPARING: 💜 💜 project.organizationId: ${project.organizationId} '
-          '🍏 user.organizationId: ${user.organizationId}');
-      if (project.organizationId == user.organizationId) {
+      pp('😡 😡 😡 ALL PROJECT found in radius: ${project.name} 🍏 ${project.organizationName}  🍏 ${project.organizationId}');
+      if (project.organizationId == _user.organizationId) {
         userProjects.add(project);
       }
     });
 
-    pp('💜 💜 💜 MonitorBloc: Projects within radius of $radiusInKM kilometres; '
-        'found: 💜 ${projects.length} projects');
-    projects.forEach((project) {
-      pp('😡  😡  😡  😡  PROJECT: ${project.name} 🍏 ${project.organizationName}  🍏 ${project.organizationId}');
-    });
     pp('💜 💜 💜 MonitorBloc: User Org Projects within radius of $radiusInKM kilometres; '
-        'found: 💜 ${userProjects.length} projects');
+        'found: 💜 ${userProjects.length} projects in organization, filtered out non-org projects found in radius');
     userProjects.forEach((proj) {
-      pp('💜 💜 PROJECT: ${proj.name} 🍏 ${proj.organizationName}  🍏 ${proj.organizationId}');
+      pp('💜 💜 💜 user PROJECT: ${proj.name} 🍏 ${proj.organizationName}  🍏 ${proj.organizationId}');
     });
     if (checkUserOrg) {
       return userProjects;
@@ -124,7 +121,7 @@ class MonitorBloc {
     if (_user == null) {
       _user = await Prefs.getUser();
     }
-    pp('💜 💜 💜 MonitorBloc: getOrganizationProjects: for organizationId: $organizationId ; '
+    pp('💜 💜 💜 💜 MonitorBloc: getOrganizationProjects: for organizationId: $organizationId ; '
         'user: 💜 ${user.name} user.organizationId: ${user.organizationId} user.organizationName: ${user.organizationName} ');
     var android = UniversalPlatform.isAndroid;
     if (android) {
@@ -137,9 +134,9 @@ class MonitorBloc {
       if (android) await LocalDBAPI.addProjects(projects: _projects);
     }
     _projController.sink.add(_projects);
-    pp('💜 💜 MonitorBloc: OrganizationProjects found: 💜 ${_projects.length} projects 💜');
+    pp('💜 💜 💜 💜 MonitorBloc: OrganizationProjects found: 💜 ${_projects.length} projects 💜');
     _projects.forEach((project) {
-      pp('💜 💜 PROJECT: ${project.name} 🍏 ${project.organizationName}  🍏 ${project.organizationId}');
+      pp('💜 💜 💜 💜 Org PROJECT: ${project.name} 🍏 ${project.organizationName}  🍏 ${project.organizationId}');
     });
 
     return _projects;
@@ -325,7 +322,7 @@ class MonitorBloc {
 
   Future refreshUserData(
       {String userId, String organizationId, bool forceRefresh}) async {
-    pp('💜 💜 💜 MonitorBloc: refreshUserData ... ');
+    pp('💜 💜 💜 MonitorBloc: refreshUserData ... forceRefresh: $forceRefresh');
     await getOrganizationProjects(
         organizationId: organizationId, forceRefresh: forceRefresh);
     await getOrganizationUsers(

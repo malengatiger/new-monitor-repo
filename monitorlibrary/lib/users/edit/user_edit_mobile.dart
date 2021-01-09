@@ -71,6 +71,7 @@ class _UserEditMobileState extends State<UserEditMobile>
               organizationName: admin.organizationName,
               userType: type,
               created: DateTime.now().toIso8601String(),
+              fcmRegistration: 'tbd',
               userId: 'tbd');
           pp('😡 😡 😡 _submit new user ......... ${user.toJson()}');
           try {

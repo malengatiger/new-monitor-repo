@@ -2,19 +2,6 @@ package com.monitor.backend.data;
 
 import org.springframework.data.annotation.Id;
 
-/*
- User(String _partitionKey;
-                @Id String _id;
-                String name;
-                String email;
-                String cellphone;
-                String userId;
-                String organizationId;
-                String organizationName;
-                String created;
-                String userType;
-                String password;
- */
 public class User {
     String _partitionKey;
     @Id
@@ -25,7 +12,7 @@ public class User {
     String userId;
     String organizationId;
     String organizationName;
-    String created;
+    String created, fcmRegistration;
     Type.UserType userType;
     String password;
 
@@ -34,7 +21,7 @@ public class User {
 
     public User(String _partitionKey, String _id, String name,
                 String email, String cellphone, String userId, String organizationId,
-                String organizationName, String created, Type.UserType userType, String password) {
+                String organizationName, String created, Type.UserType userType, String password, String fcmRegistration) {
         this._partitionKey = _partitionKey;
         this._id = _id;
         this.name = name;
@@ -46,6 +33,15 @@ public class User {
         this.created = created;
         this.userType = userType;
         this.password = password;
+        this.fcmRegistration  = fcmRegistration;
+    }
+
+    public String getFcmRegistration() {
+        return fcmRegistration;
+    }
+
+    public void setFcmRegistration(String fcmRegistration) {
+        this.fcmRegistration = fcmRegistration;
     }
 
     public String get_partitionKey() {

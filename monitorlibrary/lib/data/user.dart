@@ -3,13 +3,13 @@ import 'package:meta/meta.dart';
 
 class User {
   String name,
-      _id,
       userId,
       email,
       cellphone,
       created,
       userType,
       organizationName,
+      fcmRegistration,
       organizationId;
 
   User(
@@ -20,12 +20,13 @@ class User {
       @required this.created,
       @required this.userType,
       @required this.organizationName,
-      @required this.organizationId});
+      @required this.organizationId,
+      this.fcmRegistration});
 
   User.fromJson(Map data) {
     this.name = data['name'];
     this.userId = data['userId'];
-    this._id = data['_id'];
+    this.fcmRegistration = data['fcmRegistration'];
     this.email = data['email'];
     this.cellphone = data['cellphone'];
     this.created = data['created'];
@@ -37,7 +38,7 @@ class User {
     Map<String, dynamic> map = {
       'name': name,
       'userId': userId,
-      '_id': _id,
+      'fcmRegistration': fcmRegistration,
       'email': email,
       'cellphone': cellphone,
       'created': created,
@@ -55,17 +56,33 @@ const ORG_EXECUTIVE = 'ORG_EXECUTIVE';
 const NETWORK_ADMINISTRATOR = 'NETWORK_ADMINISTRATOR';
 const ORG_OWNER = 'ORG_OWNER';
 
+const MONITOR_ONCE_A_DAY = 'Once Every Day';
+const MONITOR_TWICE_A_DAY = 'Twice A Day';
+const MONITOR_THREE_A_DAY = 'Three Times A Day';
+const MONITOR_ONCE_A_WEEK = 'Once A Week';
+
+const labels = [
+  'Once Every Day',
+  'Twice A Day',
+  'Three Times A Day',
+  'Once A Week'
+];
+
 class OrgMessage {
-  /*
-   private String organizationId, userId, message, created;
-   */
-  String name, userId, message, created, organizationId;
+  String name, userId, message, created, organizationId, projectId;
+  String projectName, adminId, adminName;
+  String frequency, result;
 
   OrgMessage(
       {@required this.name,
       @required this.message,
       @required this.userId,
       @required this.created,
+      @required this.projectId,
+      @required this.projectName,
+      @required this.adminId,
+      @required this.adminName,
+      @required this.frequency,
       @required this.organizationId});
 
   OrgMessage.fromJson(Map data) {
@@ -74,6 +91,12 @@ class OrgMessage {
     this.message = data['message'];
     this.created = data['created'];
     this.organizationId = data['organizationId'];
+    this.projectId = data['projectId'];
+    this.projectName = data['projectName'];
+    this.adminId = data['adminId'];
+    this.adminName = data['adminName'];
+    this.frequency = data['frequency'];
+    this.result = data['result'];
   }
   Map<String, dynamic> toJson() {
     Map<String, dynamic> map = {
@@ -82,6 +105,12 @@ class OrgMessage {
       'message': message,
       'created': created,
       'organizationId': organizationId,
+      'projectId': projectId,
+      'projectName': projectName,
+      'adminId': adminId,
+      'adminName': adminName,
+      'frequency': frequency,
+      'result': result,
     };
     return map;
   }

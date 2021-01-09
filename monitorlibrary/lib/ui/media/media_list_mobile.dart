@@ -76,8 +76,9 @@ class _MediaListMobileState extends State<MediaListMobile>
           projectId: widget.project.projectId, forceRefresh: forceRefresh);
       _processMedia();
     } catch (e) {
+      print(e);
       AppSnackbar.showErrorSnackbar(
-          scaffoldKey: _key, message: 'Data refresh failed');
+          scaffoldKey: _key, message: 'Data refresh failed: $e');
     }
     setState(() {
       isBusy = false;
@@ -119,15 +120,22 @@ class _MediaListMobileState extends State<MediaListMobile>
         key: _key,
         appBar: AppBar(
           title: Container(),
+          elevation: 16,
           actions: [
             IconButton(
-              icon: Icon(Icons.refresh),
+              icon: Icon(
+                Icons.refresh,
+                size: 20,
+              ),
               onPressed: () {
                 _refresh(true);
               },
             ),
             IconButton(
-              icon: Icon(Icons.add_a_photo),
+              icon: Icon(
+                Icons.add_a_photo,
+                size: 20,
+              ),
               onPressed: _navigateToMonitor,
             )
           ],
@@ -141,7 +149,7 @@ class _MediaListMobileState extends State<MediaListMobile>
                     style: Styles.whiteBoldSmall,
                   ),
                   SizedBox(
-                    height: 28,
+                    height: 16,
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
@@ -176,46 +184,46 @@ class _MediaListMobileState extends State<MediaListMobile>
                     ],
                   ),
                   SizedBox(
-                    height: 28,
-                  ),
-                  suitcases.isEmpty
-                      ? Container()
-                      : Row(
-                          children: [
-                            Text(
-                              'Latest:',
-                              style: Styles.blackTiny,
-                            ),
-                            SizedBox(
-                              width: 8,
-                            ),
-                            Text(
-                              latest == null ? 'some date' : latest,
-                              style: Styles.whiteBoldSmall,
-                            ),
-                            SizedBox(
-                              width: 28,
-                            ),
-                            Text(
-                              'Earliest:',
-                              style: Styles.blackTiny,
-                            ),
-                            SizedBox(
-                              width: 8,
-                            ),
-                            Text(
-                              earliest == null ? 'some date' : earliest,
-                              style: Styles.whiteBoldSmall,
-                            )
-                          ],
-                        ),
-                  SizedBox(
                     height: 12,
                   ),
+                  // suitcases.isEmpty
+                  //     ? Container()
+                  //     : Row(
+                  //         children: [
+                  //           Text(
+                  //             'Latest:',
+                  //             style: Styles.blackTiny,
+                  //           ),
+                  //           SizedBox(
+                  //             width: 8,
+                  //           ),
+                  //           Text(
+                  //             latest == null ? 'some date' : latest,
+                  //             style: Styles.whiteBoldSmall,
+                  //           ),
+                  //           SizedBox(
+                  //             width: 28,
+                  //           ),
+                  //           Text(
+                  //             'Earliest:',
+                  //             style: Styles.blackTiny,
+                  //           ),
+                  //           SizedBox(
+                  //             width: 8,
+                  //           ),
+                  //           Text(
+                  //             earliest == null ? 'some date' : earliest,
+                  //             style: Styles.whiteBoldSmall,
+                  //           )
+                  //         ],
+                  //       ),
+                  // SizedBox(
+                  //   height: 12,
+                  // ),
                 ],
               ),
             ),
-            preferredSize: Size.fromHeight(120),
+            preferredSize: Size.fromHeight(80),
           ),
         ),
         backgroundColor: Colors.brown[100],
@@ -251,9 +259,9 @@ class _MediaListMobileState extends State<MediaListMobile>
                   )
                 : GridView.builder(
                     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 3,
-                        mainAxisSpacing: 1,
-                        crossAxisSpacing: 1),
+                        crossAxisCount: 2,
+                        mainAxisSpacing: 0.3,
+                        crossAxisSpacing: 0.3),
                     itemCount: suitcases.length,
                     itemBuilder: (BuildContext context, int index) {
                       var suitcase = suitcases.elementAt(index);
@@ -269,13 +277,13 @@ class _MediaListMobileState extends State<MediaListMobile>
                                   children: [
                                     Image.asset(
                                       'assets/video3.png',
-                                      width: 100,
-                                      height: 100,
+                                      width: 140,
+                                      height: 140,
                                       fit: BoxFit.fill,
                                     ),
                                     Text(
                                       '${getFormattedDateShortestWithTime(suitcase.video.created, context)}',
-                                      style: Styles.blackTiny,
+                                      style: Styles.blackReallyTiny,
                                     )
                                   ],
                                 )
@@ -284,8 +292,8 @@ class _MediaListMobileState extends State<MediaListMobile>
                                     Image.network(
                                       suitcase.photo.thumbnailUrl,
                                       fit: BoxFit.fill,
-                                      width: 100,
-                                      height: 100,
+                                      width: 160,
+                                      height: 160,
                                     ),
                                     Text(
                                       '${getFormattedDateShortestWithTime(suitcase.photo.created, context)}',

@@ -39,8 +39,9 @@ class _ProjectMapMainState extends State<ProjectMapMain> {
       _positions = await monitorBloc.getProjectPositions(
           projectId: widget.project.projectId, forceRefresh: false);
     } catch (e) {
+      print(e);
       AppSnackbar.showErrorSnackbar(
-          scaffoldKey: _key, message: 'Data refresh failed');
+          scaffoldKey: _key, message: 'Data refresh failed: $e');
     }
     setState(() {
       isBusy = false;

@@ -630,6 +630,20 @@ class DataAPI {
     }
   }
 
+  static Future<OrgMessage> sendMessage(OrgMessage message) async {
+    String mURL = await getUrl();
+    Map bag = message.toJson();
+
+    pp('DataAPI_sendMessage:  🍐 org message to be sent, check properties:  🍐 $bag');
+    try {
+      var result = await _callWebAPIPost(mURL + 'sendMessage', bag);
+      return OrgMessage.fromJson(result);
+    } catch (e) {
+      pp(e);
+      throw e;
+    }
+  }
+
   static Future<User> findUserByEmail(String email) async {
     pp('🐤🐤🐤🐤 DataAPI : ... findUserByEmail $email ');
     String mURL = await getUrl();

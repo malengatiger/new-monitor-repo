@@ -115,10 +115,10 @@ public class DataController {
     @Autowired
     MessageService messageService;
     @PostMapping("/sendMessage")
-    public String sendMessage(@RequestBody OrgMessage orgMessage) throws Exception {
+    public OrgMessage sendMessage(@RequestBody OrgMessage orgMessage) throws Exception {
         LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS)
                 .concat("Sending FCM message ... " + orgMessage.getMessage()));
-        String result = dataService.addOrgMessage(orgMessage);
+        OrgMessage result = dataService.addOrgMessage(orgMessage);
         LOGGER.info(Emoji.LEAF+Emoji.LEAF+ result);
         return result;
     }
@@ -136,7 +136,7 @@ public class DataController {
     @PostMapping("/updateUser")
     public User updateUser(@RequestBody User user) throws Exception {
         LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS)
-                .concat("Adding User: ".concat(user.getName())));
+                .concat("Updating User: ".concat(user.getName())));
         return dataService.updateUser(user);
     }
 

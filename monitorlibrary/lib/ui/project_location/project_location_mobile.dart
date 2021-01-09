@@ -71,8 +71,9 @@ class _ProjectLocationMobileState extends State<ProjectLocationMobile>
       _projectPositions = await monitorBloc.getProjectPositions(
           projectId: widget.project.projectId);
     } catch (e) {
+      print(e);
       AppSnackbar.showErrorSnackbar(
-          scaffoldKey: _key, message: 'Data refresh failed');
+          scaffoldKey: _key, message: 'Data refresh failed: $e');
     }
   }
 

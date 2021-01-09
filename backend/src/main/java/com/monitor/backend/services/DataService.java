@@ -127,10 +127,11 @@ public class DataService {
         return GeoHash.geoHashStringWithCharacterPrecision(latitude, longitude, 12);
     }
     public User updateUser(User user) {
+        userRepository.deleteByUserId(user.getUserId());
         userRepository.save(user);
         LOGGER.info(Emoji.LEAF.concat(Emoji.LEAF).concat("User updated on database: "
                 + user.getName() + " id: "
-                + user.getUserId()));
+                + user.getUserId() + " " + user.getFcmRegistration()));
         return user;
     }
 
@@ -165,10 +166,12 @@ public class DataService {
         LOGGER.info(Emoji.LEAF.concat(Emoji.LEAF).concat("Condition added: " + condition.get_id()));
         return messageService.sendMessage(condition);
     }
-    public String addOrgMessage(OrgMessage orgMessage) throws Exception {
+    public OrgMessage addOrgMessage(OrgMessage orgMessage) throws Exception {
         orgMessageRepository.save(orgMessage);
         LOGGER.info(Emoji.LEAF.concat(Emoji.LEAF).concat("OrgMessage added: " + orgMessage.getMessage()));
-        return messageService.sendMessage(orgMessage);
+        String result =  messageService.sendMessage(orgMessage);
+        orgMessage.setResult(result);
+        return orgMessage;
     }
 
     public ProjectPosition addProjectPosition(ProjectPosition projectPosition) throws Exception {

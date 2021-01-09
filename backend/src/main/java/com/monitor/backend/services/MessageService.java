@@ -3,6 +3,7 @@ package com.monitor.backend.services;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingException;
 import com.google.firebase.messaging.Message;
+import com.google.firebase.messaging.Notification;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.monitor.backend.data.*;
@@ -10,6 +11,8 @@ import com.monitor.backend.utils.Emoji;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+
+import java.util.Date;
 
 @Service
 public class MessageService {
@@ -46,19 +49,38 @@ public class MessageService {
                 .build();
         String response = FirebaseMessaging.getInstance().send(message);
         LOGGER.info(Emoji.RED_APPLE + Emoji.RED_APPLE + "Successfully sent condition message to FCM topic: "
-                + topic + Emoji.RED_APPLE);
+                + topic + " "  + Emoji.RED_APPLE);
         return response;
     }
     public String sendMessage(OrgMessage orgMessage) throws FirebaseMessagingException {
-        String topic = "messages_" + orgMessage.getOrganizationId();
-        Message message = Message.builder()
-                .putData("message", G.toJson(orgMessage))
-                .setTopic(topic)
+        assert(orgMessage.getOrganizationId() != null);
+        Notification notification = Notification.builder()
+                .setBody(orgMessage.getMessage())
+                .setTitle("Message from Digital Monitor")
                 .build();
-        String response = FirebaseMessaging.getInstance().send(message);
-        LOGGER.info(Emoji.RED_APPLE + Emoji.RED_APPLE + "Successfully sent org message to FCM topic: "
-                + topic + Emoji.RED_APPLE);
-        return response;
+        if (orgMessage.getFcmRegistration() == null) {
+            String topic = "messages_" + orgMessage.getOrganizationId();
+            Message message = Message.builder()
+                    .putData("message", G.toJson(orgMessage))
+                    .setTopic(topic)
+                    .setNotification(notification)
+                    .build();
+            String response = FirebaseMessaging.getInstance().send(message);
+            LOGGER.info(Emoji.RED_APPLE + Emoji.RED_APPLE + "Successfully sent org message to FCM topic: "
+                    + topic + Emoji.RED_APPLE);
+            return response;
+        } else {
+            assert(orgMessage.getFcmRegistration() != null);
+            Message message = Message.builder()
+                    .putData("message", G.toJson(orgMessage))
+                    .setToken(orgMessage.getFcmRegistration())
+                    .setNotification(notification)
+                    .build();
+            String response = FirebaseMessaging.getInstance().send(message);
+            LOGGER.info(Emoji.RED_APPLE + Emoji.RED_APPLE + "Successfully sent user message to FCM device: "
+                    + orgMessage.getFcmRegistration() + " " + Emoji.RED_APPLE);
+            return response;
+        }
     }
     public String sendMessage(Project project) throws FirebaseMessagingException {
         String topic = "projects_" + project.getOrganizationId();
@@ -82,4 +104,5 @@ public class MessageService {
                 + topic + Emoji.RED_APPLE);
         return response;
     }
+
 }

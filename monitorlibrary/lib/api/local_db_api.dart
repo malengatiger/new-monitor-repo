@@ -185,15 +185,16 @@ class LocalDBAPI {
       "eq": {"userId": userId}
     });
     List results = await MobMongo.query(carrier);
+    pp('$mx ...... getProjectPhotos, before filter: 🦠 ${results.length}');
     List<Photo> list = List();
     results.forEach((r) {
       var mm = Photo.fromJson(json.decode(r));
-      if (mm.projectId == userId) {
+      if (mm.userId == userId) {
         list.add(mm);
       }
     });
 
-    pp('$mx getProjectPhotos: 🦠 ${list.length}');
+    pp('$mx ...... getProjectPhotos, AFTER filter: 🦠 ${list.length}');
     return list;
   }
 
@@ -223,15 +224,16 @@ class LocalDBAPI {
       "eq": {"userId": userId}
     });
     List results = await MobMongo.query(carrier);
+    pp('$mx getUserVideos, before filter: 🦠 ${results.length}');
     List<Video> list = List();
     results.forEach((r) {
       var mm = Video.fromJson(json.decode(r));
-      if (mm.projectId == userId) {
+      if (mm.userId == userId) {
         list.add(mm);
       }
     });
 
-    pp('$mx getUserVideos: 🦠 ${list.length}');
+    pp('$mx getUserVideos, AFTER filter: 🦠 ${list.length}');
     return list;
   }
 

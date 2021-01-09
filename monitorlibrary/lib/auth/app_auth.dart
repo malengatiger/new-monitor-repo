@@ -40,6 +40,7 @@ class AppAuth {
       @required String password,
       @required bool isLocalAdmin}) async {
     pp('AppAuth: 💜 💜 createUser: auth record to be created ... ${user.toJson()}');
+
     var fbUser = await _auth
         .createUserWithEmailAndPassword(email: user.email, password: password)
         .catchError((e) {
@@ -49,6 +50,8 @@ class AppAuth {
     mon.User mUser;
     if (fbUser != null) {
       user.userId = fbUser.user.uid;
+      var fcm = await fbUser.user.getIdToken();
+      user.fcmRegistration = fcm;
       mUser = await DataAPI.addUser(user);
       pp('AppAuth: 💜 💜 createUser: added to database ... 💛️ 💛️ ${mUser.toJson()}');
 
@@ -67,10 +70,11 @@ class AppAuth {
     } else {
       throw Exception('👿 👿 👿 Firebase auth record addition failed');
     }
+
     if (mUser != null) {
       pp('AppAuth:  💜 💜 💜 💜 createUser, after adding to Mongo database ....... ${mUser.toJson()}');
     } else {
-      pp('AppAuth: 👿👿👿 createUser: this is Houston path, Mongo api call failed ');
+      pp('AppAuth: 👿👿👿 createUser: this is a Houston kind of problem, Mongo api call failed ');
     }
     return mUser;
   }

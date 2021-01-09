@@ -5,6 +5,7 @@ import 'package:monitorlibrary/bloc/fcm_bloc.dart';
 import 'package:monitorlibrary/bloc/monitor_bloc.dart';
 import 'package:monitorlibrary/data/user.dart';
 import 'package:monitorlibrary/functions.dart';
+import 'package:monitorlibrary/ui/message/message_main.dart';
 import 'package:monitorlibrary/users/report/user_rpt_main.dart';
 import 'package:page_transition/page_transition.dart';
 
@@ -30,7 +31,7 @@ class _UserListMobileState extends State<UserListMobile>
   void initState() {
     _controller = AnimationController(vsync: this);
     super.initState();
-    _getData(false);
+    _getData(true);
     _listen();
   }
 
@@ -73,14 +74,20 @@ class _UserListMobileState extends State<UserListMobile>
   List<IconButton> getIconButtons() {
     List<IconButton> list = [];
     list.add(IconButton(
-      icon: Icon(Icons.refresh),
+      icon: Icon(
+        Icons.refresh,
+        size: 20,
+      ),
       onPressed: () {
         _getData(true);
       },
     ));
     if (widget.user.userType == ORG_ADMINISTRATOR) {
       list.add(IconButton(
-        icon: Icon(Icons.add),
+        icon: Icon(
+          Icons.add,
+          size: 20,
+        ),
         onPressed: () {
           _navigateToUserEdit(null);
         },
@@ -90,7 +97,18 @@ class _UserListMobileState extends State<UserListMobile>
   }
 
   List<FocusedMenuItem> _getMenuItems(User user) {
+    assert(user != null);
     List<FocusedMenuItem> list = [];
+    list.add(FocusedMenuItem(
+        title: Text('Send Message'),
+        trailingIcon: Icon(
+          Icons.send,
+          color: Theme.of(context).primaryColor,
+        ),
+        onPressed: () {
+          _navigateToMessaging(user);
+        }));
+
     if (widget.user.userType == ORG_ADMINISTRATOR) {
       list.add(FocusedMenuItem(
           title: Text('Edit User'),
@@ -109,17 +127,6 @@ class _UserListMobileState extends State<UserListMobile>
           ),
           onPressed: () {
             _navigateToUserReport(user);
-          }));
-    } else {
-      list.add(FocusedMenuItem(
-          title: Text('Send Work Message'),
-          trailingIcon: Icon(
-            Icons.send,
-            color: Theme.of(context).primaryColor,
-          ),
-          onPressed: () {
-            AppSnackbar.showErrorSnackbar(
-                scaffoldKey: _key, message: 'Feature Under Construction');
           }));
     }
     return list;
@@ -289,5 +296,17 @@ class _UserListMobileState extends State<UserListMobile>
             alignment: Alignment.topLeft,
             duration: Duration(seconds: 1),
             child: UserReportMain(user)));
+  }
+
+  void _navigateToMessaging(User user) {
+    Navigator.push(
+        context,
+        PageTransition(
+            type: PageTransitionType.scale,
+            alignment: Alignment.bottomLeft,
+            duration: Duration(seconds: 1),
+            child: MessageMain(
+              user: user,
+            )));
   }
 }

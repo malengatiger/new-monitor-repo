@@ -66,8 +66,9 @@ class _UserMediaListMobileState extends State<UserMediaListMobile>
           await monitorBloc.getUserProjectVideos(userId: widget.user.userId);
       _processMedia();
     } catch (e) {
+      print(e);
       AppSnackbar.showErrorSnackbar(
-          scaffoldKey: _key, message: 'Data refresh failed');
+          scaffoldKey: _key, message: 'Data refresh failed: $e');
     }
     setState(() {
       isBusy = false;
@@ -114,7 +115,10 @@ class _UserMediaListMobileState extends State<UserMediaListMobile>
           ),
           actions: [
             IconButton(
-              icon: Icon(Icons.refresh),
+              icon: Icon(
+                Icons.refresh,
+                size: 20,
+              ),
               onPressed: _refresh,
             )
           ],
@@ -131,7 +135,7 @@ class _UserMediaListMobileState extends State<UserMediaListMobile>
                               width: 20,
                               height: 20,
                               child: CircularProgressIndicator(
-                                strokeWidth: 2,
+                                strokeWidth: 8,
                                 backgroundColor: Colors.black,
                               ),
                             )
@@ -140,60 +144,60 @@ class _UserMediaListMobileState extends State<UserMediaListMobile>
                         width: 28,
                       ),
                       Text(
-                        'Visual Project Monitoring',
-                        style: Styles.whiteBoldSmall,
+                        'Digital Project Monitor',
+                        style: Styles.whiteSmall,
                       ),
                       SizedBox(
-                        width: 48,
+                        width: 64,
                       ),
                       Text(
                         '${suitcases.length}',
-                        style: Styles.blackBoldMedium,
+                        style: Styles.blackBoldSmall,
                       ),
                       SizedBox(
                         width: 12,
                       ),
                     ],
                   ),
-                  SizedBox(
-                    height: 28,
-                  ),
-                  Row(
-                    children: [
-                      Text(
-                        'Latest:',
-                        style: Styles.blackTiny,
-                      ),
-                      SizedBox(
-                        width: 8,
-                      ),
-                      Text(
-                        latest == null ? 'some date' : latest,
-                        style: Styles.whiteBoldSmall,
-                      ),
-                      SizedBox(
-                        width: 28,
-                      ),
-                      Text(
-                        'Earliest:',
-                        style: Styles.blackTiny,
-                      ),
-                      SizedBox(
-                        width: 8,
-                      ),
-                      Text(
-                        earliest == null ? 'some date' : earliest,
-                        style: Styles.whiteBoldSmall,
-                      )
-                    ],
-                  ),
+                  // SizedBox(
+                  //   height: 28,
+                  // ),
+                  // Row(
+                  //   children: [
+                  //     Text(
+                  //       'Latest:',
+                  //       style: Styles.blackTiny,
+                  //     ),
+                  //     SizedBox(
+                  //       width: 8,
+                  //     ),
+                  //     Text(
+                  //       latest == null ? 'some date' : latest,
+                  //       style: Styles.whiteBoldSmall,
+                  //     ),
+                  //     SizedBox(
+                  //       width: 28,
+                  //     ),
+                  //     Text(
+                  //       'Earliest:',
+                  //       style: Styles.blackTiny,
+                  //     ),
+                  //     SizedBox(
+                  //       width: 8,
+                  //     ),
+                  //     Text(
+                  //       earliest == null ? 'some date' : earliest,
+                  //       style: Styles.whiteBoldSmall,
+                  //     )
+                  //   ],
+                  // ),
                   SizedBox(
                     height: 12,
                   ),
                 ],
               ),
             ),
-            preferredSize: Size.fromHeight(120),
+            preferredSize: Size.fromHeight(60),
           ),
         ),
         backgroundColor: Colors.brown[100],

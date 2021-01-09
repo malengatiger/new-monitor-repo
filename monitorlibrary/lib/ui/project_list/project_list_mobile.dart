@@ -94,6 +94,8 @@ class _ProjectListMobileState extends State<ProjectListMobile>
   }
 
   Future refreshProjects(bool forceRefresh) async {
+    if (isBusy) return;
+
     if (mounted) {
       setState(() {
         isBusy = true;
@@ -101,19 +103,17 @@ class _ProjectListMobileState extends State<ProjectListMobile>
     }
     try {
       if (isProjectsByLocation) {
+        pp('ProjectListMobile  🥏 🥏 🥏 getProjectsWithinRadius: $sliderValue km  🥏');
         projects = await monitorBloc.getProjectsWithinRadius(
-            radiusInKM: 3.0, checkUserOrg: true);
-        pp('🦠 🦠 🦠 🦠 🦠  ProjectList: Projects within given radius ; '
-            'found: 💜 ${projects.length} projects');
+            radiusInKM: sliderValue, checkUserOrg: true);
       } else {
         projects = await monitorBloc.getOrganizationProjects(
             organizationId: user.organizationId, forceRefresh: forceRefresh);
-        pp('🦠 🦠 🦠 🦠 🦠  ProjectList: Organization Projects '
-            'found: 💜 ${projects.length} projects');
       }
     } catch (e) {
+      print(e);
       AppSnackbar.showErrorSnackbar(
-          scaffoldKey: _key, message: 'Data refresh failed');
+          scaffoldKey: _key, message: 'Data refresh failed: $e');
     }
     if (mounted) {
       setState(() {
@@ -238,8 +238,14 @@ class _ProjectListMobileState extends State<ProjectListMobile>
     // ));
     list.add(IconButton(
       icon: isProjectsByLocation
-          ? Icon(Icons.list_alt)
-          : Icon(Icons.location_on_outlined),
+          ? Icon(
+              Icons.list,
+              size: 24,
+            )
+          : Icon(
+              Icons.location_pin,
+              size: 20,
+            ),
       onPressed: () {
         isProjectsByLocation = !isProjectsByLocation;
         refreshProjects(true);
@@ -248,7 +254,7 @@ class _ProjectListMobileState extends State<ProjectListMobile>
     if (projects.isNotEmpty) {
       list.add(
         IconButton(
-          icon: Icon(Icons.map_outlined),
+          icon: Icon(Icons.map),
           onPressed: () {
             _navigateToOrgMap(null);
           },
@@ -258,20 +264,26 @@ class _ProjectListMobileState extends State<ProjectListMobile>
     if (user.userType == ORG_ADMINISTRATOR) {
       list.add(
         IconButton(
-          icon: Icon(Icons.add),
+          icon: Icon(
+            Icons.add,
+            size: 20,
+          ),
           onPressed: () {
             _navigateToDetail(null);
           },
         ),
       );
-      list.add(
-        IconButton(
-          icon: Icon(Icons.location_pin),
-          onPressed: () {
-            _navigateToDetail(null);
-          },
-        ),
-      );
+      // list.add(
+      //   IconButton(
+      //     icon: Icon(
+      //       Icons.location_pin,
+      //       size: 20,
+      //     ),
+      //     onPressed: () {
+      //       _navigateToDetail(null);
+      //     },
+      //   ),
+      // );
     }
     return list;
   }
@@ -301,7 +313,7 @@ class _ProjectListMobileState extends State<ProjectListMobile>
                           style: Styles.blackBoldSmall,
                         ),
                         SizedBox(
-                          height: 32,
+                          height: 24,
                         ),
                         Text(
                           user == null ? '' : '${user.name}',
@@ -315,11 +327,86 @@ class _ProjectListMobileState extends State<ProjectListMobile>
                           style: Styles.blackTiny,
                         ),
                         SizedBox(
+                          height: 2,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            isProjectsByLocation
+                                ? Row(
+                                    children: [
+                                      SliderTheme(
+                                        data: SliderTheme.of(context).copyWith(
+                                          activeTrackColor: Colors.pink[700],
+                                          inactiveTrackColor: Colors.pink[100],
+                                          trackShape:
+                                              RoundedRectSliderTrackShape(),
+                                          trackHeight: 4.0,
+                                          thumbShape: RoundSliderThumbShape(
+                                              enabledThumbRadius: 12.0),
+                                          thumbColor: Colors.pinkAccent,
+                                          overlayColor:
+                                              Colors.pink.withAlpha(32),
+                                          overlayShape: RoundSliderOverlayShape(
+                                              overlayRadius: 28.0),
+                                          tickMarkShape:
+                                              RoundSliderTickMarkShape(),
+                                          activeTickMarkColor: Colors.pink[700],
+                                          inactiveTickMarkColor:
+                                              Colors.pink[100],
+                                          valueIndicatorShape:
+                                              PaddleSliderValueIndicatorShape(),
+                                          valueIndicatorColor:
+                                              Colors.pinkAccent,
+                                          valueIndicatorTextStyle: TextStyle(
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                        child: Slider(
+                                          value: sliderValue,
+                                          min: 10,
+                                          max: 50,
+                                          divisions: 5,
+                                          label: '$sliderValue',
+                                          onChanged: _onSliderChanged,
+                                        ),
+                                      ),
+                                      // SizedBox(
+                                      //   width: 8,
+                                      // ),
+                                      Text(
+                                        '$sliderValue',
+                                        style: Styles.whiteBoldSmall,
+                                      )
+                                    ],
+                                  )
+                                : Container(),
+                            SizedBox(
+                              width: 24,
+                            ),
+                            Text(
+                              'Projects',
+                              style: Styles.blackTiny,
+                            ),
+                            SizedBox(
+                              width: 8,
+                            ),
+                            Text(
+                              '${projects.length}',
+                              style: Styles.whiteBoldSmall,
+                            ),
+                            SizedBox(
+                              width: 24,
+                            )
+                          ],
+                        ),
+                        SizedBox(
                           height: 20,
                         ),
                       ],
                     ),
-                    preferredSize: Size.fromHeight(120),
+                    preferredSize:
+                        Size.fromHeight(isProjectsByLocation ? 160 : 120),
                   ),
                 ),
                 backgroundColor: Colors.brown[100],
@@ -342,7 +429,7 @@ class _ProjectListMobileState extends State<ProjectListMobile>
                               height: 20,
                             ),
                             Text(isProjectsByLocation
-                                ? 'Finding Projects within 3 KM'
+                                ? 'Finding Projects within $sliderValue KM'
                                 : 'Finding Organization Projects'),
                           ],
                         ),
@@ -388,7 +475,7 @@ class _ProjectListMobileState extends State<ProjectListMobile>
                                                     Opacity(
                                                       opacity: 0.5,
                                                       child: Icon(
-                                                        Icons.settings,
+                                                        Icons.water_damage,
                                                         color: Theme.of(context)
                                                             .primaryColor,
                                                       ),
@@ -419,5 +506,15 @@ class _ProjectListMobileState extends State<ProjectListMobile>
                               )));
           }),
     );
+  }
+
+  double sliderValue = 10.0;
+  void _onSliderChanged(double value) {
+    pp('ProjectListMobile  🥏 🥏 🥏 🥏 🥏 _onSliderChanged: $value');
+    setState(() {
+      sliderValue = value;
+    });
+
+    refreshProjects(false);
   }
 }
