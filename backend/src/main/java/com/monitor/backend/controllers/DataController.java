@@ -2,11 +2,7 @@ package com.monitor.backend.controllers;
 
 import com.google.firebase.messaging.FirebaseMessagingException;
 import com.monitor.backend.data.*;
-import com.monitor.backend.models.*;
-import com.monitor.backend.services.DataService;
-import com.monitor.backend.services.ListService;
-import com.monitor.backend.services.MessageService;
-import com.monitor.backend.services.MongoDataService;
+import com.monitor.backend.services.*;
 import com.monitor.backend.utils.Emoji;
 import com.monitor.backend.utils.MongoGenerator;
 import org.joda.time.DateTime;
@@ -31,6 +27,12 @@ public class DataController {
 
     @Autowired
     private MongoGenerator mongoGenerator;
+
+    @Autowired
+    private MessageService messageService;
+
+    @Autowired
+    OzowService ozowService;
 
     @GetMapping("/ping")
     public String ping() throws Exception {
@@ -70,10 +72,11 @@ public class DataController {
     @PostMapping("/addProject")
     public com.monitor.backend.data.Project addProject(@RequestBody com.monitor.backend.data.Project project) throws Exception {
         LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS).concat("Adding Project: ".concat(project.getName())));
-        String result =  dataService.addProject(project);
-        LOGGER.info(Emoji.LEAF+Emoji.LEAF+ result);
+        String result = dataService.addProject(project);
+        LOGGER.info(Emoji.LEAF + Emoji.LEAF + result);
         return project;
     }
+
     @PostMapping("/updateProject")
     public com.monitor.backend.data.Project updateProject(@RequestBody Project project) throws Exception {
         LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS).concat("Update Project: ".concat(project.getName())));
@@ -83,7 +86,7 @@ public class DataController {
     @PostMapping("/addProjectPosition")
     public ProjectPosition addProjectPosition(@RequestBody ProjectPosition projectPosition)
             throws Exception {
-        LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS).concat("Adding Project Position: " ));
+        LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS).concat("Adding Project Position: "));
         return dataService.addProjectPosition(projectPosition);
     }
 
@@ -92,34 +95,44 @@ public class DataController {
     public Photo addPhoto(@RequestBody Photo photo) throws Exception {
         LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS)
                 .concat("Adding Photo ... " + photo.getProjectName()));
-         String result = dataService.addPhoto(photo);
-        LOGGER.info(Emoji.LEAF+Emoji.LEAF+ result);
-         return photo;
+        String result = dataService.addPhoto(photo);
+        LOGGER.info(Emoji.LEAF + Emoji.LEAF + result);
+        return photo;
     }
+
     @PostMapping("/addVideo")
     public Video addVideo(@RequestBody Video video) throws Exception {
         LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS)
                 .concat("Adding Video ... " + video.getProjectName()));
-         String result = dataService.addVideo(video);
-        LOGGER.info(Emoji.LEAF+Emoji.LEAF+ result);
-         return video;
+        String result = dataService.addVideo(video);
+        LOGGER.info(Emoji.LEAF + Emoji.LEAF + result);
+        return video;
     }
+
+    @PostMapping("/sendOzowPaymentRequest")
+    public String sendOzowPaymentRequest(@RequestBody OzowPaymentRequest paymentRequest) throws Exception {
+        LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS)
+                .concat("sendOzowPaymentRequest ... " + paymentRequest.getAmount()));
+        String result = ozowService.sendOzowPaymentRequest(paymentRequest);
+        LOGGER.info(Emoji.LEAF + Emoji.LEAF + result);
+        return result;
+    }
+
     @PostMapping("/addCondition")
     public Condition addCondition(@RequestBody Condition condition) throws Exception {
         LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS)
                 .concat("Adding Condition ... " + condition.getProjectName()));
-         String result = dataService.addCondition(condition);
-        LOGGER.info(Emoji.LEAF+Emoji.LEAF+ result);
-         return condition;
+        String result = dataService.addCondition(condition);
+        LOGGER.info(Emoji.LEAF + Emoji.LEAF + result);
+        return condition;
     }
-    @Autowired
-    MessageService messageService;
+
     @PostMapping("/sendMessage")
     public OrgMessage sendMessage(@RequestBody OrgMessage orgMessage) throws Exception {
         LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS)
                 .concat("Sending FCM message ... " + orgMessage.getMessage()));
         OrgMessage result = dataService.addOrgMessage(orgMessage);
-        LOGGER.info(Emoji.LEAF+Emoji.LEAF+ result);
+        LOGGER.info(Emoji.LEAF + Emoji.LEAF + result);
         return result;
     }
 
@@ -133,6 +146,7 @@ public class DataController {
                 .concat(".... Adding User: ".concat(user.getName())));
         return dataService.addUser(user);
     }
+
     @PostMapping("/updateUser")
     public User updateUser(@RequestBody User user) throws Exception {
         LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS)

@@ -62,12 +62,12 @@ class _FullPhotoMobileState extends State<FullPhotoMobile>
           children: [
             CachedNetworkImage(
               imageUrl: widget.photo.url,
-              fit: BoxFit.fill,
+              fit: BoxFit.fitHeight,
               progressIndicatorBuilder: (context, url, downloadProgress) =>
                   Center(
                       child: Container(
-                          width: 48,
-                          height: 48,
+                          width: 24,
+                          height: 24,
                           child: CircularProgressIndicator(
                               backgroundColor: Colors.white,
                               value: downloadProgress.progress))),
@@ -79,7 +79,7 @@ class _FullPhotoMobileState extends State<FullPhotoMobile>
               child: Card(
                 elevation: 8,
                 child: Padding(
-                  padding: const EdgeInsets.only(left: 20.0),
+                  padding: const EdgeInsets.only(left: 20.0, bottom: 8, top: 8),
                   child: Row(
                     children: [
                       Text('Distance from Project'),

@@ -8,12 +8,14 @@ import 'package:monitorlibrary/data/photo.dart';
 import 'package:monitorlibrary/data/project.dart';
 import 'package:monitorlibrary/data/user.dart';
 import 'package:monitorlibrary/ui/media/full_photo/full_photo_main.dart';
+import 'package:monitorlibrary/ui/media/list/media_grid.dart';
 import 'package:monitorlibrary/ui/media/video/video_main.dart';
 import 'package:monitorlibrary/ui/project_monitor/project_monitor_main.dart';
+import 'package:monitorlibrary/users/special_snack.dart';
 import 'package:page_transition/page_transition.dart';
 
-import '../../functions.dart';
-import '../../snack.dart';
+import '../../../functions.dart';
+import '../../../snack.dart';
 
 class MediaListMobile extends StatefulWidget {
   final Project project;
@@ -25,12 +27,13 @@ class MediaListMobile extends StatefulWidget {
 }
 
 class _MediaListMobileState extends State<MediaListMobile>
-    with SingleTickerProviderStateMixin {
+    with SingleTickerProviderStateMixin
+    implements SpecialSnackListener, MediaGridListener {
   AnimationController _controller;
   StreamSubscription<List<Photo>> photoStreamSubscription;
   StreamSubscription<List<Video>> videoStreamSubscription;
-  var _photos = List<Photo>();
-  var _videos = List<Video>();
+  var _photos = <Photo>[];
+  var _videos = <Video>[];
   User user;
 
   @override
@@ -97,11 +100,11 @@ class _MediaListMobileState extends State<MediaListMobile>
   void _processMedia() {
     suitcases.clear();
     _photos.forEach((element) {
-      var sc = Suitcase(photo: element, date: element.created);
+      var sc = MediaBag(photo: element, date: element.created);
       suitcases.add(sc);
     });
     _videos.forEach((element) {
-      var sc = Suitcase(video: element, date: element.created);
+      var sc = MediaBag(video: element, date: element.created);
       suitcases.add(sc);
     });
     if (suitcases.isNotEmpty) {
@@ -257,65 +260,22 @@ class _MediaListMobileState extends State<MediaListMobile>
                       ),
                     ),
                   )
-                : GridView.builder(
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        mainAxisSpacing: 0.3,
-                        crossAxisSpacing: 0.3),
-                    itemCount: suitcases.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      var suitcase = suitcases.elementAt(index);
-                      return GestureDetector(
-                        onTap: () {
-                          _onMediaTapped(suitcase);
-                        },
-                        child: Container(
-                          height: 200,
-                          width: 200,
-                          child: suitcase.video != null
-                              ? Column(
-                                  children: [
-                                    Image.asset(
-                                      'assets/video3.png',
-                                      width: 140,
-                                      height: 140,
-                                      fit: BoxFit.fill,
-                                    ),
-                                    Text(
-                                      '${getFormattedDateShortestWithTime(suitcase.video.created, context)}',
-                                      style: Styles.blackReallyTiny,
-                                    )
-                                  ],
-                                )
-                              : Column(
-                                  children: [
-                                    Image.network(
-                                      suitcase.photo.thumbnailUrl,
-                                      fit: BoxFit.fill,
-                                      width: 160,
-                                      height: 160,
-                                    ),
-                                    Text(
-                                      '${getFormattedDateShortestWithTime(suitcase.photo.created, context)}',
-                                      style: Styles.blackTiny,
-                                    )
-                                  ],
-                                ),
-                        ),
-                      );
-                    },
-                  ),
+                : MediaGrid(
+                    imageList: suitcases,
+                    mediaGridListener: this,
+                  )
           ],
         ),
       ),
     );
   }
 
-  var suitcases = List<Suitcase>();
+  var suitcases = <MediaBag>[];
 
-  void _onMediaTapped(Suitcase suitcase) {
+  @override
+  void onMediaSelected(MediaBag suitcase) {
     if (suitcase.video != null) {
-      pp('🦠 🦠 🦠 _onMediaTapped: Play video from 🦠 ${suitcase.video.url} 🦠');
+      pp('MediaListMobile: 🦠 🦠 🦠 _onMediaTapped: Play video from 🦠 ${suitcase.video.url} 🦠');
       Navigator.push(
           context,
           PageTransition(
@@ -324,7 +284,7 @@ class _MediaListMobileState extends State<MediaListMobile>
               duration: Duration(seconds: 1),
               child: VideoMain(suitcase.video)));
     } else {
-      pp(' 🍎 🍎 🍎 _onMediaTapped: show full image from 🍎 ${suitcase.photo.url} 🍎');
+      pp('MediaListMobile: 🦠 🦠 🦠 _onMediaTapped: show full image from 🍎 ${suitcase.photo.url} 🍎');
       Navigator.push(
           context,
           PageTransition(
@@ -344,12 +304,17 @@ class _MediaListMobileState extends State<MediaListMobile>
             duration: Duration(milliseconds: 1500),
             child: ProjectMonitorMain(widget.project)));
   }
+
+  @override
+  onClose() {
+    ScaffoldMessenger.of(_key.currentState.context).removeCurrentSnackBar();
+  }
 }
 
-class Suitcase {
+class MediaBag {
   Photo photo;
   Video video;
   String date;
 
-  Suitcase({this.photo, this.video, this.date});
+  MediaBag({this.photo, this.video, this.date});
 }

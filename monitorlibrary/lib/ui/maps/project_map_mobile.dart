@@ -6,6 +6,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:monitorlibrary/data/photo.dart';
 import 'package:monitorlibrary/data/project.dart';
 import 'package:monitorlibrary/data/project_position.dart';
+import 'package:monitorlibrary/users/special_snack.dart';
 
 import '../../functions.dart';
 
@@ -22,11 +23,13 @@ class ProjectMapMobile extends StatefulWidget {
 }
 
 class _ProjectMapMobileState extends State<ProjectMapMobile>
-    with SingleTickerProviderStateMixin {
+    with SingleTickerProviderStateMixin
+    implements SpecialSnackListener {
   AnimationController _controller;
   Completer<GoogleMapController> _mapController = Completer();
   Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
   var random = Random(DateTime.now().millisecondsSinceEpoch);
+  var _key = GlobalKey<ScaffoldState>();
 
   static final CameraPosition _kGooglePlex = CameraPosition(
     target: LatLng(37.42796133580664, -122.085749655962),
@@ -95,6 +98,7 @@ class _ProjectMapMobileState extends State<ProjectMapMobile>
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        key: _key,
         appBar: AppBar(
           title: Text(
             widget.project.name,
@@ -149,5 +153,10 @@ class _ProjectMapMobileState extends State<ProjectMapMobile>
         ),
       ),
     );
+  }
+
+  @override
+  onClose() {
+    ScaffoldMessenger.of(_key.currentState.context).removeCurrentSnackBar();
   }
 }

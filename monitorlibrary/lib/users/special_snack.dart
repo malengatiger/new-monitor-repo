@@ -171,19 +171,6 @@ class SpecialSnack {
             padding: const EdgeInsets.all(12.0),
             child: Column(
               children: [
-                Container(
-                  height: 16,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      IconButton(
-                          icon: Icon(Icons.close),
-                          onPressed: () {
-                            listener.onClose();
-                          })
-                    ],
-                  ),
-                ),
                 Image.network(
                   photo.thumbnailUrl,
                   width: 152,
@@ -312,141 +299,140 @@ class SpecialSnack {
       return;
     }
 
+    var height = 300;
     ScaffoldMessenger.of(scaffoldKey.currentState.context)
         .removeCurrentSnackBar();
     ScaffoldMessenger.of(scaffoldKey.currentState.context)
         .showSnackBar(SnackBar(
       content: Container(
-        height: 260,
+        height: 300,
         child: Card(
           elevation: 8,
           child: Padding(
             padding: const EdgeInsets.all(16.0),
-            child: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    IconButton(
-                        icon: Icon(
-                          Icons.close,
-                          color: Theme.of(scaffoldKey.currentState.context)
-                              .primaryColor,
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      IconButton(
+                          icon: Icon(
+                            Icons.close,
+                            color: Theme.of(scaffoldKey.currentState.context)
+                                .primaryColor,
+                          ),
+                          onPressed: () {
+                            listener.onClose();
+                          })
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Flexible(
+                        child: Text(
+                          '${message.message}',
+                          style: Styles.blackBoldSmall,
                         ),
-                        onPressed: () {
-                          listener.onClose();
-                        })
-                  ],
-                ),
-                Row(
-                  children: [
-                    Text(
-                      'Message: ',
-                      style: Styles.greyLabelTiny,
-                    ),
-                    SizedBox(
-                      width: 8,
-                    ),
-                    Text(
-                      '${message.message}',
-                      style: Styles.blackBoldSmall,
-                    ),
-                  ],
-                ),
-                SizedBox(
-                  height: 8,
-                ),
-                Row(
-                  children: [
-                    SizedBox(
-                      width: 52,
-                      child: Text(
-                        'From: ',
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 8,
+                  ),
+                  Row(
+                    children: [
+                      SizedBox(
+                        width: 52,
+                        child: Text(
+                          'From: ',
+                          style: Styles.greyLabelTiny,
+                        ),
+                      ),
+                      SizedBox(
+                        width: 8,
+                      ),
+                      Text(
+                        '${message.adminName}',
+                        style: Styles.blackBoldSmall,
+                      )
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      SizedBox(
+                        width: 52,
+                        child: Text(
+                          'To: ',
+                          style: Styles.greyLabelTiny,
+                        ),
+                      ),
+                      SizedBox(
+                        width: 8,
+                      ),
+                      Text(
+                        '${message.name}',
+                        style: Styles.blackBoldSmall,
+                      )
+                    ],
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Row(
+                    children: [
+                      Text(
+                        'Project: ',
                         style: Styles.greyLabelTiny,
                       ),
-                    ),
-                    SizedBox(
-                      width: 8,
-                    ),
-                    Text(
-                      '${message.adminName}',
-                      style: Styles.blackBoldSmall,
-                    )
-                  ],
-                ),
-                Row(
-                  children: [
-                    SizedBox(
-                      width: 52,
-                      child: Text(
-                        'To: ',
+                      SizedBox(
+                        width: 8,
+                      ),
+                      Text(
+                        '${message.projectName}',
+                        style: Styles.blueBoldSmall,
+                      )
+                    ],
+                  ),
+                  SizedBox(
+                    height: 16,
+                  ),
+                  Row(
+                    children: [
+                      Text(
+                        'Frequency: ',
                         style: Styles.greyLabelTiny,
                       ),
-                    ),
-                    SizedBox(
-                      width: 8,
-                    ),
-                    Text(
-                      '${message.name}',
-                      style: Styles.blackBoldSmall,
-                    )
-                  ],
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                Row(
-                  children: [
-                    Text(
-                      'Project: ',
-                      style: Styles.greyLabelTiny,
-                    ),
-                    SizedBox(
-                      width: 8,
-                    ),
-                    Text(
-                      '${message.projectName}',
-                      style: Styles.blueBoldSmall,
-                    )
-                  ],
-                ),
-                SizedBox(
-                  height: 16,
-                ),
-                Row(
-                  children: [
-                    Text(
-                      'Frequency: ',
-                      style: Styles.greyLabelTiny,
-                    ),
-                    SizedBox(
-                      width: 8,
-                    ),
-                    Text(
-                      '${message.frequency}',
-                      style: Styles.pinkBoldSmall,
-                    )
-                  ],
-                ),
-                SizedBox(
-                  height: 4,
-                ),
-                Row(
-                  children: [
-                    Text(
-                      'Sent: ',
-                      style: Styles.greyLabelTiny,
-                    ),
-                    SizedBox(
-                      width: 8,
-                    ),
-                    Text(
-                      '${getFormattedDateShortWithTime(message.created, scaffoldKey.currentContext)}',
-                      style: Styles.blackTiny,
-                    ),
-                  ],
-                ),
-              ],
+                      SizedBox(
+                        width: 8,
+                      ),
+                      Text(
+                        '${message.frequency}',
+                        style: Styles.pinkBoldSmall,
+                      )
+                    ],
+                  ),
+                  SizedBox(
+                    height: 4,
+                  ),
+                  Row(
+                    children: [
+                      Text(
+                        'Sent: ',
+                        style: Styles.greyLabelTiny,
+                      ),
+                      SizedBox(
+                        width: 8,
+                      ),
+                      Text(
+                        '${getFormattedDateShortWithTime(message.created, scaffoldKey.currentContext)}',
+                        style: Styles.blackTiny,
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         ),

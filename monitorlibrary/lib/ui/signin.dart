@@ -127,8 +127,7 @@ class _SignInState extends State<SignIn> implements SnackBarListener {
   }
 
   void _checkStatus() async {
-    await DotEnv().load('.env');
-    var status = DotEnv().env['status'];
+    var status = env['status'];
     pp('🥦🥦 Checking status ..... 🥦🥦 $status 🌸 🌸 🌸');
     if (status == 'dev') {
       emailCntr.text = 'monitor.yue@monitor.com';

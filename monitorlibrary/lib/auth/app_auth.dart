@@ -133,9 +133,8 @@ class AppAuth {
   static Future getCountry() async {}
 
   static Future _getAdminAuthenticationToken() async {
-    await DotEnv().load('.env');
-    var email = DotEnv().env['email'];
-    var password = DotEnv().env['password'];
+    var email = env['email'];
+    var password = env['password'];
     _auth = FirebaseAuth.instance;
 
     var res = await _auth.signInWithEmailAndPassword(

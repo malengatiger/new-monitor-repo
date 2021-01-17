@@ -3,9 +3,9 @@ import 'package:monitorlibrary/api/sharedprefs.dart';
 import 'package:monitorlibrary/bloc/monitor_bloc.dart';
 import 'package:monitorlibrary/data/project.dart';
 import 'package:monitorlibrary/functions.dart';
-import 'package:monitorlibrary/ui/media/media_list_desktop.dart';
-import 'package:monitorlibrary/ui/media/media_list_mobile.dart';
-import 'package:monitorlibrary/ui/media/media_list_tablet.dart';
+import 'package:monitorlibrary/ui/media/list/media_list_desktop.dart';
+import 'package:monitorlibrary/ui/media/list/media_list_mobile.dart';
+import 'package:monitorlibrary/ui/media/list/media_list_tablet.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 
 class MediaListMain extends StatefulWidget {

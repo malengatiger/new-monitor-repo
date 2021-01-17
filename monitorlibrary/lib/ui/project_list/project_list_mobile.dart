@@ -11,10 +11,11 @@ import 'package:monitorlibrary/data/user.dart';
 import 'package:monitorlibrary/data/user.dart' as mon;
 import 'package:monitorlibrary/functions.dart';
 import 'package:monitorlibrary/ui/maps/project_map_main.dart';
-import 'package:monitorlibrary/ui/media/media_list_main.dart';
+import 'package:monitorlibrary/ui/media/list/media_list_main.dart';
 import 'package:monitorlibrary/ui/project_edit/project_edit_main.dart';
 import 'package:monitorlibrary/ui/project_location/project_location_main.dart';
 import 'package:monitorlibrary/ui/project_monitor/project_monitor_main.dart';
+import 'package:monitorlibrary/users/special_snack.dart';
 import 'package:page_transition/page_transition.dart';
 
 import '../../snack.dart';
@@ -29,7 +30,8 @@ class ProjectListMobile extends StatefulWidget {
 }
 
 class _ProjectListMobileState extends State<ProjectListMobile>
-    with SingleTickerProviderStateMixin {
+    with SingleTickerProviderStateMixin
+    implements SpecialSnackListener {
   AnimationController _controller;
   var projects = List<Project>();
   mon.User user;
@@ -516,5 +518,10 @@ class _ProjectListMobileState extends State<ProjectListMobile>
     });
 
     refreshProjects(false);
+  }
+
+  @override
+  onClose() {
+    ScaffoldMessenger.of(_key.currentState.context).removeCurrentSnackBar();
   }
 }

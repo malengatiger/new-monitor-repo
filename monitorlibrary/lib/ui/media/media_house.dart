@@ -83,6 +83,8 @@ class _MediaHouseState extends State<MediaHouse>
       setState(() {});
     } on PlatformException catch (e) {
       pp("🌸 Failed to get or process image: ${e.message} ");
+      AppSnackbar.showErrorSnackbar(
+          scaffoldKey: _key, message: 'Failed to get picture');
     }
   }
 
@@ -278,7 +280,7 @@ class _MediaHouseState extends State<MediaHouse>
     final Directory directory = await getApplicationDocumentsDirectory();
     final File mFile = File(
         '${directory.path}/thumbnail${DateTime.now().millisecondsSinceEpoch}.jpg');
-    var thumb = mFile..writeAsBytesSync(img.encodeJpg(thumbnail, quality: 100));
+    var thumb = mFile..writeAsBytesSync(img.encodeJpg(thumbnail, quality: 90));
     var len = await thumb.length();
     pp('....... 💜  .... thumbnail generated: 😡 ${(len / 1024).toStringAsFixed(1)} KB');
     return thumb;
@@ -301,6 +303,7 @@ class _MediaHouseState extends State<MediaHouse>
     } catch (e) {
       //get default image from assets as a file
       //read and write
+      pp('MediaHouse: 😈😈😈😈😈😈😈😈😈😈😈😈😈😈😈😈😈😈😈 video thumbnail failed, using local asset file 😈😈😈 ');
       final filename = 'video3.png';
       var bytes = await rootBundle.load("assets/video3.png");
       String dir = (await getApplicationDocumentsDirectory()).path;

@@ -30,17 +30,16 @@ class DataAPI {
   static Future<String> getUrl() async {
     if (url == null) {
       pp('🐤🐤🐤🐤 Getting url via .env settings: ${url == null ? 'NO URL YET' : url}');
-      await DotEnv().load('.env');
-      String status = DotEnv().env['status'];
+      String status = env['status'];
       pp('🐤🐤🐤🐤 DataAPI: getUrl: Status from .env: $status');
       if (status == 'dev') {
         isDevelopmentStatus = true;
-        url = DotEnv().env['devURL'];
+        url = env['devURL'];
         pp(' 🌎 🌎 🌎 DataAPI: Status of the app is  DEVELOPMENT 🌎 🌎 🌎 $url');
         return url;
       } else {
         isDevelopmentStatus = false;
-        url = DotEnv().env['prodURL'];
+        url = env['prodURL'];
         pp(' 🌎 🌎 🌎 DataAPI: Status of the app is PRODUCTION 🌎 🌎 🌎 $url');
         return url;
       }
