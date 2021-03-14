@@ -129,7 +129,7 @@ class _VideoMobileState extends State<VideoMobile>
                   child: Center(
                     child: chewieController != null &&
                             chewieController
-                                .videoPlayerController.value.initialized
+                                .videoPlayerController.value.isInitialized
                         ? Chewie(
                             controller: chewieController,
                           )

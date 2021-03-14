@@ -293,7 +293,8 @@ class StorageBloc {
 
   Future<File> downloadFile(String url) async {
     pp('🌿🌿🌿🌿🌿🌿🌿 : downloadFile: 😡😡😡 $url ....');
-    final http.Response response = await http.get(url).catchError((e) {
+    final http.Response response =
+        await http.get(Uri.parse(url)).catchError((e) {
       pp('😡😡😡 Download failed: 😡😡😡 $e');
       throw Exception('😡😡😡 Download failed: $e');
     });

@@ -65,7 +65,9 @@ const labels = [
   'Once Every Day',
   'Twice A Day',
   'Three Times A Day',
-  'Once A Week'
+  'Once A Week',
+  'Once A Month',
+  'Whenever Necessary'
 ];
 
 class OrgMessage {

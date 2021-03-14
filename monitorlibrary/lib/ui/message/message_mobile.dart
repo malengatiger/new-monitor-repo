@@ -35,6 +35,12 @@ class _MessageMobileState extends State<MessageMobile>
   }
 
   void _getProjects(bool force) async {
+    if (widget.user.userType == FIELD_MONITOR) {
+      setState(() {
+        _genericMessage = true;
+      });
+      return;
+    }
     setState(() {
       isBusy = true;
     });
@@ -104,34 +110,38 @@ class _MessageMobileState extends State<MessageMobile>
             preferredSize: Size.fromHeight(_genericMessage ? 320 : 360)),
       ),
       backgroundColor: Colors.brown[100],
-      body: Stack(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: ListView.builder(
-                itemCount: _projects.length,
-                itemBuilder: (context, index) {
-                  var p = _projects.elementAt(index);
-                  return GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        _selectedProject = p;
-                      });
-                    },
-                    child: Card(
-                      child: ListTile(
-                        title: Text('${p.name}'),
-                        leading: Icon(
-                          Icons.app_registration,
-                          color: Theme.of(context).primaryColor,
-                        ),
-                      ),
-                    ),
-                  );
-                }),
-          )
-        ],
-      ),
+      body: widget.user.userType == ORG_ADMINISTRATOR
+          ? Stack(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: ListView.builder(
+                      itemCount: _projects.length,
+                      itemBuilder: (context, index) {
+                        var p = _projects.elementAt(index);
+                        return GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              _selectedProject = p;
+                            });
+                          },
+                          child: Card(
+                            child: ListTile(
+                              title: Text('${p.name}'),
+                              leading: Icon(
+                                Icons.app_registration,
+                                color: Theme.of(context).primaryColor,
+                              ),
+                            ),
+                          ),
+                        );
+                      }),
+                )
+              ],
+            )
+          : Stack(
+              children: [Center(child: Text('Field Monitor Messaging'))],
+            ),
     ));
   }
 

@@ -86,7 +86,7 @@ class AppAuth {
   }
 
   static Future signIn(String email, String password, String type) async {
-    pp('🔐 🔐 🔐 🔐 Auth signing in $email 🌸 $password  🔐 🔐 🔐 🔐');
+    pp('🔐 🔐 🔐 🔐 Auth: signing in $email 🌸 $password  🔐 🔐 🔐 🔐');
 
     //var token = await _getAdminAuthenticationToken();
     _auth = FirebaseAuth.instance;
@@ -102,7 +102,7 @@ class AppAuth {
     });
     pp('🔐 🔐 🔐 🔐 Firebase auth user to be checked ......... ');
     if (fbUser != null) {
-      pp('🔐 🔐 🔐 🔐 Auth finding user by email $email 🔐 🔐 🔐 🔐');
+      pp('🔐 🔐 🔐 🔐 Auth finding user by email $email 🔐 🔐 🔐 🔐 ${fbUser.user.email} -  ${fbUser.user.displayName} ');
       var user = await DataAPI.findUserByEmail(fbUser.user.email);
       if (user == null) {
         pp('👎🏽 👎🏽 👎🏽 User not registered yet 👿');

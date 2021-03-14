@@ -116,7 +116,7 @@ class OzowPaymentRequest {
     var client = new http.Client();
     var resp = await client
         .post(
-          mUrl,
+          Uri.parse(mUrl),
           body: mBag,
           headers: headers,
         )

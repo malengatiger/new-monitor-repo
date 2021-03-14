@@ -219,6 +219,7 @@ class _UserListMobileState extends State<UserListMobile>
                           return FocusedMenuHolder(
                             menuItems: _getMenuItems(user),
                             animateMenuItems: true,
+                            openWithTap: true,
                             onPressed: () {
                               pp('.... 💛️ 💛️ 💛️ not sure what I pressed ...');
                             },

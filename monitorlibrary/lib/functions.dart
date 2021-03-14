@@ -1,12 +1,10 @@
 import 'dart:io';
 import 'dart:math';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 
-Firestore fs = Firestore.instance;
 List<String> logs = List();
 bool isBusy = false;
 List<Color> _colors = List();

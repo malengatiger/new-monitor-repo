@@ -722,7 +722,7 @@ class DataAPI {
 
     var resp = await client
         .post(
-          mUrl,
+          Uri.parse(mUrl),
           body: mBag,
           headers: headers,
         )
@@ -757,7 +757,7 @@ class DataAPI {
     pp('🏈 🏈 🏈 🏈 🏈  DataAPI._callWebAPIGet .... :  😡  😡  😡 check the headers for the auth token: 💙 💙 💙 $headers 💙 💙 💙 ');
     var resp = await client
         .get(
-          mUrl,
+          Uri.parse(mUrl),
           headers: headers,
         )
         .whenComplete(() {});

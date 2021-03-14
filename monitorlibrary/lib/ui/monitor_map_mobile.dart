@@ -28,8 +28,7 @@ class _MonitorMapMobileState extends State<MonitorMapMobile>
   bool isBusy = false;
   GoogleMapController googleMapController;
 
-  BitmapDescriptor markerIcon =
-      BitmapDescriptor.fromAsset('assets/mapicons/construction.png');
+  BitmapDescriptor markerIcon;
 
   bool isPortrait = true;
 
@@ -51,6 +50,9 @@ class _MonitorMapMobileState extends State<MonitorMapMobile>
   }
 
   void _getUser() async {
+    markerIcon = await BitmapDescriptor.fromAssetImage(
+        createLocalImageConfiguration(context),
+        'assets/mapicons/construction.png');
     setState(() {
       isBusy = true;
     });

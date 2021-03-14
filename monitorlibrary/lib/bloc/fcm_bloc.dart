@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:firebase_messaging/firebase_messaging.dart' as fb;
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:monitorlibrary/api/data_api.dart';
 import 'package:monitorlibrary/api/local_db_api.dart';
@@ -15,8 +16,13 @@ import '../functions.dart';
 FCMBloc fcmBloc = FCMBloc();
 const mm = '🔵 🔵 🔵 🔵 🔵 🔵 FCMBloc: ';
 
+Future<void> firebaseMessagingBackgroundHandler(
+    fb.RemoteMessage message) async {
+  print("Handling a background message: ${message.messageId}");
+}
+
 class FCMBloc {
-  FirebaseMessaging messaging = FirebaseMessaging();
+  fb.FirebaseMessaging messaging = fb.FirebaseMessaging.instance;
 
   StreamController<User> _userController = StreamController.broadcast();
   StreamController<Project> _projectController = StreamController.broadcast();
@@ -49,32 +55,27 @@ class FCMBloc {
   }
 
   void initialize() async {
-    pp("$mm initialize ...........................");
+    pp("$mm initialize FIREBASE MESSAGING ...........................");
     user = await Prefs.getUser();
     var android = UniversalPlatform.isAndroid;
     var ios = UniversalPlatform.isIOS;
 
     if (android || ios) {
       messaging.setAutoInitEnabled(true);
-
       messaging.onTokenRefresh.listen((newToken) {
-        pp("$mm onTokenRefresh: 🍎 🍎  🍎 🍎  🍎 🍎  🍎 🍎  🍎 🍎 token: $newToken ... 🍎 🍎 ");
+        pp("$mm onTokenRefresh: 🍎 🍎  🍎 🍎 update user: token: $newToken ... 🍎 🍎 ");
         _updateUser(newToken);
       });
 
-      messaging.configure(
-        onMessage: (Map<String, dynamic> message) async {
-          pp("$mm onMessage: 🍎 🍎  🍎 🍎  🍎 🍎  🍎 🍎  🍎 🍎 ... FCM message rolling in ... 🍎 🍎 ");
-          handleMessage(message);
-        },
-        onBackgroundMessage: myBackgroundMessageHandler,
-        onLaunch: (Map<String, dynamic> message) async {
-          pp("$mm onLaunch: $message");
-        },
-        onResume: (Map<String, dynamic> message) async {
-          pp("$mm onResume: $message");
-        },
-      );
+      FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+        RemoteNotification notification = message.notification;
+        AndroidNotification android = message.notification?.android;
+        pp("$mm onMessage: 🍎 🍎  data: ${message.data} ... 🍎 🍎 ");
+      });
+
+      FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+        pp('$mm onMessageOpenedApp:  🍎 🍎 A new onMessageOpenedApp event was published! ${message.data}');
+      });
 
       await subscribeToTopics();
 
@@ -88,6 +89,31 @@ class FCMBloc {
       pp('App is running on the web - 👿 👿 👿 firebase messaging NOT initialized 👿 👿 👿 ');
     }
   }
+
+  Future requestPermissions() async {
+    fb.NotificationSettings settings = await messaging.requestPermission(
+      alert: true,
+      announcement: false,
+      badge: true,
+      carPlay: false,
+      criticalAlert: false,
+      provisional: false,
+      sound: true,
+    );
+
+    print('User granted permission: ${settings.authorizationStatus}');
+  }
+
+  // Future listenForMessages() async {
+  //   fb.FirebaseMessaging.onMessage.listen((fb.RemoteMessage message) {
+  //     print('Got a message whilst in the foreground!');
+  //     print('Message data: ${message.data}');
+  //
+  //     if (message.notification != null) {
+  //       print('Message also contained a notification: ${message.notification}');
+  //     }
+  //   });
+  // }
 
   Future subscribeToTopics() async {
     var user = await Prefs.getUser();
@@ -106,13 +132,8 @@ class FCMBloc {
     return null;
   }
 
-  handleMessage(Map<String, dynamic> message) async {
-    pp("$mm handleMessage  🔵 🔵 🔵 .......starting processFCMMessage for: 🔵 $message 🔵");
-    await processFCMMessage(message);
-  }
-
-  Future processFCMMessage(Map<String, dynamic> message) async {
-    Map data = message['data'];
+  Future processFCMMessage(fb.RemoteMessage message) async {
+    Map data = message.data;
     if (data != null) {
       if (data['user'] != null) {
         pp("$mm processFCMMessage  🔵 🔵 🔵 ........................... cache USER  🍎  🍎 ");
