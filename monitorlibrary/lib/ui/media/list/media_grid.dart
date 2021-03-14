@@ -85,10 +85,15 @@ class MediaGrid extends StatelessWidget {
             var mBag = imageList.elementAt(index);
             var mm = 1.2;
             if (mBag.photo != null) {
-              mm = 1.6;
+              if (mBag.photo.height > mBag.photo.width) {
+                mm = 1.6;
+              } else {
+                mm = 0.6;
+              }
             } else {
               mm = 0.6;
             }
+
             return StaggeredTile.count(1, mm);
           }),
     );

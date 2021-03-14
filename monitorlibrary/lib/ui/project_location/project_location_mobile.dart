@@ -35,7 +35,7 @@ class _ProjectLocationMobileState extends State<ProjectLocationMobile>
     _controller = AnimationController(vsync: this);
     super.initState();
     _getLocation();
-    _getProjectPositions();
+    _getProjectPositions(false);
   }
 
   @override
@@ -66,10 +66,10 @@ class _ProjectLocationMobileState extends State<ProjectLocationMobile>
     }
   }
 
-  void _getProjectPositions() async {
+  void _getProjectPositions(bool forceRefresh) async {
     try {
       _projectPositions = await monitorBloc.getProjectPositions(
-          projectId: widget.project.projectId);
+          projectId: widget.project.projectId, forceRefresh: forceRefresh);
     } catch (e) {
       print(e);
       AppSnackbar.showErrorSnackbar(

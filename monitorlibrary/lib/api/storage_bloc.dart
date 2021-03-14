@@ -5,6 +5,8 @@ import 'dart:math';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:image_size_getter/file_input.dart';
+import 'package:image_size_getter/image_size_getter.dart';
 import 'package:monitorlibrary/api/sharedprefs.dart';
 import 'package:monitorlibrary/data/photo.dart';
 import 'package:monitorlibrary/data/position.dart';
@@ -23,10 +25,11 @@ class StorageBloc {
   FirebaseStorage _firebaseStorage = FirebaseStorage.instance;
   Random rand = new Random(new DateTime.now().millisecondsSinceEpoch);
 
-  List<MediaBag> _mediaBags = [];
-  StreamController<List<MediaBag>> _mediaStreamController =
+  List<StorageMediaBag> _mediaBags = [];
+  StreamController<List<StorageMediaBag>> _mediaStreamController =
       StreamController.broadcast();
-  Stream<List<MediaBag>> get mediaStream => _mediaStreamController.stream;
+  Stream<List<StorageMediaBag>> get mediaStream =>
+      _mediaStreamController.stream;
 
   User _user;
 
@@ -73,6 +76,7 @@ class StorageBloc {
             fileUrl, snapShot.totalBytes, snapShot.bytesTransferred);
 
         var mType = isVideo ? 'mp4' : 'jpg';
+
         _uploadThumbnail(
             listener: listener,
             file: file,
@@ -118,6 +122,8 @@ class StorageBloc {
         DateTime.now().toUtc().toIso8601String() +
         '.$type';
     String thumbnailUrl;
+    final size = ImageSizeGetter.getSize(FileInput(file));
+    pp('☕️☕️☕️ .uploadPhoto:  💚 💚 💚 💚 💚 💚 image height: ${size.height} width: ${size.width}');
     try {
       if (isVideo) {
         _addVideoBagToStream(
@@ -149,8 +155,10 @@ class StorageBloc {
             project: project,
             projectPosition: position,
             fileUrl: fileUrl,
-            thumbnailUrl: thumbnailUrl);
-        var mediaBag = MediaBag(
+            thumbnailUrl: thumbnailUrl,
+            height: size.height,
+            width: size.width);
+        var mediaBag = StorageMediaBag(
             url: fileUrl,
             thumbnailUrl: thumbnailUrl,
             isVideo: isVideo,
@@ -180,7 +188,7 @@ class StorageBloc {
       @required File file,
       @required Project project,
       @required Position position}) {
-    var mediaBag = MediaBag(
+    var mediaBag = StorageMediaBag(
         url: fileUrl,
         thumbnailUrl: null,
         isVideo: true,
@@ -213,10 +221,12 @@ class StorageBloc {
   }
 
   void _writePhoto(
-      {Project project,
-      Position projectPosition,
-      String fileUrl,
-      String thumbnailUrl}) async {
+      {@required Project project,
+      @required Position projectPosition,
+      @required String fileUrl,
+      @required String thumbnailUrl,
+      @required int height,
+      @required int width}) async {
     pp('🎽 🎽 🎽 🎽 StorageBloc: _writePhoto : 🎽 🎽 adding photo .....');
     if (_user == null) {
       await getUser();
@@ -227,6 +237,7 @@ class StorageBloc {
 
     pp('🎽 🎽 🎽 🎽 StorageBloc: _writePhoto : 🎽 🎽 adding photo ..... 😡😡 distance: $distance 😡😡');
     var u = Uuid();
+
     var photo = Photo(
         url: fileUrl,
         caption: 'tbd',
@@ -239,6 +250,8 @@ class StorageBloc {
         thumbnailUrl: thumbnailUrl,
         projectName: project.name,
         organizationId: _user.organizationId,
+        height: height,
+        width: width,
         photoId: u.v4());
 
     var result = await DataAPI.addPhoto(photo);
@@ -355,13 +368,13 @@ abstract class StorageBlocListener {
   onError(String message);
 }
 
-class MediaBag {
+class StorageMediaBag {
   String url, thumbnailUrl, date;
   bool isVideo;
   File file;
   File thumbnailFile;
 
-  MediaBag(
+  StorageMediaBag(
       {this.url,
       this.file,
       this.thumbnailUrl,

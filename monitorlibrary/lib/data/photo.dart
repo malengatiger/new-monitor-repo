@@ -8,6 +8,7 @@ class Photo {
   Position projectPosition;
   double distanceFromProjectPosition;
   String projectId, projectName;
+  int height, width;
 
   Photo(
       {@required this.url,
@@ -21,12 +22,16 @@ class Photo {
       @required this.thumbnailUrl,
       @required this.photoId,
       @required this.organizationId,
-      @required this.projectName});
+      @required this.projectName,
+      @required this.height,
+      @required this.width});
 
   Photo.fromJson(Map data) {
     this.url = data['url'];
     this.thumbnailUrl = data['thumbnailUrl'];
     this.caption = data['caption'];
+    this.height = data['height'];
+    this.width = data['width'];
     this.created = data['created'];
     this.organizationId = data['organizationId'];
     this.userId = data['userId'];
@@ -38,12 +43,20 @@ class Photo {
     if (data['projectPosition'] != null) {
       this.projectPosition = Position.fromJson(data['projectPosition']);
     }
+    if (this.height == null) {
+      this.height = -5;
+    }
+    if (this.width == null) {
+      this.width = -10;
+    }
   }
   Map<String, dynamic> toJson() {
     Map<String, dynamic> map = {
       'url': url,
       'caption': caption,
       'created': created,
+      'width': width,
+      'height': height,
       'userId': userId,
       'organizationId': organizationId,
       'photoId': photoId,

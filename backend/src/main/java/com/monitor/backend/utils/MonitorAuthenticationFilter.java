@@ -43,7 +43,10 @@ public class MonitorAuthenticationFilter extends OncePerRequestFilter {
        // doFilter(httpServletRequest, httpServletResponse, filterChain);
 
         //TODO - 🔺 🔺 🔺 allow the following calls ONLY if in dev !!!! 🔺
-        if (url.contains("generate") || url.contains("ping")) {
+        if (url.contains("generate")
+                || url.contains("ping")
+                || url.contains("createSampleRequest")
+                || url.contains("sendOzowPaymentRequest")) {
             LOGGER.info(Emoji.ANGRY + "this request is not subject to authentication: "
                     + Emoji.HAND2 + url);
             doFilter(httpServletRequest, httpServletResponse, filterChain);

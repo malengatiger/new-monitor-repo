@@ -12,8 +12,14 @@ import 'package:monitorlibrary/data/project_position.dart';
 import 'package:monitorlibrary/data/user.dart';
 import 'package:monitorlibrary/functions.dart';
 import 'package:monitorlibrary/snack.dart';
+import 'package:monitorlibrary/ui/media/list/media_grid.dart';
+import 'package:monitorlibrary/ui/media/video/video_main.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:video_thumbnail/video_thumbnail.dart';
+
+import 'full_photo/full_photo_main.dart';
+import 'list/media_list_mobile.dart';
 
 /// Manage the process of creating media for the project
 class MediaHouse extends StatefulWidget {
@@ -28,7 +34,7 @@ class MediaHouse extends StatefulWidget {
 
 class _MediaHouseState extends State<MediaHouse>
     with SingleTickerProviderStateMixin
-    implements StorageBlocListener {
+    implements StorageBlocListener, MediaGridListener {
   AnimationController _controller;
   User user;
   String filePath;
@@ -115,7 +121,7 @@ class _MediaHouseState extends State<MediaHouse>
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<List<MediaBag>>(
+    return StreamBuilder<List<StorageMediaBag>>(
         stream: storageBloc.mediaStream,
         initialData: [],
         builder: (context, snapshot) {
@@ -272,7 +278,30 @@ class _MediaHouseState extends State<MediaHouse>
         });
   }
 
-  List<MediaBag> mediaBags = [];
+  List<StorageMediaBag> mediaBags = [];
+
+  @override
+  void onMediaSelected(MediaBag suitcase) {
+    if (suitcase.video != null) {
+      pp('MediaListMobile: 🦠 🦠 🦠 _onMediaTapped: Play video from 🦠 ${suitcase.video.url} 🦠');
+      Navigator.push(
+          context,
+          PageTransition(
+              type: PageTransitionType.scale,
+              alignment: Alignment.bottomRight,
+              duration: Duration(seconds: 1),
+              child: VideoMain(suitcase.video)));
+    } else {
+      pp('MediaListMobile: 🦠 🦠 🦠 _onMediaTapped: show full image from 🍎 ${suitcase.photo.url} 🍎');
+      Navigator.push(
+          context,
+          PageTransition(
+              type: PageTransitionType.scale,
+              alignment: Alignment.bottomRight,
+              duration: Duration(seconds: 1),
+              child: FullPhotoMain(suitcase.photo, widget.project)));
+    }
+  }
 
   Future<File> getThumbnail(File file) async {
     img.Image image = img.decodeImage(file.readAsBytesSync());

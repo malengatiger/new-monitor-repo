@@ -460,6 +460,7 @@ class _ProjectListMobileState extends State<ProjectListMobile>
                                         menuItems:
                                             getPopUpMenuItems(selectedProject),
                                         animateMenuItems: true,
+                                        openWithTap: true,
                                         onPressed: () {
                                           pp('.... 💛️ 💛️ 💛️ not sure what I pressed ...');
                                         },

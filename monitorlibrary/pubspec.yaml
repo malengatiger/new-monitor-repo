@@ -32,11 +32,11 @@ dependencies:
   grouped_buttons: ^1.0.4
   path: ^1.7.0
   cached_network_image: ^2.5.0
-  flutter_dotenv: ^3.0.2
+  flutter_dotenv: ^3.1.0
   page_transition: ^1.1.7+6
   responsive_builder:
-  google_fonts: ^1.1.1
-  geolocator: ^6.1.13
+  google_fonts: ^1.1.2
+  geolocator: ^6.1.14
   image: ^2.1.19
   intent: ^1.4.0
   extended_image: ^1.5.0
@@ -46,7 +46,7 @@ dependencies:
   introduction_screen: ^1.0.9
   uuid: ^2.2.2
   geocoding: ^1.0.5
-  chewie: ^0.12.1+1
+  chewie: ^0.12.2
   video_player: ^1.0.1
   maps_toolkit: ^1.1.0+2
   focused_menu: ^1.0.2
@@ -54,6 +54,9 @@ dependencies:
   flutter_local_notifications: ^3.0.3
   flutter_staggered_grid_view: ^0.3.3
   transparent_image: ^1.0.0
+  image_size_getter: ^0.2.1
+  get:
+  crypto:
 
 dev_dependencies:
   flutter_test:

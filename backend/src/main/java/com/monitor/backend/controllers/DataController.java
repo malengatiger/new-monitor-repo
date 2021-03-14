@@ -154,4 +154,11 @@ public class DataController {
         return dataService.updateUser(user);
     }
 
+    @GetMapping("/createSampleRequest")
+    public OzowPaymentRequest createSampleRequest() throws Exception {
+        LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS)
+                .concat("Create sample Ozow payment request "));
+        return ozowService.createSampleRequest();
+    }
+
 }

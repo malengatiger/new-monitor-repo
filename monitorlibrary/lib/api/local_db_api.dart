@@ -41,7 +41,7 @@ class LocalDBAPI {
     }
   }
 
-  static Future _connectToLocalDB() async {
+  static Future connectToLocalDB() async {
     if (databaseName == null) {
       throw Exception(
           'Please set the database name using setDatabaseName(String name)');
@@ -49,7 +49,7 @@ class LocalDBAPI {
     if (dbConnected) {
       return null;
     }
-    pp('$mx Connecting to MongoDB Mobile .. . $mx ');
+    pp('$mx ... Connecting to MongoDB Mobile .. . $mx ');
     try {
       await MobMongo.setAppID({
         'appID': APP_ID,
@@ -116,7 +116,7 @@ class LocalDBAPI {
   }
 
   static Future<List<Project>> getProjects() async {
-    await _connectToLocalDB();
+    await connectToLocalDB();
     Carrier carrier = Carrier(
       db: databaseName,
       collection: Constants.DB_PROJECTS,
@@ -130,7 +130,7 @@ class LocalDBAPI {
   }
 
   static Future<List<Photo>> getPhotos() async {
-    await _connectToLocalDB();
+    await connectToLocalDB();
     Carrier carrier =
         Carrier(db: databaseName, collection: Constants.DB_PHOTOS);
     List results = await MobMongo.getAll(carrier);
@@ -145,7 +145,7 @@ class LocalDBAPI {
   }
 
   static Future<List<Video>> getVideos() async {
-    await _connectToLocalDB();
+    await connectToLocalDB();
     Carrier carrier =
         Carrier(db: databaseName, collection: Constants.DB_VIDEOS);
     List results = await MobMongo.getAll(carrier);
@@ -160,7 +160,7 @@ class LocalDBAPI {
   }
 
   static Future<List<Photo>> getProjectPhotos(String projectId) async {
-    await _connectToLocalDB();
+    await connectToLocalDB();
     Carrier carrier =
         Carrier(db: databaseName, collection: Constants.DB_PHOTOS, query: {
       "eq": {"projectId": projectId}
@@ -179,7 +179,7 @@ class LocalDBAPI {
   }
 
   static Future<List<Photo>> getUserPhotos(String userId) async {
-    await _connectToLocalDB();
+    await connectToLocalDB();
     Carrier carrier =
         Carrier(db: databaseName, collection: Constants.DB_PHOTOS, query: {
       "eq": {"userId": userId}
@@ -199,7 +199,7 @@ class LocalDBAPI {
   }
 
   static Future<List<Video>> getProjectVideos(String projectId) async {
-    await _connectToLocalDB();
+    await connectToLocalDB();
     Carrier carrier =
         Carrier(db: databaseName, collection: Constants.DB_VIDEOS, query: {
       "eq": {"projectId": projectId}
@@ -218,7 +218,7 @@ class LocalDBAPI {
   }
 
   static Future<List<Video>> getUserVideos(String userId) async {
-    await _connectToLocalDB();
+    await connectToLocalDB();
     Carrier carrier =
         Carrier(db: databaseName, collection: Constants.DB_VIDEOS, query: {
       "eq": {"userId": userId}
@@ -239,7 +239,7 @@ class LocalDBAPI {
 
   static Future<List<ProjectPosition>> getProjectPositions(
       String projectId) async {
-    await _connectToLocalDB();
+    await connectToLocalDB();
     Carrier carrier = Carrier(
         db: databaseName,
         collection: Constants.DB_PROJECT_POSITIONS,
@@ -261,7 +261,7 @@ class LocalDBAPI {
 
   static const mx = '🍎 🍎 🍎 LocalDBAPI: 🍎 ';
   static Future<List<User>> getUsers() async {
-    await _connectToLocalDB();
+    await connectToLocalDB();
     Carrier carrier = Carrier(
       db: databaseName,
       collection: Constants.DB_USERS,
@@ -285,7 +285,7 @@ class LocalDBAPI {
   }
 
   static Future<int> addUser({@required User user}) async {
-    await _connectToLocalDB();
+    await connectToLocalDB();
     Carrier c = Carrier(db: databaseName, collection: Constants.DB_USERS, id: {
       'field': 'userId',
       'value': user.userId,
@@ -308,7 +308,7 @@ class LocalDBAPI {
   }
 
   static Future<int> addProject({@required Project project}) async {
-    await _connectToLocalDB();
+    await connectToLocalDB();
     Carrier c =
         Carrier(db: databaseName, collection: Constants.DB_PROJECTS, id: {
       'field': 'projectId',
@@ -339,7 +339,7 @@ class LocalDBAPI {
   }
 
   static Future<int> addPhoto({@required Photo photo}) async {
-    await _connectToLocalDB();
+    await connectToLocalDB();
 
     Carrier c = Carrier(db: databaseName, collection: Constants.DB_PHOTOS, id: {
       'field': 'photoId',
@@ -365,7 +365,7 @@ class LocalDBAPI {
   }
 
   static Future<int> addVideo({@required Video video}) async {
-    await _connectToLocalDB();
+    await connectToLocalDB();
 
     Carrier c = Carrier(db: databaseName, collection: Constants.DB_VIDEOS, id: {
       'field': 'videoId',
@@ -385,7 +385,7 @@ class LocalDBAPI {
   }
 
   static Future<int> addCondition({@required Condition condition}) async {
-    await _connectToLocalDB();
+    await connectToLocalDB();
 
     Carrier c =
         Carrier(db: databaseName, collection: Constants.DB_CONDITIONS, id: {
@@ -406,7 +406,7 @@ class LocalDBAPI {
   }
 
   static Future<int> addOrgMessage({@required OrgMessage message}) async {
-    await _connectToLocalDB();
+    await connectToLocalDB();
 
     Carrier c =
         Carrier(db: databaseName, collection: Constants.DB_ORG_MESSAGES, id: {
@@ -436,7 +436,7 @@ class LocalDBAPI {
 
   static Future<int> addProjectPosition(
       {@required ProjectPosition projectPosition}) async {
-    await _connectToLocalDB();
+    await connectToLocalDB();
 
     Carrier c = Carrier(
         db: databaseName,
@@ -460,7 +460,7 @@ class LocalDBAPI {
 
   static Future<List<ProjectPosition>> findProjectPositionsByLocation(
       {@required latitude, @required longitude, @required radiusInKM}) async {
-    await _connectToLocalDB();
+    await connectToLocalDB();
     var radius = radiusInKM * 1000;
     Carrier carrier = Carrier(
         db: databaseName,

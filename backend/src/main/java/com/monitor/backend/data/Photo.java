@@ -35,11 +35,12 @@ public class Photo {
     private String  userId;
     private String  userName;
     private String  created;
+    private int height, width;
 
     public Photo() {
     }
 
-    public Photo(String _partitionKey, String _id, String projectId, String projectName, String photoId, String organizationId, Position projectPosition, double distanceFromProjectPosition, String url, String thumbnailUrl, String caption, String userId, String userName, String created) {
+    public Photo(String _partitionKey, String _id, String projectId, String projectName, String photoId, String organizationId, Position projectPosition, double distanceFromProjectPosition, String url, String thumbnailUrl, String caption, String userId, String userName, String created, int height, int width) {
         this._partitionKey = _partitionKey;
         this._id = _id;
         this.projectId = projectId;
@@ -54,6 +55,23 @@ public class Photo {
         this.userId = userId;
         this.userName = userName;
         this.created = created;
+        this.height = height;
+        this.width = width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public void setHeight(int height) {
+        this.height = height;
+    }
+
+    public int getWidth() {
+        return width;
+    }
+    public void setWidth(int width) {
+        this.width = width;
     }
 
     public String get_partitionKey() {

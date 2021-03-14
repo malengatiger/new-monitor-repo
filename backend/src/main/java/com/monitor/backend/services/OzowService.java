@@ -23,6 +23,29 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+/*
+🔶🔶🔶 Post Variables 🔶🔶🔶
+PROPERTY	            TYPE	    REQUIRED	DESCRIPTION
+1. SiteCode	            String (50)	Yes	        A unique code for the site currently in use. A site code is generated when adding a site in the Ozow Merchant Admin section.
+2. CountryCode	        String (2)	Yes	The ISO 3166-1 alpha-2 code for the user's country. The country code will determine which banks will be displayed to the customer. Please note only South African (ZA) banks are currently supported by Ozow.
+3. CurrencyCode	        String (3)	Yes	The ISO 4217 3 letter code for the transaction currency. Please note only South African Rand (ZAR) is currently supported by Ozow, so any currency conversion would have to take place before posting to the Ozow site.
+4. Amount	            Decimal (9,2)	Yes	The transaction amount. The amount is in the currency specified by the currency code posted.
+5. TransactionReference	String (50)	Yes	The merchant's reference for the transaction
+6. BankReference	    String (20)	Yes	The reference that will be prepopulated in the "their reference" field in the customers online banking site. This will be the payment reference that appears on your transaction history.
+7. Optional1
+8. Optional2
+9. Optional3
+10. Optional4
+11. Optional5	        String (50)	No	Optional fields the merchant can post for additional information they would need passed back in the response. These are also stored with the transaction details by Ozow and can be useful for filtering transactions in the merchant admin section.
+12. Customer	        String (100)	No	The customers name or identifier.
+13. CancelUrl	        String (150)	No	The Url that we should post the redirect result to if the customer cancels the payment, this will also be the page the customer gets redirect back to. This Url can also be set for the applicable merchant site in the merchant admin section. If a value is set in the merchant admin and sent in the post, the posted value will be redirected to if the payment is cancelled.
+14. ErrorUrl	        String (150)	No
+    The Url that we should post the redirect result to if an error occurred while trying to process the payment, this will also be the page the customer gets redirect back to. This Url can also be set for the applicable merchant site in the merchant admin section. . If a value is set in the merchant admin and sent in the post, the posted value will be redirected to if an error occurred while processing the payment.
+15. SuccessUrl	        String (150)	No	The Url that we should post the redirect result to if the payment was successful, this will also be the page the customer gets redirect back to. This Url can also be set for the applicable merchant site in the merchant admin section. If a value is set in the merchant admin and sent in the post, the posted value will be redirected to if the payment was successful. Please note that it would not be sufficient to assume the payment was successful just because the customer was redirected back to this page, it highly recommended that you check the response fields and as well as check the transaction status using our check transaction status API call.
+16. NotifyUrl	        String (150)	No	The Url that we should post the notification result to. The result will posted regardless of the outcome of the transaction. This Url can also be set for the applicable merchant site in the merchant admin section. If a value is set in the merchant admin and sent in the post, the notification result will be sent to the posted value. Find out more in the notification response section in step 2.
+17. IsTest	            bool	        Yes	Send true to test your request posting and response handling. If set to true you will be redirected to a page where you can select whether you would like a successful or unsuccessful redirect response sent back. Please note that notification responses are not sent for test transactions and the online banking payment is skipped. Accepted values are true or false.
+HashCheck	            String (250)	Yes	SHA512 hash used to ensure that certain fields in the message have not been already after the hash was generated. Check the generate hash section below for more details on how to generate the hash.
+ */
 
 @Service
 public class OzowService {
@@ -34,11 +57,44 @@ public class OzowService {
     private static final Gson G = new GsonBuilder().setPrettyPrinting().create();
     private final OkHttpClient client = new OkHttpClient();
 
+
     @Value("${ozowUrl}")
     private String ozowUrl;
 
     @Value("${ozowApiKey}")
     private String apiKey;
+
+    @Value("${ozowSiteCode}")
+    private String ozowSiteCode;
+
+    @Value("${ozowPrivateKey}")
+    private String ozowPrivateKey;
+
+    @Value("${countryCode}")
+    private String countryCode;
+
+    @Value("${currencyCode}")
+    private String currencyCode;
+
+    @Value("${ozowSuccessUrl}")
+    private String ozowSuccessUrl;
+
+    @Value("${ozowErrorUrl}")
+    private String ozowErrorUrl;
+
+    @Value("${ozowCancelUrl}")
+    private String ozowCancelUrl;
+
+    @Value("${ozowTokenNotifyUrl}")
+    private String ozowTokenNotifyUrl;
+
+    @Value("${ozowNotifyUrl}")
+    private String ozowNotifyUrl;
+
+    @Value("${ozowTokenDeleteNotifyUrl}")
+    private String ozowTokenDeleteNotifyUrl;
+
+
 
     @Autowired
     private HashCheckGenerator hashCheckGenerator;
@@ -74,6 +130,32 @@ public class OzowService {
         return "Not done yet";
     }
 
+    public OzowPaymentRequest createSampleRequest() throws Exception {
+
+        OzowPaymentRequest request = new OzowPaymentRequest();
+        request.setSiteCode(ozowSiteCode);
+        request.setCountryCode(countryCode);
+        request.setCurrencyCode(currencyCode);
+        request.setTransactionReference("TestTran1");
+        request.setAmount(333.99);
+        request.setCustomer("Customer One");
+        request.setSuccessUrl(ozowSuccessUrl);
+        request.setCancelUrl(ozowCancelUrl);
+        request.setErrorUrl(ozowErrorUrl);
+        request.setNotifyUrl(ozowNotifyUrl);
+
+        String hash = hashCheckGenerator.generateOzowHash(request);
+        request.setHashCheck(hash);
+        String json = G.toJson(request);
+
+        LOGGER.info(Emoji.PEAR.concat(Emoji.PEAR).concat(Emoji.PEAR)
+                .concat("Created sample ozow payment request json:: \uD83D\uDD35 " + json
+                ));
+
+        return request;
+    }
+
+
     public String sendOzowPaymentRequest(OzowPaymentRequest request) throws Exception {
         LOGGER.info(Emoji.PEAR.concat(Emoji.PEAR).concat(Emoji.PEAR)
                 .concat("Sending ozow payment request ... ... ... check fields: \uD83D\uDD35 "
@@ -90,7 +172,7 @@ public class OzowService {
         pairs.add(new BasicNameValuePair("CurrencyCode", request.getCurrencyCode()));
         pairs.add(new BasicNameValuePair("Amount", "" + request.getAmount()));
         pairs.add(new BasicNameValuePair("TransactionReference", request.getTransactionReference()));
-        pairs.add(new BasicNameValuePair("BankReference", request.getBankReference()));
+//        pairs.add(new BasicNameValuePair("BankReference", request.getBankReference()));
         pairs.add(new BasicNameValuePair("Customer", request.getCustomer()));
 //
 //        if (request.getOptional1() != null) {
