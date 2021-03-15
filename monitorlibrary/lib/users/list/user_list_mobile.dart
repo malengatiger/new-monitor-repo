@@ -6,6 +6,7 @@ import 'package:monitorlibrary/bloc/monitor_bloc.dart';
 import 'package:monitorlibrary/data/user.dart';
 import 'package:monitorlibrary/functions.dart';
 import 'package:monitorlibrary/ui/message/message_main.dart';
+import 'package:monitorlibrary/ui/schedule/scheduler_main.dart';
 import 'package:monitorlibrary/users/report/user_rpt_main.dart';
 import 'package:page_transition/page_transition.dart';
 
@@ -24,14 +25,14 @@ class _UserListMobileState extends State<UserListMobile>
     with SingleTickerProviderStateMixin {
   AnimationController _controller;
   bool isBusy = false;
-  var _users = List<User>();
+  var _users = <User>[];
   var _key = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
     _controller = AnimationController(vsync: this);
     super.initState();
-    _getData(true);
+    _getData(false);
     _listen();
   }
 
@@ -127,6 +128,15 @@ class _UserListMobileState extends State<UserListMobile>
           ),
           onPressed: () {
             _navigateToUserReport(user);
+          }));
+      list.add(FocusedMenuItem(
+          title: Text('Schedule FieldMonitor'),
+          trailingIcon: Icon(
+            Icons.person,
+            color: Theme.of(context).primaryColor,
+          ),
+          onPressed: () {
+            _navigateToScheduler(user);
           }));
     }
     return list;
@@ -309,5 +319,15 @@ class _UserListMobileState extends State<UserListMobile>
             child: MessageMain(
               user: user,
             )));
+  }
+
+  void _navigateToScheduler(User user) {
+    Navigator.push(
+        context,
+        PageTransition(
+            type: PageTransitionType.scale,
+            alignment: Alignment.bottomLeft,
+            duration: Duration(seconds: 1),
+            child: SchedulerMain(user)));
   }
 }

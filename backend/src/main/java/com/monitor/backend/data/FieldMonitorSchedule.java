@@ -1,10 +1,18 @@
 package com.monitor.backend.data;
 
 public class FieldMonitorSchedule {
-    private String adminId, projectId,
+    private String adminId, projectId, fieldMonitorScheduleId,
             date, organizationId, fieldMonitorId;
     private String projectName, organizationName;
     private int perDay, perWeek, perMonth;
+
+    public String getFieldMonitorScheduleId() {
+        return fieldMonitorScheduleId;
+    }
+
+    public void setFieldMonitorScheduleId(String fieldMonitorScheduleId) {
+        this.fieldMonitorScheduleId = fieldMonitorScheduleId;
+    }
 
     public String getFieldMonitorId() {
         return fieldMonitorId;

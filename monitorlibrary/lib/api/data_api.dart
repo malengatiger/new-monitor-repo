@@ -8,6 +8,7 @@ import 'package:monitorlibrary/data/city.dart';
 import 'package:monitorlibrary/data/community.dart';
 import 'package:monitorlibrary/data/counters.dart';
 import 'package:monitorlibrary/data/country.dart';
+import 'package:monitorlibrary/data/field_monitor_schedule.dart';
 import 'package:monitorlibrary/data/organization.dart';
 import 'package:monitorlibrary/data/photo.dart';
 import 'package:monitorlibrary/data/project.dart';
@@ -45,6 +46,74 @@ class DataAPI {
       }
     } else {
       return url;
+    }
+  }
+
+  static Future<User> addFieldMonitorSchedule(
+      FieldMonitorSchedule monitorSchedule) async {
+    String mURL = await getUrl();
+    Map bag = monitorSchedule.toJson();
+    pp('DataAPI: ☕️ ☕️ ☕️ bag about to be sent to backend: check name: ☕️ $bag');
+    try {
+      var result = await _callWebAPIPost(mURL + 'addFieldMonitorSchedule', bag);
+      return User.fromJson(result);
+    } catch (e) {
+      pp(e);
+      throw e;
+    }
+  }
+
+  static Future<List<FieldMonitorSchedule>> getProjectFieldMonitorSchedules(
+      String projectId) async {
+    String mURL = await getUrl();
+    List<FieldMonitorSchedule> mList = [];
+    try {
+      List result = await _callWebAPIGet(
+          mURL + 'getProjectFieldMonitorSchedules?projectId=$projectId');
+      result.forEach((element) {
+        mList.add(FieldMonitorSchedule.fromJson(element));
+      });
+      pp('🌿 🌿 🌿 List<FieldMonitorSchedule> returned: 🌿 ${mList.length}');
+      return mList;
+    } catch (e) {
+      pp(e);
+      throw e;
+    }
+  }
+
+  static Future<List<FieldMonitorSchedule>> getMonitorFieldMonitorSchedules(
+      String userId) async {
+    String mURL = await getUrl();
+    List<FieldMonitorSchedule> mList = [];
+    try {
+      List result = await _callWebAPIGet(
+          mURL + 'getMonitorFieldMonitorSchedules?projectId=$userId');
+      result.forEach((element) {
+        mList.add(FieldMonitorSchedule.fromJson(element));
+      });
+      pp('🌿 🌿 🌿 List<FieldMonitorSchedule> returned: 🌿 ${mList.length}');
+      return mList;
+    } catch (e) {
+      pp(e);
+      throw e;
+    }
+  }
+
+  static Future<List<FieldMonitorSchedule>> getOrgFieldMonitorSchedules(
+      String organizationId) async {
+    String mURL = await getUrl();
+    List<FieldMonitorSchedule> mList = [];
+    try {
+      List result = await _callWebAPIGet(
+          mURL + 'getMonitorFieldMonitorSchedules?projectId=$organizationId');
+      result.forEach((element) {
+        mList.add(FieldMonitorSchedule.fromJson(element));
+      });
+      pp('🌿 🌿 🌿 List<FieldMonitorSchedule> returned: 🌿 ${mList.length}');
+      return mList;
+    } catch (e) {
+      pp(e);
+      throw e;
     }
   }
 

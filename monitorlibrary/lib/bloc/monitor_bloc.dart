@@ -6,6 +6,7 @@ import 'package:monitorlibrary/api/local_db_api.dart';
 import 'package:monitorlibrary/api/sharedprefs.dart';
 import 'package:monitorlibrary/data/community.dart';
 import 'package:monitorlibrary/data/country.dart';
+import 'package:monitorlibrary/data/field_monitor_schedule.dart';
 import 'package:monitorlibrary/data/photo.dart';
 import 'package:monitorlibrary/data/project.dart';
 import 'package:monitorlibrary/data/project_position.dart';
@@ -38,10 +39,12 @@ class MonitorBloc {
 
   StreamController<List<Photo>> _projectPhotoController =
       StreamController.broadcast();
-  StreamController<List<Video>> _projectVideoideoController =
+  StreamController<List<Video>> _projectVideoController =
       StreamController.broadcast();
 
   StreamController<List<ProjectPosition>> _projPositionsController =
+      StreamController.broadcast();
+  StreamController<List<FieldMonitorSchedule>> _fieldMonitorScheduleController =
       StreamController.broadcast();
   StreamController<List<Country>> _countryController =
       StreamController.broadcast();
@@ -51,7 +54,7 @@ class MonitorBloc {
   StreamController<User> _activeUserController = StreamController.broadcast();
 
   Stream get projectPhotoStream => _projectPhotoController.stream;
-  Stream get projectVideoStream => _projectVideoideoController.stream;
+  Stream get projectVideoStream => _projectVideoController.stream;
 
   Stream get reportStream => _reportController.stream;
   Stream get settlementStream => _communityController.stream;
@@ -62,18 +65,21 @@ class MonitorBloc {
   Stream get activeUserStream => _activeUserController.stream;
   Stream get usersStream => _userController.stream;
   Stream get activeQuestionnaireStream => _activeQuestionnaireController.stream;
+  Stream get fieldMonitorScheduleStream =>
+      _fieldMonitorScheduleController.stream;
 
   Stream get photoStream => _photoController.stream;
   Stream get videoStream => _videoController.stream;
 
-  List<Community> _communities = List();
-  List<Questionnaire> _questionnaires = List();
-  List<Project> _projects = List();
-  List<ProjectPosition> _projectPositions = List();
+  List<Community> _communities = [];
+  List<Questionnaire> _questionnaires = [];
+  List<Project> _projects = [];
+  List<ProjectPosition> _projectPositions = [];
   List<Photo> _photos = [];
   List<Video> _videos = [];
   List<User> _users = [];
   List<Country> _countries = [];
+  List<FieldMonitorSchedule> _schedules = [];
 
   Future<List<Project>> getProjectsWithinRadius(
       {double radiusInKM = 100.5, bool checkUserOrg = true}) async {
@@ -214,6 +220,49 @@ class MonitorBloc {
     return photos;
   }
 
+  Future<List<FieldMonitorSchedule>> getProjectFieldMonitorSchedules(
+      {String projectId, bool forceRefresh = false}) async {
+    _schedules = await LocalDBAPI.getProjectMonitorSchedules(projectId);
+
+    if (_schedules.isEmpty || forceRefresh) {
+      _schedules = await DataAPI.getProjectFieldMonitorSchedules(projectId);
+      await LocalDBAPI.addFieldMonitorSchedules(schedules: _schedules);
+    }
+    _fieldMonitorScheduleController.sink.add(_schedules);
+    pp('💜 💜 💜 MonitorBloc: getProjectFieldMonitorSchedules found: 💜 ${_schedules.length} schedules ');
+
+    return _schedules;
+  }
+
+  Future<List<FieldMonitorSchedule>> getMonitorFieldMonitorSchedules(
+      {String userId, bool forceRefresh = false}) async {
+    _schedules = await LocalDBAPI.getFieldMonitorSchedules(userId);
+
+    if (_schedules.isEmpty || forceRefresh) {
+      _schedules = await DataAPI.getMonitorFieldMonitorSchedules(userId);
+      await LocalDBAPI.addFieldMonitorSchedules(schedules: _schedules);
+    }
+    _fieldMonitorScheduleController.sink.add(_schedules);
+    pp('💜 💜 💜 MonitorBloc: getMonitorFieldMonitorSchedules found: 💜 ${_schedules.length} schedules ');
+
+    return _schedules;
+  }
+
+  Future<List<FieldMonitorSchedule>> getOrgFieldMonitorSchedules(
+      {String organizationId, bool forceRefresh = false}) async {
+    _schedules =
+        await LocalDBAPI.getOrganizationMonitorSchedules(organizationId);
+
+    if (_schedules.isEmpty || forceRefresh) {
+      _schedules = await DataAPI.getOrgFieldMonitorSchedules(organizationId);
+      await LocalDBAPI.addFieldMonitorSchedules(schedules: _schedules);
+    }
+    _fieldMonitorScheduleController.sink.add(_schedules);
+    pp('💜 💜 💜 MonitorBloc: getOrgFieldMonitorSchedules found: 💜 ${_schedules.length} schedules ');
+
+    return _schedules;
+  }
+
   Future<List<Photo>> getOrganizationPhotos(
       {String organizationId, bool forceRefresh = false}) async {
     try {
@@ -272,7 +321,7 @@ class MonitorBloc {
       videos = await DataAPI.findVideosById(projectId);
       if (android) await LocalDBAPI.addVideos(videos: videos);
     }
-    _projectVideoideoController.sink.add(videos);
+    _projectVideoController.sink.add(videos);
     pp('💜 💜 💜 MonitorBloc: getProjectVideos found: 💜 ${videos.length} videos ');
 
     return videos;
@@ -349,5 +398,8 @@ class MonitorBloc {
 
     _videoController.close();
     _photoController.close();
+    _fieldMonitorScheduleController.close();
+    _projectVideoController.close();
+    _projectPhotoController.close();
   }
 }

@@ -464,7 +464,6 @@ public class ListController {
         }
 
     }
-
     @GetMapping("/getProjectVideos")
     public ResponseEntity<Object> getProjectVideos(String projectId)
             throws Exception {
@@ -476,6 +475,53 @@ public class ListController {
             return ResponseEntity.badRequest().body(
                     new CustomErrorResponse(400,
                             "getProjectVideos failed: " + e.getMessage(),
+                            new DateTime().toDateTimeISO().toString()));
+        }
+
+    }
+
+    @GetMapping("/getProjectFieldMonitorSchedules")
+    public ResponseEntity<Object> getProjectFieldMonitorSchedules(String projectId)
+            throws Exception {
+        LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS)
+                .concat("getProjectFieldMonitorSchedules: " + projectId));
+        try {
+            return ResponseEntity.ok(listService.getProjectFieldMonitorSchedules(projectId));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(
+                    new CustomErrorResponse(400,
+                            "getProjectFieldMonitorSchedules failed: " + e.getMessage(),
+                            new DateTime().toDateTimeISO().toString()));
+        }
+
+    }
+    @GetMapping("/getMonitorFieldMonitorSchedules")
+    public ResponseEntity<Object> getMonitorFieldMonitorSchedules(String projectId)
+            throws Exception {
+        LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS)
+                .concat("getMonitorFieldMonitorSchedules: " + projectId));
+        try {
+            return ResponseEntity.ok(listService.getProjectFieldMonitorSchedules(projectId));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(
+                    new CustomErrorResponse(400,
+                            "getMonitorFieldMonitorSchedules failed: " + e.getMessage(),
+                            new DateTime().toDateTimeISO().toString()));
+        }
+
+    }
+
+    @GetMapping("/getAdminFieldMonitorSchedules")
+    public ResponseEntity<Object> getAdminFieldMonitorSchedules(String projectId)
+            throws Exception {
+        LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS)
+                .concat("getAdminFieldMonitorSchedules: " + projectId));
+        try {
+            return ResponseEntity.ok(listService.getProjectFieldMonitorSchedules(projectId));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(
+                    new CustomErrorResponse(400,
+                            "getAdminFieldMonitorSchedules failed: " + e.getMessage(),
                             new DateTime().toDateTimeISO().toString()));
         }
 

@@ -1,7 +1,8 @@
 import 'package:meta/meta.dart';
 
 class FieldMonitorSchedule {
-  String fieldMonitorId,
+  String fieldMonitorScheduleId,
+      fieldMonitorId,
       adminId,
       organizationId,
       projectId,
@@ -15,6 +16,7 @@ class FieldMonitorSchedule {
       @required this.adminId,
       @required this.projectId,
       @required this.date,
+      @required this.fieldMonitorScheduleId,
       this.perDay,
       this.perWeek,
       this.perMonth,
@@ -24,6 +26,7 @@ class FieldMonitorSchedule {
 
   FieldMonitorSchedule.fromJson(Map data) {
     this.fieldMonitorId = data['fieldMonitorId'];
+    this.fieldMonitorScheduleId = data['fieldMonitorScheduleId'];
     this.adminId = data['adminId'];
     this.organizationId = data['organizationId'];
     this.projectId = data['projectId'];
@@ -37,6 +40,7 @@ class FieldMonitorSchedule {
   Map<String, dynamic> toJson() {
     Map<String, dynamic> map = {
       'fieldMonitorId': fieldMonitorId,
+      'fieldMonitorScheduleId': fieldMonitorScheduleId,
       'date': date,
       'adminId': adminId,
       'organizationId': organizationId,

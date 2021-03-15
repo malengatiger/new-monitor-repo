@@ -25,7 +25,7 @@ class LocalDBAPI {
   static Box orgMessageBox;
   static Box scheduleBox;
 
-  static const aa = 'AnchorLocalDB: 🦠🦠🦠🦠🦠 ';
+  static const aa = 'LocalDBAPI: 🦠🦠🦠🦠🦠 ';
 
   static Future connectLocalDB() async {
     if (projectBox == null) {
@@ -219,7 +219,7 @@ class LocalDBAPI {
     return mList;
   }
 
-  static const mx = '🍎 🍎 🍎 LocalDBAPI: 🍎 ';
+  static const mx = '🍎 🍎 🍎 LocalDBAPI: ';
   static Future<List<User>> getUsers() async {
     await connectLocalDB();
 
@@ -318,6 +318,14 @@ class LocalDBAPI {
         projectPosition.created, projectPosition.toJson());
 
     pp('$mx addProjectPosition: 🌼 1 record added ... 🔵 🔵 ');
+    return 0;
+  }
+
+  static Future<int> addFieldMonitorSchedules(
+      {@required List<FieldMonitorSchedule> schedules}) async {
+    schedules.forEach((element) async {
+      await addFieldMonitorSchedule(schedule: element);
+    });
     return 0;
   }
 
