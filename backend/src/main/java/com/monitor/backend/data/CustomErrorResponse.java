@@ -1,16 +1,16 @@
 package com.monitor.backend.data;
 
-public class CustomResponse {
+public class CustomErrorResponse {
     int statusCode;
     String message, date;
 
-    public CustomResponse(int statusCode, String message, String date) {
+    public CustomErrorResponse(int statusCode, String message, String date) {
         this.statusCode = statusCode;
         this.message = message;
         this.date = date;
     }
 
-    public CustomResponse() {
+    public CustomErrorResponse() {
     }
 
     public int getStatusCode() {

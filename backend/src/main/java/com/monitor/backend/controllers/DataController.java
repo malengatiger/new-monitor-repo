@@ -52,7 +52,7 @@ public class DataController {
             return ResponseEntity.ok(dataService.addOrganization(organization));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(
-                    new CustomResponse(400,
+                    new CustomErrorResponse(400,
                             "addOrganization failed: " + e.getMessage(),
                             new DateTime().toDateTimeISO().toString()));
         }
@@ -67,7 +67,7 @@ public class DataController {
             return ResponseEntity.ok(dataService.addCountry(country));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(
-                    new CustomResponse(400,
+                    new CustomErrorResponse(400,
                             "addCountry failed: " + e.getMessage(),
                             new DateTime().toDateTimeISO().toString()));
         }
@@ -82,7 +82,7 @@ public class DataController {
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.badRequest().body(
-                    new CustomResponse(400,
+                    new CustomErrorResponse(400,
                             "addCommunity failed: " + e.getMessage(),
                             new DateTime().toDateTimeISO().toString()));
         }
@@ -97,7 +97,7 @@ public class DataController {
             return ResponseEntity.ok(city1);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(
-                    new CustomResponse(400,
+                    new CustomErrorResponse(400,
                             "addFieldMonitorSchedule failed: " + e.getMessage(),
                             new DateTime().toDateTimeISO().toString()));
         }
@@ -107,13 +107,13 @@ public class DataController {
     @PostMapping("/addFieldMonitorSchedule")
     public ResponseEntity<Object> addFieldMonitorSchedule(@RequestBody FieldMonitorSchedule fieldMonitorSchedule) throws Exception {
         LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS).concat("Adding FieldMonitorSchedule: "
-                .concat(fieldMonitorSchedule.getMonitorId())));
+                .concat(fieldMonitorSchedule.getFieldMonitorId())));
         try {
             FieldMonitorSchedule schedule = dataService.addFieldMonitorSchedule(fieldMonitorSchedule);
             return ResponseEntity.ok(schedule);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(
-                    new CustomResponse(400,
+                    new CustomErrorResponse(400,
                             "addFieldMonitorSchedule failed: " + e.getMessage(),
                             new DateTime().toDateTimeISO().toString()));
         }
@@ -133,7 +133,7 @@ public class DataController {
             return ResponseEntity.ok(project);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(
-                    new CustomResponse(400,
+                    new CustomErrorResponse(400,
                             "addProject failed: " + e.getMessage(),
                             new DateTime().toDateTimeISO().toString()));
         }
@@ -147,7 +147,7 @@ public class DataController {
         return ResponseEntity.ok(dataService.updateProject(project));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(
-                    new CustomResponse(400,
+                    new CustomErrorResponse(400,
                             "updateProject failed: " + e.getMessage(),
                             new DateTime().toDateTimeISO().toString()));
         }
@@ -162,7 +162,7 @@ public class DataController {
             return ResponseEntity.ok(dataService.addProjectPosition(projectPosition));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(
-                    new CustomResponse(400,
+                    new CustomErrorResponse(400,
                             "addProjectPosition failed: " + e.getMessage(),
                             new DateTime().toDateTimeISO().toString()));
         }
@@ -180,7 +180,7 @@ public class DataController {
             return ResponseEntity.ok(photo);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(
-                    new CustomResponse(400,
+                    new CustomErrorResponse(400,
                             "addPhoto failed: " + e.getMessage(),
                             new DateTime().toDateTimeISO().toString()));
         }
@@ -197,7 +197,7 @@ public class DataController {
         return ResponseEntity.ok(video);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(
-                    new CustomResponse(400,
+                    new CustomErrorResponse(400,
                             "addVideo failed: " + e.getMessage(),
                             new DateTime().toDateTimeISO().toString()));
         }
@@ -223,7 +223,7 @@ public class DataController {
             return ResponseEntity.ok(condition);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(
-                    new CustomResponse(400,
+                    new CustomErrorResponse(400,
                             "addCondition failed: " + e.getMessage(),
                             new DateTime().toDateTimeISO().toString()));
         }
@@ -240,7 +240,7 @@ public class DataController {
         return ResponseEntity.ok(result);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(
-                    new CustomResponse(400,
+                    new CustomErrorResponse(400,
                             "sendMessage failed: " + e.getMessage(),
                             new DateTime().toDateTimeISO().toString()));
         }
@@ -259,7 +259,7 @@ public class DataController {
             return ResponseEntity.ok(dataService.addUser(user));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(
-                    new CustomResponse(400,
+                    new CustomErrorResponse(400,
                             "addUser failed: " + e.getMessage(),
                             new DateTime().toDateTimeISO().toString()));
         }
@@ -274,7 +274,7 @@ public class DataController {
             return ResponseEntity.ok(dataService.updateUser(user));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(
-                    new CustomResponse(400,
+                    new CustomErrorResponse(400,
                             "updateUser failed: " + e.getMessage(),
                             new DateTime().toDateTimeISO().toString()));
         }

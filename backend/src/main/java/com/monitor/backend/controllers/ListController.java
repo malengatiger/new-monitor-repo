@@ -43,7 +43,7 @@ public class ListController {
             return ResponseEntity.ok(user);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(
-                    new CustomResponse(400,
+                    new CustomErrorResponse(400,
                             "findUserByEmail failed: " + e.getMessage(),
                             new DateTime().toDateTimeISO().toString()));
         }
@@ -58,7 +58,7 @@ public class ListController {
             return ResponseEntity.ok(orgs);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(
-                    new CustomResponse(400,
+                    new CustomErrorResponse(400,
                             "getOrganizations failed: " + e.getMessage(),
                             new DateTime().toDateTimeISO().toString()));
         }
@@ -73,7 +73,7 @@ public class ListController {
             return ResponseEntity.ok(communities);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(
-                    new CustomResponse(400,
+                    new CustomErrorResponse(400,
                             "getCommunities failed: " + e.getMessage(),
                             new DateTime().toDateTimeISO().toString()));
         }
@@ -89,7 +89,7 @@ public class ListController {
             return ResponseEntity.ok(projects);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(
-                    new CustomResponse(400,
+                    new CustomErrorResponse(400,
                             "addFieldMonitorSchedule failed: " + e.getMessage(),
                             new DateTime().toDateTimeISO().toString()));
         }
@@ -109,7 +109,7 @@ public class ListController {
             return ResponseEntity.ok(cities);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(
-                    new CustomResponse(400,
+                    new CustomErrorResponse(400,
                             "getCities failed: " + e.getMessage(),
                             new DateTime().toDateTimeISO().toString()));
         }
@@ -125,7 +125,7 @@ public class ListController {
             return ResponseEntity.ok(countries);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(
-                    new CustomResponse(400,
+                    new CustomErrorResponse(400,
                             "findCommunitiesByCountry failed: " + e.getMessage(),
                             new DateTime().toDateTimeISO().toString()));
         }
@@ -141,7 +141,7 @@ public class ListController {
             return ResponseEntity.ok(countries);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(
-                    new CustomResponse(400,
+                    new CustomErrorResponse(400,
                             "getCountries failed: " + e.getMessage(),
                             new DateTime().toDateTimeISO().toString()));
         }
@@ -156,7 +156,7 @@ public class ListController {
             return ResponseEntity.ok(orgs);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(
-                    new CustomResponse(400,
+                    new CustomErrorResponse(400,
                             "getCountryOrganizations failed: " + e.getMessage(),
                             new DateTime().toDateTimeISO().toString()));
         }
@@ -171,7 +171,7 @@ public class ListController {
             return ResponseEntity.ok(projects);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(
-                    new CustomResponse(400,
+                    new CustomErrorResponse(400,
                             "getOrganizationProjects failed: " + e.getMessage(),
                             new DateTime().toDateTimeISO().toString()));
         }
@@ -186,7 +186,7 @@ public class ListController {
             return ResponseEntity.ok(users);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(
-                    new CustomResponse(400,
+                    new CustomErrorResponse(400,
                             "getQuestionnairesByOrganization failed: " + e.getMessage(),
                             new DateTime().toDateTimeISO().toString()));
         }
@@ -198,7 +198,7 @@ public class ListController {
             return ResponseEntity.ok(listService.getOrganizationUsers(organizationId));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(
-                    new CustomResponse(400,
+                    new CustomErrorResponse(400,
                             "addFieldMonitorSchedule failed: " + e.getMessage(),
                             new DateTime().toDateTimeISO().toString()));
         }
@@ -210,7 +210,7 @@ public class ListController {
             return ResponseEntity.ok(listService.getOrganizationPhotos(organizationId));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(
-                    new CustomResponse(400,
+                    new CustomErrorResponse(400,
                             "getOrganizationPhotos failed: " + e.getMessage(),
                             new DateTime().toDateTimeISO().toString()));
         }
@@ -222,7 +222,7 @@ public class ListController {
             return ResponseEntity.ok(listService.getOrganizationVideos(organizationId));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(
-                    new CustomResponse(400,
+                    new CustomErrorResponse(400,
                             "getOrganizationVideos failed: " + e.getMessage(),
                             new DateTime().toDateTimeISO().toString()));
         }
@@ -237,7 +237,7 @@ public class ListController {
             return ResponseEntity.ok(users);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(
-                    new CustomResponse(400,
+                    new CustomErrorResponse(400,
                             "findProjectsByOrganization failed: " + e.getMessage(),
                             new DateTime().toDateTimeISO().toString()));
         }
@@ -252,7 +252,7 @@ public class ListController {
             return ResponseEntity.ok(users);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(
-                    new CustomResponse(400,
+                    new CustomErrorResponse(400,
                             "getUsers failed: " + e.getMessage(),
                             new DateTime().toDateTimeISO().toString()));
         }
@@ -267,7 +267,7 @@ public class ListController {
             return ResponseEntity.ok(projects);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(
-                    new CustomResponse(400,
+                    new CustomErrorResponse(400,
                             "findProjectsByLocation failed: " + e.getMessage(),
                             new DateTime().toDateTimeISO().toString()));
         }
@@ -282,7 +282,7 @@ public class ListController {
             return ResponseEntity.ok(cities);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(
-                    new CustomResponse(400,
+                    new CustomErrorResponse(400,
                             "findCitiesByLocation failed: " + e.getMessage(),
                             new DateTime().toDateTimeISO().toString()));
         }
@@ -297,7 +297,7 @@ public class ListController {
             return ResponseEntity.ok(positions);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(
-                    new CustomResponse(400,
+                    new CustomErrorResponse(400,
                             "findProjectPositionsByLocation failed: " + e.getMessage(),
                             new DateTime().toDateTimeISO().toString()));
         }
@@ -311,7 +311,7 @@ public class ListController {
             return ResponseEntity.ok(listService.getProjectConditions(projectId));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(
-                    new CustomResponse(400,
+                    new CustomErrorResponse(400,
                             "getProjectConditions failed: " + e.getMessage(),
                             new DateTime().toDateTimeISO().toString()));
         }
@@ -325,7 +325,7 @@ public class ListController {
             return ResponseEntity.ok(listService.getProjectPositions(projectId));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(
-                    new CustomResponse(400,
+                    new CustomErrorResponse(400,
                             "getProjectPositions failed: " + e.getMessage(),
                             new DateTime().toDateTimeISO().toString()));
         }
@@ -339,7 +339,7 @@ public class ListController {
             return ResponseEntity.ok(listService.countPhotosByProject(projectId));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(
-                    new CustomResponse(400,
+                    new CustomErrorResponse(400,
                             "countPhotosByProject failed: " + e.getMessage(),
                             new DateTime().toDateTimeISO().toString()));
         }
@@ -353,7 +353,7 @@ public class ListController {
             return ResponseEntity.ok(listService.countPhotosByUser(userId));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(
-                    new CustomResponse(400,
+                    new CustomErrorResponse(400,
                             "countPhotosByUser failed: " + e.getMessage(),
                             new DateTime().toDateTimeISO().toString()));
         }
@@ -367,7 +367,7 @@ public class ListController {
             return ResponseEntity.ok(listService.countVideosByProject(projectId));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(
-                    new CustomResponse(400,
+                    new CustomErrorResponse(400,
                             "countVideosByProject failed: " + e.getMessage(),
                             new DateTime().toDateTimeISO().toString()));
         }
@@ -383,7 +383,7 @@ public class ListController {
             return ResponseEntity.ok(listService.countVideosByUser(userId));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(
-                    new CustomResponse(400,
+                    new CustomErrorResponse(400,
                             "countVideosByUser failed: " + e.getMessage(),
                             new DateTime().toDateTimeISO().toString()));
         }
@@ -398,7 +398,7 @@ public class ListController {
             return ResponseEntity.ok(listService.getCountsByProject(projectId));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(
-                    new CustomResponse(400,
+                    new CustomErrorResponse(400,
                             "getCountsByProject failed: " + e.getMessage(),
                             new DateTime().toDateTimeISO().toString()));
         }
@@ -413,7 +413,7 @@ public class ListController {
             return ResponseEntity.ok(listService.getCountsByUser(userId));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(
-                    new CustomResponse(400,
+                    new CustomErrorResponse(400,
                             "getCountsByUser failed: " + e.getMessage(),
                             new DateTime().toDateTimeISO().toString()));
         }
@@ -428,7 +428,7 @@ public class ListController {
             return ResponseEntity.ok(listService.getProjectPhotos(projectId));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(
-                    new CustomResponse(400,
+                    new CustomErrorResponse(400,
                             "getProjectPhotos failed: " + e.getMessage(),
                             new DateTime().toDateTimeISO().toString()));
         }
@@ -443,7 +443,7 @@ public class ListController {
             return ResponseEntity.ok(listService.getUserProjectPhotos(userId));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(
-                    new CustomResponse(400,
+                    new CustomErrorResponse(400,
                             "getUserProjectPhotos failed: " + e.getMessage(),
                             new DateTime().toDateTimeISO().toString()));
         }
@@ -458,7 +458,7 @@ public class ListController {
             return ResponseEntity.ok(listService.getUserProjectVideos(userId));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(
-                    new CustomResponse(400,
+                    new CustomErrorResponse(400,
                             "getUserProjectVideos failed: " + e.getMessage(),
                             new DateTime().toDateTimeISO().toString()));
         }
@@ -474,7 +474,7 @@ public class ListController {
             return ResponseEntity.ok(listService.getProjectVideos(projectId));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(
-                    new CustomResponse(400,
+                    new CustomErrorResponse(400,
                             "getProjectVideos failed: " + e.getMessage(),
                             new DateTime().toDateTimeISO().toString()));
         }
@@ -487,7 +487,7 @@ public class ListController {
             return ResponseEntity.ok(listService.getNearbyCities(latitude, longitude, radiusInKM));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(
-                    new CustomResponse(400,
+                    new CustomErrorResponse(400,
                             "getNearbyCities failed: " + e.getMessage(),
                             new DateTime().toDateTimeISO().toString()));
         }

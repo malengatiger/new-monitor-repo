@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
+import 'package:monitorlibrary/data/field_monitor_schedule.dart';
 import 'package:monitorlibrary/data/photo.dart';
 import 'package:monitorlibrary/data/project.dart';
 import 'package:monitorlibrary/data/project_position.dart';
@@ -22,6 +23,7 @@ class LocalDBAPI {
   static Box projectPositionBox;
   static Box conditionBox;
   static Box orgMessageBox;
+  static Box scheduleBox;
 
   static const aa = 'AnchorLocalDB: 🦠🦠🦠🦠🦠 ';
 
@@ -49,7 +51,11 @@ class LocalDBAPI {
       pp('$aa Hive conditionBox:  🔵  ....conditionBox.isOpen: ${conditionBox.isOpen}');
 
       orgMessageBox = await Hive.openBox("orgMessageBox");
-      pp('$aa Hive orgMessageBox:  🔵  ....orgMessageBox.isOpen: ${conditionBox.isOpen}');
+      pp('$aa Hive orgMessageBox:  🔵  ....orgMessageBox.isOpen: ${orgMessageBox.isOpen}');
+
+      scheduleBox = await Hive.openBox("scheduleBox");
+      pp('$aa Hive scheduleBox:  🔵  ....scheduleBox.isOpen: ${scheduleBox.isOpen}');
+
       pp('$aa Hive local data ready to rumble ....$aa');
     }
   }
@@ -129,6 +135,57 @@ class LocalDBAPI {
     });
 
     pp('$mx getProjectVideos: 🦠 ${mList.length}');
+    return mList;
+  }
+
+  static Future<List<FieldMonitorSchedule>> getProjectMonitorSchedules(
+      String projectId) async {
+    await connectLocalDB();
+
+    List<FieldMonitorSchedule> mList = [];
+    List list = scheduleBox.values.toList();
+    list.forEach((element) {
+      var sched = FieldMonitorSchedule.fromJson(element);
+      if (sched.projectId == projectId) {
+        mList.add(sched);
+      }
+    });
+
+    pp('$mx getProjectMonitorSchedules: 🦠 ${mList.length}');
+    return mList;
+  }
+
+  static Future<List<FieldMonitorSchedule>> getFieldMonitorSchedules(
+      String userId) async {
+    await connectLocalDB();
+
+    List<FieldMonitorSchedule> mList = [];
+    List list = scheduleBox.values.toList();
+    list.forEach((element) {
+      var sched = FieldMonitorSchedule.fromJson(element);
+      if (sched.fieldMonitorId == userId) {
+        mList.add(sched);
+      }
+    });
+
+    pp('$mx getFieldMonitorSchedules: 🦠 ${mList.length}');
+    return mList;
+  }
+
+  static Future<List<FieldMonitorSchedule>> getOrganizationMonitorSchedules(
+      String organizationId) async {
+    await connectLocalDB();
+
+    List<FieldMonitorSchedule> mList = [];
+    List list = scheduleBox.values.toList();
+    list.forEach((element) {
+      var sched = FieldMonitorSchedule.fromJson(element);
+      if (sched.organizationId == organizationId) {
+        mList.add(sched);
+      }
+    });
+
+    pp('$mx getOrganizationMonitorSchedules: 🦠 ${mList.length}');
     return mList;
   }
 
@@ -261,6 +318,15 @@ class LocalDBAPI {
         projectPosition.created, projectPosition.toJson());
 
     pp('$mx addProjectPosition: 🌼 1 record added ... 🔵 🔵 ');
+    return 0;
+  }
+
+  static Future<int> addFieldMonitorSchedule(
+      {@required FieldMonitorSchedule schedule}) async {
+    await connectLocalDB();
+    await scheduleBox.put(schedule.fieldMonitorId, schedule.toJson());
+
+    pp('$mx addFieldMonitorSchedule: 🌼 1 record added ... 🔵 🔵 ');
     return 0;
   }
 
