@@ -2,11 +2,15 @@ package com.monitor.backend.controllers;
 
 import com.google.firebase.messaging.FirebaseMessagingException;
 import com.monitor.backend.data.*;
-import com.monitor.backend.services.*;
+import com.monitor.backend.services.DataService;
+import com.monitor.backend.services.ListService;
+import com.monitor.backend.services.MessageService;
+import com.monitor.backend.services.MongoDataService;
 import com.monitor.backend.utils.Emoji;
 import com.monitor.backend.utils.MongoGenerator;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.logging.Logger;
@@ -31,8 +35,8 @@ public class DataController {
     @Autowired
     private MessageService messageService;
 
-    @Autowired
-    OzowService ozowService;
+//    @Autowired
+//    OzowService ozowService;
 
     @GetMapping("/ping")
     public String ping() throws Exception {
@@ -41,99 +45,206 @@ public class DataController {
     }
 
     @PostMapping("/addOrganization")
-    public Organization addOrganization(@RequestBody Organization organization) throws Exception {
+    public ResponseEntity<Object> addOrganization(@RequestBody Organization organization) throws Exception {
         LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS)
                 .concat(".... Adding Organization: ".concat(organization.getName())));
-        return dataService.addOrganization(organization);
+        try {
+            return ResponseEntity.ok(dataService.addOrganization(organization));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(
+                    new CustomResponse(400,
+                            "addOrganization failed: " + e.getMessage(),
+                            new DateTime().toDateTimeISO().toString()));
+        }
+
     }
 
     @PostMapping("/addCountry")
-    public Country addCountry(@RequestBody Country country) throws Exception {
+    public ResponseEntity<Object> addCountry(@RequestBody Country country) throws Exception {
         LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS)
                 .concat("Adding Country: ".concat(country.getName())));
-        return dataService.addCountry(country);
+        try {
+            return ResponseEntity.ok(dataService.addCountry(country));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(
+                    new CustomResponse(400,
+                            "addCountry failed: " + e.getMessage(),
+                            new DateTime().toDateTimeISO().toString()));
+        }
+
     }
 
     @PostMapping("/addCommunity")
-    public Community addCommunity(@RequestBody Community community) throws Exception {
+    public ResponseEntity<Object> addCommunity(@RequestBody Community community) throws Exception {
         LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS).concat("Adding Community: ".concat(community.getName())));
-        return dataService.addCommunity(community);
+        try {
+            return ResponseEntity.ok(dataService.addCommunity(community));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.badRequest().body(
+                    new CustomResponse(400,
+                            "addCommunity failed: " + e.getMessage(),
+                            new DateTime().toDateTimeISO().toString()));
+        }
+
     }
 
     @PostMapping("/addCity")
-    public City addCity(@RequestBody City city) throws Exception {
+    public ResponseEntity<Object> addCity(@RequestBody City city) throws Exception {
         LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS).concat("Adding City: ".concat(city.getName())));
-        return dataService.addCity(city);
+        try {
+            City city1 = dataService.addCity(city);
+            return ResponseEntity.ok(city1);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(
+                    new CustomResponse(400,
+                            "addFieldMonitorSchedule failed: " + e.getMessage(),
+                            new DateTime().toDateTimeISO().toString()));
+        }
+
     }
+
+    @PostMapping("/addFieldMonitorSchedule")
+    public ResponseEntity<Object> addFieldMonitorSchedule(@RequestBody FieldMonitorSchedule fieldMonitorSchedule) throws Exception {
+        LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS).concat("Adding FieldMonitorSchedule: "
+                .concat(fieldMonitorSchedule.getMonitorId())));
+        try {
+            FieldMonitorSchedule schedule = dataService.addFieldMonitorSchedule(fieldMonitorSchedule);
+            return ResponseEntity.ok(schedule);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(
+                    new CustomResponse(400,
+                            "addFieldMonitorSchedule failed: " + e.getMessage(),
+                            new DateTime().toDateTimeISO().toString()));
+        }
+
+    }
+
 
     @Autowired
     MongoDataService mongoDataService;
 
     @PostMapping("/addProject")
-    public com.monitor.backend.data.Project addProject(@RequestBody com.monitor.backend.data.Project project) throws Exception {
+    public ResponseEntity<Object> addProject(@RequestBody com.monitor.backend.data.Project project) throws Exception {
         LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS).concat("Adding Project: ".concat(project.getName())));
-        String result = dataService.addProject(project);
-        LOGGER.info(Emoji.LEAF + Emoji.LEAF + result);
-        return project;
+        try {
+            String result = dataService.addProject(project);
+            LOGGER.info(Emoji.LEAF + Emoji.LEAF + result);
+            return ResponseEntity.ok(project);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(
+                    new CustomResponse(400,
+                            "addProject failed: " + e.getMessage(),
+                            new DateTime().toDateTimeISO().toString()));
+        }
+
     }
 
     @PostMapping("/updateProject")
-    public com.monitor.backend.data.Project updateProject(@RequestBody Project project) throws Exception {
+    public ResponseEntity<Object> updateProject(@RequestBody Project project) throws Exception {
         LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS).concat("Update Project: ".concat(project.getName())));
-        return dataService.updateProject(project);
+        try {
+        return ResponseEntity.ok(dataService.updateProject(project));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(
+                    new CustomResponse(400,
+                            "updateProject failed: " + e.getMessage(),
+                            new DateTime().toDateTimeISO().toString()));
+        }
+
     }
 
     @PostMapping("/addProjectPosition")
-    public ProjectPosition addProjectPosition(@RequestBody ProjectPosition projectPosition)
+    public ResponseEntity<Object> addProjectPosition(@RequestBody ProjectPosition projectPosition)
             throws Exception {
         LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS).concat("Adding Project Position: "));
-        return dataService.addProjectPosition(projectPosition);
+        try {
+            return ResponseEntity.ok(dataService.addProjectPosition(projectPosition));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(
+                    new CustomResponse(400,
+                            "addProjectPosition failed: " + e.getMessage(),
+                            new DateTime().toDateTimeISO().toString()));
+        }
+
     }
 
 
     @PostMapping("/addPhoto")
-    public Photo addPhoto(@RequestBody Photo photo) throws Exception {
+    public ResponseEntity<Object> addPhoto(@RequestBody Photo photo) throws Exception {
         LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS)
                 .concat("Adding Photo ... " + photo.getProjectName()));
-        String result = dataService.addPhoto(photo);
-        LOGGER.info(Emoji.LEAF + Emoji.LEAF + result);
-        return photo;
+        try {
+            String result = dataService.addPhoto(photo);
+            LOGGER.info(Emoji.LEAF + Emoji.LEAF + result);
+            return ResponseEntity.ok(photo);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(
+                    new CustomResponse(400,
+                            "addPhoto failed: " + e.getMessage(),
+                            new DateTime().toDateTimeISO().toString()));
+        }
+
     }
 
     @PostMapping("/addVideo")
-    public Video addVideo(@RequestBody Video video) throws Exception {
+    public ResponseEntity<Object> addVideo(@RequestBody Video video) throws Exception {
         LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS)
                 .concat("Adding Video ... " + video.getProjectName()));
-        String result = dataService.addVideo(video);
-        LOGGER.info(Emoji.LEAF + Emoji.LEAF + result);
-        return video;
+        try {
+            String result = dataService.addVideo(video);
+            LOGGER.info(Emoji.LEAF + Emoji.LEAF + result);
+        return ResponseEntity.ok(video);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(
+                    new CustomResponse(400,
+                            "addVideo failed: " + e.getMessage(),
+                            new DateTime().toDateTimeISO().toString()));
+        }
+
     }
 
-    @PostMapping("/sendOzowPaymentRequest")
-    public String sendOzowPaymentRequest(@RequestBody OzowPaymentRequest paymentRequest) throws Exception {
-        LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS)
-                .concat("sendOzowPaymentRequest ... " + paymentRequest.getAmount()));
-        String result = ozowService.sendOzowPaymentRequest(paymentRequest);
-        LOGGER.info(Emoji.LEAF + Emoji.LEAF + result);
-        return result;
-    }
+//    @PostMapping("/sendOzowPaymentRequest")
+//    public String sendOzowPaymentRequest(@RequestBody OzowPaymentRequest paymentRequest) throws Exception {
+//        LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS)
+//                .concat("sendOzowPaymentRequest ... " + paymentRequest.getAmount()));
+//        String result = ozowService.sendOzowPaymentRequest(paymentRequest);
+//        LOGGER.info(Emoji.LEAF + Emoji.LEAF + result);
+//        return result;
+//    }
 
     @PostMapping("/addCondition")
-    public Condition addCondition(@RequestBody Condition condition) throws Exception {
+    public ResponseEntity<Object> addCondition(@RequestBody Condition condition) throws Exception {
         LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS)
                 .concat("Adding Condition ... " + condition.getProjectName()));
-        String result = dataService.addCondition(condition);
-        LOGGER.info(Emoji.LEAF + Emoji.LEAF + result);
-        return condition;
+        try {
+            String result = dataService.addCondition(condition);
+            LOGGER.info(Emoji.LEAF + Emoji.LEAF + result);
+            return ResponseEntity.ok(condition);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(
+                    new CustomResponse(400,
+                            "addCondition failed: " + e.getMessage(),
+                            new DateTime().toDateTimeISO().toString()));
+        }
+
     }
 
     @PostMapping("/sendMessage")
-    public OrgMessage sendMessage(@RequestBody OrgMessage orgMessage) throws Exception {
+    public ResponseEntity<Object> sendMessage(@RequestBody OrgMessage orgMessage) throws Exception {
         LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS)
                 .concat("Sending FCM message ... " + orgMessage.getMessage()));
+        try {
         OrgMessage result = dataService.addOrgMessage(orgMessage);
         LOGGER.info(Emoji.LEAF + Emoji.LEAF + result);
-        return result;
+        return ResponseEntity.ok(result);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(
+                    new CustomResponse(400,
+                            "sendMessage failed: " + e.getMessage(),
+                            new DateTime().toDateTimeISO().toString()));
+        }
+
     }
 
     @Autowired
@@ -141,24 +252,40 @@ public class DataController {
 
 
     @PostMapping("/addUser")
-    public User addUser(@RequestBody User user) throws FirebaseMessagingException {
+    public ResponseEntity<Object> addUser(@RequestBody User user) throws FirebaseMessagingException {
         LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS)
                 .concat(".... Adding User: ".concat(user.getName())));
-        return dataService.addUser(user);
+        try {
+            return ResponseEntity.ok(dataService.addUser(user));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(
+                    new CustomResponse(400,
+                            "addUser failed: " + e.getMessage(),
+                            new DateTime().toDateTimeISO().toString()));
+        }
+
     }
 
     @PostMapping("/updateUser")
-    public User updateUser(@RequestBody User user) throws Exception {
+    public ResponseEntity<Object> updateUser(@RequestBody User user) throws Exception {
         LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS)
                 .concat("Updating User: ".concat(user.getName())));
-        return dataService.updateUser(user);
-    }
+        try {
+            return ResponseEntity.ok(dataService.updateUser(user));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(
+                    new CustomResponse(400,
+                            "updateUser failed: " + e.getMessage(),
+                            new DateTime().toDateTimeISO().toString()));
+        }
 
-    @GetMapping("/createSampleRequest")
-    public OzowPaymentRequest createSampleRequest() throws Exception {
-        LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS)
-                .concat("Create sample Ozow payment request "));
-        return ozowService.createSampleRequest();
     }
+//
+//    @GetMapping("/createSampleRequest")
+//    public OzowPaymentRequest createSampleRequest() throws Exception {
+//        LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS)
+//                .concat("Create sample Ozow payment request "));
+//        return ozowService.createSampleRequest();
+//    }
 
 }

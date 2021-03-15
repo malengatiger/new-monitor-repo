@@ -12,8 +12,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-
 @Service
 public class MessageService {
     private static final Gson G = new GsonBuilder().setPrettyPrinting().create();
@@ -51,6 +49,16 @@ public class MessageService {
         LOGGER.info(Emoji.RED_APPLE + Emoji.RED_APPLE + "Successfully sent condition message to FCM topic: "
                 + topic + " "  + Emoji.RED_APPLE);
         return response;
+    }
+    public void sendMessage(FieldMonitorSchedule fieldMonitorSchedule) throws FirebaseMessagingException {
+        String topic = "fieldMonitorSchedules_" + fieldMonitorSchedule.getOrganizationId();
+        Message message = Message.builder()
+                .putData("fieldMonitorSchedule", G.toJson(fieldMonitorSchedule))
+                .setTopic(topic)
+                .build();
+        FirebaseMessaging.getInstance().send(message);
+        LOGGER.info(Emoji.RED_APPLE + Emoji.RED_APPLE + "Successfully sent fieldMonitorSchedule message to FCM topic: "
+                + topic + " "  + Emoji.RED_APPLE);
     }
     public String sendMessage(OrgMessage orgMessage) throws FirebaseMessagingException {
         assert(orgMessage.getOrganizationId() != null);
