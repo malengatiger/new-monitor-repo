@@ -148,7 +148,7 @@ class MonitorBloc {
     return _projects;
   }
 
-  Future refreshDashboardData({bool forceRefresh = false}) async {
+  Future refreshOrgDashboardData({bool forceRefresh = false}) async {
     if (_user == null) {
       _user = await Prefs.getUser();
     }
@@ -160,6 +160,8 @@ class MonitorBloc {
     await getOrganizationPhotos(
         organizationId: _user.organizationId, forceRefresh: forceRefresh);
     await getOrganizationVideos(
+        organizationId: _user.organizationId, forceRefresh: forceRefresh);
+    await getOrgFieldMonitorSchedules(
         organizationId: _user.organizationId, forceRefresh: forceRefresh);
   }
 
@@ -229,7 +231,7 @@ class MonitorBloc {
       await LocalDBAPI.addFieldMonitorSchedules(schedules: _schedules);
     }
     _fieldMonitorScheduleController.sink.add(_schedules);
-    pp('💜 💜 💜 MonitorBloc: getProjectFieldMonitorSchedules found: 💜 ${_schedules.length} schedules ');
+    pp('🔵 🔵 🔵  MonitorBloc: getProjectFieldMonitorSchedules found: 💜 ${_schedules.length} schedules ');
 
     return _schedules;
   }
@@ -243,7 +245,7 @@ class MonitorBloc {
       await LocalDBAPI.addFieldMonitorSchedules(schedules: _schedules);
     }
     _fieldMonitorScheduleController.sink.add(_schedules);
-    pp('💜 💜 💜 MonitorBloc: getMonitorFieldMonitorSchedules found: 💜 ${_schedules.length} schedules ');
+    pp('🔵 🔵 🔵  MonitorBloc: getMonitorFieldMonitorSchedules found: 💜 ${_schedules.length} schedules ');
 
     return _schedules;
   }
@@ -258,7 +260,7 @@ class MonitorBloc {
       await LocalDBAPI.addFieldMonitorSchedules(schedules: _schedules);
     }
     _fieldMonitorScheduleController.sink.add(_schedules);
-    pp('💜 💜 💜 MonitorBloc: getOrgFieldMonitorSchedules found: 💜 ${_schedules.length} schedules ');
+    pp('🔵 🔵 🔵 MonitorBloc: getOrgFieldMonitorSchedules found: 🔵 ${_schedules.length} schedules ');
 
     return _schedules;
   }
@@ -330,6 +332,8 @@ class MonitorBloc {
   Future refreshProjectData({String projectId, bool forceRefresh}) async {
     await getProjectPhotos(projectId: projectId, forceRefresh: forceRefresh);
     await getProjectVideos(projectId: projectId, forceRefresh: forceRefresh);
+    await getProjectFieldMonitorSchedules(
+        projectId: projectId, forceRefresh: forceRefresh);
     return null;
   }
 
@@ -378,6 +382,8 @@ class MonitorBloc {
         organizationId: organizationId, forceRefresh: forceRefresh);
     await getUserProjectPhotos(userId: userId, forceRefresh: forceRefresh);
     await getUserProjectVideos(userId: userId, forceRefresh: forceRefresh);
+    await getMonitorFieldMonitorSchedules(
+        userId: userId, forceRefresh: forceRefresh);
   }
 
   void _initialize() async {

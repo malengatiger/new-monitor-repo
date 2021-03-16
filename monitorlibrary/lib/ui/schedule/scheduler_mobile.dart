@@ -7,6 +7,7 @@ import 'package:monitorlibrary/data/project.dart';
 import 'package:monitorlibrary/data/user.dart';
 import 'package:monitorlibrary/functions.dart';
 import 'package:monitorlibrary/snack.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:uuid/uuid.dart';
 
 class SchedulerMobile extends StatefulWidget {
@@ -69,7 +70,22 @@ class _SchedulerMobileState extends State<SchedulerMobile>
             appBar: AppBar(
               title: Text('FieldMonitor Schedule', style: Styles.whiteSmall),
               bottom: PreferredSize(
-                  child: Column(), preferredSize: Size.fromHeight(120)),
+                  child: Column(
+                    children: [
+                      Text(
+                        widget.user.name,
+                        style: Styles.blackBoldMedium,
+                      ),
+                      Text(
+                        'FieldMonitor',
+                        style: Styles.blackSmall,
+                      ),
+                      SizedBox(
+                        height: 48,
+                      ),
+                    ],
+                  ),
+                  preferredSize: Size.fromHeight(100)),
             ),
             backgroundColor: Colors.brown[100],
             body: busy
@@ -85,55 +101,64 @@ class _SchedulerMobileState extends State<SchedulerMobile>
                   )
                 : Stack(
                     children: [
-                      _project != null
-                          ? Container()
-                          : Padding(
-                              padding: const EdgeInsets.all(12.0),
-                              child: Container(
-                                child: ListView.builder(
-                                    itemCount: _projects.length,
-                                    itemBuilder: (context, index) {
-                                      // _project = _projects.elementAt(index);
-                                      return GestureDetector(
-                                        onTap: () {
-                                          setState(() {});
-                                        },
-                                        child: Card(
-                                          elevation: 2,
-                                          child: ListTile(
-                                            leading: Icon(
-                                              Icons.home,
-                                              color: Theme.of(context)
-                                                  .primaryColor,
-                                            ),
-                                            title: Text(
-                                              _project.name,
-                                              style: Styles.blackBoldSmall,
-                                            ),
-                                          ),
-                                        ),
-                                      );
-                                    }),
-                              ),
-                            ),
-                      _project == null
-                          ? Container()
-                          : Positioned(
-                              left: 20,
-                              top: 0,
-                              child: FrequencyEditor(
-                                project: _project,
-                                adminUser: _adminUser,
-                                fieldUser: widget.user,
-                              )),
+                      Padding(
+                        padding: const EdgeInsets.all(12.0),
+                        child: Container(
+                          child: ListView.builder(
+                              itemCount: _projects.length,
+                              itemBuilder: (context, index) {
+                                _project = _projects.elementAt(index);
+                                return GestureDetector(
+                                  onTap: () {
+                                    _navigateToFrequencyEditor();
+                                  },
+                                  child: Card(
+                                    elevation: 2,
+                                    child: ListTile(
+                                      leading: Icon(
+                                        Icons.home,
+                                        color: Theme.of(context).primaryColor,
+                                      ),
+                                      title: Text(
+                                        _project.name,
+                                        style: Styles.blackBoldSmall,
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              }),
+                        ),
+                      ),
                     ],
                   )));
   }
 
-  void doTheRealSubmit() async {}
+  void _navigateToFrequencyEditor() async {
+    var result = await Navigator.push(
+        context,
+        PageTransition(
+            type: PageTransitionType.scale,
+            alignment: Alignment.bottomRight,
+            duration: Duration(seconds: 1),
+            child: FrequencyEditor(
+              project: _project,
+              adminUser: _adminUser,
+              fieldUser: widget.user,
+            )));
+    if (result is bool) {
+      pp('Yebo Yes!!! ................ ');
+      if (mounted) {
+        AppSnackbar.showSnackbar(
+            scaffoldKey: _key,
+            message: 'Scheduling for FieldMonitor saved',
+            textColor: Colors.teal,
+            backgroundColor: Colors.black);
+      }
+    }
+  }
 }
 
-class FrequencyEditor extends StatelessWidget {
+class FrequencyEditor extends StatefulWidget {
   final Project project;
   final User adminUser, fieldUser;
 
@@ -141,28 +166,36 @@ class FrequencyEditor extends StatelessWidget {
       : super(key: key);
 
   @override
+  _FrequencyEditorState createState() => _FrequencyEditorState();
+}
+
+class _FrequencyEditorState extends State<FrequencyEditor> {
+  var _perDayController = TextEditingController(text: "3");
+  var _perWeekController = TextEditingController(text: "0");
+  var _perMonthController = TextEditingController(text: "0");
+  var _width = 300.0;
+  var _height = 480.0;
+  bool busy = false;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    var _perDayController = TextEditingController(text: "3");
-    var _perWeekController = TextEditingController(text: "0");
-    var _perMonthController = TextEditingController(text: "0");
-    var _width = 300.0;
-    var _height = 480.0;
-    return AnimatedContainer(
-      curve: Curves.elasticInOut,
-      height: _height,
-      width: _width,
-      color: Colors.teal[100],
-      duration: Duration(milliseconds: 1000),
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Card(
-          elevation: 16,
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
+    return SafeArea(
+        child: Scaffold(
+      appBar: AppBar(
+        title: Text(
+          'Project Monitoring Frequency',
+          style: Styles.whiteSmall,
+        ),
+        bottom: PreferredSize(
             child: Column(
               children: [
                 Text(
-                  fieldUser.name,
+                  widget.fieldUser.name,
                   style: Styles.blackBoldMedium,
                 ),
                 Text(
@@ -170,64 +203,110 @@ class FrequencyEditor extends StatelessWidget {
                   style: Styles.blackSmall,
                 ),
                 SizedBox(
-                  height: 16,
+                  height: 48,
                 ),
-                Container(
-                  child: Column(
+              ],
+            ),
+            preferredSize: Size.fromHeight(100)),
+      ),
+      backgroundColor: Colors.brown[100],
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Card(
+          elevation: 16,
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: busy
+                ? Center(
+                    child: Container(
+                      width: 24,
+                      height: 24,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 8,
+                        backgroundColor: Colors.amber,
+                      ),
+                    ),
+                  )
+                : Column(
                     children: [
+                      SizedBox(
+                        height: 20,
+                      ),
                       Text(
-                        project.name,
-                        style: Styles.blackBoldSmall,
+                        '${widget.project.name}',
+                        style: Styles.blackBoldMedium,
                       ),
                       SizedBox(
                         height: 8,
                       ),
-                      Text('Monitoring Frequency'),
-                      SizedBox(
-                        height: 12,
+                      Text(
+                        'Project to be Monitored',
+                        style: Styles.blackSmall,
                       ),
-                      TextFormField(
-                        controller: _perDayController,
-                        keyboardType: TextInputType.number,
-                        style: Styles.blackBoldMedium,
-                        decoration: InputDecoration(
-                          icon: Icon(
-                            Icons.alarm,
-                            color: Colors.pink,
+                      SizedBox(
+                        height: 28,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 28.0, right: 28),
+                        child: SizedBox(
+                          width: 300,
+                          child: TextFormField(
+                            controller: _perDayController,
+                            keyboardType: TextInputType.number,
+                            style: Styles.blackBoldMedium,
+                            decoration: InputDecoration(
+                              icon: Icon(
+                                Icons.alarm,
+                                color: Colors.blue,
+                              ),
+                              hintText: 'Enter frequency per day',
+                              labelText: 'Frequency Per Day',
+                            ),
                           ),
-                          hintText: 'Enter frequency per day',
-                          labelText: 'Frequency Per Day',
                         ),
                       ),
                       SizedBox(
-                        height: 12,
+                        height: 20,
                       ),
-                      TextFormField(
-                        controller: _perWeekController,
-                        keyboardType: TextInputType.number,
-                        style: Styles.blackBoldMedium,
-                        decoration: InputDecoration(
-                          icon: Icon(
-                            Icons.alarm,
-                            color: Colors.blue,
+                      Padding(
+                        padding: const EdgeInsets.only(left: 28.0, right: 28),
+                        child: SizedBox(
+                          width: 300,
+                          child: TextFormField(
+                            controller: _perWeekController,
+                            keyboardType: TextInputType.number,
+                            style: Styles.blackBoldMedium,
+                            decoration: InputDecoration(
+                              icon: Icon(
+                                Icons.alarm,
+                                color: Colors.blue,
+                              ),
+                              hintText: 'Enter frequency per week',
+                              labelText: 'Frequency Per Week',
+                            ),
                           ),
-                          hintText: 'Enter frequency per week',
-                          labelText: 'Frequency Per Week',
                         ),
                       ),
                       SizedBox(
-                        height: 12,
+                        height: 20,
                       ),
-                      TextFormField(
-                        controller: _perMonthController,
-                        style: Styles.blackBoldMedium,
-                        decoration: InputDecoration(
-                          icon: Icon(
-                            Icons.alarm,
-                            color: Colors.teal,
+                      Padding(
+                        padding: const EdgeInsets.only(left: 28.0, right: 28),
+                        child: SizedBox(
+                          width: 300,
+                          child: TextFormField(
+                            controller: _perMonthController,
+                            keyboardType: TextInputType.number,
+                            style: Styles.blackBoldMedium,
+                            decoration: InputDecoration(
+                              icon: Icon(
+                                Icons.alarm,
+                                color: Colors.blue,
+                              ),
+                              hintText: 'Enter frequency per month',
+                              labelText: 'Frequency Per Month',
+                            ),
                           ),
-                          hintText: 'Enter frequency per month',
-                          labelText: 'Frequency Per Month',
                         ),
                       ),
                       SizedBox(
@@ -250,18 +329,15 @@ class FrequencyEditor extends StatelessWidget {
                             padding: const EdgeInsets.all(12.0),
                             child: Text('Submit Schedule'),
                           )),
+                      SizedBox(
+                        height: 48,
+                      ),
                     ],
                   ),
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-              ],
-            ),
           ),
         ),
       ),
-    );
+    ));
   }
 
   void _doSubmit({String perDay, String perWeek, String perMonth}) async {
@@ -269,27 +345,39 @@ class FrequencyEditor extends StatelessWidget {
         '🍏 🍏 🍏 🍏 _doSubmit: ...perDay: $perDay perWeek: $perWeek perMonth: $perMonth');
     Uuid uuid = Uuid();
     String id = uuid.v4();
+    setState(() {
+      busy = true;
+    });
     try {
       int _perDay = int.parse(perDay);
       int _perWeek = int.parse(perWeek);
       int _perMonth = int.parse(perMonth);
 
       var sc = FieldMonitorSchedule(
-          fieldMonitorId: fieldUser.userId,
-          adminId: adminUser.userId,
-          projectId: project.projectId,
+          fieldMonitorId: widget.fieldUser.userId,
+          adminId: widget.adminUser.userId,
+          projectId: widget.project.projectId,
           date: DateTime.now().toIso8601String(),
-          organizationId: project.projectId,
+          organizationId: widget.project.organizationId,
           perDay: _perDay,
           perWeek: _perWeek,
           perMonth: _perMonth,
-          organizationName: project.organizationName,
-          projectName: project.name,
+          organizationName: widget.project.organizationName,
+          projectName: widget.project.name,
           fieldMonitorScheduleId: id);
+
       var result = await DataAPI.addFieldMonitorSchedule(sc);
+      pp('SchedulerMobile: 🍏 🍏 🍏 🍏 RESULT: ${result.toJson()}');
+      setState(() {
+        busy = false;
+      });
+      Navigator.pop(context, true);
     } catch (e) {
       AppSnackbar.showErrorSnackbar(
-          scaffoldKey: key, message: 'Scheduling failed: $e');
+          scaffoldKey: widget.key, message: 'Scheduling failed: $e');
     }
+    setState(() {
+      busy = false;
+    });
   }
 }

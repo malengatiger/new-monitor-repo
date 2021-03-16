@@ -40,7 +40,7 @@ class _MediaListMainState extends State<MediaListMain>
     } else {
       var user = await Prefs.getUser();
       pp('MediaListMain: 💜 💜 💜 getting media for ORGANIZATION: ${user.organizationName}');
-      await monitorBloc.refreshDashboardData(forceRefresh: false);
+      await monitorBloc.refreshOrgDashboardData(forceRefresh: false);
     }
     setState(() {
       isBusy = false;

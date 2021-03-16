@@ -49,14 +49,14 @@ class DataAPI {
     }
   }
 
-  static Future<User> addFieldMonitorSchedule(
+  static Future<FieldMonitorSchedule> addFieldMonitorSchedule(
       FieldMonitorSchedule monitorSchedule) async {
     String mURL = await getUrl();
     Map bag = monitorSchedule.toJson();
     pp('DataAPI: ☕️ ☕️ ☕️ bag about to be sent to backend: check name: ☕️ $bag');
     try {
       var result = await _callWebAPIPost(mURL + 'addFieldMonitorSchedule', bag);
-      return User.fromJson(result);
+      return FieldMonitorSchedule.fromJson(result);
     } catch (e) {
       pp(e);
       throw e;
@@ -73,7 +73,7 @@ class DataAPI {
       result.forEach((element) {
         mList.add(FieldMonitorSchedule.fromJson(element));
       });
-      pp('🌿 🌿 🌿 List<FieldMonitorSchedule> returned: 🌿 ${mList.length}');
+      pp('🌿 🌿 🌿 getProjectFieldMonitorSchedules returned: 🌿 ${mList.length}');
       return mList;
     } catch (e) {
       pp(e);
@@ -87,11 +87,11 @@ class DataAPI {
     List<FieldMonitorSchedule> mList = [];
     try {
       List result = await _callWebAPIGet(
-          mURL + 'getMonitorFieldMonitorSchedules?projectId=$userId');
+          mURL + 'getMonitorFieldMonitorSchedules?userId=$userId');
       result.forEach((element) {
         mList.add(FieldMonitorSchedule.fromJson(element));
       });
-      pp('🌿 🌿 🌿 List<FieldMonitorSchedule> returned: 🌿 ${mList.length}');
+      pp('🌿 🌿 🌿 getMonitorFieldMonitorSchedules returned: 🌿 ${mList.length}');
       return mList;
     } catch (e) {
       pp(e);
@@ -105,11 +105,11 @@ class DataAPI {
     List<FieldMonitorSchedule> mList = [];
     try {
       List result = await _callWebAPIGet(
-          mURL + 'getMonitorFieldMonitorSchedules?projectId=$organizationId');
+          mURL + 'getOrgFieldMonitorSchedules?organizationId=$organizationId');
       result.forEach((element) {
         mList.add(FieldMonitorSchedule.fromJson(element));
       });
-      pp('🌿 🌿 🌿 List<FieldMonitorSchedule> returned: 🌿 ${mList.length}');
+      pp('🌿 🌿 🌿 getOrgFieldMonitorSchedules returned: 🌿 ${mList.length}');
       return mList;
     } catch (e) {
       pp(e);

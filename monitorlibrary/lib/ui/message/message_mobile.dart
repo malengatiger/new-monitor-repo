@@ -5,7 +5,6 @@ import 'package:monitorlibrary/data/user.dart';
 import 'package:monitorlibrary/ui/message/generic_message.dart';
 
 import '../../functions.dart';
-import 'monitor_message.dart';
 
 class MessageMobile extends StatefulWidget {
   final User user;
@@ -94,12 +93,8 @@ class _MessageMobileState extends State<MessageMobile>
                     child: Card(
                         elevation: 8,
                         child: SingleChildScrollView(
-                          child: _genericMessage
-                              ? GenericMessage(
-                                  project: _selectedProject, user: widget.user)
-                              : MonitorMessage(
-                                  project: _selectedProject, user: widget.user),
-                        )),
+                            child: GenericMessage(
+                                project: _selectedProject, user: widget.user))),
                   ),
                 ),
                 SizedBox(

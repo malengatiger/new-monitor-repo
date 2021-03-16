@@ -511,17 +511,17 @@ public class ListController {
 
     }
 
-    @GetMapping("/getAdminFieldMonitorSchedules")
-    public ResponseEntity<Object> getAdminFieldMonitorSchedules(String projectId)
+    @GetMapping("/getOrgFieldMonitorSchedules")
+    public ResponseEntity<Object> getOrgFieldMonitorSchedules(String organizationId)
             throws Exception {
         LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS)
-                .concat("getAdminFieldMonitorSchedules: " + projectId));
+                .concat("getOrgFieldMonitorSchedules: " + organizationId));
         try {
-            return ResponseEntity.ok(listService.getProjectFieldMonitorSchedules(projectId));
+            return ResponseEntity.ok(listService.getOrgFieldMonitorSchedules(organizationId));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(
                     new CustomErrorResponse(400,
-                            "getAdminFieldMonitorSchedules failed: " + e.getMessage(),
+                            "getOrgFieldMonitorSchedules failed: " + e.getMessage(),
                             new DateTime().toDateTimeISO().toString()));
         }
 
