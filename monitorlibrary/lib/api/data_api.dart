@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
+import 'package:monitorlibrary/api/local_db_api.dart';
 import 'package:monitorlibrary/auth/app_auth.dart';
 import 'package:monitorlibrary/data/city.dart';
 import 'package:monitorlibrary/data/community.dart';
@@ -68,7 +69,7 @@ class DataAPI {
     String mURL = await getUrl();
     List<FieldMonitorSchedule> mList = [];
     try {
-      List result = await _callWebAPIGet(
+      List result = await _sendHttpGET(
           mURL + 'getProjectFieldMonitorSchedules?projectId=$projectId');
       result.forEach((element) {
         mList.add(FieldMonitorSchedule.fromJson(element));
@@ -86,7 +87,7 @@ class DataAPI {
     String mURL = await getUrl();
     List<FieldMonitorSchedule> mList = [];
     try {
-      List result = await _callWebAPIGet(
+      List result = await _sendHttpGET(
           mURL + 'getMonitorFieldMonitorSchedules?userId=$userId');
       result.forEach((element) {
         mList.add(FieldMonitorSchedule.fromJson(element));
@@ -104,7 +105,7 @@ class DataAPI {
     String mURL = await getUrl();
     List<FieldMonitorSchedule> mList = [];
     try {
-      List result = await _callWebAPIGet(
+      List result = await _sendHttpGET(
           mURL + 'getOrgFieldMonitorSchedules?organizationId=$organizationId');
       result.forEach((element) {
         mList.add(FieldMonitorSchedule.fromJson(element));
@@ -135,6 +136,7 @@ class DataAPI {
     Map bag = user.toJson();
     try {
       var result = await _callWebAPIPost(mURL + 'updateUser', bag);
+      var users = findUsersByOrganization(user.organizationId);
       return User.fromJson(result);
     } catch (e) {
       pp(e);
@@ -145,8 +147,8 @@ class DataAPI {
   static Future<ProjectCount> getProjectCount(String projectId) async {
     String mURL = await getUrl();
     try {
-      var result = await _callWebAPIGet(
-          mURL + 'getCountsByProject?projectId=$projectId');
+      var result =
+          await _sendHttpGET(mURL + 'getCountsByProject?projectId=$projectId');
       var cnt = ProjectCount.fromJson(result);
       pp('🌿 🌿 🌿 Project count returned: 🌿 ${cnt.toJson()}');
       return cnt;
@@ -159,8 +161,7 @@ class DataAPI {
   static Future<UserCount> getUserCount(String userId) async {
     String mURL = await getUrl();
     try {
-      var result =
-          await _callWebAPIGet(mURL + 'getCountsByUser?userId=$userId');
+      var result = await _sendHttpGET(mURL + 'getCountsByUser?userId=$userId');
       var cnt = UserCount.fromJson(result);
       pp('🌿 🌿 🌿 User count returned: 🌿 ${cnt.toJson()}');
       return cnt;
@@ -191,9 +192,9 @@ class DataAPI {
       'projectId': projectId,
     };
     try {
-      var result = await _callWebAPIGet(
-          mURL + 'getProjectPositions?projectId=$projectId');
-      List<ProjectPosition> list = List();
+      var result =
+          await _sendHttpGET(mURL + 'getProjectPositions?projectId=$projectId');
+      List<ProjectPosition> list = [];
       result.forEach((m) {
         list.add(ProjectPosition.fromJson(m));
       });
@@ -209,8 +210,8 @@ class DataAPI {
 
     try {
       var result =
-          await _callWebAPIGet(mURL + 'getProjectPhotos?projectId=$projectId');
-      List<Photo> list = List();
+          await _sendHttpGET(mURL + 'getProjectPhotos?projectId=$projectId');
+      List<Photo> list = [];
       result.forEach((m) {
         list.add(Photo.fromJson(m));
       });
@@ -226,8 +227,8 @@ class DataAPI {
 
     try {
       var result =
-          await _callWebAPIGet(mURL + 'getUserProjectPhotos?userId=$userId');
-      List<Photo> list = List();
+          await _sendHttpGET(mURL + 'getUserProjectPhotos?userId=$userId');
+      List<Photo> list = [];
       result.forEach((m) {
         list.add(Photo.fromJson(m));
       });
@@ -243,8 +244,8 @@ class DataAPI {
 
     try {
       var result =
-          await _callWebAPIGet(mURL + 'getUserProjectVideos?userId=$userId');
-      List<Video> list = List();
+          await _sendHttpGET(mURL + 'getUserProjectVideos?userId=$userId');
+      List<Video> list = [];
       result.forEach((m) {
         list.add(Video.fromJson(m));
       });
@@ -260,8 +261,8 @@ class DataAPI {
 
     try {
       var result =
-          await _callWebAPIGet(mURL + 'getProjectVideos?projectId=$projectId');
-      List<Video> list = List();
+          await _sendHttpGET(mURL + 'getProjectVideos?projectId=$projectId');
+      List<Video> list = [];
       result.forEach((m) {
         list.add(Video.fromJson(m));
       });
@@ -278,11 +279,12 @@ class DataAPI {
     var cmd = 'getOrganizationUsers?organizationId=$organizationId';
     var url = '$mURL$cmd';
     try {
-      List result = await _callWebAPIGet(url);
-      List<User> list = List();
+      List result = await _sendHttpGET(url);
+      List<User> list = [];
       result.forEach((m) {
         list.add(User.fromJson(m));
       });
+      await LocalDBAPI.addUsers(users: list);
       return list;
     } catch (e) {
       pp(e);
@@ -297,9 +299,9 @@ class DataAPI {
     var cmd = 'findProjectsByOrganization';
     var url = '$mURL$cmd?organizationId=$organizationId';
     try {
-      List result = await _callWebAPIGet(url);
+      List result = await _sendHttpGET(url);
       pp('🍏 🍏 🍏 DataAPI: findProjectsByOrganization: 🍏 result: ${result.length} projects');
-      List<Project> list = List();
+      List<Project> list = [];
       result.forEach((m) {
         list.add(Project.fromJson(m));
       });
@@ -318,9 +320,9 @@ class DataAPI {
     var cmd = 'getOrganizationPhotos';
     var url = '$mURL$cmd?organizationId=$organizationId';
     try {
-      List result = await _callWebAPIGet(url);
+      List result = await _sendHttpGET(url);
       pp('🍏 🍏 🍏 DataAPI: getOrganizationPhotos: 🍏 found: ${result.length} org photos');
-      List<Photo> list = List();
+      List<Photo> list = [];
       result.forEach((m) {
         list.add(Photo.fromJson(m));
       });
@@ -339,8 +341,8 @@ class DataAPI {
     var cmd = 'getOrganizationVideos';
     var url = '$mURL$cmd?organizationId=$organizationId';
     try {
-      List result = await _callWebAPIGet(url);
-      List<Video> list = List();
+      List result = await _sendHttpGET(url);
+      List<Video> list = [];
       result.forEach((m) {
         list.add(Video.fromJson(m));
       });
@@ -360,8 +362,8 @@ class DataAPI {
     var url =
         '$mURL$cmd?latitude=$latitude&longitude=$longitude&radiusInKM=$radiusInKM';
     try {
-      List result = await _callWebAPIGet(url);
-      List<Project> list = List();
+      List result = await _sendHttpGET(url);
+      List<Project> list = [];
       result.forEach((m) {
         list.add(Project.fromJson(m));
       });
@@ -380,8 +382,8 @@ class DataAPI {
     var url =
         '$mURL$cmd?latitude=$latitude&longitude=$longitude&radiusInKM=$radiusInKM';
     try {
-      List result = await _callWebAPIGet(url);
-      List<City> list = List();
+      List result = await _sendHttpGET(url);
+      List<City> list = [];
       result.forEach((m) {
         list.add(City.fromJson(m));
       });
@@ -400,8 +402,8 @@ class DataAPI {
     var cmd = 'getQuestionnairesByOrganization?organizationId=$organizationId';
     var url = '$mURL$cmd';
     try {
-      List result = await _callWebAPIGet(url);
-      List<Questionnaire> list = List();
+      List result = await _sendHttpGET(url);
+      List<Questionnaire> list = [];
       result.forEach((m) {
         list.add(Questionnaire.fromJson(m));
       });
@@ -479,8 +481,8 @@ class DataAPI {
     var cmd = 'findCommunitiesByCountry';
     var url = '$mURL$cmd?countryId=$countryId';
 
-    List result = await _callWebAPIGet(url);
-    List<Community> communityList = List();
+    List result = await _sendHttpGET(url);
+    List<Community> communityList = [];
     result.forEach((m) {
       communityList.add(Community.fromJson(m));
     });
@@ -673,7 +675,7 @@ class DataAPI {
     Map bag = {};
     try {
       List result = await _callWebAPIPost(mURL + 'findAllProjects', bag);
-      List<Project> list = List();
+      List<Project> list = [];
       result.forEach((m) {
         list.add(Project.fromJson(m));
       });
@@ -720,7 +722,7 @@ class DataAPI {
 
     try {
       pp('🐤🐤🐤🐤 DataAPI : ... 🥏 calling _callWebAPIPost .. 🥏 findUserByEmail $mURL$command ');
-      var result = await _callWebAPIGet(
+      var result = await _sendHttpGET(
         '$mURL$command',
       );
       pp(result);
@@ -750,8 +752,8 @@ class DataAPI {
     var cmd = 'getCountries';
     var url = '$mURL$cmd';
     try {
-      List result = await _callWebAPIGet(url);
-      List<Country> list = List();
+      List result = await _sendHttpGET(url);
+      List<Country> list = [];
       result.forEach((m) {
         list.add(Country.fromJson(m));
       });
@@ -765,30 +767,30 @@ class DataAPI {
 
   static Future hello() async {
     String mURL = await getUrl();
-    var result = await _callWebAPIGet(mURL);
+    var result = await _sendHttpGET(mURL);
     pp('DataAPI: 🔴 🔴 🔴 hello: $result');
   }
 
   static Future ping() async {
     String mURL = await getUrl();
-    var result = await _callWebAPIGet(mURL + 'ping');
+    var result = await _sendHttpGET(mURL + 'ping');
     pp('DataAPI: 🔴 🔴 🔴 ping: $result');
   }
 
   static Future _callWebAPIPost(String mUrl, Map bag) async {
-    pp('\n\n🏈 🏈 🏈 🏈 🏈 DataAPI_callWebAPIPost:  🔆 🔆 🔆 🔆 calling : 💙  $mUrl  💙 ');
+    pp('$xz http POST call: 🔆 🔆 🔆  calling : 💙  $mUrl  💙 ');
 
     var mBag;
     if (bag != null) {
       mBag = json.encode(bag);
     }
-    pp(' 🏈 🏈 Bag after json decode call, check properties of mBag:  🏈 🏈 $mBag');
+    pp('$xz http POST call: Bag after json decode call, check properties of mBag:  🏈 🏈 $mBag');
     var start = DateTime.now();
     var client = new http.Client();
     var token = await AppAuth.getAuthToken();
-    pp('❤️️❤️  DataAPI._callWebAPIPost .... token: ❤️ $token ❤️');
+    pp('$xz http POST call: 😡 😡 😡Firebase auth token: ❤️ $token ❤️');
     headers['Authorization'] = 'Bearer $token';
-
+    pp('$xz http POST call: 😡 😡 😡 check the headers for the auth token: 💙 💙 💙 $headers 💙 💙 💙 ');
     var resp = await client
         .post(
           Uri.parse(mUrl),
@@ -797,18 +799,17 @@ class DataAPI {
         )
         .whenComplete(() {});
     if (resp.statusCode == 200) {
-      pp('❤️️❤️  DataAPI._callWebAPIPost .... : 💙💙 statusCode: 👌👌👌 ${resp.statusCode} 👌👌👌 💙 for $mUrl');
+      pp('$xz http POST call RESPONSE: 💙💙 statusCode: 👌👌👌 ${resp.statusCode} 👌👌👌 💙 for $mUrl');
     } else {
-      pp('👿👿👿 DataAPI._callWebAPIPost .... : 🔆 statusCode: 👿👿👿 ${resp.statusCode} 🔆🔆🔆 for $mUrl');
+      pp('👿👿👿 DataAPI._callWebAPIPost: 🔆 statusCode: 👿👿👿 ${resp.statusCode} 🔆🔆🔆 for $mUrl');
       throw Exception(
           '🚨 🚨 Status Code 🚨 ${resp.statusCode} 🚨 ${resp.body}');
     }
     var end = DateTime.now();
-    pp('❤️❤️ 💙 DataAPI._callWebAPIPost ### 🔆 elapsed: ${end.difference(start).inSeconds} seconds 🔆 \n\n');
+    pp('$xz http POST call: 🔆 elapsed time: ${end.difference(start).inSeconds} seconds 🔆 \n\n');
     pp(resp.body);
     try {
       var mJson = json.decode(resp.body);
-      pp('❤️❤️ 💙 DataAPI._callWebAPIPost ,,,,,,,,,,,,,,,,,,, do we get here?');
       return mJson;
     } catch (e) {
       pp("👿👿👿👿👿👿👿 json.decode failed, returning response body");
@@ -816,24 +817,31 @@ class DataAPI {
     }
   }
 
-  static Future _callWebAPIGet(String mUrl) async {
-    pp('\n🏈 🏈 🏈 🏈 🏈 DataAPI_callWebAPIGet:  🔆 🔆 🔆 🔆 calling : 💙  $mUrl  💙');
+  static const xz = '🌎 🌎 🌎 🌎 🌎 🌎 DataAPI: ';
+  static Future _sendHttpGET(String mUrl) async {
+    pp('$xz http GET call:  🔆 🔆 🔆 calling : 💙  $mUrl  💙');
     var start = DateTime.now();
     var client = new http.Client();
     var token = await AppAuth.getAuthToken();
-    pp('🏈 🏈 🏈 🏈 🏈️  DataAPI._callWebAPIGet .... token: 💙️ $token 💙');
+    pp('$xz http GET call: 😡 😡 😡 Firebase Auth Token: 💙️ $token 💙');
     headers['Authorization'] = 'Bearer $token';
-    pp('🏈 🏈 🏈 🏈 🏈  DataAPI._callWebAPIGet .... :  😡  😡  😡 check the headers for the auth token: 💙 💙 💙 $headers 💙 💙 💙 ');
+
+    pp('$xz http GET call: 😡 😡 😡 check the headers for the auth token: 💙 💙 💙 $headers 💙 💙 💙 ');
     var resp = await client
         .get(
           Uri.parse(mUrl),
           headers: headers,
         )
-        .whenComplete(() {});
+        .whenComplete(() {})
+        .onError((error, stackTrace) {
+      var msg = 'We are fucked without benefit of vaseline!';
+      pp(' $msg ');
+      throw Exception('$xz $msg : $error');
+    });
 
-    pp('🏈 🏈 🏈 🏈 🏈  DataAPI._callWebAPIGet .... : 💙 statusCode: 👌👌👌 ${resp.statusCode} 👌👌👌 💙 for $mUrl');
+    pp('$xz http GET call RESPONSE: .... : 💙 statusCode: 👌👌👌 ${resp.statusCode} 👌👌👌 💙 for $mUrl');
     var end = DateTime.now();
-    pp('🏈 🏈 🏈 🏈 🏈  DataAPI._callWebAPIGet ### 🔆 elapsed: ${end.difference(start).inSeconds} seconds 🔆 \n\n');
+    pp('$xz http GET call: 🔆 elapsed time for http: ${end.difference(start).inSeconds} seconds 🔆 \n\n');
     sendError(resp);
     var mJson = json.decode(resp.body);
     return mJson;

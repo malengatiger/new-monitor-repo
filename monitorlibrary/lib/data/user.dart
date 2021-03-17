@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:meta/meta.dart';
+import 'package:monitorlibrary/data/position.dart';
 
 class User {
   String name,
@@ -11,6 +12,7 @@ class User {
       organizationName,
       fcmRegistration,
       organizationId;
+  Position position;
 
   User(
       {@required this.name,
@@ -21,6 +23,7 @@ class User {
       @required this.userType,
       @required this.organizationName,
       @required this.organizationId,
+      this.position,
       this.fcmRegistration});
 
   User.fromJson(Map data) {
@@ -33,6 +36,9 @@ class User {
     this.userType = data['userType'];
     this.organizationId = data['organizationId'];
     this.organizationName = data['organizationName'];
+    if (data['position'] != null) {
+      this.position = Position.fromJson(data['position']);
+    }
   }
   Map<String, dynamic> toJson() {
     Map<String, dynamic> map = {
@@ -45,6 +51,7 @@ class User {
       'userType': userType,
       'organizationId': organizationId,
       'organizationName': organizationName,
+      'position': position == null ? null : position.toJson(),
     };
     return map;
   }

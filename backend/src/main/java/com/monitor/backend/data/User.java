@@ -15,15 +15,14 @@ public class User {
     String created, fcmRegistration;
     Type.UserType userType;
     String password;
+    Position position;
 
     public User() {
     }
 
-    public User(String _partitionKey, String _id, String name,
-                String email, String cellphone, String userId, String organizationId,
-                String organizationName, String created, Type.UserType userType, String password, String fcmRegistration) {
-        this._partitionKey = _partitionKey;
-        this._id = _id;
+    public User(String name, String email, String cellphone, String userId,
+                String organizationId, String organizationName, String created,
+                String fcmRegistration, Type.UserType userType, String password, Position position) {
         this.name = name;
         this.email = email;
         this.cellphone = cellphone;
@@ -31,9 +30,18 @@ public class User {
         this.organizationId = organizationId;
         this.organizationName = organizationName;
         this.created = created;
+        this.fcmRegistration = fcmRegistration;
         this.userType = userType;
         this.password = password;
-        this.fcmRegistration  = fcmRegistration;
+        this.position = position;
+    }
+
+    public Position getPosition() {
+        return position;
+    }
+
+    public void setPosition(Position position) {
+        this.position = position;
     }
 
     public String getFcmRegistration() {

@@ -5,6 +5,7 @@ import 'package:monitorlibrary/bloc/fcm_bloc.dart';
 import 'package:monitorlibrary/bloc/monitor_bloc.dart';
 import 'package:monitorlibrary/data/user.dart';
 import 'package:monitorlibrary/functions.dart';
+import 'package:monitorlibrary/ui/maps_field_monitor/field_monitor_map_main.dart';
 import 'package:monitorlibrary/ui/message/message_main.dart';
 import 'package:monitorlibrary/ui/schedule/scheduler_main.dart';
 import 'package:monitorlibrary/users/report/user_rpt_main.dart';
@@ -137,6 +138,15 @@ class _UserListMobileState extends State<UserListMobile>
           ),
           onPressed: () {
             _navigateToScheduler(user);
+          }));
+      list.add(FocusedMenuItem(
+          title: Text('FieldMonitor Home Base'),
+          trailingIcon: Icon(
+            Icons.location_pin,
+            color: Theme.of(context).primaryColor,
+          ),
+          onPressed: () {
+            _navigateToMap(user);
           }));
     }
     return list;
@@ -319,6 +329,16 @@ class _UserListMobileState extends State<UserListMobile>
             child: MessageMain(
               user: user,
             )));
+  }
+
+  void _navigateToMap(User user) {
+    Navigator.push(
+        context,
+        PageTransition(
+            type: PageTransitionType.scale,
+            alignment: Alignment.bottomLeft,
+            duration: Duration(seconds: 1),
+            child: FieldMonitorMapMain(user)));
   }
 
   void _navigateToScheduler(User user) {

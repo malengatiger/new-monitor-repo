@@ -495,13 +495,14 @@ public class ListController {
         }
 
     }
+
     @GetMapping("/getMonitorFieldMonitorSchedules")
-    public ResponseEntity<Object> getMonitorFieldMonitorSchedules(String projectId)
+    public ResponseEntity<Object> getMonitorFieldMonitorSchedules(String userId)
             throws Exception {
         LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS)
-                .concat("getMonitorFieldMonitorSchedules: " + projectId));
+                .concat("getMonitorFieldMonitorSchedules: " + userId));
         try {
-            return ResponseEntity.ok(listService.getProjectFieldMonitorSchedules(projectId));
+            return ResponseEntity.ok(listService.getMonitorFieldMonitorSchedules(userId));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(
                     new CustomErrorResponse(400,

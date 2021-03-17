@@ -501,50 +501,44 @@ public class MongoGenerator {
         setOrgNames();
         createUserIndexes();
         int cnt = 0;
-        User mUser = new User("PRIVATE",null, "Administrator", buildEmail("netadmin"),
-                getRandomCellphone(), UUID.randomUUID().toString(), null,
-                "Network", new DateTime().toDateTimeISO().toString(), Type.UserType.ORG_ADMINISTRATOR, "pass123", "tbd");
-        User result = userRepository.save(mUser);
-        dataService.createUser(result);
-        LOGGER.info(Emoji.FERN + Emoji.FERN + " User saved on MongoDB and Firebase auth "
-                + Emoji.FERN + Emoji.FERN + result.getName());
 
         for (Organization organization : organizations) {
-            for (int i = 0; i < 4; i++) {
+            for (int i = 0; i < 5; i++) {
                 String name = getRandomFirstName() + " " + getRandomLastName();
                 if (i == 0) {
-                    User m = new User(organization.getOrganizationId(),null,name, buildEmail("orgadmin"),
-                            getRandomCellphone(), UUID.randomUUID().toString(), Objects.requireNonNull(organization.getOrganizationId()),
-                            organization.getName(), new DateTime().toDateTimeISO().toString(), Type.UserType.ORG_ADMINISTRATOR, "pass123", "tbd");
-                    User result1 = userRepository.save(m);
-                    //add user to Firebase
-                    dataService.createUser(result1);
-                    LOGGER.info(Emoji.FERN + Emoji.FERN + " User saved on MongoDB and Firebase auth " + Emoji.FERN + Emoji.FERN + name);
+                    buildUser(organization, "org", Type.UserType.ORG_ADMINISTRATOR);
                     cnt++;
                 }
 
-                if (i == 1 || i == 2) {
-                    User user = new User(organization.getOrganizationId(),null,name, buildEmail("monitor"),
-                            getRandomCellphone(), UUID.randomUUID().toString(), Objects.requireNonNull(organization.getOrganizationId()),
-                            organization.getName(), new DateTime().toDateTimeISO().toString(), Type.UserType.FIELD_MONITOR, "pass123", "tbd");
-                    User result2 = userRepository.save(user);
-                    dataService.createUser(result2);
-                    LOGGER.info(Emoji.FERN + Emoji.FERN + " User saved on MongoDB and Firebase auth " + Emoji.FERN + Emoji.FERN + name);
+                if (i == 1 || i == 2 || i == 3) {
+                    buildUser(organization, "monitor", Type.UserType.FIELD_MONITOR);
                     cnt++;
                 }
 
-                if (i == 3) {
-                    User user = new User(organization.getOrganizationId(),null,name, buildEmail("exec"),
-                            getRandomCellphone(), UUID.randomUUID().toString(), Objects.requireNonNull(organization.getOrganizationId()),
-                            organization.getName(), new DateTime().toDateTimeISO().toString(), Type.UserType.EXECUTIVE,"pass123","tbd");
-                    User result1 = userRepository.save(user);
-                    dataService.createUser(result1);
-                    LOGGER.info(Emoji.FERN + Emoji.FERN + " User saved on MongoDB and Firebase auth " + Emoji.FERN + Emoji.FERN + name);
+                if (i == 4) {
+                    buildUser(organization, "exec", Type.UserType.EXECUTIVE);
                     cnt++;
                 }
             }
         }
         LOGGER.info(Emoji.PEAR + Emoji.PEAR + Emoji.PEAR + " Users added : " + cnt);
+    }
+
+    private void buildUser(Organization org, String prefix, Type.UserType userType) throws Exception {
+        User u = new User();
+        u.setName(getRandomFirstName() + " " + getRandomLastName());
+        u.setOrganizationId(org.getOrganizationId());
+        u.setCellphone(getRandomCellphone());
+        u.setEmail(buildEmail(prefix));
+        u.setCreated(new DateTime().toDateTimeISO().toString());
+        u.setUserType(userType);
+        u.setUserId(UUID.randomUUID().toString());
+        u.setPassword("pass123");
+
+        User result2 = userRepository.save(u);
+        dataService.createUser(result2);
+        LOGGER.info(Emoji.FERN + Emoji.FERN + " User saved on MongoDB and Firebase auth " + Emoji.FERN + Emoji.FERN + u.getName());
+
     }
 
     public String buildEmail(String prefix) {

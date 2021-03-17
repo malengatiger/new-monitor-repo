@@ -58,6 +58,8 @@ dependencies:
   get:
   crypto:
   hive: ^2.0.0
+  connectivity: ^3.0.2
+
 
 dev_dependencies:
   flutter_test:

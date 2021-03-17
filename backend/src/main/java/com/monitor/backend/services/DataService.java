@@ -75,7 +75,7 @@ public class DataService {
         String fbConfig = env.getProperty("FIREBASE_CONFIG");
         CredentialsProvider credentialsProvider = null;
         LOGGER.info("\uD83C\uDFBD \uD83C\uDFBD \uD83C\uDFBD \uD83C\uDFBD  " +
-                "DataService: initializeFirebase: \uD83C\uDF4E  fbConfig: " + fbConfig);
+                "DataService: initializeFirebase: \uD83C\uDF4E  ....... ");
         FirebaseApp app;
 
         try {

@@ -151,7 +151,8 @@ class LocalDBAPI {
       }
     });
 
-    pp('$mx getProjectMonitorSchedules: 🦠 ${mList.length}');
+    mList = filterSchedulesByProject(mList);
+    pp('$mx getProjectMonitorSchedules: 🦠 schedules sorted by date ${mList.length}');
     return mList;
   }
 
@@ -167,8 +168,9 @@ class LocalDBAPI {
         mList.add(sched);
       }
     });
-
-    pp('$mx getFieldMonitorSchedules: 🦠 ${mList.length}');
+    pp('$mx getFieldMonitorSchedules: 🦠 filtered ${mList.length} schedules by projectId');
+    mList = mList = filterSchedulesByProject(mList);
+    pp('$mx getFieldMonitorSchedules: filtered: 🦠 ${mList.length}');
     return mList;
   }
 
@@ -184,8 +186,30 @@ class LocalDBAPI {
         mList.add(sched);
       }
     });
+    mList = filterSchedulesByProject(mList);
+    pp('$mx getOrganizationMonitorSchedules: 🦠 ${mList.length} schedules after filtering by project');
+    return mList;
+  }
 
-    pp('$mx getOrganizationMonitorSchedules: 🦠 ${mList.length}');
+  static List<FieldMonitorSchedule> filterSchedulesByProject(
+      List<FieldMonitorSchedule> mList) {
+    pp('$mx filterSchedulesByProject: 🦠 filter ${mList.length} schedules by projectId');
+    mList.forEach((element) {
+      pp('PreFilter: Schedule: ${element.toJson()}');
+    });
+    //todo - filter latest by project
+
+    Map<String, FieldMonitorSchedule> map = Map();
+    mList.sort((a, b) => b.date.compareTo(a.date));
+    mList.forEach((element) {
+      if (!map.containsKey(element.projectId)) {
+        map['${element.projectId}'] = element;
+      }
+    });
+    mList = map.values.toList();
+    mList.forEach((element) {
+      pp('PostFilter: Schedule: ${element.toJson()}');
+    });
     return mList;
   }
 
@@ -242,7 +266,7 @@ class LocalDBAPI {
   static Future<int> addUser({@required User user}) async {
     await connectLocalDB();
     await userBox.put(user.userId, user.toJson());
-    pp('$mx addUser: 🌼 1 user added...:  🔵 🔵 ');
+    pp('$mx addUser: 🌼 1 user added...:  🔵 🔵 ${user.name} from ${user.organizationName}');
     return cnt;
   }
 
@@ -256,7 +280,7 @@ class LocalDBAPI {
   static Future<int> addProject({@required Project project}) async {
     await connectLocalDB();
     await projectBox.put(project.projectId, project.toJson());
-    pp('$mx addProject: 🌼 1 project added...:  🔵 🔵 ');
+    pp('$mx addProject: 🌼 1 project added...:  🔵 🔵 ${project.name}');
     return 0;
   }
 
@@ -270,7 +294,7 @@ class LocalDBAPI {
   static Future<int> addPhoto({@required Photo photo}) async {
     await connectLocalDB();
     await photoBox.put(photo.photoId, photo.toJson());
-    pp('$mx addPhoto: 🌼 1 photo added...  🔵 🔵 ');
+    pp('$mx addPhoto: 🌼 1 photo added...  🔵 🔵  ${photo.url}');
     return 0;
   }
 
@@ -284,7 +308,7 @@ class LocalDBAPI {
   static Future<int> addVideo({@required Video video}) async {
     await connectLocalDB();
     await videoBox.put(video.videoId, video.toJson());
-    pp('$mx addVideo: 🌼 1 video added...  🔵 🔵 ');
+    pp('$mx addVideo: 🌼 1 video added...  🔵 🔵 ${video.url}');
     return 0;
   }
 
@@ -323,8 +347,15 @@ class LocalDBAPI {
 
   static Future<int> addFieldMonitorSchedules(
       {@required List<FieldMonitorSchedule> schedules}) async {
+    pp('LocalDBAPI:addFieldMonitorSchedules : ${schedules.length}');
     schedules.forEach((element) async {
       await addFieldMonitorSchedule(schedule: element);
+    });
+
+    var len = scheduleBox.values.length;
+    pp('$mx addFieldMonitorSchedule: 🌼 🔆 schedules cached: $len 🔵 🔵 ');
+    scheduleBox.values.forEach((element) {
+      pp('Schedule: ${FieldMonitorSchedule.fromJson(element).toJson()}');
     });
     return 0;
   }
@@ -332,9 +363,10 @@ class LocalDBAPI {
   static Future<int> addFieldMonitorSchedule(
       {@required FieldMonitorSchedule schedule}) async {
     await connectLocalDB();
-    await scheduleBox.put(schedule.fieldMonitorId, schedule.toJson());
+    await scheduleBox.put(schedule.fieldMonitorScheduleId, schedule.toJson());
+    var len = scheduleBox.values.length;
+    pp('$mx addFieldMonitorSchedule: 🌼 1 record added ...  🔆 schedules cached: $len 🔵 🔵 ');
 
-    pp('$mx addFieldMonitorSchedule: 🌼 1 record added ... 🔵 🔵 ');
     return 0;
   }
 

@@ -24,6 +24,7 @@ class MonitorBloc {
   }
 
   User _user;
+
   User get user => _user;
   StreamController<List<Community>> _reportController =
       StreamController.broadcast();
@@ -54,21 +55,32 @@ class MonitorBloc {
   StreamController<User> _activeUserController = StreamController.broadcast();
 
   Stream get projectPhotoStream => _projectPhotoController.stream;
+
   Stream get projectVideoStream => _projectVideoController.stream;
 
   Stream get reportStream => _reportController.stream;
+
   Stream get settlementStream => _communityController.stream;
+
   Stream get questionnaireStream => _questController.stream;
+
   Stream get projectStream => _projController.stream;
+
   Stream get projectPositionsStream => _projPositionsController.stream;
+
   Stream get countryStream => _countryController.stream;
+
   Stream get activeUserStream => _activeUserController.stream;
+
   Stream get usersStream => _userController.stream;
+
   Stream get activeQuestionnaireStream => _activeQuestionnaireController.stream;
+
   Stream get fieldMonitorScheduleStream =>
       _fieldMonitorScheduleController.stream;
 
   Stream get photoStream => _photoController.stream;
+
   Stream get videoStream => _videoController.stream;
 
   List<Community> _communities = [];
@@ -129,15 +141,12 @@ class MonitorBloc {
     }
     pp('💜 💜 💜 💜 MonitorBloc: getOrganizationProjects: for organizationId: $organizationId ; '
         'user: 💜 ${user.name} user.organizationId: ${user.organizationId} user.organizationName: ${user.organizationName} ');
-    var android = UniversalPlatform.isAndroid;
-    if (android) {
-      _projects = await LocalDBAPI.getProjects();
-    } else {
-      _projects.clear();
-    }
+
+    _projects = await LocalDBAPI.getProjects();
+
     if (_projects.isEmpty || forceRefresh) {
       _projects = await DataAPI.findProjectsByOrganization(organizationId);
-      if (android) await LocalDBAPI.addProjects(projects: _projects);
+      await LocalDBAPI.addProjects(projects: _projects);
     }
     _projController.sink.add(_projects);
     pp('💜 💜 💜 💜 MonitorBloc: OrganizationProjects found: 💜 ${_projects.length} projects 💜');
@@ -167,15 +176,11 @@ class MonitorBloc {
 
   Future<List<User>> getOrganizationUsers(
       {String organizationId, bool forceRefresh = false}) async {
-    var android = UniversalPlatform.isAndroid;
-    if (android) {
-      _users = await LocalDBAPI.getUsers();
-    } else {
-      _users.clear();
-    }
+    _users = await LocalDBAPI.getUsers();
+
     if (_users.isEmpty || forceRefresh) {
       _users = await DataAPI.findUsersByOrganization(organizationId);
-      if (android) await LocalDBAPI.addUsers(users: _users);
+      await LocalDBAPI.addUsers(users: _users);
     }
     _userController.sink.add(_users);
     pp('💜 💜 💜 MonitorBloc: getOrganizationUsers found: 💜 ${_users.length} users ');
@@ -188,16 +193,12 @@ class MonitorBloc {
 
   Future<List<ProjectPosition>> getProjectPositions(
       {String projectId, bool forceRefresh}) async {
-    var android = UniversalPlatform.isAndroid;
-    if (android) {
-      _projectPositions = await LocalDBAPI.getProjectPositions(projectId);
-    } else {
-      _projectPositions.clear();
-    }
+    _projectPositions = await LocalDBAPI.getProjectPositions(projectId);
+
     if (_projectPositions.isEmpty || forceRefresh) {
       _projectPositions = await DataAPI.findProjectPositionsById(projectId);
-      if (android)
-        await LocalDBAPI.addProjectPositions(positions: _projectPositions);
+
+      await LocalDBAPI.addProjectPositions(positions: _projectPositions);
     }
     _projPositionsController.sink.add(_projectPositions);
     pp('💜 💜 💜 MonitorBloc: getProjectPositions found: 💜 ${_projectPositions.length} projectPositions ');
@@ -206,15 +207,13 @@ class MonitorBloc {
 
   Future<List<Photo>> getProjectPhotos(
       {String projectId, bool forceRefresh = false}) async {
-    var android = UniversalPlatform.isAndroid;
     List<Photo> photos = [];
-    if (android) {
-      photos = await LocalDBAPI.getProjectPhotos(projectId);
-    }
+
+    photos = await LocalDBAPI.getProjectPhotos(projectId);
 
     if (photos.isEmpty || forceRefresh) {
       photos = await DataAPI.findPhotosByProject(projectId);
-      if (android) await LocalDBAPI.addPhotos(photos: photos);
+      await LocalDBAPI.addPhotos(photos: photos);
     }
     _projectPhotoController.sink.add(photos);
     pp('💜 💜 💜 MonitorBloc: getProjectPhotos found: 💜 ${photos.length} photos ');
@@ -230,6 +229,8 @@ class MonitorBloc {
       _schedules = await DataAPI.getProjectFieldMonitorSchedules(projectId);
       await LocalDBAPI.addFieldMonitorSchedules(schedules: _schedules);
     }
+    var m = filterSchedulesByProject(_schedules);
+    _schedules = m;
     _fieldMonitorScheduleController.sink.add(_schedules);
     pp('🔵 🔵 🔵  MonitorBloc: getProjectFieldMonitorSchedules found: 💜 ${_schedules.length} schedules ');
 
@@ -244,10 +245,36 @@ class MonitorBloc {
       _schedules = await DataAPI.getMonitorFieldMonitorSchedules(userId);
       await LocalDBAPI.addFieldMonitorSchedules(schedules: _schedules);
     }
+    _schedules.sort((a, b) => b.date.compareTo(a.date));
+    var m = filterSchedulesByProject(_schedules);
+    _schedules = m;
     _fieldMonitorScheduleController.sink.add(_schedules);
     pp('🔵 🔵 🔵  MonitorBloc: getMonitorFieldMonitorSchedules found: 💜 ${_schedules.length} schedules ');
 
+    _schedules.forEach((element) {});
     return _schedules;
+  }
+
+  static List<FieldMonitorSchedule> filterSchedulesByProject(
+      List<FieldMonitorSchedule> mList) {
+    pp('🔵 🔵 🔵  MonitorBloc: filterSchedulesByProject: 🦠 filter ${mList.length} schedules by projectId');
+    mList.forEach((element) {
+      pp('PreFilter: Schedule: ${element.toJson()}');
+    });
+    //todo - filter latest by project
+
+    Map<String, FieldMonitorSchedule> map = Map();
+    mList.sort((a, b) => b.date.compareTo(a.date));
+    mList.forEach((element) {
+      if (!map.containsKey(element.projectId)) {
+        map['${element.projectId}'] = element;
+      }
+    });
+    mList = map.values.toList();
+    mList.forEach((element) {
+      pp('PostFilter: Schedule: ${element.toJson()}');
+    });
+    return mList;
   }
 
   Future<List<FieldMonitorSchedule>> getOrgFieldMonitorSchedules(
@@ -259,6 +286,8 @@ class MonitorBloc {
       _schedules = await DataAPI.getOrgFieldMonitorSchedules(organizationId);
       await LocalDBAPI.addFieldMonitorSchedules(schedules: _schedules);
     }
+    var m = filterSchedulesByProject(_schedules);
+    _schedules = m;
     _fieldMonitorScheduleController.sink.add(_schedules);
     pp('🔵 🔵 🔵 MonitorBloc: getOrgFieldMonitorSchedules found: 🔵 ${_schedules.length} schedules ');
 
@@ -376,14 +405,19 @@ class MonitorBloc {
   Future refreshUserData(
       {String userId, String organizationId, bool forceRefresh}) async {
     pp('💜 💜 💜 MonitorBloc: refreshUserData ... forceRefresh: $forceRefresh');
-    await getOrganizationProjects(
-        organizationId: organizationId, forceRefresh: forceRefresh);
-    await getOrganizationUsers(
-        organizationId: organizationId, forceRefresh: forceRefresh);
-    await getUserProjectPhotos(userId: userId, forceRefresh: forceRefresh);
-    await getUserProjectVideos(userId: userId, forceRefresh: forceRefresh);
-    await getMonitorFieldMonitorSchedules(
-        userId: userId, forceRefresh: forceRefresh);
+    try {
+      await getOrganizationProjects(
+          organizationId: organizationId, forceRefresh: forceRefresh);
+      await getOrganizationUsers(
+          organizationId: organizationId, forceRefresh: forceRefresh);
+      await getUserProjectPhotos(userId: userId, forceRefresh: forceRefresh);
+      await getUserProjectVideos(userId: userId, forceRefresh: forceRefresh);
+      await getMonitorFieldMonitorSchedules(
+          userId: userId, forceRefresh: forceRefresh);
+    } catch (e) {
+      pp('We seem fucked! ');
+      throw e;
+    }
   }
 
   void _initialize() async {

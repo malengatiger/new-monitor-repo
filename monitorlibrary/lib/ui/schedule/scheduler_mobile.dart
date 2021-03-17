@@ -26,7 +26,7 @@ class _SchedulerMobileState extends State<SchedulerMobile>
   User _adminUser;
   List<Project> _projects = [];
   var _key = GlobalKey<ScaffoldState>();
-
+  static const mm = 'SchedulerMobile: 🍏 🍏 🍏 🍏 ';
   @override
   void initState() {
     _controller = AnimationController(vsync: this);
@@ -41,8 +41,7 @@ class _SchedulerMobileState extends State<SchedulerMobile>
   }
 
   void _getData(bool refresh) async {
-    pp('SchedulerMobile: ............. '
-        '🍏 🍏 🍏 🍏 getting list of projects ...');
+    pp('$mm getting list of projects ...');
     setState(() {
       busy = true;
     });
@@ -50,7 +49,7 @@ class _SchedulerMobileState extends State<SchedulerMobile>
       _adminUser = await Prefs.getUser();
       _projects = await monitorBloc.getOrganizationProjects(
           organizationId: widget.user.organizationId, forceRefresh: refresh);
-      pp('SchedulerMobile: .............  🍏 🍏 🍏 🍏 ${_projects.length} projects ...');
+      pp('$mm ${_projects.length} projects ...');
     } catch (e) {
       AppSnackbar.showErrorSnackbar(
           scaffoldKey: _key, message: 'Project list failed: $e');
@@ -59,8 +58,6 @@ class _SchedulerMobileState extends State<SchedulerMobile>
       busy = false;
     });
   }
-
-  Project _project;
 
   @override
   Widget build(BuildContext context) {
@@ -107,10 +104,10 @@ class _SchedulerMobileState extends State<SchedulerMobile>
                           child: ListView.builder(
                               itemCount: _projects.length,
                               itemBuilder: (context, index) {
-                                _project = _projects.elementAt(index);
                                 return GestureDetector(
                                   onTap: () {
-                                    _navigateToFrequencyEditor();
+                                    _navigateToFrequencyEditor(
+                                        _projects.elementAt(index));
                                   },
                                   child: Card(
                                     elevation: 2,
@@ -120,7 +117,7 @@ class _SchedulerMobileState extends State<SchedulerMobile>
                                         color: Theme.of(context).primaryColor,
                                       ),
                                       title: Text(
-                                        _project.name,
+                                        _projects.elementAt(index).name,
                                         style: Styles.blackBoldSmall,
                                       ),
                                     ),
@@ -133,7 +130,8 @@ class _SchedulerMobileState extends State<SchedulerMobile>
                   )));
   }
 
-  void _navigateToFrequencyEditor() async {
+  void _navigateToFrequencyEditor(Project project) async {
+    pp('$mm _navigateToFrequencyEditor: project.name: ${project.name}');
     var result = await Navigator.push(
         context,
         PageTransition(
@@ -141,12 +139,12 @@ class _SchedulerMobileState extends State<SchedulerMobile>
             alignment: Alignment.bottomRight,
             duration: Duration(seconds: 1),
             child: FrequencyEditor(
-              project: _project,
+              project: project,
               adminUser: _adminUser,
               fieldUser: widget.user,
             )));
     if (result is bool) {
-      pp('Yebo Yes!!! ................ ');
+      pp('$mm Yebo Yes!!! schedule has been written to database 🍎');
       if (mounted) {
         AppSnackbar.showSnackbar(
             scaffoldKey: _key,
@@ -227,112 +225,115 @@ class _FrequencyEditorState extends State<FrequencyEditor> {
                       ),
                     ),
                   )
-                : Column(
-                    children: [
-                      SizedBox(
-                        height: 20,
-                      ),
-                      Text(
-                        '${widget.project.name}',
-                        style: Styles.blackBoldMedium,
-                      ),
-                      SizedBox(
-                        height: 8,
-                      ),
-                      Text(
-                        'Project to be Monitored',
-                        style: Styles.blackSmall,
-                      ),
-                      SizedBox(
-                        height: 28,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 28.0, right: 28),
-                        child: SizedBox(
-                          width: 300,
-                          child: TextFormField(
-                            controller: _perDayController,
-                            keyboardType: TextInputType.number,
-                            style: Styles.blackBoldMedium,
-                            decoration: InputDecoration(
-                              icon: Icon(
-                                Icons.alarm,
-                                color: Colors.blue,
+                : SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        SizedBox(
+                          height: 20,
+                        ),
+                        Text(
+                          '${widget.project.name}',
+                          style: Styles.blackBoldMedium,
+                        ),
+                        SizedBox(
+                          height: 8,
+                        ),
+                        Text(
+                          'Project to be Monitored',
+                          style: Styles.blackSmall,
+                        ),
+                        SizedBox(
+                          height: 28,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 28.0, right: 28),
+                          child: SizedBox(
+                            width: 300,
+                            child: TextFormField(
+                              controller: _perDayController,
+                              keyboardType: TextInputType.number,
+                              style: Styles.blackBoldMedium,
+                              decoration: InputDecoration(
+                                icon: Icon(
+                                  Icons.alarm,
+                                  color: Colors.blue,
+                                ),
+                                hintText: 'Enter frequency per day',
+                                labelText: 'Frequency Per Day',
                               ),
-                              hintText: 'Enter frequency per day',
-                              labelText: 'Frequency Per Day',
                             ),
                           ),
                         ),
-                      ),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 28.0, right: 28),
-                        child: SizedBox(
-                          width: 300,
-                          child: TextFormField(
-                            controller: _perWeekController,
-                            keyboardType: TextInputType.number,
-                            style: Styles.blackBoldMedium,
-                            decoration: InputDecoration(
-                              icon: Icon(
-                                Icons.alarm,
-                                color: Colors.blue,
+                        SizedBox(
+                          height: 20,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 28.0, right: 28),
+                          child: SizedBox(
+                            width: 300,
+                            child: TextFormField(
+                              controller: _perWeekController,
+                              keyboardType: TextInputType.number,
+                              style: Styles.blackBoldMedium,
+                              decoration: InputDecoration(
+                                icon: Icon(
+                                  Icons.alarm,
+                                  color: Colors.blue,
+                                ),
+                                hintText: 'Enter frequency per week',
+                                labelText: 'Frequency Per Week',
                               ),
-                              hintText: 'Enter frequency per week',
-                              labelText: 'Frequency Per Week',
                             ),
                           ),
                         ),
-                      ),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 28.0, right: 28),
-                        child: SizedBox(
-                          width: 300,
-                          child: TextFormField(
-                            controller: _perMonthController,
-                            keyboardType: TextInputType.number,
-                            style: Styles.blackBoldMedium,
-                            decoration: InputDecoration(
-                              icon: Icon(
-                                Icons.alarm,
-                                color: Colors.blue,
+                        SizedBox(
+                          height: 20,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 28.0, right: 28),
+                          child: SizedBox(
+                            width: 300,
+                            child: TextFormField(
+                              controller: _perMonthController,
+                              keyboardType: TextInputType.number,
+                              style: Styles.blackBoldMedium,
+                              decoration: InputDecoration(
+                                icon: Icon(
+                                  Icons.alarm,
+                                  color: Colors.blue,
+                                ),
+                                hintText: 'Enter frequency per month',
+                                labelText: 'Frequency Per Month',
                               ),
-                              hintText: 'Enter frequency per month',
-                              labelText: 'Frequency Per Month',
                             ),
                           ),
                         ),
-                      ),
-                      SizedBox(
-                        height: 24,
-                      ),
-                      ElevatedButton(
-                          onPressed: () {
-                            _doSubmit(
-                                perDay: _perDayController.text,
-                                perWeek: _perWeekController.text,
-                                perMonth: _perMonthController.text);
-                          },
-                          style: ElevatedButton.styleFrom(
-                              primary: Colors.pink,
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 8, vertical: 8),
-                              textStyle: TextStyle(
-                                  fontSize: 14, fontWeight: FontWeight.normal)),
-                          child: Padding(
-                            padding: const EdgeInsets.all(12.0),
-                            child: Text('Submit Schedule'),
-                          )),
-                      SizedBox(
-                        height: 48,
-                      ),
-                    ],
+                        SizedBox(
+                          height: 24,
+                        ),
+                        ElevatedButton(
+                            onPressed: () {
+                              _doSubmit(
+                                  perDay: _perDayController.text,
+                                  perWeek: _perWeekController.text,
+                                  perMonth: _perMonthController.text);
+                            },
+                            style: ElevatedButton.styleFrom(
+                                primary: Colors.pink,
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 8, vertical: 8),
+                                textStyle: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.normal)),
+                            child: Padding(
+                              padding: const EdgeInsets.all(12.0),
+                              child: Text('Submit Schedule'),
+                            )),
+                        SizedBox(
+                          height: 48,
+                        ),
+                      ],
+                    ),
                   ),
           ),
         ),

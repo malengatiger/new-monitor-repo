@@ -69,7 +69,6 @@ public class MonitorAuthenticationFilter extends OncePerRequestFilter {
             throw new ServletException("\uD83D\uDC7F \uD83D\uDC7F \uD83D\uDC7F Not Authorized; Piss off! \uD83D\uDC7F \uD83D\uDC7F \uD83D\uDC7F");
         }
         String token = m.substring(7);
-        LOGGER.info(Emoji.ANGRY + Emoji.ANGRY + Emoji.ANGRY + "Firebase token: " + token + Emoji.RED_APPLE );
         try {
             dataService.initializeFirebase();
             ApiFuture<FirebaseToken> future = FirebaseAuth.getInstance().verifyIdTokenAsync(token, true);
