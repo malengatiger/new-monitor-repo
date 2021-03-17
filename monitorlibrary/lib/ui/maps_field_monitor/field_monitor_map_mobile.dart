@@ -44,6 +44,7 @@ class _FieldMonitorMapMobileState extends State<FieldMonitorMapMobile>
   }
 
   void _getLocation() async {
+    pp('💜 💜 💜 💜 💜 💜 FieldMonitorMapMobile: ..... current user, check position: ${widget.user.toJson()}');
     var pos = await locationBloc.getLocation();
     setState(() {
       _cameraPosition = CameraPosition(
@@ -164,12 +165,16 @@ class _FieldMonitorMapMobileState extends State<FieldMonitorMapMobile>
               myLocationButtonEnabled: true,
               initialCameraPosition: _cameraPosition,
               onMapCreated: (GoogleMapController controller) {
-                pp('GoogleMap:onMapCreated ....');
+                pp('🔵 🔵 GoogleMap:onMapCreated ....');
                 _mapController.complete(controller);
                 googleMapController = controller;
+
                 if (widget.user.position != null) {
+                  pp('🔵 🔵 GoogleMap:onMapCreated ....widget.user.position != null 🔆 🔆 ... add marker');
                   _addMarker(widget.user.position.coordinates.elementAt(1),
-                      widget.user.position.coordinates.elementAt(1));
+                      widget.user.position.coordinates.elementAt(0));
+                } else {
+                  pp('🔵 🔵 GoogleMap:onMapCreated ....widget.user.position == null 🔆 🔆 ... WTF?');
                 }
               },
               myLocationEnabled: true,

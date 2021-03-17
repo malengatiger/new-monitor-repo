@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:focused_menu/focused_menu.dart';
 import 'package:focused_menu/modals.dart';
+import 'package:monitorlibrary/api/sharedprefs.dart';
 import 'package:monitorlibrary/bloc/fcm_bloc.dart';
 import 'package:monitorlibrary/bloc/monitor_bloc.dart';
 import 'package:monitorlibrary/data/user.dart';
@@ -28,6 +29,7 @@ class _UserListMobileState extends State<UserListMobile>
   bool isBusy = false;
   var _users = <User>[];
   var _key = GlobalKey<ScaffoldState>();
+  User _user;
 
   @override
   void initState() {
@@ -54,6 +56,7 @@ class _UserListMobileState extends State<UserListMobile>
       isBusy = true;
     });
     try {
+      _user = await Prefs.getUser();
       _users = await monitorBloc.getOrganizationUsers(
           organizationId: widget.user.organizationId,
           forceRefresh: forceRefresh);
@@ -101,17 +104,17 @@ class _UserListMobileState extends State<UserListMobile>
   List<FocusedMenuItem> _getMenuItems(User user) {
     assert(user != null);
     List<FocusedMenuItem> list = [];
-    list.add(FocusedMenuItem(
-        title: Text('Send Message'),
-        trailingIcon: Icon(
-          Icons.send,
-          color: Theme.of(context).primaryColor,
-        ),
-        onPressed: () {
-          _navigateToMessaging(user);
-        }));
 
     if (widget.user.userType == ORG_ADMINISTRATOR) {
+      list.add(FocusedMenuItem(
+          title: Text('Send Message'),
+          trailingIcon: Icon(
+            Icons.send,
+            color: Theme.of(context).primaryColor,
+          ),
+          onPressed: () {
+            _navigateToMessaging(user);
+          }));
       list.add(FocusedMenuItem(
           title: Text('Edit User'),
           trailingIcon: Icon(
@@ -149,6 +152,30 @@ class _UserListMobileState extends State<UserListMobile>
             _navigateToMap(user);
           }));
     }
+    if (widget.user.userType == FIELD_MONITOR) {
+      if (_user.userId == user.userId) {
+        list.add(FocusedMenuItem(
+            title: Text('FieldMonitor Home Base'),
+            trailingIcon: Icon(
+              Icons.location_pin,
+              color: Theme.of(context).primaryColor,
+            ),
+            onPressed: () {
+              _navigateToMap(user);
+            }));
+      } else {
+        list.add(FocusedMenuItem(
+            title: Text('Send Message'),
+            trailingIcon: Icon(
+              Icons.send,
+              color: Theme.of(context).primaryColor,
+            ),
+            onPressed: () {
+              _navigateToMessaging(user);
+            }));
+      }
+    }
+
     return list;
   }
 
