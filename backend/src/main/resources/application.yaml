@@ -1,0 +1,43 @@
+
+server.port: 8087
+databaseUrl: https://monitor-2021.firebaseio.com
+
+countryCode: ZA
+currencyCode: ZAR
+
+spring:
+  data:
+    mongodb:
+      uri: mongodb+srv://aubrey:ip6nF5IEdBOjEMi6@monitorcluster.nnqij.mongodb.net/monitordb?retryWrites=true&w=majority
+      database: monitordb
+  cache:
+    cache-names:
+      - rate-limit-buckets
+    caffeine:
+      spec: maximumSize=100000,expireAfterAccess=3600s
+
+bucket4j:
+  enabled: true
+  filters:
+    - cache-name: rate-limit-buckets
+      url: /*
+      strategy: first
+      http-response-body: "{ \"status\": 429, \"error\": \"Too Many Requests\", \"message\": \"You have exhausted your API Request Quota\" }"
+      rate-limits:
+        - expression: "getHeader('Authorization')"
+          execute-condition: "getHeader('Authorization').startsWith('ey')"
+          bandwidths:
+            - capacity: 20
+              time: 1
+              unit: hours
+#        - expression: "getHeader('Authorization')"
+#          execute-condition: "getHeader('X-api-key').startsWith('ey')"
+#          bandwidths:
+#            - capacity: 40
+#              time: 1
+#              unit: hours
+#        - expression: "getHeader('Authorization')"
+#          bandwidths:
+#            - capacity: 20
+#              time: 1
+#              unit: hours

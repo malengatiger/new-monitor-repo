@@ -39,14 +39,8 @@ public class MonitorAuthenticationFilter extends OncePerRequestFilter {
         String url = httpServletRequest.getRequestURL().toString();
         LOGGER.info(Emoji.ANGRY + Emoji.ANGRY + Emoji.ANGRY + Emoji.BELL + "Authenticating this url: " + Emoji.BELL + " " + url);
 
-        //todo - KILL this after testing
-       // doFilter(httpServletRequest, httpServletResponse, filterChain);
-
         //TODO - 🔺 🔺 🔺 allow the following calls ONLY if in dev !!!! 🔺
-        if (url.contains("generate")
-                || url.contains("ping")
-                || url.contains("createSampleRequest")
-                || url.contains("sendOzowPaymentRequest")) {
+        if (url.contains("192.168.86.240")) {
             LOGGER.info(Emoji.ANGRY + "this request is not subject to authentication: "
                     + Emoji.HAND2 + url);
             doFilter(httpServletRequest, httpServletResponse, filterChain);
@@ -82,7 +76,6 @@ public class MonitorAuthenticationFilter extends OncePerRequestFilter {
         } catch (Exception e) {
             String msg = "\uD83D\uDD06 \uD83D\uDD06 \uD83D\uDD06 " +
                     "FirebaseAuthException happened: \uD83C\uDF4E " + e.getMessage();
-            System.out.println(msg);
             throw new ServletException(msg);
         }
 

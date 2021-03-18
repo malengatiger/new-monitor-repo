@@ -9,15 +9,21 @@ import com.monitor.backend.services.DataService;
 import com.monitor.backend.services.ListService;
 import com.monitor.backend.utils.Emoji;
 import com.monitor.backend.utils.MongoGenerator;
+import com.monitor.backend.utils.RateLimitInterceptor;
+import io.github.bucket4j.Bandwidth;
+import io.github.bucket4j.Bucket;
+import io.github.bucket4j.Bucket4j;
+import io.github.bucket4j.Refill;
 import org.jetbrains.annotations.NotNull;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.Banner;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.env.Environment;
@@ -25,17 +31,21 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.io.PrintStream;
 import java.lang.reflect.Method;
+import java.time.Duration;
 import java.util.*;
 import java.util.logging.Logger;
 
 @SpringBootApplication
 @EnableScheduling
+@EnableCaching
+@EnableAutoConfiguration
 @EnableMongoRepositories(basePackages = {"com.monitor.backend.models"})
-public class MonitorBackendApplication implements ApplicationListener<ApplicationReadyEvent>, CommandLineRunner {
+public class MonitorBackendApplication implements ApplicationListener<ApplicationReadyEvent>, CommandLineRunner, WebMvcConfigurer {
 
     public static final Logger LOGGER = Logger.getLogger(MonitorBackendApplication.class.getName());
 
@@ -84,6 +94,34 @@ public class MonitorBackendApplication implements ApplicationListener<Applicatio
 
     @Autowired
     private ProjectRepository projectRepository;
+
+//    @Autowired
+//    private HazelcastInstance hzInstance;
+//
+//    @Bean
+//    public Config hazelCastConfig() {
+//        Config config = new Config();
+//        config.setInstanceName("my-hazelcast-instance");
+//        return config;
+//    }
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        LOGGER.info(Emoji.RED_APPLE + Emoji.RED_APPLE   + Emoji.RED_APPLE + Emoji.KEY
+                + " addInterceptors: set up Rate Limiting " + Emoji.KEY);
+
+        Refill refill = Refill.greedy(10, Duration.ofMinutes(1));
+        Bandwidth limit = Bandwidth.classic(10, refill).withInitialTokens(1);
+
+        Bucket bucket = Bucket4j.builder().addLimit(limit).build();
+        registry.addInterceptor(new RateLimitInterceptor(bucket, 1)).addPathPatterns("/*");
+
+        Refill refill2 = Refill.greedy(10, Duration.ofMinutes(1));
+        Bandwidth limit2 = Bandwidth.classic(10, refill2);
+
+        Bucket bucket2 = Bucket4j.builder().addLimit(limit2).build();
+        registry.addInterceptor(new RateLimitInterceptor(bucket2, 1))
+                .addPathPatterns("/ping");
+    }
 
     @Bean
     public WebMvcConfigurer corsConfigurer() {
@@ -177,31 +215,15 @@ public class MonitorBackendApplication implements ApplicationListener<Applicatio
                 "#################################################################\n";
     }
 
-    //    @Autowired
-//    CityRepository cityRepository;
     @Autowired
     CountryRepository countryRepository;
     @Autowired
     MongoGenerator mongoGenerator;
 
-//    @Value("${monitorMaxDistanceInMetres}")
-//    private double monitorMaxDistanceInMetres;
-
     @Override
     public void run(String... args) throws Exception {
         LOGGER.info(Emoji.FERN + Emoji.FERN + Emoji.FERN + " CommandLineRunner:run -------- Not doing much for now .... ");
 
-//        List<Country> countries = countryRepository.findAll();
-//        if (countries == null ) {
-//            mongoGenerator.generateCountries();
-//        }
-//        List<City> cities = cityRepository.findAll();
-//        if (cities.isEmpty()) {
-//            LOGGER.info(Emoji.ERROR + Emoji.ERROR + " -------- NO cities generated");
-//        }
-//        for (City city : cities) {
-//            LOGGER.info(Emoji.FERN + " -------- CommandLineRunner " + city.getName() + " " + city.getProvinceName());
-//        }
 
     }
 }

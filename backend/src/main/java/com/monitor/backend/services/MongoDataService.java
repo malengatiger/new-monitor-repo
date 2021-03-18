@@ -13,21 +13,10 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.logging.Logger;
 
-/*
 
-MongoClientURI uri = new MongoClientURI(
-    "mongodb+srv://aubrey:<password>@monitorcluster.nnqij.mongodb.net/<dbname>?retryWrites=true&w=majority");
-
-MongoClient mongoClient = new MongoClient(uri);
-MongoDatabase database = mongoClient.getDatabase("test");
-
- */
 @Service
 public class MongoDataService {
     private static final Logger LOGGER = Logger.getLogger(MongoGenerator.class.getSimpleName());
-
-//    @Value("${mongo}")
-//    private String mongo;
 
     @Autowired
     CityRepository cityRepository;
