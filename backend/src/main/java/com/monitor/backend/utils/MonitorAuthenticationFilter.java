@@ -36,22 +36,14 @@ public class MonitorAuthenticationFilter extends OncePerRequestFilter {
                                     @NotNull HttpServletResponse httpServletResponse,
                                     @NotNull FilterChain filterChain) throws ServletException, IOException {
 
-        String url = httpServletRequest.getRequestURL().toString();
-        LOGGER.info(Emoji.ANGRY + Emoji.ANGRY + Emoji.ANGRY + Emoji.BELL + "Authenticating this url: " + Emoji.BELL + " " + url);
-
+        print(httpServletRequest);
         //TODO - 🔺 🔺 🔺 allow the following calls ONLY if in dev !!!! 🔺
-        if (url.contains("192.168.86.240")) {
+        String url = httpServletRequest.getRequestURL().toString();
+        if (url.contains("192.168.86.240:8087")) {   //this is my local machine
             LOGGER.info(Emoji.ANGRY + "this request is not subject to authentication: "
                     + Emoji.HAND2 + url);
             doFilter(httpServletRequest, httpServletResponse, filterChain);
             return;
-        }
-
-        Enumeration<String> mm = httpServletRequest.getHeaderNames();
-        while (mm.hasMoreElements()) {
-            String name = mm.nextElement();
-            LOGGER.info(Emoji.ANGRY + Emoji.ANGRY + Emoji.ANGRY
-                    + " Header from request: " + Emoji.RED_APPLE  + name);
         }
 
         String m = httpServletRequest.getHeader("Authorization");
@@ -91,20 +83,23 @@ public class MonitorAuthenticationFilter extends OncePerRequestFilter {
     }
 
     private void print(@NotNull HttpServletRequest httpServletRequest) {
-        System.out.println("\uD83D\uDE21 \uD83D\uDE21 parameters ...");
+        String url = httpServletRequest.getRequestURL().toString();
+        LOGGER.info(Emoji.ANGRY + Emoji.ANGRY + Emoji.ANGRY + Emoji.BELL + "Authenticating this url: " + Emoji.BELL + " " + url);
+
+        System.out.println("\uD83D\uDE21 \uD83D\uDE21 \uD83D\uDE21 \uD83D\uDE21 request header parameters ...");
         Enumeration<String> parms = httpServletRequest.getParameterNames();
         while (parms.hasMoreElements()) {
             String m = parms.nextElement();
             LOGGER.info("\uD83D\uDE21 \uD83D\uDE21 \uD83D\uDE21 parameterName: " + m);
 
         }
-        System.out.println("\uD83D\uDE21 \uD83D\uDE21 headers ...");
+        LOGGER.info("\uD83D\uDE21 \uD83D\uDE21 headers ...");
         Enumeration<String> names = httpServletRequest.getHeaderNames();
         while (names.hasMoreElements()) {
             String m = names.nextElement();
             LOGGER.info("\uD83D\uDE21 \uD83D\uDE21 \uD83D\uDE21 headerName: " + m);
         }
-        System.out.println("\uD83D\uDC9A\uD83D\uDC9A\uD83D\uDC9A Header: Authorization: "
+        LOGGER.info("\uD83D\uDC9A\uD83D\uDC9A\uD83D\uDC9A Header: Authorization: "
                 + httpServletRequest.getHeader("Authorization") + " \uD83D\uDC9A");
     }
 
