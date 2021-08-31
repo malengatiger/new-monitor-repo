@@ -32,6 +32,18 @@ public class ListController {
     private ListService listService;
 
 
+//    @GetMapping("/ping")
+//    public ResponseEntity<Object> ping() {
+//        LOGGER.info(Emoji.DICE.concat(Emoji.DICE).concat("ping requested: "));
+//        try {
+//            return ResponseEntity.ok("Hey, nice of you to ping ::: " + new DateTime().toDateTimeISO().toString());
+//        } catch (Exception e) {
+//            return ResponseEntity.badRequest().body(
+//                    new CustomErrorResponse(400,
+//                            "ping failed: " + e.getMessage(),
+//                            new DateTime().toDateTimeISO().toString()));
+//        }
+//    }
     @GetMapping("/findUserByEmail")
     public ResponseEntity<Object> findUserByEmail(@RequestParam String email) {
         LOGGER.info(Emoji.DICE.concat(Emoji.DICE).concat("findUserByEmail ... email: ".concat(email)));

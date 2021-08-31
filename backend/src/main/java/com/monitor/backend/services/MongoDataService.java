@@ -16,7 +16,7 @@ import java.util.logging.Logger;
 
 @Service
 public class MongoDataService {
-    private static final Logger LOGGER = Logger.getLogger(MongoGenerator.class.getSimpleName());
+    private static final Logger LOGGER = Logger.getLogger(MongoDataService.class.getSimpleName());
 
     @Autowired
     CityRepository cityRepository;

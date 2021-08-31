@@ -121,22 +121,7 @@
             <artifactId>querydsl-apt</artifactId>
             <version>4.1.0</version>
         </dependency>
-        <!-- GraphQL and related dependencies -->
-        <dependency>
-            <groupId>com.graphql-java-kickstart</groupId>
-            <artifactId>graphql-spring-boot-starter</artifactId>
-            <version>5.7.0</version>
-        </dependency>
-        <dependency>
-            <groupId>com.graphql-java-kickstart</groupId>
-            <artifactId>graphiql-spring-boot-starter</artifactId>
-            <version>5.5.0</version>
-        </dependency>
-        <dependency>
-            <groupId>com.graphql-java-kickstart</groupId>
-            <artifactId>graphql-java-tools</artifactId>
-            <version>5.4.1</version>
-        </dependency>
+
 
         <!-- JUnits for unit testing -->
         <dependency>
@@ -195,12 +180,12 @@
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-config</artifactId>
-            <version>5.3.1.RELEASE</version>
+            <version>5.3.11.RELEASE</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-web</artifactId>
-            <version>5.3.1.RELEASE</version>
+            <version>5.3.11.RELEASE</version>
         </dependency>
 
 <!--        <dependency>-->
