@@ -16,14 +16,14 @@ class LocalDBAPI {
 
   static String databaseName = 'MonDB001a';
 
-  static late Box projectBox;
-  static late Box photoBox;
-  static late Box videoBox;
-  static late Box userBox;
-  static late Box projectPositionBox;
-  static late Box conditionBox;
-  static late Box orgMessageBox;
-  static late Box scheduleBox;
+  static Box? projectBox;
+  static Box? photoBox;
+  static Box? videoBox;
+  static Box? userBox;
+  static Box? projectPositionBox;
+  static Box? conditionBox;
+  static Box? orgMessageBox;
+  static Box? scheduleBox;
 
   static const aa = 'LocalDBAPI: 🦠🦠🦠🦠🦠 ';
 
@@ -35,26 +35,30 @@ class LocalDBAPI {
       Hive.init(appDocumentDirectory.path);
       pp('$aa Hive local data will be stored here ... '
           ' 🍎 🍎 ${appDocumentDirectory.path}');
-      projectBox = await Hive.openBox("agentBox");
-      pp('$aa Hive agentBox:  🔵  ....agentBox.isOpen: ${projectBox.isOpen}');
-      photoBox = await Hive.openBox("clientBox");
-      pp('$aa Hive clientBox:  🔵  ....clientBox.isOpen: ${photoBox.isOpen}');
-      videoBox = await Hive.openBox("balanceBox");
-      pp('$aa Hive balanceBox:  🔵  ....balanceBox.isOpen: ${videoBox.isOpen}');
+
+      projectBox = await Hive.openBox("projectBox");
+      pp('$aa Hive projectBox:  🔵  ....projectBox.isOpen: ${projectBox!.isOpen}');
+
+      photoBox = await Hive.openBox("photoBox");
+      pp('$aa Hive photoBox:  🔵  ....photoBox.isOpen: ${photoBox!.isOpen}');
+
+      videoBox = await Hive.openBox("videoBox");
+      pp('$aa Hive videoBox:  🔵  ....balanceBox.isOpen: ${videoBox!.isOpen}');
+
       userBox = await Hive.openBox("userBox");
-      pp('$aa Hive userBox:  🔵  ....userBox.isOpen: ${userBox.isOpen}');
+      pp('$aa Hive userBox:  🔵  ....userBox.isOpen: ${userBox!.isOpen}');
 
       projectPositionBox = await Hive.openBox("projectPositionBox");
-      pp('$aa Hive projectPositionBox:  🔵  ....projectPositionBox.isOpen: ${projectPositionBox.isOpen}');
+      pp('$aa Hive projectPositionBox:  🔵  ....projectPositionBox.isOpen: ${projectPositionBox!.isOpen}');
 
       conditionBox = await Hive.openBox("conditionBox");
-      pp('$aa Hive conditionBox:  🔵  ....conditionBox.isOpen: ${conditionBox.isOpen}');
+      pp('$aa Hive conditionBox:  🔵  ....conditionBox.isOpen: ${conditionBox!.isOpen}');
 
       orgMessageBox = await Hive.openBox("orgMessageBox");
-      pp('$aa Hive orgMessageBox:  🔵  ....orgMessageBox.isOpen: ${orgMessageBox.isOpen}');
+      pp('$aa Hive orgMessageBox:  🔵  ....orgMessageBox.isOpen: ${orgMessageBox!.isOpen}');
 
       scheduleBox = await Hive.openBox("scheduleBox");
-      pp('$aa Hive scheduleBox:  🔵  ....scheduleBox.isOpen: ${scheduleBox.isOpen}');
+      pp('$aa Hive scheduleBox:  🔵  ....scheduleBox.isOpen: ${scheduleBox!.isOpen}');
 
       pp('$aa Hive local data ready to rumble ....$aa');
     }
@@ -63,7 +67,7 @@ class LocalDBAPI {
   static Future<List<Project>> getProjects() async {
     await connectLocalDB();
     List<Project> mList = [];
-    List list = projectBox.values.toList();
+    List list = projectBox!.values.toList();
     list.forEach((element) {
       mList.add(Project.fromJson(element));
     });
@@ -73,7 +77,7 @@ class LocalDBAPI {
   static Future<List<Photo>> getPhotos() async {
     await connectLocalDB();
     List<Photo> mList = [];
-    List list = photoBox.values.toList();
+    List list = photoBox!.values.toList();
     list.forEach((element) {
       mList.add(Photo.fromJson(element));
     });
@@ -84,7 +88,7 @@ class LocalDBAPI {
   static Future<List<Video>> getVideos() async {
     await connectLocalDB();
     List<Video> mList = [];
-    List list = videoBox.values.toList();
+    List list = videoBox!.values.toList();
     list.forEach((element) {
       mList.add(Video.fromJson(element));
     });
@@ -96,7 +100,7 @@ class LocalDBAPI {
     await connectLocalDB();
 
     List<Photo> mList = [];
-    List list = photoBox.values.toList();
+    List list = photoBox!.values.toList();
     list.forEach((element) {
       var photo = Photo.fromJson(element);
       if (photo.projectId == projectId) {
@@ -111,7 +115,7 @@ class LocalDBAPI {
   static Future<List<Photo>> getUserPhotos(String userId) async {
     await connectLocalDB();
     List<Photo> mList = [];
-    List list = photoBox.values.toList();
+    List list = photoBox!.values.toList();
     list.forEach((element) {
       var photo = Photo.fromJson(element);
       if (photo.userId == userId) {
@@ -126,7 +130,7 @@ class LocalDBAPI {
     await connectLocalDB();
 
     List<Video> mList = [];
-    List list = videoBox.values.toList();
+    List list = videoBox!.values.toList();
     list.forEach((element) {
       var vid = Video.fromJson(element);
       if (vid.projectId == projectId) {
@@ -143,7 +147,7 @@ class LocalDBAPI {
     await connectLocalDB();
 
     List<FieldMonitorSchedule> mList = [];
-    List list = scheduleBox.values.toList();
+    List list = scheduleBox!.values.toList();
     list.forEach((element) {
       var sched = FieldMonitorSchedule.fromJson(element);
       if (sched.projectId == projectId) {
@@ -161,7 +165,7 @@ class LocalDBAPI {
     await connectLocalDB();
 
     List<FieldMonitorSchedule> mList = [];
-    List list = scheduleBox.values.toList();
+    List list = scheduleBox!.values.toList();
     list.forEach((element) {
       var sched = FieldMonitorSchedule.fromJson(element);
       if (sched.fieldMonitorId == userId) {
@@ -179,7 +183,7 @@ class LocalDBAPI {
     await connectLocalDB();
 
     List<FieldMonitorSchedule> mList = [];
-    List list = scheduleBox.values.toList();
+    List list = scheduleBox!.values.toList();
     list.forEach((element) {
       var sched = FieldMonitorSchedule.fromJson(element);
       if (sched.organizationId == organizationId) {
@@ -217,7 +221,7 @@ class LocalDBAPI {
     await connectLocalDB();
 
     List<Video> mList = [];
-    List list = videoBox.values.toList();
+    List list = videoBox!.values.toList();
     list.forEach((element) {
       var vid = Video.fromJson(element);
       if (vid.userId == userId) {
@@ -232,7 +236,7 @@ class LocalDBAPI {
       String projectId) async {
     await connectLocalDB();
     List<ProjectPosition> mList = [];
-    List list = projectPositionBox.values.toList();
+    List list = projectPositionBox!.values.toList();
     list.forEach((element) {
       var pos = ProjectPosition.fromJson(element);
       if (pos.projectId == projectId) {
@@ -248,7 +252,7 @@ class LocalDBAPI {
     await connectLocalDB();
 
     List<User> mList = [];
-    List list = userBox.values.toList();
+    List list = userBox!.values.toList();
     list.forEach((element) {
       mList.add(User.fromJson(element));
     });
@@ -265,7 +269,7 @@ class LocalDBAPI {
 
   static Future<int> addUser({required User user}) async {
     await connectLocalDB();
-    await userBox.put(user.userId, user.toJson());
+    await userBox!.put(user.userId, user.toJson());
     pp('$mx addUser: 🌼 1 user added...:  🔵 🔵 ${user.name} from ${user.organizationName}');
     return cnt;
   }
@@ -279,7 +283,7 @@ class LocalDBAPI {
 
   static Future<int> addProject({required Project project}) async {
     await connectLocalDB();
-    await projectBox.put(project.projectId, project.toJson());
+    await projectBox!.put(project.projectId, project.toJson());
     pp('$mx addProject: 🌼 1 project added...:  🔵 🔵 ${project.name}');
     return 0;
   }
@@ -293,7 +297,7 @@ class LocalDBAPI {
 
   static Future<int> addPhoto({required Photo photo}) async {
     await connectLocalDB();
-    await photoBox.put(photo.photoId, photo.toJson());
+    await photoBox!.put(photo.photoId, photo.toJson());
     pp('$mx addPhoto: 🌼 1 photo added...  🔵 🔵  ${photo.url}');
     return 0;
   }
@@ -307,7 +311,7 @@ class LocalDBAPI {
 
   static Future<int> addVideo({required Video video}) async {
     await connectLocalDB();
-    await videoBox.put(video.videoId, video.toJson());
+    await videoBox!.put(video.videoId, video.toJson());
     pp('$mx addVideo: 🌼 1 video added...  🔵 🔵 ${video.url}');
     return 0;
   }
@@ -315,14 +319,14 @@ class LocalDBAPI {
   static Future<int> addCondition({required Condition condition}) async {
     await connectLocalDB();
 
-    await conditionBox.put(DateTime.now().toString(), condition.toJson());
+    await conditionBox!.put(DateTime.now().toString(), condition.toJson());
     pp('$mx addCondition: 🌼 1 condition added...:  🔵 🔵 ');
     return 0;
   }
 
   static Future<int> addOrgMessage({required OrgMessage message}) async {
     await connectLocalDB();
-    await orgMessageBox.put(message.created, message.toJson());
+    await orgMessageBox!.put(message.created, message.toJson());
     pp('$mx addOrgMessage: 🌼 1 OrgMessage added ...  🔵 🔵 ');
     return 0;
   }
@@ -338,7 +342,7 @@ class LocalDBAPI {
   static Future<int> addProjectPosition(
       {required ProjectPosition projectPosition}) async {
     await connectLocalDB();
-    await projectPositionBox.put(
+    await projectPositionBox!.put(
         projectPosition.created, projectPosition.toJson());
 
     pp('$mx addProjectPosition: 🌼 1 record added ... 🔵 🔵 ');
@@ -352,9 +356,9 @@ class LocalDBAPI {
       await addFieldMonitorSchedule(schedule: element);
     });
 
-    var len = scheduleBox.values.length;
+    var len = scheduleBox!.values.length;
     pp('$mx addFieldMonitorSchedule: 🌼 🔆 schedules cached: $len 🔵 🔵 ');
-    scheduleBox.values.forEach((element) {
+    scheduleBox!.values.forEach((element) {
       pp('Schedule: ${FieldMonitorSchedule.fromJson(element).toJson()}');
     });
     return 0;
@@ -363,8 +367,8 @@ class LocalDBAPI {
   static Future<int> addFieldMonitorSchedule(
       {required FieldMonitorSchedule schedule}) async {
     await connectLocalDB();
-    await scheduleBox.put(schedule.fieldMonitorScheduleId, schedule.toJson());
-    var len = scheduleBox.values.length;
+    await scheduleBox!.put(schedule.fieldMonitorScheduleId, schedule.toJson());
+    var len = scheduleBox!.values.length;
     pp('$mx addFieldMonitorSchedule: 🌼 1 record added ...  🔆 schedules cached: $len 🔵 🔵 ');
 
     return 0;

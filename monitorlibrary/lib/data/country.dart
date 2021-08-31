@@ -12,14 +12,18 @@ class Country {
     this.name = data['name'];
     this.countryId = data['countryId'];
     this.countryCode = data['countryCode'];
-    this.population = data['population'];
+    if (data['population'] != null) {
+      this.population = data['population'];
+    } else {
+      this.population = 0;
+    }
   }
   Map<String, dynamic> toJson() {
     Map<String, dynamic> map = {
       'name': name,
       'countryId': countryId,
       'countryCode': countryCode,
-      'population': population,
+      'population': population == null? 0 : population,
     };
     return map;
   }
