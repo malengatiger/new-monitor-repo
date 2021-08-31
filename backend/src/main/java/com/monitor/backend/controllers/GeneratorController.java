@@ -1,6 +1,5 @@
 package com.monitor.backend.controllers;
 
-import com.monitor.backend.models.*;
 import com.monitor.backend.services.DataService;
 import com.monitor.backend.services.ListService;
 import com.monitor.backend.services.MongoDataService;

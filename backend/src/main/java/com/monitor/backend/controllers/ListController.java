@@ -10,6 +10,9 @@ import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.geo.Distance;
+import org.springframework.data.geo.Metrics;
+import org.springframework.data.geo.Point;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -124,6 +127,21 @@ public class ListController {
             return ResponseEntity.badRequest().body(
                     new CustomErrorResponse(400,
                             "getCities failed: " + e.getMessage(),
+                            new DateTime().toDateTimeISO().toString()));
+        }
+    }
+    @GetMapping("/getCitiesByLocation")
+    public ResponseEntity<Object> getCitiesByLocation(double latitude, double longitude, int radiusInKM) {
+        LOGGER.info(Emoji.DICE.concat(Emoji.DICE).concat("ListController: ...... getCitiesByLocation ..."));
+        try {
+            List<City> cities = mongoDataService.getCitiesByLocation(new Point(latitude,longitude), new Distance(radiusInKM, Metrics.KILOMETERS));
+            LOGGER.info(Emoji.DOLPHIN.concat(Emoji.DOLPHIN)
+                    + "ListController: getCitiesByLocation found: \uD83D\uDC24 " + cities.size());
+            return ResponseEntity.ok(cities);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(
+                    new CustomErrorResponse(400,
+                            "getCitiesByLocation failed: " + e.getMessage(),
                             new DateTime().toDateTimeISO().toString()));
         }
     }
@@ -273,7 +291,7 @@ public class ListController {
 
     @GetMapping("/findProjectsByLocation")
     public ResponseEntity<Object> findProjectsByLocation(double latitude, double longitude, double radiusInKM) {
-        LOGGER.info(Emoji.DICE.concat(Emoji.DICE).concat(" findProjectsByLocation ..."));
+        LOGGER.info(Emoji.DICE.concat(Emoji.DICE).concat(" ...... findProjectsByLocation ..."));
         try {
             List<Project> projects = listService.findProjectsByLocation(latitude, longitude, radiusInKM);
             LOGGER.info(Emoji.DOLPHIN.concat(Emoji.DOLPHIN) + " Nearby Projects found: " + projects.size());
@@ -288,10 +306,10 @@ public class ListController {
 
     @GetMapping("/findCitiesByLocation")
     public ResponseEntity<Object> findCitiesByLocation(double latitude, double longitude, double radiusInKM) {
-        LOGGER.info(Emoji.DICE.concat(Emoji.DICE).concat(" findCitiesByLocation ..."));
+        LOGGER.info(Emoji.DICE.concat(Emoji.DICE).concat(" findCitiesByLocation: ... radiusInKM: " + radiusInKM + " km"));
         try {
             List<City> cities = listService.findCitiesByLocation(latitude, longitude, radiusInKM);
-            LOGGER.info(Emoji.DOLPHIN.concat(Emoji.DOLPHIN) + " Nearby cities found: " + cities.size());
+            LOGGER.info(Emoji.DOLPHIN.concat(Emoji.DOLPHIN) + " ....... findCitiesByLocation: cities found: " + cities.size());
             return ResponseEntity.ok(cities);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(

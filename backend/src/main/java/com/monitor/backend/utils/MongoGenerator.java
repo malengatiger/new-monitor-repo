@@ -23,7 +23,6 @@ import org.joda.time.DateTime;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.FileReader;
@@ -414,6 +413,7 @@ public class MongoGenerator {
     //@Value("${monitorMaxDistanceInMetres}")
     private static final double monitorMaxDistanceInMetres = 500.0;
 
+
     public void generateProjects() {
         setLocations();
         List<Organization> organizations = (List<Organization>) organizationRepository.findAll();
@@ -444,6 +444,8 @@ public class MongoGenerator {
                     monitorMaxDistanceInMetres,
                     new DateTime().toDateTimeISO().toString(), new ArrayList<>(), pos);
 
+            List<City> list = listService.findCitiesByLocation(loc.latitude, loc.longitude, 5);
+            p0.setNearestCities(list);
             projectRepository.save(p0);
 
             ProjectPosition pPos = new ProjectPosition(
@@ -453,6 +455,8 @@ public class MongoGenerator {
                     "tbd",
                     new DateTime().toDateTimeISO().toString(), null, new ArrayList<>());
 
+            List<City> list1 = listService.findCitiesByLocation(loc.latitude, loc.longitude, 5);
+            pPos.setNearestCities(list1);
             projectPositionRepository.save(pPos);
 
             LOGGER.info(" \uD83E\uDD6C \uD83E\uDD6C \uD83E\uDD6C " +
@@ -531,6 +535,7 @@ public class MongoGenerator {
         User u = new User();
         u.setName(getRandomFirstName() + " " + getRandomLastName());
         u.setOrganizationId(org.getOrganizationId());
+        u.setOrganizationName(org.getName());
         u.setCellphone(getRandomCellphone());
         u.setEmail(email);
         u.setCreated(new DateTime().toDateTimeISO().toString());
@@ -541,6 +546,7 @@ public class MongoGenerator {
 
         String uid = dataService.createUser(u);
         u.setUserId(uid);
+        u.setPassword(null);
         User result2 = userRepository.save(u);
 
         LOGGER.info(Emoji.FERN + Emoji.FERN +

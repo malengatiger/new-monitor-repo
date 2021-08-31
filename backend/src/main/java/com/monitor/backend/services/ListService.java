@@ -1,8 +1,6 @@
 package com.monitor.backend.services;
 
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.mongodb.client.MongoClient;
@@ -13,14 +11,14 @@ import lombok.val;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.geo.Distance;
-import org.springframework.data.geo.Metrics;
-import org.springframework.data.geo.Point;
+import org.springframework.data.geo.*;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
+
 import com.monitor.backend.data.*;
 
 @Service
@@ -211,20 +209,26 @@ public class ListService {
     }
 
     public List<City> findCitiesByLocation(double latitude, double longitude, double radiusInKM)  {
-        LOGGER.info(Emoji.DICE.concat(Emoji.DICE).concat(" findCitiesByLocation ..."));
+        LOGGER.info(Emoji.DICE.concat(Emoji.DICE).concat(" findCitiesByLocation ... radiusInKM: " + radiusInKM));
         Point point = new Point(longitude, latitude);
         Distance distance = new Distance(radiusInKM, Metrics.KILOMETERS);
-        List<City> cities = cityRepository.findByPositionNear(point, distance);
+        GeoResults<City> cities = cityRepository.findByPositionNear(point, distance);
         LOGGER.info(Emoji.DOLPHIN.concat(Emoji.DOLPHIN).concat(Emoji.DOLPHIN)
-                + " Nearby Cities found: " + cities.size() + " : " + Emoji.RED_APPLE + " radius: " + radiusInKM);
-        for (City city : cities) {
-            LOGGER.info(Emoji.DOLPHIN.concat(Emoji.DOLPHIN) + city.getName() + ", " + Emoji.DOLPHIN
-                    + city.getCityId() + " "
+                + " Nearby Cities found: "+ Emoji.RED_APPLE + Emoji.RED_APPLE + cities.getContent().size() + " : "
+                + Emoji.RED_APPLE+ Emoji.RED_APPLE + " radiusInKM: " + radiusInKM);
+        List<City> list = new ArrayList<>();
+        int cnt = 0;
+        for (GeoResult<City> city : cities) {
+            cnt++;
+            LOGGER.info(Emoji.DOLPHIN.concat(Emoji.DOLPHIN + Emoji.RED_APPLE + Emoji.RED_APPLE)
+                    + "#" + cnt + " - " + city.getContent().getName() + ", " + Emoji.DOLPHIN
+                    + city.getContent().getProvinceName() + " "
                     + Emoji.COFFEE);
+            list.add(city.getContent());
+
         }
-        LOGGER.info(Emoji.HEART_ORANGE.concat(Emoji.HEART_ORANGE).concat(
-                "findCitiesByLocation: Nearby Cities found: " + cities.size() + " \uD83C\uDF3F"));
-        return cities;
+        LOGGER.info(Emoji.DOLPHIN.concat(Emoji.DOLPHIN + Emoji.RED_APPLE + Emoji.RED_APPLE) + "Total cities found: " + list.size());
+        return list;
     }
 
     @Autowired
@@ -321,14 +325,16 @@ public class ListService {
         LOGGER.info(Emoji.DICE.concat(Emoji.DICE).concat(" getNearbyCities ..."));
         Point point = new Point(longitude, latitude);
         Distance distance = new Distance(radiusInKM, Metrics.KILOMETERS);
-        List<City> cities = cityRepository.findByPositionNear(point, distance);
+        GeoResults<City> cities = cityRepository.findByPositionNear(point, distance);
         LOGGER.info(Emoji.DOLPHIN.concat(Emoji.DOLPHIN).concat(Emoji.DOLPHIN)
-                + " Nearby Cities found: " + cities.size() + " : " + Emoji.RED_APPLE + " radius: " + radiusInKM);
-        for (City city : cities) {
-            LOGGER.info(Emoji.DOLPHIN.concat(Emoji.DOLPHIN) + city.getName() + ", " + city.getProvinceName() + " "
+                + " Nearby Cities found: " + cities.getContent().size() + " : " + Emoji.RED_APPLE + " radius: " + radiusInKM);
+        List<City> list = new ArrayList<>();
+        for (GeoResult<City> city : cities) {
+            LOGGER.info(Emoji.DOLPHIN.concat(Emoji.DOLPHIN) + city.getContent().getName() + ", " + city.getContent().getProvinceName() + " "
                     + Emoji.COFFEE);
+            list.add(city.getContent());
         }
-        return cities;
+        return list;
     }
 
     public List<com.monitor.backend.data.Project> getOrganizationProjects(String organizationId)  {

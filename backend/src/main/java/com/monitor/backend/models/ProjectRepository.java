@@ -7,6 +7,7 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 
 import java.util.List;
 
+
 public interface ProjectRepository extends PagingAndSortingRepository<com.monitor.backend.data.Project, String> {
 
     List<com.monitor.backend.data.Project> findByPositionNear(Point location, Distance distance);

@@ -3,13 +3,14 @@ package com.monitor.backend.services;
 import com.monitor.backend.data.City;
 import com.monitor.backend.models.CityRepository;
 import com.monitor.backend.utils.Emoji;
-import com.monitor.backend.utils.MongoGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.geo.Distance;
+import org.springframework.data.geo.GeoResult;
+import org.springframework.data.geo.GeoResults;
 import org.springframework.data.geo.Point;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -24,10 +25,17 @@ public class MongoDataService {
     public List<City> getCities() {
         return (List<City>) cityRepository.findAll();
     }
+
     public List<City> getCitiesByLocation(Point location, Distance distance) {
-        List<City> list = cityRepository.findByPositionNear(location,distance);
-        LOGGER.info(Emoji.DICE + "Found " + list.size()
+        GeoResults<City> cities = cityRepository.findByPositionNear(location,distance);
+        LOGGER.info(Emoji.DICE + "Found " + cities.getContent().size()
                 + " cities by location; radiusInKM = " + distance.getValue());
+        List<City> list = new ArrayList<>();
+        for (GeoResult<City> city : cities) {
+            LOGGER.info(Emoji.DOLPHIN.concat(Emoji.DOLPHIN) + city.getContent().getName() + ", " + city.getContent().getProvinceName() + " "
+                    + Emoji.COFFEE);
+            list.add(city.getContent());
+        }
         return list;
     }
 }

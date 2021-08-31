@@ -69,7 +69,17 @@ public class MongoConfig {
         for (String collectionName : t.getCollectionNames()) {
             LOGGER.info(Emoji.RED_APPLE + Emoji.RED_APPLE + " Collection: "
                     + collectionName + " " + Emoji.BLUE_DOT);
+           MongoCollection<Document>  col = t.getCollection(collectionName);
+
+            LOGGER.info(Emoji.RED_APPLE + Emoji.RED_APPLE + " Number of Documents: "
+                    + col.countDocuments() + " " + Emoji.BLUE_DOT);
+            ListIndexesIterable<Document> iter = col.listIndexes();
+            for (Document doc : iter) {
+                LOGGER.info(Emoji.RED_APPLE + Emoji.RED_APPLE + " Index anyone?: "
+                        + doc.toJson() + " " + Emoji.BLUE_DOT);
+            }
         }
+
         return t;
     }
 

@@ -13,7 +13,7 @@ public class Type {
     public static final String RATING_TERRIBLE = "TERRIBLE";
 
 
-    public static final String USER_TYPE_ORG_ADMINISTRATOR = "EXCELLENT";
+    public static final String USER_TYPE_ORG_ADMINISTRATOR = "ORG_ADMINISTRATOR";
     public static final String USER_TYPE_OFFICIAL = "OFFICIAL";
     public static final String USER_TYPE_EXECUTIVE = "EXECUTIVE";
     public static final String USER_TYPE_FIELD_MONITOR = "FIELD_MONITOR";
