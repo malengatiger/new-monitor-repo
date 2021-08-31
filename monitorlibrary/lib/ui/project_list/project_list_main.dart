@@ -19,7 +19,7 @@ class ProjectListMain extends StatefulWidget {
 
 class _ProjectListMainState extends State<ProjectListMain>
     with SingleTickerProviderStateMixin {
-  AnimationController _controller;
+  late AnimationController _controller;
   var isBusy = false;
 
   @override

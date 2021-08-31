@@ -37,7 +37,7 @@ class Prefs {
     return null;
   }
 
-  static Future<User> getUser() async {
+  static Future<User?> getUser() async {
     var prefs = await SharedPreferences.getInstance();
     var string = prefs.getString('user');
     if (string == null) {
@@ -60,7 +60,7 @@ class Prefs {
     return null;
   }
 
-  static Future<Country> getCountry() async {
+  static Future<Country?> getCountry() async {
     var prefs = await SharedPreferences.getInstance();
     var string = prefs.getString('country');
     if (string == null) {
@@ -86,7 +86,7 @@ class Prefs {
     return null;
   }
 
-  static Future<Questionnaire> getQuestionnaire() async {
+  static Future<Questionnaire?> getQuestionnaire() async {
     var prefs = await SharedPreferences.getInstance();
     var string = prefs.getString('questionnaire');
     if (string == null) {
@@ -113,7 +113,7 @@ class Prefs {
     return null;
   }
 
-  static Future<Project> getActiveProject() async {
+  static Future<Project?> getActiveProject() async {
     var prefs = await SharedPreferences.getInstance();
     var string = prefs.getString('activeProject');
     if (string == null) {
@@ -140,7 +140,7 @@ class Prefs {
     pp("FCM minutes saved in cache prefs: $minutes");
   }
 
-  static Future<int> getMinutes() async {
+  static Future<int?> getMinutes() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var minutes = prefs.getInt("minutes");
     pp("SharedPrefs - FCM minutes from prefs: $minutes");
@@ -154,9 +154,9 @@ class Prefs {
     pp('picture url saved to shared prefs');
   }
 
-  static Future<String> getPictureUrl() async {
+  static Future<String?> getPictureUrl() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String path = prefs.getString("url");
+    String? path = prefs.getString("url");
     pp("=================== SharedPrefs url index: $path");
     return path;
   }
@@ -168,9 +168,9 @@ class Prefs {
     pp('picture path saved to shared prefs');
   }
 
-  static Future<String> getPicturePath() async {
+  static Future<String?> getPicturePath() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String path = prefs.getString("path");
+    String? path = prefs.getString("path");
     pp("=================== SharedPrefs path index: $path");
     return path;
   }
@@ -184,7 +184,7 @@ class Prefs {
 
   static Future<int> getPageLimit() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    int pageLimit = prefs.getInt("pageLimit");
+    int? pageLimit = prefs.getInt("pageLimit");
     if (pageLimit == null) {
       pageLimit = 10;
     }
@@ -201,7 +201,7 @@ class Prefs {
 
   static Future<DateTime> getRefreshDate() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    int ms = prefs.getInt("refresh");
+    int? ms = prefs.getInt("refresh");
     if (ms == null) {
       ms = DateTime.now().subtract(Duration(days: 365)).millisecondsSinceEpoch;
     }

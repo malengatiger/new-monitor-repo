@@ -1,10 +1,10 @@
 import 'package:meta/meta.dart';
 
 class Respondent {
-  String firstName, lastName, userId, email, cellphone, gender;
+  String? firstName, lastName, userId, email, cellphone, gender;
 
-  Respondent({@required this.firstName, @required this.lastName,  this.email, this.cellphone,
-    @required this.gender,  });
+  Respondent({required this.firstName, required this.lastName,  this.email, this.cellphone,
+    required this.gender,  });
 
   Respondent.fromJson(Map data) {
     this.firstName = data['firstName'];

@@ -23,11 +23,11 @@ class UserMediaListMobile extends StatefulWidget {
 
 class _UserMediaListMobileState extends State<UserMediaListMobile>
     with SingleTickerProviderStateMixin {
-  AnimationController _controller;
-  StreamSubscription<List<Photo>> photoStreamSubscription;
-  StreamSubscription<List<Video>> videoStreamSubscription;
-  var _photos = List<Photo>();
-  var _videos = List<Video>();
+  late AnimationController _controller;
+  StreamSubscription<List<Photo>>? photoStreamSubscription;
+  StreamSubscription<List<Video>>? videoStreamSubscription;
+  var _photos = <Photo>[];
+  var _videos = <Video>[];
 
   @override
   void initState() {
@@ -61,9 +61,9 @@ class _UserMediaListMobileState extends State<UserMediaListMobile>
     });
     try {
       _photos =
-          await monitorBloc.getUserProjectPhotos(userId: widget.user.userId);
+          await monitorBloc.getUserProjectPhotos(userId: widget.user.userId!, forceRefresh: true);
       _videos =
-          await monitorBloc.getUserProjectVideos(userId: widget.user.userId);
+          await monitorBloc.getUserProjectVideos(userId: widget.user.userId!, forceRefresh: true);
       _processMedia();
     } catch (e) {
       print(e);
@@ -79,29 +79,29 @@ class _UserMediaListMobileState extends State<UserMediaListMobile>
   @override
   void dispose() {
     _controller.dispose();
-    photoStreamSubscription.cancel();
-    videoStreamSubscription.cancel();
+    photoStreamSubscription!.cancel();
+    videoStreamSubscription!.cancel();
     super.dispose();
   }
 
   void _processMedia() {
     suitcases.clear();
     _photos.forEach((element) {
-      var sc = Suitcase(photo: element, date: element.created);
+      var sc = Suitcase(photo: element, date: element.created!);
       suitcases.add(sc);
     });
     _videos.forEach((element) {
-      var sc = Suitcase(video: element, date: element.created);
+      var sc = Suitcase(video: element, date: element.created!);
       suitcases.add(sc);
     });
     if (suitcases.isNotEmpty) {
-      suitcases.sort((a, b) => b.date.compareTo(a.date));
-      latest = getFormattedDateShortest(suitcases.first.date, context);
-      earliest = getFormattedDateShortest(suitcases.last.date, context);
+      suitcases.sort((a, b) => b.date!.compareTo(a.date!));
+      latest = getFormattedDateShortest(suitcases.first.date!, context);
+      earliest = getFormattedDateShortest(suitcases.last.date!, context);
     }
   }
 
-  String latest, earliest;
+  String? latest, earliest;
 
   @override
   Widget build(BuildContext context) {
@@ -110,7 +110,7 @@ class _UserMediaListMobileState extends State<UserMediaListMobile>
         key: _key,
         appBar: AppBar(
           title: Text(
-            widget.user.name,
+            widget.user.name!,
             style: Styles.whiteBoldSmall,
           ),
           actions: [
@@ -235,7 +235,7 @@ class _UserMediaListMobileState extends State<UserMediaListMobile>
                                   fit: BoxFit.fill,
                                 )
                               : Image.network(
-                                  suitcase.photo.thumbnailUrl,
+                                  suitcase.photo!.thumbnailUrl!,
                                   fit: BoxFit.fill,
                                 ),
                         ),
@@ -248,35 +248,35 @@ class _UserMediaListMobileState extends State<UserMediaListMobile>
     );
   }
 
-  var suitcases = List<Suitcase>();
+  var suitcases = <Suitcase>[];
 
   void _onMediaTapped(Suitcase suitcase) {
     if (suitcase.video != null) {
-      pp('🦠 🦠 🦠 _onMediaTapped: Play video from 🦠 ${suitcase.video.url} 🦠');
+      pp('🦠 🦠 🦠 _onMediaTapped: Play video from 🦠 ${suitcase.video!.url} 🦠');
       Navigator.push(
           context,
           PageTransition(
               type: PageTransitionType.scale,
               alignment: Alignment.bottomRight,
               duration: Duration(seconds: 1),
-              child: VideoMain(suitcase.video)));
+              child: VideoMain(suitcase.video!)));
     } else {
-      pp(' 🍎 🍎 🍎 _onMediaTapped: show full image from 🍎 ${suitcase.photo.url} 🍎');
-      Navigator.push(
-          context,
-          PageTransition(
-              type: PageTransitionType.scale,
-              alignment: Alignment.bottomRight,
-              duration: Duration(seconds: 1),
-              child: FullPhotoMain(suitcase.photo, null)));
+      pp(' 🍎 🍎 🍎 _onMediaTapped: show full image from 🍎 ${suitcase.photo!.url!} 🍎');
+      // Navigator.push(
+      //     context,
+      //     PageTransition(
+      //         type: PageTransitionType.scale,
+      //         alignment: Alignment.bottomRight,
+      //         duration: Duration(seconds: 1),
+      //         child: FullPhotoMain(suitcase.photo, )));
     }
   }
 }
 
 class Suitcase {
-  Photo photo;
-  Video video;
-  String date;
+  Photo? photo;
+  Video? video;
+  String? date;
 
   Suitcase({this.photo, this.video, this.date});
 }

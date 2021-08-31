@@ -4,17 +4,17 @@ import 'package:monitorlibrary/data/interfaces.dart';
 import 'package:monitorlibrary/data/position.dart';
 
 class RatingContent {
-  String userId, created;
-  String comment;
-  Position position;
-  Rating rating;
+  String? userId, created;
+  String? comment;
+  Position? position;
+  Rating? rating;
 
   RatingContent(
       {
-      @required this.userId,
+      required this.userId,
       this.comment,
-      @required this.position,
-      @required this.rating});
+      required this.position,
+      required this.rating});
 
   RatingContent.fromJson(Map data) {
     this.userId = data['userId'];

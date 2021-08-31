@@ -20,12 +20,12 @@ bucket4j:
   enabled: true
   filters:
     - cache-name: rate-limit-buckets
-      url: /*
+      url: .*
       strategy: first
       http-response-body: "{ \"status\": 429, \"error\": \"Too Many Requests\", \"message\": \"You have exhausted your API Request Quota\" }"
       rate-limits:
         - expression: "getHeader('Authorization')"
-          execute-condition: "getHeader('Authorization').startsWith('ey')"
+#          execute-condition: "getHeader('Authorization')"
           bandwidths:
             - capacity: 20
               time: 1

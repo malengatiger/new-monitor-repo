@@ -29,7 +29,7 @@ class AdminBloc {
   StreamController<User> _activeUserController = StreamController.broadcast();
 
   Stream get settlementStream => _settController.stream;
-  Stream get questionnaireStream => _questController.stream;
+  Stream<List<Questionnaire>> get questionnaireStream => _questController.stream;
   Stream get projectStream => _projController.stream;
   Stream get countryStream => _cntryController.stream;
   Stream get activeUserStream => _activeUserController.stream;
@@ -37,11 +37,11 @@ class AdminBloc {
   Stream get activeQuestionnaireStream => _activeQuestionnaireController.stream;
 
   StreamController<List<User>> _userController = StreamController.broadcast();
-  List<Community> _communities = List();
-  List<Questionnaire> _questionnaires = List();
-  List<Project> _projects = List();
-  List<User> _users = List();
-  List<Country> _countries = List();
+  List<Community> _communities = [];
+  List<Questionnaire> _questionnaires = [];
+  List<Project> _projects = [];
+  List<User> _users = [];
+  List<Country> _countries = [];
 
   AdminBloc() {
     checkPermission();
@@ -89,9 +89,9 @@ class AdminBloc {
   }
 
   Future addToPolygon(
-      {@required String settlementId,
-      @required double latitude,
-      @required double longitude}) async {
+      {required String settlementId,
+      required double latitude,
+      required double longitude}) async {
     var res = await DataAPI.addPointToPolygon(
         settlementId: settlementId, latitude: latitude, longitude: longitude);
     pp('Bloc: 🐬 🐬 addToPolygon ... check response below');
@@ -106,12 +106,12 @@ class AdminBloc {
   }
 
   Future addQuestionnaireSection(
-      {@required String questionnaireId, @required Section section}) async {
+      {required String questionnaireId, required Section section}) async {
     var res = await DataAPI.addQuestionnaireSection(
         questionnaireId: questionnaireId, section: section);
     var user = await Prefs.getUser();
     if (user != null) {
-      await getQuestionnairesByOrganization(user.organizationId);
+      await getQuestionnairesByOrganization(user.organizationId!);
       pp('🤟🤟🤟 Org questionnaires refreshed 🌹');
     }
 
@@ -122,14 +122,14 @@ class AdminBloc {
     var res = await DataAPI.addSettlement(sett);
     _communities.add(res);
     _settController.sink.add(_communities);
-    await findCommunitiesByCountry(sett.countryId);
+    await findCommunitiesByCountry(sett.countryId!);
   }
 
   Future updateCommunity(Community sett) async {
     var res = await DataAPI.updateSettlement(sett);
     _communities.add(res);
     _settController.sink.add(_communities);
-    await findCommunitiesByCountry(sett.countryId);
+    await findCommunitiesByCountry(sett.countryId!);
   }
 
   Future<List<Community>> findCommunitiesByCountry(String countryId) async {
@@ -148,7 +148,7 @@ class AdminBloc {
 
     var user = await Prefs.getUser();
     if (user != null) {
-      await getQuestionnairesByOrganization(user.organizationId);
+      await getQuestionnairesByOrganization(user.organizationId!);
       pp('🤟🤟🤟 Org questionnaires refreshed after 🤟 successfull addition to DB 🌹');
     }
   }
@@ -211,14 +211,14 @@ class AdminBloc {
     pp('🎽 🎽 🎽 adminBloc: addProject: Project adding to stream ...');
     _projects.add(res);
     _projController.sink.add(_projects);
-    findProjectsByOrganization(project.organizationId);
+    findProjectsByOrganization(project.organizationId!);
     return res;
   }
 
   Future<Project> updateProject(Project project) async {
     var res = await DataAPI.updateProject(project);
     pp('🎽 🎽 🎽 adminBloc: updateProject done. findProjectsByOrganization ...');
-    findProjectsByOrganization(project.organizationId);
+    findProjectsByOrganization(project.organizationId!);
     return res;
   }
 

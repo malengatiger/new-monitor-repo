@@ -12,33 +12,33 @@ import 'photo.dart' as ph;
 var projectPositions: List<Position>?
  */
 class Project {
-  String _id, name, projectId, description, organizationId, created;
-  String organizationName;
-  List<City> nearestCities;
-  Position position;
-  List<ProjectPosition> projectPositions;
-  List<ph.Photo> photos;
-  List<ph.Video> videos;
-  List<RatingContent> ratings;
-  List<Community> communities;
-  List<MonitorReport> monitorReports;
-  double monitorMaxDistanceInMetres;
+  String? _id, name, projectId, description, organizationId, created;
+  String? organizationName;
+  List<City>? nearestCities;
+  Position? position;
+  List<ProjectPosition>? projectPositions;
+  List<ph.Photo>? photos;
+  List<ph.Video>? videos;
+  List<RatingContent>? ratings;
+  List<Community>? communities;
+  List<MonitorReport>? monitorReports;
+  double? monitorMaxDistanceInMetres;
   Project(
-      {@required this.name,
-      @required this.description,
+      {required this.name,
+      required this.description,
       this.organizationId,
-      this.communities,
-      this.nearestCities,
-      this.photos,
-      this.videos,
-      this.ratings,
-      this.created,
-      this.projectPositions,
+      required this.communities,
+      required this.nearestCities,
+      required this.photos,
+      required this.videos,
+      required this.ratings,
+      required this.created,
+      required this.projectPositions,
       this.position,
-      this.monitorReports,
-      this.organizationName,
-      this.monitorMaxDistanceInMetres,
-      @required this.projectId});
+      required this.monitorReports,
+      required this.organizationName,
+      required this.monitorMaxDistanceInMetres,
+      required this.projectId});
 
   Project.fromJson(Map data) {
     this.name = data['name'];
@@ -57,14 +57,14 @@ class Project {
     if (data['monitorReports'] != null) {
       List list = data['monitorReports'];
       list.forEach((m) {
-        this.monitorReports.add(MonitorReport.fromJson(m));
+        this.monitorReports!.add(MonitorReport.fromJson(m));
       });
     }
     this.communities = [];
     if (data['communities'] != null) {
       List list = data['communities'];
       list.forEach((m) {
-        this.communities.add(Community.fromJson(m));
+        this.communities!.add(Community.fromJson(m));
       });
     }
 
@@ -72,72 +72,72 @@ class Project {
     if (data['nearestCities'] != null) {
       List list = data['nearestCities'];
       list.forEach((m) {
-        this.nearestCities.add(City.fromJson(m));
+        this.nearestCities!.add(City.fromJson(m));
       });
     }
     this.projectPositions = [];
     if (data['projectPositions'] != null) {
       List list = data['projectPositions'];
       list.forEach((m) {
-        this.projectPositions.add(ProjectPosition.fromJson(m));
+        this.projectPositions!.add(ProjectPosition.fromJson(m));
       });
     }
     this.photos = [];
     if (data['photos'] != null) {
       List list = data['photos'];
       list.forEach((m) {
-        this.photos.add(ph.Photo.fromJson(m));
+        this.photos!.add(ph.Photo.fromJson(m));
       });
     }
     this.videos = [];
     if (data['videos'] != null) {
       List list = data['videos'];
       list.forEach((m) {
-        this.videos.add(ph.Video.fromJson(m));
+        this.videos!.add(ph.Video.fromJson(m));
       });
     }
     this.ratings = [];
     if (data['ratings'] != null) {
       List list = data['ratings'];
       list.forEach((m) {
-        this.ratings.add(RatingContent.fromJson(m));
+        this.ratings!.add(RatingContent.fromJson(m));
       });
     }
   }
   Map<String, dynamic> toJson() {
-    List mProjectPositions = List();
+    List mProjectPositions = [];
     if (projectPositions != null) {
-      projectPositions.forEach((pos) {
+      projectPositions!.forEach((pos) {
         mProjectPositions.add(pos.toJson());
       });
     }
-    List mPhotos = List();
+    List mPhotos = [];
     if (photos != null) {
-      photos.forEach((photo) {
+      photos!.forEach((photo) {
         mPhotos.add(photo.toJson());
       });
     }
-    List mVideos = List();
+    List mVideos = [];
     if (videos != null) {
-      videos.forEach((photo) {
+      videos!.forEach((photo) {
         mVideos.add(photo.toJson());
       });
     }
-    List mRatings = List();
+    List mRatings = [];
     if (ratings != null) {
-      ratings.forEach((r) {
+      ratings!.forEach((r) {
         mRatings.add(r.toJson());
       });
     }
-    List mSett = List();
+    List mSett = [];
     if (communities != null) {
-      communities.forEach((r) {
+      communities!.forEach((r) {
         mSett.add(r.toJson());
       });
     }
-    List mCities = List();
+    List mCities = [];
     if (nearestCities != null) {
-      nearestCities.forEach((r) {
+      nearestCities!.forEach((r) {
         mCities.add(r.toJson());
       });
     }
@@ -154,7 +154,7 @@ class Project {
       'videos': mVideos,
       'ratings': mRatings,
       'created': created,
-      'position': position == null ? null : position.toJson(),
+      'position': position == null ? null : position!.toJson(),
       'projectPositions': mProjectPositions,
     };
     return map;

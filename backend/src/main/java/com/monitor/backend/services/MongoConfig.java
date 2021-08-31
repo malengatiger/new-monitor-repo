@@ -1,5 +1,7 @@
 package com.monitor.backend.services;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
 import com.mongodb.client.*;
@@ -22,11 +24,12 @@ import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
 @Configuration
 public class MongoConfig {
     private static final Logger LOGGER = Logger.getLogger(MongoConfig.class.getSimpleName());
+    private static final Gson G = new GsonBuilder().setPrettyPrinting().create();
 
 //    @Value("${spring.data.mongodb.uri}")
-//    String mongo;
+//    mongodb+srv://<username>:<password>@ar001.1xhdt.gcp.mongodb.net/myFirstDatabase?retryWrites=true&w=majority
 
-    static  final String mongoString = "mongodb+srv://aubrey:ip6nF5IEdBOjEMi6@monitorcluster.nnqij.mongodb.net/monitordb?retryWrites=true&w=majority";
+    static  final String mongoString = "mongodb+srv://monitor:ThreeJacksAndAKing@ar001.1xhdt.gcp.mongodb.net/monitordb?retryWrites=true&w=majority";
 
     @Bean
     public MongoClient mongo() {
@@ -44,11 +47,15 @@ public class MongoConfig {
 
         LOGGER.info(Emoji.CROISSANT + Emoji.CROISSANT + "MongoClientSettings have been set with pojoCodecRegistry");
         MongoClient client = MongoClients.create(settings);
+        LOGGER.info(Emoji.CROISSANT + Emoji.CROISSANT + " " + client.listDatabases().iterator().getServerAddress() + " MongoClientSettings have been set with pojoCodecRegistry");
         for (Document document : client.listDatabases()) {
             LOGGER.info(Emoji.FROG + Emoji.FROG + "Database Document: " + document.toJson() + Emoji.FROG);
         }
         LOGGER.info(Emoji.RED_APPLE + Emoji.RED_APPLE + " ClusterDescription: "
                 + client.getClusterDescription().getShortDescription() + Emoji.RED_APPLE + Emoji.RED_APPLE);
+        LOGGER.info(Emoji.RED_APPLE + Emoji.RED_APPLE + " Database Name: "
+                + client.getDatabase("monitordb").getName() + " " + Emoji.RED_APPLE + Emoji.RED_APPLE);
+
 
         return client;
 
@@ -57,7 +64,15 @@ public class MongoConfig {
 
     @Bean
     public MongoTemplate mongoTemplate() throws Exception {
-        return new MongoTemplate(mongo(), "monitordb");
+        MongoTemplate t =  new MongoTemplate(mongo(), "monitordb");
+        LOGGER.info(Emoji.RED_APPLE + Emoji.RED_APPLE + " Monitor DB Collections "+ Emoji.RED_APPLE + Emoji.RED_APPLE);
+        for (String collectionName : t.getCollectionNames()) {
+            LOGGER.info(Emoji.RED_APPLE + Emoji.RED_APPLE + " Collection: "
+                    + collectionName + " " + Emoji.BLUE_DOT);
+        }
+        return t;
     }
+
+
 }
 

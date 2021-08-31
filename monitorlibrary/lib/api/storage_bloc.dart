@@ -31,7 +31,7 @@ class StorageBloc {
   Stream<List<StorageMediaBag>> get mediaStream =>
       _mediaStreamController.stream;
 
-  User _user;
+  User? _user;
 
   close() {
     _mediaStreamController.close();
@@ -41,13 +41,13 @@ class StorageBloc {
 
   final storageName = 'monitorPhotos';
   // ignore: missing_return
-  Future<String> uploadPhotoOrVideo(
-      {@required StorageBlocListener listener,
-      @required File file,
-      @required File thumbnailFile,
-      @required Project project,
-      @required Position projectPosition,
-      @required bool isVideo}) async {
+  Future<String?> uploadPhotoOrVideo(
+      {required StorageBlocListener listener,
+      required File file,
+      required File thumbnailFile,
+      required Project project,
+      required Position projectPosition,
+      required bool isVideo}) async {
     rand = new Random(new DateTime.now().millisecondsSinceEpoch);
     var name = 'media@${project.projectId}@' +
         DateTime.now().toUtc().toIso8601String() +
@@ -94,6 +94,7 @@ class StorageBloc {
       pp(e);
       listener.onError('👿👿👿👿 Houston, we have a problem $e');
     }
+    return null;
   }
 
   void _reportProgress(UploadTask uploadTask, StorageBlocListener listener) {
@@ -103,20 +104,19 @@ class StorageBloc {
       var bt = (bytesTransferred / 1024).toStringAsFixed(2) + ' KB';
       var tot = (totalByteCount / 1024).toStringAsFixed(2) + ' KB';
       pp('☕️☕️☕️ .uploadPhoto:  💚 progress ******* 🧩 $bt KB of $tot KB 🧩 transferred');
-      if (listener != null)
-        listener.onFileProgress(event.totalBytes, event.bytesTransferred);
+      listener.onFileProgress(event.totalBytes, event.bytesTransferred);
     });
   }
 
-  Future<String> _uploadThumbnail(
-      {@required StorageBlocListener listener,
-      @required File file,
-      @required File thumbnailFile,
-      @required type,
-      @required Project project,
-      @required Position position,
-      @required bool isVideo,
-      @required String fileUrl}) async {
+  Future<String?> _uploadThumbnail(
+      {required StorageBlocListener listener,
+      required File file,
+      required File thumbnailFile,
+      required type,
+      required Project project,
+      required Position position,
+      required bool isVideo,
+      required String fileUrl}) async {
     rand = new Random(new DateTime.now().millisecondsSinceEpoch);
     var name = 'thumb@${project.projectId}@' +
         DateTime.now().toUtc().toIso8601String() +
@@ -173,28 +173,26 @@ class StorageBloc {
         _mediaStreamController.sink.add(_mediaBags);
       }).catchError((e) {
         pp(e);
-        if (listener != null)
-          listener.onError('👿👿👿👿 thumbnail upload failed');
+        listener.onError('👿👿👿👿 thumbnail upload failed');
       });
     } catch (e) {
       pp(e);
       listener.onError('👿👿👿👿 Houston, we have a problem $e');
     }
-    return thumbnailUrl;
+    return null;
   }
 
   void _addVideoBagToStream(
-      {@required String fileUrl,
-      @required File file,
-      @required Project project,
-      @required Position position}) {
+      {required String fileUrl,
+      required File file,
+      required Project project,
+      required Position position}) {
     var mediaBag = StorageMediaBag(
         url: fileUrl,
-        thumbnailUrl: null,
+        thumbnailUrl: '',
         isVideo: true,
         file: file,
-        date: getFormattedDate(DateTime.now().toString()),
-        thumbnailFile: null);
+        date: getFormattedDate(DateTime.now().toString()),);
 
     _mediaBags.add(mediaBag);
     pp('\n\n🍇🍇🍇🍇 uploadTask.whenComplete: 🇿🇦 💙💙 💙💙 💙💙 mediaStream: '
@@ -215,18 +213,17 @@ class StorageBloc {
       var bt = (bytesTransferred / 1024).toStringAsFixed(2) + ' KB';
       var tot = (totalByteCount / 1024).toStringAsFixed(2) + ' KB';
       pp('☕️☕️☕️ .uploadThumbnail:  🥦 progress ******* 🍓 $bt KB of $tot KB 🍓 transferred');
-      if (listener != null)
-        listener.onThumbnailProgress(event.totalBytes, event.bytesTransferred);
+      listener.onThumbnailProgress(event.totalBytes, event.bytesTransferred);
     });
   }
 
   void _writePhoto(
-      {@required Project project,
-      @required Position projectPosition,
-      @required String fileUrl,
-      @required String thumbnailUrl,
-      @required int height,
-      @required int width}) async {
+      {required Project project,
+      required Position projectPosition,
+      required String fileUrl,
+      required String thumbnailUrl,
+      required int height,
+      required int width}) async {
     pp('🎽 🎽 🎽 🎽 StorageBloc: _writePhoto : 🎽 🎽 adding photo .....');
     if (_user == null) {
       await getUser();
@@ -242,14 +239,14 @@ class StorageBloc {
         url: fileUrl,
         caption: 'tbd',
         created: DateTime.now().toIso8601String(),
-        userId: _user.userId,
-        userName: _user.name,
+        userId: _user!.userId,
+        userName: _user!.name,
         projectPosition: projectPosition,
         distanceFromProjectPosition: distance,
         projectId: project.projectId,
         thumbnailUrl: thumbnailUrl,
         projectName: project.name,
-        organizationId: _user.organizationId,
+        organizationId: _user!.organizationId,
         height: height,
         width: width,
         photoId: u.v4());
@@ -259,10 +256,10 @@ class StorageBloc {
   }
 
   void _writeVideo(
-      {Project project,
-      Position projectPosition,
-      String fileUrl,
-      String thumbnailUrl}) async {
+      {required Project project,
+        required Position projectPosition,
+        required String fileUrl,
+        required String thumbnailUrl}) async {
     pp('🎽 🎽 🎽 🎽 StorageBloc: _writeVideo : 🎽 🎽 adding video .....');
     if (_user == null) {
       await getUser();
@@ -277,14 +274,14 @@ class StorageBloc {
         url: fileUrl,
         caption: 'tbd',
         created: DateTime.now().toIso8601String(),
-        userId: _user.userId,
-        userName: _user.name,
+        userId: _user!.userId,
+        userName: _user!.name,
         projectPosition: projectPosition,
         distanceFromProjectPosition: distance,
         projectId: project.projectId,
         thumbnailUrl: thumbnailUrl,
         projectName: project.name,
-        organizationId: _user.organizationId,
+        organizationId: _user!.organizationId,
         videoId: u.v4());
 
     var result = await DataAPI.addVideo(video);
@@ -333,6 +330,7 @@ class StorageBloc {
       pp('.deleteFolder ERROR $e');
       return 1;
     });
+    return 0;
   }
 
   // ignore: missing_return
@@ -346,13 +344,14 @@ class StorageBloc {
       pp('.deleteFile ERROR $e');
       return 1;
     });
+    return 0;
   }
 
   StorageBloc() {
     pp('🍇 🍇 🍇 🍇 🍇 StorageBloc constructor 🍇 🍇 🍇 🍇 🍇');
     getUser();
   }
-  Future getUser() async {
+  Future? getUser() async {
     _user = await Prefs.getUser();
     return _user;
   }
@@ -372,14 +371,14 @@ abstract class StorageBlocListener {
 class StorageMediaBag {
   String url, thumbnailUrl, date;
   bool isVideo;
-  File file;
-  File thumbnailFile;
+  File? file;
+  File? thumbnailFile;
 
   StorageMediaBag(
-      {this.url,
-      this.file,
-      this.thumbnailUrl,
-      this.isVideo,
+      {required this.url,
+        required this.file,
+        required this.thumbnailUrl,
+        required this.isVideo,
       this.thumbnailFile,
-      this.date});
+        required this.date});
 }

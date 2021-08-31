@@ -1,12 +1,12 @@
 import 'package:meta/meta.dart';
 
 class Country {
-  String name, countryId, countryCode;
-  int population;
+  String? name, countryId, countryCode;
+  int population = 0;
   Country(
-      {@required this.name,
-        this.population,
-        @required this.countryCode});
+      {required this.name,
+        required this.population,
+        required this.countryCode});
 
   Country.fromJson(Map data) {
     this.name = data['name'];

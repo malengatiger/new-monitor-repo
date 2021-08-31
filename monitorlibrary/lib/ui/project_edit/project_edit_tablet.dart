@@ -13,7 +13,7 @@ class ProjectEditTablet extends StatefulWidget {
 
 class _ProjectEditTabletState extends State<ProjectEditTablet>
     with SingleTickerProviderStateMixin {
-  AnimationController _controller;
+  late AnimationController _controller;
 
   @override
   void initState() {

@@ -16,29 +16,29 @@ class VideoMobile extends StatefulWidget {
 
 class _VideoMobileState extends State<VideoMobile>
     with SingleTickerProviderStateMixin {
-  AnimationController _controller;
-  ChewieController chewieController;
-  Chewie playerWidget;
-  VideoPlayerController _videoPlayerController1;
-  VideoPlayerController _videoPlayerController2;
+  AnimationController? _controller;
+  ChewieController? chewieController;
+  Chewie? playerWidget;
+  VideoPlayerController? _videoPlayerController1;
+  VideoPlayerController? _videoPlayerController2;
 
   Future<void> _setPlayer() async {
-    _videoPlayerController1 = VideoPlayerController.network(widget.video.url);
-    await _videoPlayerController1.initialize();
+    _videoPlayerController1 = VideoPlayerController.network(widget.video.url!);
+    await _videoPlayerController1!.initialize();
     pp('🍏 🍏 🍏 🍏 🍏 VidePlayerController has been initialized');
 
     chewieController = ChewieController(
-      videoPlayerController: _videoPlayerController1,
+      videoPlayerController: _videoPlayerController1!,
       autoPlay: true,
       looping: true,
     );
-    chewieController.enterFullScreen();
+    chewieController!.enterFullScreen();
 
     playerWidget = Chewie(
-      controller: chewieController,
+      controller: chewieController!,
     );
     pp('🍏 🍏 🍏 🍏 🍏 Chewie playerWidget has been set up');
-    chewieController.enterFullScreen();
+    chewieController!.enterFullScreen();
 
     setState(() {});
   }
@@ -52,9 +52,9 @@ class _VideoMobileState extends State<VideoMobile>
 
   @override
   void dispose() {
-    _controller.dispose();
-    _videoPlayerController1.dispose();
-    chewieController.dispose();
+    _controller!.dispose();
+    _videoPlayerController1!.dispose();
+    chewieController!.dispose();
     _changeToPortrait();
     super.dispose();
   }
@@ -86,7 +86,7 @@ class _VideoMobileState extends State<VideoMobile>
       child: Scaffold(
         appBar: AppBar(
           title: Text(
-            widget.video.projectName,
+            widget.video.projectName!,
             style: Styles.whiteSmall,
           ),
           bottom: PreferredSize(
@@ -94,7 +94,7 @@ class _VideoMobileState extends State<VideoMobile>
             child: Column(
               children: [
                 Text(
-                  '${getFormattedDateLongWithTime(widget.video.created, context)}',
+                  '${getFormattedDateLongWithTime(widget.video.created!, context)}',
                   style: Styles.blackBoldSmall,
                 ),
                 SizedBox(
@@ -128,10 +128,10 @@ class _VideoMobileState extends State<VideoMobile>
                 child: Container(
                   child: Center(
                     child: chewieController != null &&
-                            chewieController
+                            chewieController!
                                 .videoPlayerController.value.isInitialized
                         ? Chewie(
-                            controller: chewieController,
+                            controller: chewieController!,
                           )
                         : Container(
                             child: CircularProgressIndicator(
@@ -158,7 +158,7 @@ class _VideoMobileState extends State<VideoMobile>
                         width: 8,
                       ),
                       Text(
-                        widget.video.distanceFromProjectPosition
+                        widget.video.distanceFromProjectPosition!
                             .toStringAsFixed(1),
                         style: Styles.blackBoldMedium,
                       ),
@@ -196,5 +196,5 @@ class _VideoMobileState extends State<VideoMobile>
     );
   }
 
-  TargetPlatform _platform;
+  TargetPlatform? _platform;
 }

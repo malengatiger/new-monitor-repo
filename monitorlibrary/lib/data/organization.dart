@@ -1,15 +1,15 @@
 import 'package:meta/meta.dart';
 
 class Organization {
-  String name, countryId, organizationId, email, countryName, created;
+  String? name, countryId, organizationId, email, countryName, created;
 
   Organization(
-      {@required this.name,
-      @required this.countryId,
-      @required this.email,
-      @required this.created,
-      this.countryName,
-      @required this.organizationId});
+      {required this.name,
+      required this.countryId,
+      required this.email,
+      required this.created,
+      required this.countryName,
+      required this.organizationId});
 
   Organization.fromJson(Map data) {
     this.name = data['name'];

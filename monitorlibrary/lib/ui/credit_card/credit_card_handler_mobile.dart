@@ -9,7 +9,7 @@ import 'package:monitorlibrary/snack.dart';
 class CreditCardHandlerMobile extends StatefulWidget {
   final User user;
 
-  const CreditCardHandlerMobile({Key key, this.user}) : super(key: key);
+  const CreditCardHandlerMobile({Key? key, required this.user}) : super(key: key);
   @override
   _CreditCardHandlerMobileState createState() =>
       _CreditCardHandlerMobileState();
@@ -18,7 +18,7 @@ class CreditCardHandlerMobile extends StatefulWidget {
 class _CreditCardHandlerMobileState extends State<CreditCardHandlerMobile>
     with SingleTickerProviderStateMixin
     implements SnackBarListener {
-  AnimationController _controller;
+  late AnimationController _controller;
   String cardNumber = '';
   String expiryDate = '';
   String cardHolderName = '';
@@ -30,7 +30,7 @@ class _CreditCardHandlerMobileState extends State<CreditCardHandlerMobile>
   void initState() {
     _controller = AnimationController(vsync: this);
     super.initState();
-    cardHolderName = widget.user.name;
+    cardHolderName = widget.user.name!;
   }
 
   @override
@@ -77,12 +77,12 @@ class _CreditCardHandlerMobileState extends State<CreditCardHandlerMobile>
                     textStyle: Styles.whiteSmall,
                     cardBgColor: Theme.of(context).primaryColor,
                     showBackView: isCvvFocused),
-                Expanded(
-                  child: SingleChildScrollView(
-                    child: CreditCardForm(
-                        key: _formKey, onCreditCardModelChange: _onChange),
-                  ),
-                ),
+                // Expanded(
+                //   child: SingleChildScrollView(
+                //     child: CreditCardForm(
+                //         key: _formKey, onCreditCardModelChange: _onChange),
+                //   ),
+                // ),
               ],
             ),
             showSubmit
@@ -154,7 +154,7 @@ class _CreditCardHandlerMobileState extends State<CreditCardHandlerMobile>
         scaffoldKey: _key,
         message: 'Payment made',
         textColor: Colors.white,
-        backgroundColor: Colors.teal[600],
+        backgroundColor: Colors.teal[600]!,
         listener: this,
         actionLabel: 'Close');
   }

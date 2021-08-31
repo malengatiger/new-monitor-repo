@@ -4,35 +4,35 @@ import 'package:monitorlibrary/data/interfaces.dart';
 import 'answer.dart';
 
 class Question {
-  String text, created;
-  List<Answer> answers;
-  String questionType;
-  List<String> choices;
+  String? text, created;
+  List<Answer>? answers;
+  String? questionType;
+  List<String>? choices;
 
   Question(
-      {@required this.text,
+      {required this.text,
       this.answers,
-      @required this.questionType,
+      required this.questionType,
       this.choices});
 
   Question.fromJson(Map data) {
     this.text = data['text'];
     this.created = data['created'];
-    this.choices = List();
+    this.choices = [];
     if (data['choices'] != null) {
       List  list = data['choices'];
       list.forEach((m) {
-        this.choices.add(m);
+        this.choices!.add(m);
       });
     }
       this.questionType = data['questionType'];
 
 
-    this.answers = List();
+    this.answers = [];
     if (data['answers'] != null) {
       List  list = data['answers'];
       list.forEach((m) {
-        this.answers.add(Answer.fromJson(m));
+        this.answers!.add(Answer.fromJson(m));
       });
     }
 
@@ -40,7 +40,7 @@ class Question {
   Map<String, dynamic> toJson() {
     List mAnswers = [];
     if (answers != null) {
-      answers.forEach((a) {
+      answers!.forEach((a) {
         mAnswers.add(a.toJson());
       });
     }

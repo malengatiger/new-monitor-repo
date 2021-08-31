@@ -14,7 +14,7 @@ class MediaGrid extends StatelessWidget {
   final MediaGridListener mediaGridListener;
 
   const MediaGrid(
-      {Key key, @required this.imageList, @required this.mediaGridListener})
+      {Key? key, required this.imageList, required this.mediaGridListener})
       : super(key: key);
   @override
   Widget build(BuildContext context) {
@@ -29,8 +29,8 @@ class MediaGrid extends StatelessWidget {
             var bag = imageList.elementAt(index);
             return GestureDetector(
               onTap: () {
-                pp('MediaGrid:  🍎 🍎 🍎 : MediaBag tapped, telling listener: photo? ... ${bag.photo == null ? '' : bag.photo.toJson()}');
-                pp('MediaGrid:  🍎 🍎 🍎 : MediaBag tapped, telling listener: video? ... ${bag.video == null ? '' : bag.video.toJson()}');
+                pp('MediaGrid:  🍎 🍎 🍎 : MediaBag tapped, telling listener: photo? ... ${bag.photo == null ? '' : bag.photo!.toJson()}');
+                pp('MediaGrid:  🍎 🍎 🍎 : MediaBag tapped, telling listener: video? ... ${bag.video == null ? '' : bag.video!.toJson()}');
 
                 mediaGridListener.onMediaSelected(bag);
               },
@@ -45,7 +45,7 @@ class MediaGrid extends StatelessWidget {
                           placeholder: (_, __) => Center(
                             child: CircularProgressIndicator(),
                           ),
-                          imageUrl: bag.photo.thumbnailUrl,
+                          imageUrl: bag.photo!.thumbnailUrl!,
                           fit: BoxFit.cover,
                           fadeInDuration: Duration(milliseconds: 500),
                           fadeOutDuration: Duration(milliseconds: 300),
@@ -68,10 +68,10 @@ class MediaGrid extends StatelessWidget {
                                         size: 32,
                                       ),
                                       onPressed: () {
-                                        pp('Video icon pressed: ${bag.video.userName}');
+                                        pp('Video icon pressed: ${bag.video!.userName!}');
                                       }),
                                   Text(
-                                      '${getFormattedDateShortestWithTime(bag.video.created, context)}',
+                                      '${getFormattedDateShortestWithTime(bag.video!.created!, context)}',
                                       style: Styles.blackTiny)
                                 ],
                               ),
@@ -84,15 +84,13 @@ class MediaGrid extends StatelessWidget {
           staggeredTileBuilder: (index) {
             var mBag = imageList.elementAt(index);
             var mm = 1.2;
-            if (mBag.photo != null) {
-              if (mBag.photo.height > mBag.photo.width) {
+
+              if (mBag.photo!.height! > mBag.photo!.width!) {
                 mm = 1.6;
               } else {
                 mm = 0.6;
               }
-            } else {
-              mm = 0.6;
-            }
+
 
             return StaggeredTile.count(1, mm);
           }),

@@ -19,9 +19,9 @@ class UserMediaListMain extends StatefulWidget {
 
 class _UserMediaListMainState extends State<UserMediaListMain>
     with SingleTickerProviderStateMixin {
-  AnimationController _controller;
+  late AnimationController _controller;
   var isBusy = false;
-  User user;
+  User? user;
 
   @override
   void initState() {
@@ -39,9 +39,9 @@ class _UserMediaListMainState extends State<UserMediaListMain>
       user = await Prefs.getUser();
     }
 
-    pp('MediaListMain: 💜 💜 💜 getting media for ${user.name}');
-    await monitorBloc.getUserProjectPhotos(userId: user.userId);
-    await monitorBloc.getUserProjectVideos(userId: user.userId);
+    pp('MediaListMain: 💜 💜 💜 getting media for ${user!.name}');
+    await monitorBloc.getUserProjectPhotos(userId: user!.userId!, forceRefresh: true);
+    await monitorBloc.getUserProjectVideos(userId: user!.userId!, forceRefresh: true);
     setState(() {
       isBusy = false;
     });
@@ -77,9 +77,9 @@ class _UserMediaListMainState extends State<UserMediaListMain>
             ),
           )
         : ScreenTypeLayout(
-            mobile: UserMediaListMobile(user),
-            tablet: UserMediaListTablet(user),
-            desktop: UserMediaListDesktop(user),
+            mobile: UserMediaListMobile(user!),
+            tablet: UserMediaListTablet(user!),
+            desktop: UserMediaListDesktop(user!),
           );
   }
 }

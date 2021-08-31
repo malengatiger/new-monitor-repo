@@ -12,7 +12,7 @@ class UserMediaListDesktop extends StatefulWidget {
 
 class _UserMediaListDesktopState extends State<UserMediaListDesktop>
     with SingleTickerProviderStateMixin {
-  AnimationController _controller;
+  late AnimationController _controller;
 
   @override
   void initState() {

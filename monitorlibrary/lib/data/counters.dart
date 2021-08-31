@@ -1,14 +1,14 @@
 import 'package:meta/meta.dart';
 
 class UserCount {
-  String userId;
-  int photos, videos, projects;
+  String? userId;
+  int photos = 0, videos = 0, projects = 0;
 
   UserCount(
-      {@required this.userId,
-      @required this.projects,
-      @required this.videos,
-      @required this.photos});
+      {required this.userId,
+      required this.projects,
+      required this.videos,
+      required this.photos});
 
   UserCount.fromJson(Map data) {
     this.userId = data['userId'];
@@ -28,11 +28,11 @@ class UserCount {
 }
 
 class ProjectCount {
-  String projectId;
-  int photos, videos;
+  String? projectId;
+  int photos = 0, videos = 0;
 
   ProjectCount(
-      {@required this.projectId, @required this.videos, @required this.photos});
+      {required this.projectId, required this.videos, required this.photos});
 
   ProjectCount.fromJson(Map data) {
     this.projectId = data['projectId'];

@@ -2,29 +2,29 @@ import 'package:flutter/material.dart';
 import 'package:monitorlibrary/data/position.dart';
 
 class Photo {
-  String url, thumbnailUrl, caption, created, photoId;
-  String userId, organizationId;
-  String userName;
-  Position projectPosition;
-  double distanceFromProjectPosition;
-  String projectId, projectName;
-  int height, width;
+  String? url, thumbnailUrl, caption, created, photoId;
+  String? userId, organizationId;
+  String? userName;
+  Position? projectPosition;
+  double? distanceFromProjectPosition;
+  String? projectId, projectName;
+  int? height, width;
 
   Photo(
-      {@required this.url,
-      @required this.caption,
-      @required this.created,
-      @required this.userId,
-      @required this.userName,
-      @required this.projectPosition,
-      @required this.distanceFromProjectPosition,
-      @required this.projectId,
-      @required this.thumbnailUrl,
-      @required this.photoId,
-      @required this.organizationId,
-      @required this.projectName,
-      @required this.height,
-      @required this.width});
+      {required this.url,
+      required this.caption,
+      required this.created,
+      required this.userId,
+      required this.userName,
+      required this.projectPosition,
+      required this.distanceFromProjectPosition,
+      required this.projectId,
+      required this.thumbnailUrl,
+      required this.photoId,
+      required this.organizationId,
+      required this.projectName,
+      required this.height,
+      required this.width});
 
   Photo.fromJson(Map data) {
     this.url = data['url'];
@@ -66,43 +66,43 @@ class Photo {
       'projectName': projectName,
       'thumbnailUrl': thumbnailUrl,
       'projectPosition':
-          projectPosition == null ? null : projectPosition.toJson()
+          projectPosition == null ? null : projectPosition!.toJson()
     };
     return map;
   }
 }
 
 class Video {
-  String url, caption, created, thumbnailUrl, videoId;
-  String userId, userName, organizationId;
-  Position projectPosition;
-  double distanceFromProjectPosition;
-  String projectId, projectName;
+  String? url, caption, created, thumbnailUrl, videoId;
+  String? userId, userName, organizationId;
+  Position? projectPosition;
+  double? distanceFromProjectPosition;
+  String? projectId, projectName;
 
   Video(
-      {@required
+      {required
           this.url,
       this.caption,
-      @required
+      required
           this.created,
-      @required
+      required
           this.userId,
-      @required
+      required
           this.userName,
-      @required
+      required
           this.projectPosition,
-      @required
+      required
           this.distanceFromProjectPosition,
-      @required
+      required
           this.projectId,
-      @required
+      required
           this.thumbnailUrl,
-      @required
+      required
           this.videoId,
-      @required
+      required
           this.organizationId,
-      @required
-          this.projectName}); // Video({@required this.url, this.userId, @required this.created});
+      required
+          this.projectName}); // Video({required this.url, this.userId, required this.created});
 
   Video.fromJson(Map data) {
     this.url = data['url'];
@@ -134,37 +134,37 @@ class Video {
       'projectId': projectId,
       'projectName': projectName,
       'projectPosition':
-          projectPosition == null ? null : projectPosition.toJson()
+          projectPosition == null ? null : projectPosition!.toJson()
     };
     return map;
   }
 }
 
 class Condition {
-  String url, caption, created;
-  String userId, userName;
-  Position projectPosition;
-  int rating;
-  String projectId, projectName;
+  String? url, caption, created;
+  String? userId, userName;
+  Position? projectPosition;
+  int? rating;
+  String? projectId, projectName;
 
   Condition(
-      {@required
+      {required
           this.url,
       this.caption,
-      @required
+      required
           this.created,
-      @required
+      required
           this.userId,
-      @required
+      required
           this.userName,
-      @required
+      required
           this.projectPosition,
-      @required
+      required
           this.rating,
-      @required
+      required
           this.projectId,
-      @required
-          this.projectName}); // Video({@required this.url, this.userId, @required this.created});
+      required
+          this.projectName}); // Video({required this.url, this.userId, required this.created});
 
   Condition.fromJson(Map data) {
     this.url = data['url'];
@@ -191,7 +191,7 @@ class Condition {
       'projectId': projectId,
       'projectName': projectName,
       'projectPosition':
-          projectPosition == null ? null : projectPosition.toJson()
+          projectPosition == null ? null : projectPosition!.toJson()
     };
     return map;
   }

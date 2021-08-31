@@ -20,9 +20,9 @@ class CommunityList extends StatefulWidget {
 }
 
 class _CommunityListState extends State<CommunityList> {
-  Country country;
-  List<Community> list = List();
-  List<Country> countries = List();
+  Country? country;
+  List<Community> list = [];
+  List<Country> countries = [];
   GlobalKey<ScaffoldState> _key = GlobalKey();
   bool isBusy = false;
 
@@ -45,7 +45,7 @@ class _CommunityListState extends State<CommunityList> {
     }
     if (country != null) {
       try {
-        await adminBloc.findCommunitiesByCountry(country.countryId);
+        await adminBloc.findCommunitiesByCountry(country!.countryId!);
       } catch (e) {
         pp('👿 error getting community list ... 👿👿👿👿 does fucking the snackBar show?');
         AppSnackbar.showErrorSnackbar(
@@ -140,7 +140,7 @@ class _CommunityListState extends State<CommunityList> {
                                     color: getRandomColor(),
                                   ),
                                   title: Text(
-                                    sett.name,
+                                    sett.name!,
                                     style: Styles.blackBoldSmall,
                                   ),
                                 )

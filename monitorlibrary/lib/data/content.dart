@@ -2,13 +2,13 @@ import 'package:meta/meta.dart';
 import 'package:monitorlibrary/data/position.dart';
 
 class Content {
-  String url;
-  String userId, created;
-  Position position;
+  String? url;
+  String? userId, created;
+  Position? position;
   Content(
-      {@required this.url,
-      @required this.userId,
-      @required this.position,
+      {required this.url,
+      required this.userId,
+      required this.position,
       this.created});
 
   Content.fromJson(Map data) {
@@ -23,7 +23,7 @@ class Content {
   Map<String, dynamic> toJson() {
     Map pos = Map();
     if (position != null) {
-      pos = position.toJson();
+      pos = position!.toJson();
     }
     Map<String, dynamic> map = {
       'userId': userId,

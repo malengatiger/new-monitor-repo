@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart' as dot;
 import 'package:monitorlibrary/auth/app_auth.dart';
 import 'package:monitorlibrary/functions.dart';
 import 'package:monitorlibrary/snack.dart';
@@ -127,7 +127,7 @@ class _SignInState extends State<SignIn> implements SnackBarListener {
   }
 
   void _checkStatus() async {
-    var status = env['status'];
+    var status = dot.dotenv.env['status'];
     pp('🥦🥦 Checking status ..... 🥦🥦 $status 🌸 🌸 🌸');
     if (status == 'dev') {
       emailCntr.text = 'monitor.yue@monitor.com';

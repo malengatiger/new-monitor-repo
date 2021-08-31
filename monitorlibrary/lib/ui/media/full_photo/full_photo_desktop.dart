@@ -14,7 +14,7 @@ class FullPhotoDesktop extends StatefulWidget {
 
 class _FullPhotoDesktopState extends State<FullPhotoDesktop>
     with SingleTickerProviderStateMixin {
-  AnimationController _controller;
+  late AnimationController _controller;
 
   @override
   void initState() {

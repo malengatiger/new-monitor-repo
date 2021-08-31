@@ -11,7 +11,6 @@ import 'package:monitorlibrary/ui/media/full_photo/full_photo_main.dart';
 import 'package:monitorlibrary/ui/media/list/media_grid.dart';
 import 'package:monitorlibrary/ui/media/video/video_main.dart';
 import 'package:monitorlibrary/ui/project_monitor/project_monitor_main.dart';
-import 'package:monitorlibrary/users/special_snack.dart';
 import 'package:page_transition/page_transition.dart';
 
 import '../../../functions.dart';
@@ -28,13 +27,13 @@ class MediaListMobile extends StatefulWidget {
 
 class _MediaListMobileState extends State<MediaListMobile>
     with SingleTickerProviderStateMixin
-    implements SpecialSnackListener, MediaGridListener {
-  AnimationController _controller;
-  StreamSubscription<List<Photo>> photoStreamSubscription;
-  StreamSubscription<List<Video>> videoStreamSubscription;
+    implements MediaGridListener {
+  late AnimationController _controller;
+  StreamSubscription<List<Photo>>? photoStreamSubscription;
+  StreamSubscription<List<Video>>? videoStreamSubscription;
   var _photos = <Photo>[];
   var _videos = <Video>[];
-  User user;
+  User? user;
 
   @override
   void initState() {
@@ -76,7 +75,7 @@ class _MediaListMobileState extends State<MediaListMobile>
     });
     try {
       await monitorBloc.refreshProjectData(
-          projectId: widget.project.projectId, forceRefresh: forceRefresh);
+          projectId: widget.project.projectId!, forceRefresh: forceRefresh);
       _processMedia();
     } catch (e) {
       print(e);
@@ -92,29 +91,29 @@ class _MediaListMobileState extends State<MediaListMobile>
   @override
   void dispose() {
     _controller.dispose();
-    photoStreamSubscription.cancel();
-    videoStreamSubscription.cancel();
+    photoStreamSubscription!.cancel();
+    videoStreamSubscription!.cancel();
     super.dispose();
   }
 
   void _processMedia() {
     suitcases.clear();
     _photos.forEach((element) {
-      var sc = MediaBag(photo: element, date: element.created);
+      var sc = MediaBag(photo: element, date: element.created!);
       suitcases.add(sc);
     });
     _videos.forEach((element) {
-      var sc = MediaBag(video: element, date: element.created);
+      var sc = MediaBag(video: element, date: element.created!);
       suitcases.add(sc);
     });
     if (suitcases.isNotEmpty) {
-      suitcases.sort((a, b) => b.date.compareTo(a.date));
-      latest = getFormattedDateShortest(suitcases.first.date, context);
-      earliest = getFormattedDateShortest(suitcases.last.date, context);
+      suitcases.sort((a, b) => b.date!.compareTo(a.date!));
+      latest = getFormattedDateShortest(suitcases.first.date!, context);
+      earliest = getFormattedDateShortest(suitcases.last.date!, context);
     }
   }
 
-  String latest, earliest;
+  String? latest, earliest;
 
   @override
   Widget build(BuildContext context) {
@@ -148,7 +147,7 @@ class _MediaListMobileState extends State<MediaListMobile>
               child: Column(
                 children: [
                   Text(
-                    widget.project == null ? '' : widget.project.name,
+                    widget.project.name == null ? '' : widget.project.name!,
                     style: Styles.whiteBoldSmall,
                   ),
                   SizedBox(
@@ -275,23 +274,23 @@ class _MediaListMobileState extends State<MediaListMobile>
   @override
   void onMediaSelected(MediaBag suitcase) {
     if (suitcase.video != null) {
-      pp('MediaListMobile: 🦠 🦠 🦠 _onMediaTapped: Play video from 🦠 ${suitcase.video.url} 🦠');
+      pp('MediaListMobile: 🦠 🦠 🦠 _onMediaTapped: Play video from 🦠 ${suitcase.video!.url} 🦠');
       Navigator.push(
           context,
           PageTransition(
               type: PageTransitionType.scale,
               alignment: Alignment.bottomRight,
               duration: Duration(seconds: 1),
-              child: VideoMain(suitcase.video)));
+              child: VideoMain(suitcase.video!)));
     } else {
-      pp('MediaListMobile: 🦠 🦠 🦠 _onMediaTapped: show full image from 🍎 ${suitcase.photo.url} 🍎');
+      pp('MediaListMobile: 🦠 🦠 🦠 _onMediaTapped: show full image from 🍎 ${suitcase.photo!.url} 🍎');
       Navigator.push(
           context,
           PageTransition(
               type: PageTransitionType.scale,
               alignment: Alignment.bottomRight,
               duration: Duration(seconds: 1),
-              child: FullPhotoMain(suitcase.photo, widget.project)));
+              child: FullPhotoMain(suitcase.photo!, widget.project)));
     }
   }
 
@@ -307,14 +306,14 @@ class _MediaListMobileState extends State<MediaListMobile>
 
   @override
   onClose() {
-    ScaffoldMessenger.of(_key.currentState.context).removeCurrentSnackBar();
+    ScaffoldMessenger.of(_key.currentState!.context).removeCurrentSnackBar();
   }
 }
 
 class MediaBag {
-  Photo photo;
-  Video video;
-  String date;
+  Photo? photo;
+  Video? video;
+  String? date;
 
-  MediaBag({this.photo, this.video, this.date});
+  MediaBag({this.photo, this.video, required this.date});
 }

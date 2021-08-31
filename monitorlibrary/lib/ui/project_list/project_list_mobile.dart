@@ -15,7 +15,6 @@ import 'package:monitorlibrary/ui/media/list/media_list_main.dart';
 import 'package:monitorlibrary/ui/project_edit/project_edit_main.dart';
 import 'package:monitorlibrary/ui/project_location/project_location_main.dart';
 import 'package:monitorlibrary/ui/project_monitor/project_monitor_main.dart';
-import 'package:monitorlibrary/users/special_snack.dart';
 import 'package:page_transition/page_transition.dart';
 
 import '../../snack.dart';
@@ -30,11 +29,10 @@ class ProjectListMobile extends StatefulWidget {
 }
 
 class _ProjectListMobileState extends State<ProjectListMobile>
-    with SingleTickerProviderStateMixin
-    implements SpecialSnackListener {
-  AnimationController _controller;
-  var projects = List<Project>();
-  mon.User user;
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  var projects = <Project>[];
+  mon.User? user;
   bool isBusy = false;
   bool isProjectsByLocation = false;
   var userTypeLabel = 'Unknown User Type';
@@ -78,7 +76,7 @@ class _ProjectListMobileState extends State<ProjectListMobile>
 
   void _setUserType() {
     setState(() {
-      switch (user.userType) {
+      switch (user!.userType) {
         case FIELD_MONITOR:
           userTypeLabel = 'Field Monitor';
           break;
@@ -110,7 +108,7 @@ class _ProjectListMobileState extends State<ProjectListMobile>
             radiusInKM: sliderValue, checkUserOrg: true);
       } else {
         projects = await monitorBloc.getOrganizationProjects(
-            organizationId: user.organizationId, forceRefresh: forceRefresh);
+            organizationId: user!.organizationId!, forceRefresh: forceRefresh);
       }
     } catch (e) {
       print(e);
@@ -124,10 +122,10 @@ class _ProjectListMobileState extends State<ProjectListMobile>
     }
   }
 
-  Project _currentProject;
+  Project? _currentProject;
   bool openProjectActions = false;
   void _navigateToDetail(Project p) {
-    if (user.userType == FIELD_MONITOR) {
+    if (user!.userType == FIELD_MONITOR) {
       Navigator.push(
           context,
           PageTransition(
@@ -136,7 +134,7 @@ class _ProjectListMobileState extends State<ProjectListMobile>
               duration: Duration(milliseconds: 1500),
               child: ProjectMonitorMain(p)));
     }
-    if (user.userType == ORG_ADMINISTRATOR) {
+    if (user!.userType! == ORG_ADMINISTRATOR) {
       Navigator.push(
           context,
           PageTransition(
@@ -177,7 +175,7 @@ class _ProjectListMobileState extends State<ProjectListMobile>
               alignment: Alignment.topLeft,
               duration: Duration(milliseconds: 1500),
               child: ProjectMapMain(
-                p,
+                project: p, photo: null,
               )));
     }
   }
@@ -206,7 +204,7 @@ class _ProjectListMobileState extends State<ProjectListMobile>
             _navigateToMedia(p);
           }),
     );
-    if (user.userType == ORG_ADMINISTRATOR) {
+    if (user!.userType == ORG_ADMINISTRATOR) {
       menuItems.add(FocusedMenuItem(
           title: Text('Add Project Location'),
           trailingIcon: Icon(
@@ -217,7 +215,7 @@ class _ProjectListMobileState extends State<ProjectListMobile>
             _navigateToProjectLocation(p);
           }));
     }
-    if (user.userType == ORG_ADMINISTRATOR) {
+    if (user!.userType == ORG_ADMINISTRATOR) {
       menuItems.add(FocusedMenuItem(
           title: Text('Edit Project'),
           trailingIcon: Icon(
@@ -260,12 +258,12 @@ class _ProjectListMobileState extends State<ProjectListMobile>
         IconButton(
           icon: Icon(Icons.map),
           onPressed: () {
-            _navigateToOrgMap(null);
+           //_navigateToOrgMap();
           },
         ),
       );
     }
-    if (user.userType == ORG_ADMINISTRATOR) {
+    if (user!.userType == ORG_ADMINISTRATOR) {
       list.add(
         IconButton(
           icon: Icon(
@@ -273,7 +271,7 @@ class _ProjectListMobileState extends State<ProjectListMobile>
             size: 20,
           ),
           onPressed: () {
-            _navigateToDetail(null);
+            //_navigateToDetail(null);
           },
         ),
       );
@@ -299,7 +297,7 @@ class _ProjectListMobileState extends State<ProjectListMobile>
           stream: monitorBloc.projectStream,
           builder: (context, snapshot) {
             if (snapshot.hasData) {
-              projects = snapshot.data;
+              projects = snapshot.data!;
             }
             return Scaffold(
                 key: _key,
@@ -313,14 +311,14 @@ class _ProjectListMobileState extends State<ProjectListMobile>
                     child: Column(
                       children: [
                         Text(
-                          user == null ? 'Unknown User' : user.organizationName,
+                          user == null ? 'Unknown User' : user!.organizationName!,
                           style: Styles.blackBoldSmall,
                         ),
                         SizedBox(
                           height: 24,
                         ),
                         Text(
-                          user == null ? '' : '${user.name}',
+                          user == null ? '' : '${user!.name}',
                           style: Styles.whiteSmall,
                         ),
                         SizedBox(
@@ -490,7 +488,7 @@ class _ProjectListMobileState extends State<ProjectListMobile>
                                                     ),
                                                     Flexible(
                                                       child: Text(
-                                                        selectedProject.name,
+                                                        selectedProject.name!,
                                                         style: Styles
                                                             .blackBoldSmall,
                                                       ),
@@ -525,6 +523,6 @@ class _ProjectListMobileState extends State<ProjectListMobile>
 
   @override
   onClose() {
-    ScaffoldMessenger.of(_key.currentState.context).removeCurrentSnackBar();
+    ScaffoldMessenger.of(_key.currentState!.context).removeCurrentSnackBar();
   }
 }

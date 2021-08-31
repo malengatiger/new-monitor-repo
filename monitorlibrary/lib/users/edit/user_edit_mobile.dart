@@ -9,7 +9,7 @@ import 'package:monitorlibrary/functions.dart';
 import 'package:monitorlibrary/snack.dart';
 
 class UserEditMobile extends StatefulWidget {
-  final ar.User user;
+  final ar.User? user;
   const UserEditMobile(this.user);
 
   @override
@@ -18,12 +18,12 @@ class UserEditMobile extends StatefulWidget {
 
 class _UserEditMobileState extends State<UserEditMobile>
     with SingleTickerProviderStateMixin {
-  AnimationController _controller;
+  late AnimationController _controller;
   var nameController = TextEditingController();
   var emailController = TextEditingController();
   var passwordController = TextEditingController();
   var cellphoneController = TextEditingController();
-  ar.User admin;
+  ar.User? admin;
   final _formKey = GlobalKey<FormState>();
   var _key = GlobalKey<ScaffoldState>();
   var isBusy = false;
@@ -43,9 +43,9 @@ class _UserEditMobileState extends State<UserEditMobile>
 
   void _setup() {
     if (widget.user != null) {
-      nameController.text = widget.user.name;
-      emailController.text = widget.user.email;
-      cellphoneController.text = widget.user.cellphone;
+      nameController.text = widget.user!.name!;
+      emailController.text = widget.user!.email!;
+      cellphoneController.text = widget.user!.cellphone!;
       _setTypeRadio();
     }
   }
@@ -57,7 +57,7 @@ class _UserEditMobileState extends State<UserEditMobile>
   }
 
   void _submit() async {
-    if (_formKey.currentState.validate()) {
+    if (_formKey.currentState!.validate()) {
       setState(() {
         isBusy = true;
       });
@@ -67,8 +67,8 @@ class _UserEditMobileState extends State<UserEditMobile>
               name: nameController.text,
               email: emailController.text,
               cellphone: cellphoneController.text,
-              organizationId: admin.organizationId,
-              organizationName: admin.organizationName,
+              organizationId: admin!.organizationId!,
+              organizationName: admin!.organizationName,
               userType: type,
               created: DateTime.now().toIso8601String(),
               fcmRegistration: 'tbd',
@@ -82,23 +82,23 @@ class _UserEditMobileState extends State<UserEditMobile>
             );
 
             var list = await monitorBloc.getOrganizationUsers(
-                organizationId: user.organizationId, forceRefresh: true);
+                organizationId: user.organizationId!, forceRefresh: true);
             Navigator.pop(context, list);
           } catch (e) {
             AppSnackbar.showErrorSnackbar(
                 scaffoldKey: _key, message: 'User create failed');
           }
         } else {
-          widget.user.name = nameController.text;
-          widget.user.email = emailController.text;
-          widget.user.cellphone = cellphoneController.text;
-          widget.user.userType = type;
-          pp('😡 😡 😡 _submit existing user for update, soon! 🌸 ......... ${widget.user.toJson()}');
+          widget.user!.name = nameController.text;
+          widget.user!.email = emailController.text;
+          widget.user!.cellphone = cellphoneController.text;
+          widget.user!.userType = type;
+          pp('😡 😡 😡 _submit existing user for update, soon! 🌸 ......... ${widget.user!.toJson()}');
 
           try {
-            await adminBloc.updateUser(widget.user);
+            await adminBloc.updateUser(widget.user!);
             var list = await monitorBloc.getOrganizationUsers(
-                organizationId: widget.user.organizationId);
+                organizationId: widget.user!.organizationId!, forceRefresh: true);
             Navigator.pop(context, list);
           } catch (e) {
             AppSnackbar.showErrorSnackbar(
@@ -119,15 +119,15 @@ class _UserEditMobileState extends State<UserEditMobile>
 
   void _setTypeRadio() {
     if (widget.user != null) {
-      if (widget.user.userType == FIELD_MONITOR) {
+      if (widget.user!.userType == FIELD_MONITOR) {
         type = FIELD_MONITOR;
         userType = 0;
       }
-      if (widget.user.userType == ORG_ADMINISTRATOR) {
+      if (widget.user!.userType == ORG_ADMINISTRATOR) {
         type = ORG_ADMINISTRATOR;
         userType = 1;
       }
-      if (widget.user.userType == ORG_EXECUTIVE) {
+      if (widget.user!.userType == ORG_EXECUTIVE) {
         type = ORG_EXECUTIVE;
         userType = 2;
       }
@@ -157,7 +157,7 @@ class _UserEditMobileState extends State<UserEditMobile>
                         height: 8,
                       ),
                 Text(
-                  admin == null ? '' : admin.organizationName,
+                  admin == null ? '' : admin!.organizationName!,
                   style: Styles.whiteSmall,
                 ),
                 SizedBox(
@@ -190,7 +190,7 @@ class _UserEditMobileState extends State<UserEditMobile>
                             labelText: 'Name',
                             hintText: 'Enter Full Name'),
                         validator: (value) {
-                          if (value.isEmpty) {
+                          if (value!.isEmpty) {
                             return 'Please enter full name';
                           }
                           return null;
@@ -210,7 +210,7 @@ class _UserEditMobileState extends State<UserEditMobile>
                             labelText: 'Email Address',
                             hintText: 'Enter Email Address'),
                         validator: (value) {
-                          if (value.isEmpty) {
+                          if (value!.isEmpty) {
                             return 'Please enter email address';
                           }
                           return null;
@@ -230,7 +230,7 @@ class _UserEditMobileState extends State<UserEditMobile>
                             labelText: 'Cellphone',
                             hintText: 'Cellphone'),
                         validator: (value) {
-                          if (value.isEmpty) {
+                          if (value!.isEmpty) {
                             return 'Please enter cellphone number';
                           }
                           return null;
@@ -252,7 +252,7 @@ class _UserEditMobileState extends State<UserEditMobile>
                                   labelText: 'Password',
                                   hintText: 'Password'),
                               validator: (value) {
-                                if (value.isEmpty) {
+                                if (value!.isEmpty) {
                                   return 'Please enter password';
                                 }
                                 return null;
@@ -295,7 +295,7 @@ class _UserEditMobileState extends State<UserEditMobile>
                         ),
                       ),
                       Text(
-                        type == null ? '' : type,
+                        type == null ? '' : type!,
                         style: Styles.greyLabelSmall,
                       ),
                       SizedBox(
@@ -335,8 +335,8 @@ class _UserEditMobileState extends State<UserEditMobile>
     );
   }
 
-  String type;
-  void _handleRadioValueChange(Object value) {
+  String? type;
+  void _handleRadioValueChange(Object? value) {
     pp('🌸 🌸 🌸 🌸 🌸 _handleRadioValueChange: 🌸 $value');
     setState(() {
       switch (value) {

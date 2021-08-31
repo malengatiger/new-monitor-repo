@@ -19,7 +19,7 @@ class FullPhotoMobile extends StatefulWidget {
 
 class _FullPhotoMobileState extends State<FullPhotoMobile>
     with SingleTickerProviderStateMixin {
-  AnimationController _controller;
+  late AnimationController _controller;
 
   @override
   void initState() {
@@ -47,7 +47,7 @@ class _FullPhotoMobileState extends State<FullPhotoMobile>
             child: Column(
               children: [
                 Text(
-                  '${getFormattedDateLongWithTime(widget.photo.created, context)}',
+                  '${getFormattedDateLongWithTime(widget.photo!.created!, context)}',
                   style: Styles.blackBoldSmall,
                 ),
                 SizedBox(
@@ -61,7 +61,7 @@ class _FullPhotoMobileState extends State<FullPhotoMobile>
         body: Stack(
           children: [
             CachedNetworkImage(
-              imageUrl: widget.photo.url,
+              imageUrl: widget.photo!.url!,
               fit: BoxFit.fitHeight,
               progressIndicatorBuilder: (context, url, downloadProgress) =>
                   Center(
@@ -87,7 +87,7 @@ class _FullPhotoMobileState extends State<FullPhotoMobile>
                         width: 8,
                       ),
                       Text(
-                        widget.photo.distanceFromProjectPosition
+                        widget.photo.distanceFromProjectPosition!
                             .toStringAsFixed(1),
                         style: Styles.blackBoldMedium,
                       ),
@@ -124,7 +124,7 @@ class _FullPhotoMobileState extends State<FullPhotoMobile>
                                 alignment: Alignment.bottomRight,
                                 duration: Duration(seconds: 1),
                                 child: ProjectMapMain(
-                                  widget.project,
+                                  project: widget.project,
                                   photo: widget.photo,
                                 )));
                       },

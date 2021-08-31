@@ -9,7 +9,5 @@ import java.util.List;
 
 public interface CityRepository extends PagingAndSortingRepository<City, String> {
 
-//    List<City> findByLocation(double latitude, double longitude, double radiusInKM);
-// { 'location' : { '$near' : [point.x, point.y], '$maxDistance' : distance}}
     List<City> findByPositionNear(Point location, Distance distance);
 }

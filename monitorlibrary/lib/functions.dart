@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 
-List<String> logs = List();
+List<String> logs = [];
 bool isBusy = false;
-List<Color> _colors = List();
+List<Color> _colors = [];
 Random _rand = Random(new DateTime.now().millisecondsSinceEpoch);
 Color getRandomColor() {
   _colors.clear();
@@ -613,7 +613,7 @@ int getIntDate(String date, BuildContext context) {
   }
 }
 
-String getFormattedDateHourMinute({DateTime date, BuildContext context}) {
+String getFormattedDateHourMinute({required DateTime date, required BuildContext context}) {
   initializeDateFormatting();
 
   try {
@@ -737,7 +737,7 @@ String getFormattedDateHourMinSec(String date) {
   }
 }
 
-String getFormattedDateHourMinuteSecond() {
+String? getFormattedDateHourMinuteSecond() {
   var format = new DateFormat.Hms();
   try {
     DateTime d = DateTime.now();
@@ -748,7 +748,7 @@ String getFormattedDateHourMinuteSecond() {
 
 String getFormattedNumber(int number, BuildContext context) {
   Locale myLocale = Localizations.localeOf(context);
-  var val = myLocale.languageCode + '_' + myLocale.countryCode;
+  var val = myLocale.languageCode + '_' + myLocale.countryCode!;
   final oCcy = new NumberFormat("###,###,###,###,###", val);
 
   return oCcy.format(number);
@@ -756,7 +756,7 @@ String getFormattedNumber(int number, BuildContext context) {
 
 String getFormattedDouble(double number, BuildContext context) {
   Locale myLocale = Localizations.localeOf(context);
-  var val = myLocale.languageCode + '_' + myLocale.countryCode;
+  var val = myLocale.languageCode + '_' + myLocale.countryCode!;
   final oCcy = new NumberFormat("###,###,###,###,##0.0", val);
 
   return oCcy.format(number);
@@ -765,7 +765,7 @@ String getFormattedDouble(double number, BuildContext context) {
 String getFormattedAmount(String amount, BuildContext context) {
   assert(amount != null);
   Locale myLocale = Localizations.localeOf(context);
-  var val = myLocale.languageCode + '_' + myLocale.countryCode;
+  var val = myLocale.languageCode + '_' + myLocale.countryCode!;
   //pp('getFormattedAmount ----------- locale is  $val');
   final oCcy = new NumberFormat("#,##0.00", val);
   try {

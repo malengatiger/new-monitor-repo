@@ -19,7 +19,7 @@ class ProjectList extends StatefulWidget {
 }
 
 class _ProjectListState extends State<ProjectList> {
-  User user;
+  User? user;
   bool isBusy = false;
   List<Project> projects = [];
   GlobalKey<ScaffoldState> _key = GlobalKey();
@@ -34,7 +34,7 @@ class _ProjectListState extends State<ProjectList> {
     setState(() {
       isBusy = true;
     });
-    projects = await DataAPI.findProjectsByOrganization(user.organizationId);
+    projects = await DataAPI.findProjectsByOrganization(user!.organizationId!);
     setState(() {
       isBusy = false;
     });
@@ -61,7 +61,7 @@ class _ProjectListState extends State<ProjectList> {
                     Expanded(
                       child: Container(
                         child: Text(
-                          user == null ? 'Organization' : user.organizationName,
+                          user == null ? 'Organization' : user!.organizationName!,
                           style: Styles.whiteBoldSmall,
                           overflow: TextOverflow.clip,
                         ),
@@ -133,7 +133,7 @@ class _ProjectListState extends State<ProjectList> {
                                 ),
                                 Expanded(
                                     child: Container(
-                                        child: Text(p.name,
+                                        child: Text(p.name!,
                                             style: Styles.blackBoldMedium,
                                             overflow: TextOverflow.clip))),
                               ],
@@ -145,7 +145,7 @@ class _ProjectListState extends State<ProjectList> {
                                 ),
                                 Expanded(
                                     child: Container(
-                                        child: Text(p.description,
+                                        child: Text(p.description!,
                                             style: Styles.blackSmall,
                                             overflow: TextOverflow.clip))),
                               ],

@@ -8,7 +8,7 @@ import 'package:meta/meta.dart';
 import '../functions.dart';
 
 class OzowPaymentRequest {
-  String siteCode,
+  String? siteCode,
       countryCode,
       currencyCode,
       transactionReference,
@@ -19,23 +19,23 @@ class OzowPaymentRequest {
       successUrl,
       notifyUrl,
       hashCheck;
-  bool isTest;
-  double amount;
+  bool? isTest;
+  double? amount;
 
   OzowPaymentRequest({
-    @required this.siteCode,
-    @required this.countryCode,
-    @required this.transactionReference,
-    @required this.currencyCode,
-    @required this.bankReference,
-    @required this.errorUrl,
-    @required this.isTest,
-    @required this.hashCheck,
-    @required this.notifyUrl,
-    @required this.successUrl,
-    @required this.amount,
-    @required this.cancelUrl,
-    @required this.customer,
+    required this.siteCode,
+    required this.countryCode,
+    required this.transactionReference,
+    required this.currencyCode,
+    required this.bankReference,
+    required this.errorUrl,
+    required this.isTest,
+    required this.hashCheck,
+    required this.notifyUrl,
+    required this.successUrl,
+    required this.amount,
+    required this.cancelUrl,
+    required this.customer,
   });
 
   OzowPaymentRequest.fromJson(Map data) {
@@ -76,7 +76,7 @@ class OzowPaymentRequest {
   }
 
   static String generateOzowHash(OzowPaymentRequest request) {
-    String privateKey = DotEnv.env['ozowPrivateKey'];
+    String? privateKey = DotEnv.dotenv.env['ozowPrivateKey'];
     StringBuffer sb = StringBuffer();
     sb.write(request.siteCode);
     sb.write(request.countryCode);
@@ -106,7 +106,7 @@ class OzowPaymentRequest {
     'Accept': 'application/json',
   };
   static Future postPaymentRequest(OzowPaymentRequest request) async {
-    var mUrl = DotEnv.env['ozowUrl'];
+    var mUrl = DotEnv.dotenv.env['ozowUrl'];
     pp('\n\n🏈 🏈 🏈 🏈 🏈 OzowPaymentRequest Post:  🔆 🔆 🔆 🔆 calling : 💙  $mUrl  💙 ');
 
     var mBag = json.encode(request);
@@ -116,7 +116,7 @@ class OzowPaymentRequest {
     var client = new http.Client();
     var resp = await client
         .post(
-          Uri.parse(mUrl),
+          Uri.parse(mUrl!),
           body: mBag,
           headers: headers,
         )

@@ -12,8 +12,8 @@ class GenericMessage extends StatefulWidget {
   final User user;
 
   GenericMessage({
-    this.project,
-    this.user,
+    required this.project,
+    required this.user,
   });
 
   @override
@@ -32,11 +32,11 @@ class _GenericMessageState extends State<GenericMessage> {
   }
 
   void _sendMessage() async {
-    if (frequency == null) {
-      AppSnackbar.showErrorSnackbar(
-          scaffoldKey: widget.key, message: 'Please select frequency');
-      return;
-    }
+    // if (frequency == null) {
+    //   AppSnackbar.showErrorSnackbar(
+    //       scaffoldKey: widget.key!, message: 'Please select frequency');
+    //   return;
+    // }
 
     setState(() {
       isBusy = true;
@@ -58,8 +58,8 @@ class _GenericMessageState extends State<GenericMessage> {
         var res = await DataAPI.sendMessage(msg);
         pp('GenericMessage:  🏓  🏓  🏓 Response from server:  🏓 ${res.toJson()}  🏓');
       } catch (e) {
-        AppSnackbar.showErrorSnackbar(
-            scaffoldKey: widget.key, message: 'Message Send failed : $e');
+        // AppSnackbar.showErrorSnackbar(
+        //     scaffoldKey: widget.key, message: 'Message Send failed : $e');
       }
       setState(() {
         isBusy = false;
@@ -132,7 +132,7 @@ class _GenericMessageState extends State<GenericMessage> {
     );
   }
 
-  String message;
+  String? message;
   void _onMessageChanged(String value) {
     setState(() {
       message = value;

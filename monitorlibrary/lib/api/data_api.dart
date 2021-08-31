@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart' as dot;
 import 'package:http/http.dart' as http;
 import 'package:monitorlibrary/api/local_db_api.dart';
 import 'package:monitorlibrary/auth/app_auth.dart';
@@ -25,38 +25,38 @@ class DataAPI {
     'Accept': 'application/json',
   };
 
-  static String activeURL;
+  static String? activeURL;
   static bool isDevelopmentStatus = true;
-  static String url;
+  static String? url;
 
-  static Future<String> getUrl() async {
+  static Future<String?> getUrl() async {
     if (url == null) {
       pp('🐤🐤🐤🐤 Getting url via .env settings: ${url == null ? 'NO URL YET' : url}');
-      String status = env['status'];
+      String? status = dot.dotenv.env['status'];
       pp('🐤🐤🐤🐤 DataAPI: getUrl: Status from .env: $status');
       if (status == 'dev') {
         isDevelopmentStatus = true;
-        url = env['devURL'];
+        url = dot.dotenv.env['devURL'];
         pp(' 🌎 🌎 🌎 DataAPI: Status of the app is  DEVELOPMENT 🌎 🌎 🌎 $url');
-        return url;
+        return url!;
       } else {
         isDevelopmentStatus = false;
-        url = env['prodURL'];
+        url = dot.dotenv.env['prodURL'];
         pp(' 🌎 🌎 🌎 DataAPI: Status of the app is PRODUCTION 🌎 🌎 🌎 $url');
-        return url;
+        return url!;
       }
     } else {
-      return url;
+      return url!;
     }
   }
 
   static Future<FieldMonitorSchedule> addFieldMonitorSchedule(
       FieldMonitorSchedule monitorSchedule) async {
-    String mURL = await getUrl();
+    String? mURL = await getUrl();
     Map bag = monitorSchedule.toJson();
     pp('DataAPI: ☕️ ☕️ ☕️ bag about to be sent to backend: check name: ☕️ $bag');
     try {
-      var result = await _callWebAPIPost(mURL + 'addFieldMonitorSchedule', bag);
+      var result = await _callWebAPIPost(mURL! + 'addFieldMonitorSchedule', bag);
       return FieldMonitorSchedule.fromJson(result);
     } catch (e) {
       pp(e);
@@ -66,11 +66,11 @@ class DataAPI {
 
   static Future<List<FieldMonitorSchedule>> getProjectFieldMonitorSchedules(
       String projectId) async {
-    String mURL = await getUrl();
+    String? mURL = await getUrl();
     List<FieldMonitorSchedule> mList = [];
     try {
       List result = await _sendHttpGET(
-          mURL + 'getProjectFieldMonitorSchedules?projectId=$projectId');
+          mURL! + 'getProjectFieldMonitorSchedules?projectId=$projectId');
       result.forEach((element) {
         mList.add(FieldMonitorSchedule.fromJson(element));
       });
@@ -84,11 +84,11 @@ class DataAPI {
 
   static Future<List<FieldMonitorSchedule>> getMonitorFieldMonitorSchedules(
       String userId) async {
-    String mURL = await getUrl();
+    String? mURL = await getUrl();
     List<FieldMonitorSchedule> mList = [];
     try {
       List result = await _sendHttpGET(
-          mURL + 'getMonitorFieldMonitorSchedules?userId=$userId');
+          mURL! + 'getMonitorFieldMonitorSchedules?userId=$userId');
       result.forEach((element) {
         mList.add(FieldMonitorSchedule.fromJson(element));
       });
@@ -102,11 +102,11 @@ class DataAPI {
 
   static Future<List<FieldMonitorSchedule>> getOrgFieldMonitorSchedules(
       String organizationId) async {
-    String mURL = await getUrl();
+    String? mURL = await getUrl();
     List<FieldMonitorSchedule> mList = [];
     try {
       List result = await _sendHttpGET(
-          mURL + 'getOrgFieldMonitorSchedules?organizationId=$organizationId');
+          mURL! + 'getOrgFieldMonitorSchedules?organizationId=$organizationId');
       result.forEach((element) {
         mList.add(FieldMonitorSchedule.fromJson(element));
       });
@@ -119,11 +119,11 @@ class DataAPI {
   }
 
   static Future<User> addUser(User user) async {
-    String mURL = await getUrl();
+    String? mURL = await getUrl();
     Map bag = user.toJson();
     pp('DataAPI: ☕️ ☕️ ☕️ bag about to be sent to backend: check name: ☕️ $bag');
     try {
-      var result = await _callWebAPIPost(mURL + 'addUser', bag);
+      var result = await _callWebAPIPost(mURL! + 'addUser', bag);
       return User.fromJson(result);
     } catch (e) {
       pp(e);
@@ -132,11 +132,11 @@ class DataAPI {
   }
 
   static Future<User> updateUser(User user) async {
-    String mURL = await getUrl();
+    String? mURL = await getUrl();
     Map bag = user.toJson();
     try {
-      var result = await _callWebAPIPost(mURL + 'updateUser', bag);
-      var users = findUsersByOrganization(user.organizationId);
+      var result = await _callWebAPIPost(mURL! + 'updateUser', bag);
+      var users = findUsersByOrganization(user.organizationId!);
       return User.fromJson(result);
     } catch (e) {
       pp(e);
@@ -145,10 +145,10 @@ class DataAPI {
   }
 
   static Future<ProjectCount> getProjectCount(String projectId) async {
-    String mURL = await getUrl();
+    String? mURL = await getUrl();
     try {
       var result =
-          await _sendHttpGET(mURL + 'getCountsByProject?projectId=$projectId');
+          await _sendHttpGET(mURL! + 'getCountsByProject?projectId=$projectId');
       var cnt = ProjectCount.fromJson(result);
       pp('🌿 🌿 🌿 Project count returned: 🌿 ${cnt.toJson()}');
       return cnt;
@@ -159,9 +159,9 @@ class DataAPI {
   }
 
   static Future<UserCount> getUserCount(String userId) async {
-    String mURL = await getUrl();
+    String? mURL = await getUrl();
     try {
-      var result = await _sendHttpGET(mURL + 'getCountsByUser?userId=$userId');
+      var result = await _sendHttpGET(mURL! + 'getCountsByUser?userId=$userId');
       var cnt = UserCount.fromJson(result);
       pp('🌿 🌿 🌿 User count returned: 🌿 ${cnt.toJson()}');
       return cnt;
@@ -172,12 +172,12 @@ class DataAPI {
   }
 
   static Future<Project> findProjectById(String projectId) async {
-    String mURL = await getUrl();
+    String? mURL = await getUrl();
     Map bag = {
       'projectId': projectId,
     };
     try {
-      var result = await _callWebAPIPost(mURL + 'findProjectById', bag);
+      var result = await _callWebAPIPost(mURL! + 'findProjectById', bag);
       return Project.fromJson(result);
     } catch (e) {
       pp(e);
@@ -187,13 +187,13 @@ class DataAPI {
 
   static Future<List<ProjectPosition>> findProjectPositionsById(
       String projectId) async {
-    String mURL = await getUrl();
+    String? mURL = await getUrl();
     Map bag = {
       'projectId': projectId,
     };
     try {
       var result =
-          await _sendHttpGET(mURL + 'getProjectPositions?projectId=$projectId');
+          await _sendHttpGET(mURL! + 'getProjectPositions?projectId=$projectId');
       List<ProjectPosition> list = [];
       result.forEach((m) {
         list.add(ProjectPosition.fromJson(m));
@@ -206,11 +206,11 @@ class DataAPI {
   }
 
   static Future<List<Photo>> findPhotosByProject(String projectId) async {
-    String mURL = await getUrl();
+    String? mURL = await getUrl();
 
     try {
       var result =
-          await _sendHttpGET(mURL + 'getProjectPhotos?projectId=$projectId');
+          await _sendHttpGET(mURL! + 'getProjectPhotos?projectId=$projectId');
       List<Photo> list = [];
       result.forEach((m) {
         list.add(Photo.fromJson(m));
@@ -223,11 +223,11 @@ class DataAPI {
   }
 
   static Future<List<Photo>> getUserProjectPhotos(String userId) async {
-    String mURL = await getUrl();
+    String? mURL = await getUrl();
 
     try {
       var result =
-          await _sendHttpGET(mURL + 'getUserProjectPhotos?userId=$userId');
+          await _sendHttpGET(mURL! + 'getUserProjectPhotos?userId=$userId');
       List<Photo> list = [];
       result.forEach((m) {
         list.add(Photo.fromJson(m));
@@ -240,11 +240,11 @@ class DataAPI {
   }
 
   static Future<List<Video>> getUserProjectVideos(String userId) async {
-    String mURL = await getUrl();
+    String? mURL = await getUrl();
 
     try {
       var result =
-          await _sendHttpGET(mURL + 'getUserProjectVideos?userId=$userId');
+          await _sendHttpGET(mURL! + 'getUserProjectVideos?userId=$userId');
       List<Video> list = [];
       result.forEach((m) {
         list.add(Video.fromJson(m));
@@ -257,11 +257,11 @@ class DataAPI {
   }
 
   static Future<List<Video>> findVideosById(String projectId) async {
-    String mURL = await getUrl();
+    String? mURL = await getUrl();
 
     try {
       var result =
-          await _sendHttpGET(mURL + 'getProjectVideos?projectId=$projectId');
+          await _sendHttpGET(mURL! + 'getProjectVideos?projectId=$projectId');
       List<Video> list = [];
       result.forEach((m) {
         list.add(Video.fromJson(m));
@@ -275,7 +275,7 @@ class DataAPI {
 
   static Future<List<User>> findUsersByOrganization(
       String organizationId) async {
-    String mURL = await getUrl();
+    String? mURL = await getUrl();
     var cmd = 'getOrganizationUsers?organizationId=$organizationId';
     var url = '$mURL$cmd';
     try {
@@ -295,7 +295,7 @@ class DataAPI {
   static Future<List<Project>> findProjectsByOrganization(
       String organizationId) async {
     pp('🍏 🍏 🍏 DataAPI: findProjectsByOrganization: 🍏 id: $organizationId');
-    String mURL = await getUrl();
+    String? mURL = await getUrl();
     var cmd = 'findProjectsByOrganization';
     var url = '$mURL$cmd?organizationId=$organizationId';
     try {
@@ -316,7 +316,7 @@ class DataAPI {
   static Future<List<Photo>> getOrganizationPhotos(
       String organizationId) async {
     pp('🍏 🍏 🍏 DataAPI: getOrganizationPhotos: 🍏 id: $organizationId');
-    String mURL = await getUrl();
+    String? mURL = await getUrl();
     var cmd = 'getOrganizationPhotos';
     var url = '$mURL$cmd?organizationId=$organizationId';
     try {
@@ -337,7 +337,7 @@ class DataAPI {
   static Future<List<Video>> getOrganizationVideos(
       String organizationId) async {
     pp('🍏 🍏 🍏 DataAPI: getOrganizationVideos: 🍏 id: $organizationId');
-    String mURL = await getUrl();
+    String? mURL = await getUrl();
     var cmd = 'getOrganizationVideos';
     var url = '$mURL$cmd?organizationId=$organizationId';
     try {
@@ -355,9 +355,9 @@ class DataAPI {
   }
 
   static Future<List<Project>> findProjectsByLocation(
-      {double latitude, double longitude, double radiusInKM}) async {
+      {required double latitude, required double longitude, required double radiusInKM}) async {
     pp('🍏 🍏 🍏 DataAPI: findProjectsByLocation: 🍏 radiusInKM: $radiusInKM');
-    String mURL = await getUrl();
+    String? mURL = await getUrl();
     var cmd = 'findProjectsByLocation';
     var url =
         '$mURL$cmd?latitude=$latitude&longitude=$longitude&radiusInKM=$radiusInKM';
@@ -375,9 +375,9 @@ class DataAPI {
   }
 
   static Future<List<City>> findCitiesByLocation(
-      {double latitude, double longitude, double radiusInKM}) async {
+      {required double latitude, required double longitude, required double radiusInKM}) async {
     pp('🍏 🍏 🍏 DataAPI: findCitiesByLocation: 🍏 radiusInKM: $radiusInKM');
-    String mURL = await getUrl();
+    String? mURL = await getUrl();
     var cmd = 'findCitiesByLocation';
     var url =
         '$mURL$cmd?latitude=$latitude&longitude=$longitude&radiusInKM=$radiusInKM';
@@ -398,7 +398,7 @@ class DataAPI {
   static Future<List<Questionnaire>> getQuestionnairesByOrganization(
       String organizationId) async {
     pp('🍏 🍏 🍏 DataAPI: getQuestionnairesByOrganization: 🍏 id: $organizationId');
-    String mURL = await getUrl();
+    String? mURL = await getUrl();
     var cmd = 'getQuestionnairesByOrganization?organizationId=$organizationId';
     var url = '$mURL$cmd';
     try {
@@ -415,10 +415,10 @@ class DataAPI {
   }
 
   static Future<Community> updateSettlement(Community settlement) async {
-    String mURL = await getUrl();
+    String? mURL = await getUrl();
     Map bag = settlement.toJson();
     try {
-      var result = await _callWebAPIPost(mURL + 'updateSettlement', bag);
+      var result = await _callWebAPIPost(mURL! + 'updateSettlement', bag);
       return Community.fromJson(result);
     } catch (e) {
       pp(e);
@@ -427,10 +427,10 @@ class DataAPI {
   }
 
   static Future<Community> addSettlement(Community settlement) async {
-    String mURL = await getUrl();
+    String? mURL = await getUrl();
     Map bag = settlement.toJson();
     try {
-      var result = await _callWebAPIPost(mURL + 'addSettlement', bag);
+      var result = await _callWebAPIPost(mURL! + 'addSettlement', bag);
       return Community.fromJson(result);
     } catch (e) {
       pp(e);
@@ -439,17 +439,17 @@ class DataAPI {
   }
 
   static Future addPointToPolygon(
-      {@required String settlementId,
-      @required double latitude,
-      @required double longitude}) async {
-    String mURL = await getUrl();
+      {required String settlementId,
+      required double latitude,
+      required double longitude}) async {
+    String? mURL = await getUrl();
     Map bag = {
       'settlementId': settlementId,
       'latitude': latitude,
       'longitude': longitude,
     };
     try {
-      var result = await _callWebAPIPost(mURL + 'addPointToPolygon', bag);
+      var result = await _callWebAPIPost(mURL! + 'addPointToPolygon', bag);
       return result;
     } catch (e) {
       pp(e);
@@ -458,14 +458,14 @@ class DataAPI {
   }
 
   static Future addQuestionnaireSection(
-      {@required String questionnaireId, @required Section section}) async {
-    String mURL = await getUrl();
+      {required String questionnaireId, required Section section}) async {
+    String? mURL = await getUrl();
     Map bag = {
       'questionnaireId': questionnaireId,
       'section': section.toJson(),
     };
     try {
-      var result = await _callWebAPIPost(mURL + 'addQuestionnaireSection', bag);
+      var result = await _callWebAPIPost(mURL! + 'addQuestionnaireSection', bag);
       return result;
     } catch (e) {
       pp(e);
@@ -475,7 +475,7 @@ class DataAPI {
 
   static Future<List<Community>> findCommunitiesByCountry(
       String countryId) async {
-    String mURL = await getUrl();
+    String? mURL = await getUrl();
 
     pp('🍏🍏🍏🍏 ..... findCommunitiesByCountry ');
     var cmd = 'findCommunitiesByCountry';
@@ -491,10 +491,10 @@ class DataAPI {
   }
 
   static Future<Project> addProject(Project project) async {
-    String mURL = await getUrl();
+    String? mURL = await getUrl();
     Map bag = project.toJson();
     try {
-      var result = await _callWebAPIPost(mURL + 'addProject', bag);
+      var result = await _callWebAPIPost(mURL! + 'addProject', bag);
       return Project.fromJson(result);
     } catch (e) {
       pp(e);
@@ -503,10 +503,10 @@ class DataAPI {
   }
 
   static Future<Project> updateProject(Project project) async {
-    String mURL = await getUrl();
+    String? mURL = await getUrl();
     Map bag = project.toJson();
     try {
-      var result = await _callWebAPIPost(mURL + 'updateProject', bag);
+      var result = await _callWebAPIPost(mURL! + 'updateProject', bag);
       return Project.fromJson(result);
     } catch (e) {
       pp(e);
@@ -515,14 +515,14 @@ class DataAPI {
   }
 
   static Future<Project> addSettlementToProject(
-      {String projectId, String settlementId}) async {
-    String mURL = await getUrl();
+      {required String projectId, required String settlementId}) async {
+    String? mURL = await getUrl();
     Map bag = {
       'projectId': projectId,
       'settlementId': settlementId,
     };
     try {
-      var result = await _callWebAPIPost(mURL + 'addSettlementToProject', bag);
+      var result = await _callWebAPIPost(mURL! + 'addSettlementToProject', bag);
       return Project.fromJson(result);
     } catch (e) {
       pp(e);
@@ -531,11 +531,11 @@ class DataAPI {
   }
 
   static Future<ProjectPosition> addProjectPosition(
-      {ProjectPosition position}) async {
-    String mURL = await getUrl();
+      {required ProjectPosition position}) async {
+    String? mURL = await getUrl();
     Map bag = position.toJson();
     try {
-      var result = await _callWebAPIPost(mURL + 'addProjectPosition', bag);
+      var result = await _callWebAPIPost(mURL! + 'addProjectPosition', bag);
       return ProjectPosition.fromJson(result);
     } catch (e) {
       pp(e);
@@ -544,9 +544,9 @@ class DataAPI {
   }
 
   static Future addPhoto(Photo photo) async {
-    String mURL = await getUrl();
+    String? mURL = await getUrl();
     try {
-      var result = await _callWebAPIPost(mURL + 'addPhoto', photo.toJson());
+      var result = await _callWebAPIPost(mURL! + 'addPhoto', photo.toJson());
       return result;
     } catch (e) {
       pp(e);
@@ -555,10 +555,10 @@ class DataAPI {
   }
 
   static Future addVideo(Video video) async {
-    String mURL = await getUrl();
+    String? mURL = await getUrl();
 
     try {
-      var result = await _callWebAPIPost(mURL + 'addVideo', video.toJson());
+      var result = await _callWebAPIPost(mURL! + 'addVideo', video.toJson());
       pp(result);
       return result;
     } catch (e) {
@@ -568,10 +568,10 @@ class DataAPI {
   }
 
   static Future addCondition(Condition condition) async {
-    String mURL = await getUrl();
+    String? mURL = await getUrl();
 
     try {
-      var result = await _callWebAPIPost(mURL + 'addVideo', condition.toJson());
+      var result = await _callWebAPIPost(mURL! + 'addVideo', condition.toJson());
       pp(result);
       return result;
     } catch (e) {
@@ -581,13 +581,13 @@ class DataAPI {
   }
 
   static Future<Community> addSettlementPhoto(
-      {String settlementId,
-      String url,
-      String comment,
-      double latitude,
+      {required String settlementId,
+        required String url,
+        required String comment,
+        required double latitude,
       longitude,
-      String userId}) async {
-    String mURL = await getUrl();
+        required String userId}) async {
+    String? mURL = await getUrl();
     Map bag = {
       'settlementId': settlementId,
       'url': url,
@@ -597,7 +597,7 @@ class DataAPI {
       'userId': userId,
     };
     try {
-      var result = await _callWebAPIPost(mURL + 'addSettlementPhoto', bag);
+      var result = await _callWebAPIPost(mURL! + 'addSettlementPhoto', bag);
       return Community.fromJson(result);
     } catch (e) {
       pp(e);
@@ -606,13 +606,13 @@ class DataAPI {
   }
 
   static Future<Project> addProjectVideo(
-      {String projectId,
-      String url,
-      String comment,
-      double latitude,
+      {required String projectId,
+        required String url,
+        required String comment,
+        required double latitude,
       longitude,
-      String userId}) async {
-    String mURL = await getUrl();
+        required String userId}) async {
+    String? mURL = await getUrl();
     Map bag = {
       'projectId': projectId,
       'url': url,
@@ -622,7 +622,7 @@ class DataAPI {
       'userId': userId
     };
     try {
-      var result = await _callWebAPIPost(mURL + 'addProjectVideo', bag);
+      var result = await _callWebAPIPost(mURL! + 'addProjectVideo', bag);
       return Project.fromJson(result);
     } catch (e) {
       pp(e);
@@ -631,13 +631,13 @@ class DataAPI {
   }
 
   static Future<Project> addProjectRating(
-      {String projectId,
-      String rating,
-      String comment,
-      double latitude,
+      {required String projectId,
+        required String rating,
+        required String comment,
+        required double latitude,
       longitude,
-      String userId}) async {
-    String mURL = await getUrl();
+        required String userId}) async {
+    String? mURL = await getUrl();
     Map bag = {
       'projectId': projectId,
       'rating': rating,
@@ -647,7 +647,7 @@ class DataAPI {
       'userId': userId
     };
     try {
-      var result = await _callWebAPIPost(mURL + 'addProjectRating', bag);
+      var result = await _callWebAPIPost(mURL! + 'addProjectRating', bag);
       return Project.fromJson(result);
     } catch (e) {
       pp(e);
@@ -657,12 +657,12 @@ class DataAPI {
 
   static Future<Questionnaire> addQuestionnaire(
       Questionnaire questionnaire) async {
-    String mURL = await getUrl();
+    String? mURL = await getUrl();
     Map bag = questionnaire.toJson();
     prettyPrint(bag,
         'DataAPI  💦 💦 💦 addQuestionnaire: 🔆🔆 Sending to web api ......');
     try {
-      var result = await _callWebAPIPost(mURL + 'addQuestionnaire', bag);
+      var result = await _callWebAPIPost(mURL! + 'addQuestionnaire', bag);
       return Questionnaire.fromJson(result);
     } catch (e) {
       pp(e);
@@ -671,10 +671,10 @@ class DataAPI {
   }
 
   static Future<List<Project>> findAllProjects(String organizationId) async {
-    String mURL = await getUrl();
+    String? mURL = await getUrl();
     Map bag = {};
     try {
-      List result = await _callWebAPIPost(mURL + 'findAllProjects', bag);
+      List result = await _callWebAPIPost(mURL! + 'findAllProjects', bag);
       List<Project> list = [];
       result.forEach((m) {
         list.add(Project.fromJson(m));
@@ -687,12 +687,12 @@ class DataAPI {
   }
 
   static Future<Organization> addOrganization(Organization org) async {
-    String mURL = await getUrl();
+    String? mURL = await getUrl();
     Map bag = org.toJson();
 
     pp('DataAPI_addOrganization:  🍐 org Bag to be sent, check properties:  🍐 $bag');
     try {
-      var result = await _callWebAPIPost(mURL + 'addOrganization', bag);
+      var result = await _callWebAPIPost(mURL! + 'addOrganization', bag);
       return Organization.fromJson(result);
     } catch (e) {
       pp(e);
@@ -701,12 +701,12 @@ class DataAPI {
   }
 
   static Future<OrgMessage> sendMessage(OrgMessage message) async {
-    String mURL = await getUrl();
+    String? mURL = await getUrl();
     Map bag = message.toJson();
 
     pp('DataAPI_sendMessage:  🍐 org message to be sent, check properties:  🍐 $bag');
     try {
-      var result = await _callWebAPIPost(mURL + 'sendMessage', bag);
+      var result = await _callWebAPIPost(mURL! + 'sendMessage', bag);
       return OrgMessage.fromJson(result);
     } catch (e) {
       pp(e);
@@ -714,9 +714,9 @@ class DataAPI {
     }
   }
 
-  static Future<User> findUserByEmail(String email) async {
+  static Future<User?> findUserByEmail(String email) async {
     pp('🐤🐤🐤🐤 DataAPI : ... findUserByEmail $email ');
-    String mURL = await getUrl();
+    String? mURL = await getUrl();
     assert(mURL != null);
     var command = "findUserByEmail?email=$email";
 
@@ -734,12 +734,12 @@ class DataAPI {
   }
 
   static Future<User> findUserByUid(String uid) async {
-    String mURL = await getUrl();
+    String? mURL = await getUrl();
     Map bag = {
       'uid': uid,
     };
     try {
-      var result = await _callWebAPIPost(mURL + 'findUserByUid', bag);
+      var result = await _callWebAPIPost(mURL! + 'findUserByUid', bag);
       return User.fromJson(result);
     } catch (e) {
       pp(e);
@@ -748,7 +748,7 @@ class DataAPI {
   }
 
   static Future<List<Country>> getCountries() async {
-    String mURL = await getUrl();
+    String? mURL = await getUrl();
     var cmd = 'getCountries';
     var url = '$mURL$cmd';
     try {
@@ -766,14 +766,14 @@ class DataAPI {
   }
 
   static Future hello() async {
-    String mURL = await getUrl();
-    var result = await _sendHttpGET(mURL);
+    String? mURL = await getUrl();
+    var result = await _sendHttpGET(mURL!);
     pp('DataAPI: 🔴 🔴 🔴 hello: $result');
   }
 
   static Future ping() async {
-    String mURL = await getUrl();
-    var result = await _sendHttpGET(mURL + 'ping');
+    String? mURL = await getUrl();
+    var result = await _sendHttpGET(mURL! + 'ping');
     pp('DataAPI: 🔴 🔴 🔴 ping: $result');
   }
 

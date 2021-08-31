@@ -23,13 +23,13 @@ class _FieldMonitorMapMainState extends State<FieldMonitorMapMain> {
   var isBusy = false;
   var _positions = [];
   var _key = GlobalKey<ScaffoldState>();
-  User _updatedUser;
+  User? _updatedUser;
   @override
   void initState() {
     super.initState();
   }
 
-  void _updateUserPosition({double latitude, double longitude}) async {
+  void _updateUserPosition({required double latitude, required double longitude}) async {
     setState(() {
       isBusy = true;
     });

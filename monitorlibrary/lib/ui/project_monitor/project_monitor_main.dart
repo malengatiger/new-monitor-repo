@@ -15,7 +15,7 @@ class ProjectMonitorMain extends StatefulWidget {
 
 class _ProjectMonitorMainState extends State<ProjectMonitorMain>
     with SingleTickerProviderStateMixin {
-  AnimationController _controller;
+  late AnimationController _controller;
   bool isBusy = false;
 
   @override

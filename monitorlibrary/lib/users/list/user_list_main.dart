@@ -7,14 +7,14 @@ import 'package:monitorlibrary/users/list/user_list_tablet.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 
 class UserListMain extends StatefulWidget {
-  UserListMain({Key key}) : super(key: key);
+  UserListMain({Key? key}) : super(key: key);
 
   @override
   _UserListMainState createState() => _UserListMainState();
 }
 
 class _UserListMainState extends State<UserListMain> {
-  User _user;
+  User? _user;
   bool isBusy = false;
 
   @override
@@ -55,9 +55,9 @@ class _UserListMainState extends State<UserListMain> {
             ),
           )
         : ScreenTypeLayout(
-            mobile: UserListMobile(_user),
-            tablet: UserListTablet(_user),
-            desktop: UserListDesktop(_user),
+            mobile: UserListMobile(_user!),
+            tablet: UserListTablet(_user!),
+            desktop: UserListDesktop(_user!),
           );
   }
 }

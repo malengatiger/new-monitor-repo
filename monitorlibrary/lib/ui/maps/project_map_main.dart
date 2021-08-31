@@ -13,9 +13,9 @@ import '../../snack.dart';
 
 class ProjectMapMain extends StatefulWidget {
   final Project project;
-  final Photo photo;
+  final Photo? photo;
 
-  ProjectMapMain(this.project, {this.photo});
+  ProjectMapMain({required this.project, this.photo});
 
   @override
   _ProjectMapMainState createState() => _ProjectMapMainState();
@@ -23,7 +23,7 @@ class ProjectMapMain extends StatefulWidget {
 
 class _ProjectMapMainState extends State<ProjectMapMain> {
   var isBusy = false;
-  var _positions = List<ProjectPosition>();
+  var _positions = <ProjectPosition>[];
   var _key = GlobalKey<ScaffoldState>();
   @override
   void initState() {
@@ -37,7 +37,7 @@ class _ProjectMapMainState extends State<ProjectMapMain> {
     });
     try {
       _positions = await monitorBloc.getProjectPositions(
-          projectId: widget.project.projectId, forceRefresh: false);
+          projectId: widget.project.projectId!, forceRefresh: false);
     } catch (e) {
       print(e);
       AppSnackbar.showErrorSnackbar(

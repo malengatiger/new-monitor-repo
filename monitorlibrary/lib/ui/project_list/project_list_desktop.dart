@@ -12,7 +12,7 @@ class ProjectListDesktop extends StatefulWidget {
 
 class _ProjectListDesktopState extends State<ProjectListDesktop>
     with SingleTickerProviderStateMixin {
-  AnimationController _controller;
+  late AnimationController _controller;
 
   @override
   void initState() {

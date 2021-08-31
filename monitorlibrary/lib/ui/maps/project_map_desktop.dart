@@ -6,7 +6,7 @@ class ProjectMapDesktop extends StatefulWidget {
   final Project project;
   final List<ProjectPosition> projectPositions;
 
-  ProjectMapDesktop({this.project, this.projectPositions});
+  ProjectMapDesktop({required this.project, required this.projectPositions});
 
   @override
   _ProjectMapDesktopState createState() => _ProjectMapDesktopState();
@@ -14,7 +14,7 @@ class ProjectMapDesktop extends StatefulWidget {
 
 class _ProjectMapDesktopState extends State<ProjectMapDesktop>
     with SingleTickerProviderStateMixin {
-  AnimationController _controller;
+  late AnimationController _controller;
 
   @override
   void initState() {

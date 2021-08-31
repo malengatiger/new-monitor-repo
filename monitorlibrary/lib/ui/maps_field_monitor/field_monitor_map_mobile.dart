@@ -8,7 +8,6 @@ import 'package:monitorlibrary/data/position.dart';
 import 'package:monitorlibrary/data/user.dart';
 import 'package:monitorlibrary/location/loc_bloc.dart';
 import 'package:monitorlibrary/snack.dart';
-import 'package:monitorlibrary/users/special_snack.dart';
 
 import '../../functions.dart';
 
@@ -22,9 +21,8 @@ class FieldMonitorMapMobile extends StatefulWidget {
 }
 
 class _FieldMonitorMapMobileState extends State<FieldMonitorMapMobile>
-    with SingleTickerProviderStateMixin
-    implements SpecialSnackListener {
-  AnimationController _controller;
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
   Completer<GoogleMapController> _mapController = Completer();
   Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
   var random = Random(DateTime.now().millisecondsSinceEpoch);
@@ -60,7 +58,7 @@ class _FieldMonitorMapMobileState extends State<FieldMonitorMapMobile>
     super.dispose();
   }
 
-  GoogleMapController googleMapController;
+  GoogleMapController? googleMapController;
   Future<void> _addMarker(double latitude, double longitude) async {
     pp('💜 💜 💜 💜 💜 💜 FieldMonitorMapMobile: _addMarker: ....... 🍎 $latitude $longitude');
     markers.clear();
@@ -90,7 +88,7 @@ class _FieldMonitorMapMobileState extends State<FieldMonitorMapMobile>
       zoom: 14.4746,
     );
     googleMapController = await _mapController.future;
-    googleMapController.animateCamera(CameraUpdate.newCameraPosition(_first));
+    googleMapController!.animateCamera(CameraUpdate.newCameraPosition(_first));
   }
 
   void _onMarkerTapped() {
@@ -130,7 +128,7 @@ class _FieldMonitorMapMobileState extends State<FieldMonitorMapMobile>
         key: _key,
         appBar: AppBar(
           title: Text(
-            widget.user.name,
+            widget.user.name!,
             style: Styles.whiteSmall,
           ),
           bottom: PreferredSize(
@@ -171,8 +169,8 @@ class _FieldMonitorMapMobileState extends State<FieldMonitorMapMobile>
 
                 if (widget.user.position != null) {
                   pp('🔵 🔵 GoogleMap:onMapCreated ....widget.user.position != null 🔆 🔆 ... add marker');
-                  _addMarker(widget.user.position.coordinates.elementAt(1),
-                      widget.user.position.coordinates.elementAt(0));
+                  _addMarker(widget.user.position!.coordinates.elementAt(1),
+                      widget.user.position!.coordinates.elementAt(0));
                 } else {
                   pp('🔵 🔵 GoogleMap:onMapCreated ....widget.user.position == null 🔆 🔆 ... WTF?');
                 }
@@ -202,6 +200,6 @@ class _FieldMonitorMapMobileState extends State<FieldMonitorMapMobile>
 
   @override
   onClose() {
-    ScaffoldMessenger.of(_key.currentState.context).removeCurrentSnackBar();
+    ScaffoldMessenger.of(_key.currentState!.context).removeCurrentSnackBar();
   }
 }

@@ -3,7 +3,7 @@ import 'package:meta/meta.dart';
 import 'package:monitorlibrary/data/position.dart';
 
 class User {
-  String name,
+  String? name,
       userId,
       email,
       cellphone,
@@ -12,17 +12,17 @@ class User {
       organizationName,
       fcmRegistration,
       organizationId;
-  Position position;
+  Position? position;
 
   User(
-      {@required this.name,
-      @required this.email,
-      @required this.userId,
-      @required this.cellphone,
-      @required this.created,
-      @required this.userType,
-      @required this.organizationName,
-      @required this.organizationId,
+      {required this.name,
+      required this.email,
+      required this.userId,
+      required this.cellphone,
+      required this.created,
+      required this.userType,
+      required this.organizationName,
+      required this.organizationId,
       this.position,
       this.fcmRegistration});
 
@@ -51,7 +51,7 @@ class User {
       'userType': userType,
       'organizationId': organizationId,
       'organizationName': organizationName,
-      'position': position == null ? null : position.toJson(),
+      'position': position == null ? null : position!.toJson(),
     };
     return map;
   }
@@ -78,21 +78,21 @@ const labels = [
 ];
 
 class OrgMessage {
-  String name, userId, message, created, organizationId, projectId;
-  String projectName, adminId, adminName;
-  String frequency, result;
+  String? name, userId, message, created, organizationId, projectId;
+  String? projectName, adminId, adminName;
+  String? frequency, result;
 
   OrgMessage(
-      {@required this.name,
-      @required this.message,
-      @required this.userId,
-      @required this.created,
-      @required this.projectId,
-      @required this.projectName,
-      @required this.adminId,
-      @required this.adminName,
-      @required this.frequency,
-      @required this.organizationId});
+      {required this.name,
+      required this.message,
+      required this.userId,
+      required this.created,
+      required this.projectId,
+      required this.projectName,
+      required this.adminId,
+      required this.adminName,
+      required this.frequency,
+      required this.organizationId});
 
   OrgMessage.fromJson(Map data) {
     this.name = data['name'];

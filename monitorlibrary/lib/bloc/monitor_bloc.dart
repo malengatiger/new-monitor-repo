@@ -23,9 +23,9 @@ class MonitorBloc {
     _initialize();
   }
 
-  User _user;
+  User? _user;
 
-  User get user => _user;
+  User get user => _user!;
   StreamController<List<Community>> _reportController =
       StreamController.broadcast();
   StreamController<List<User>> _userController = StreamController.broadcast();
@@ -54,9 +54,9 @@ class MonitorBloc {
       StreamController.broadcast();
   StreamController<User> _activeUserController = StreamController.broadcast();
 
-  Stream get projectPhotoStream => _projectPhotoController.stream;
+  Stream<List<Photo>> get projectPhotoStream => _projectPhotoController.stream;
 
-  Stream get projectVideoStream => _projectVideoController.stream;
+  Stream<List<Video>> get projectVideoStream => _projectVideoController.stream;
 
   Stream get reportStream => _reportController.stream;
 
@@ -64,7 +64,7 @@ class MonitorBloc {
 
   Stream get questionnaireStream => _questController.stream;
 
-  Stream get projectStream => _projController.stream;
+  Stream<List<Project>> get projectStream => _projController.stream;
 
   Stream get projectPositionsStream => _projPositionsController.stream;
 
@@ -72,16 +72,16 @@ class MonitorBloc {
 
   Stream get activeUserStream => _activeUserController.stream;
 
-  Stream get usersStream => _userController.stream;
+  Stream<List<User>> get usersStream => _userController.stream;
 
   Stream get activeQuestionnaireStream => _activeQuestionnaireController.stream;
 
   Stream get fieldMonitorScheduleStream =>
       _fieldMonitorScheduleController.stream;
 
-  Stream get photoStream => _photoController.stream;
+  Stream<List<Photo>> get photoStream => _photoController.stream;
 
-  Stream get videoStream => _videoController.stream;
+  Stream<List<Video>> get videoStream => _videoController.stream;
 
   List<Community> _communities = [];
   List<Questionnaire> _questionnaires = [];
@@ -117,7 +117,7 @@ class MonitorBloc {
         'found: 💜 ${projects.length} projects');
     projects.forEach((project) {
       pp('😡 😡 😡 ALL PROJECT found in radius: ${project.name} 🍏 ${project.organizationName}  🍏 ${project.organizationId}');
-      if (project.organizationId == _user.organizationId) {
+      if (project.organizationId == _user!.organizationId) {
         userProjects.add(project);
       }
     });
@@ -135,7 +135,7 @@ class MonitorBloc {
   }
 
   Future<List<Project>> getOrganizationProjects(
-      {String organizationId, bool forceRefresh}) async {
+      {required String organizationId, required bool forceRefresh}) async {
     if (_user == null) {
       _user = await Prefs.getUser();
     }
@@ -157,25 +157,25 @@ class MonitorBloc {
     return _projects;
   }
 
-  Future refreshOrgDashboardData({bool forceRefresh = false}) async {
+  Future refreshOrgDashboardData({required bool forceRefresh}) async {
     if (_user == null) {
       _user = await Prefs.getUser();
     }
     pp('💜 💜 💜 💜 💜 💜 MonitorBloc:refreshDashboardData .... 💜 💜 💜 💜 💜 💜');
     await getOrganizationUsers(
-        organizationId: _user.organizationId, forceRefresh: forceRefresh);
+        organizationId: _user!.organizationId!, forceRefresh: forceRefresh);
     await getOrganizationProjects(
-        organizationId: _user.organizationId, forceRefresh: forceRefresh);
+        organizationId: _user!.organizationId!, forceRefresh: forceRefresh);
     await getOrganizationPhotos(
-        organizationId: _user.organizationId, forceRefresh: forceRefresh);
+        organizationId: _user!.organizationId!, forceRefresh: forceRefresh);
     await getOrganizationVideos(
-        organizationId: _user.organizationId, forceRefresh: forceRefresh);
+        organizationId: _user!.organizationId!, forceRefresh: forceRefresh);
     await getOrgFieldMonitorSchedules(
-        organizationId: _user.organizationId, forceRefresh: forceRefresh);
+        organizationId: _user!.organizationId!, forceRefresh: forceRefresh);
   }
 
   Future<List<User>> getOrganizationUsers(
-      {String organizationId, bool forceRefresh = false}) async {
+      {required String organizationId, required bool forceRefresh}) async {
     _users = await LocalDBAPI.getUsers();
 
     if (_users.isEmpty || forceRefresh) {
@@ -192,7 +192,7 @@ class MonitorBloc {
   }
 
   Future<List<ProjectPosition>> getProjectPositions(
-      {String projectId, bool forceRefresh}) async {
+      {required String projectId, required bool forceRefresh}) async {
     _projectPositions = await LocalDBAPI.getProjectPositions(projectId);
 
     if (_projectPositions.isEmpty || forceRefresh) {
@@ -206,7 +206,7 @@ class MonitorBloc {
   }
 
   Future<List<Photo>> getProjectPhotos(
-      {String projectId, bool forceRefresh = false}) async {
+      {required String projectId, required bool forceRefresh }) async {
     List<Photo> photos = [];
 
     photos = await LocalDBAPI.getProjectPhotos(projectId);
@@ -222,7 +222,7 @@ class MonitorBloc {
   }
 
   Future<List<FieldMonitorSchedule>> getProjectFieldMonitorSchedules(
-      {String projectId, bool forceRefresh = false}) async {
+      {required String projectId, required bool forceRefresh}) async {
     _schedules = await LocalDBAPI.getProjectMonitorSchedules(projectId);
 
     if (_schedules.isEmpty || forceRefresh) {
@@ -238,14 +238,14 @@ class MonitorBloc {
   }
 
   Future<List<FieldMonitorSchedule>> getMonitorFieldMonitorSchedules(
-      {String userId, bool forceRefresh = false}) async {
+      {required String userId, required bool forceRefresh}) async {
     _schedules = await LocalDBAPI.getFieldMonitorSchedules(userId);
 
     if (_schedules.isEmpty || forceRefresh) {
       _schedules = await DataAPI.getMonitorFieldMonitorSchedules(userId);
       await LocalDBAPI.addFieldMonitorSchedules(schedules: _schedules);
     }
-    _schedules.sort((a, b) => b.date.compareTo(a.date));
+    _schedules.sort((a, b) => b.date!.compareTo(a.date!));
     var m = filterSchedulesByProject(_schedules);
     _schedules = m;
     _fieldMonitorScheduleController.sink.add(_schedules);
@@ -264,7 +264,7 @@ class MonitorBloc {
     //todo - filter latest by project
 
     Map<String, FieldMonitorSchedule> map = Map();
-    mList.sort((a, b) => b.date.compareTo(a.date));
+    mList.sort((a, b) => b.date!.compareTo(a.date!));
     mList.forEach((element) {
       if (!map.containsKey(element.projectId)) {
         map['${element.projectId}'] = element;
@@ -278,7 +278,7 @@ class MonitorBloc {
   }
 
   Future<List<FieldMonitorSchedule>> getOrgFieldMonitorSchedules(
-      {String organizationId, bool forceRefresh = false}) async {
+      {required String organizationId, required bool forceRefresh}) async {
     _schedules =
         await LocalDBAPI.getOrganizationMonitorSchedules(organizationId);
 
@@ -295,7 +295,7 @@ class MonitorBloc {
   }
 
   Future<List<Photo>> getOrganizationPhotos(
-      {String organizationId, bool forceRefresh = false}) async {
+      {required String organizationId, required bool forceRefresh}) async {
     try {
       var android = UniversalPlatform.isAndroid;
       if (android) {
@@ -319,7 +319,7 @@ class MonitorBloc {
   }
 
   Future<List<Video>> getOrganizationVideos(
-      {String organizationId, bool forceRefresh = false}) async {
+      {required String organizationId, required bool forceRefresh}) async {
     try {
       var android = UniversalPlatform.isAndroid;
       if (android) {
@@ -342,7 +342,7 @@ class MonitorBloc {
   }
 
   Future<List<Video>> getProjectVideos(
-      {String projectId, bool forceRefresh = false}) async {
+      {required String projectId, required bool forceRefresh}) async {
     List<Video> videos = [];
     var android = UniversalPlatform.isAndroid;
     if (android) {
@@ -358,7 +358,7 @@ class MonitorBloc {
     return videos;
   }
 
-  Future refreshProjectData({String projectId, bool forceRefresh}) async {
+  Future refreshProjectData({required String projectId, required bool forceRefresh}) async {
     await getProjectPhotos(projectId: projectId, forceRefresh: forceRefresh);
     await getProjectVideos(projectId: projectId, forceRefresh: forceRefresh);
     await getProjectFieldMonitorSchedules(
@@ -367,7 +367,7 @@ class MonitorBloc {
   }
 
   Future<List<Photo>> getUserProjectPhotos(
-      {String userId, bool forceRefresh}) async {
+      {required String userId, required bool forceRefresh}) async {
     var android = UniversalPlatform.isAndroid;
     if (android) {
       _photos = await LocalDBAPI.getUserPhotos(userId);
@@ -385,7 +385,7 @@ class MonitorBloc {
   }
 
   Future<List<Video>> getUserProjectVideos(
-      {String userId, bool forceRefresh}) async {
+      {required String userId, required bool forceRefresh}) async {
     var android = UniversalPlatform.isAndroid;
     if (android) {
       _videos = await LocalDBAPI.getUserVideos(userId);
@@ -403,7 +403,7 @@ class MonitorBloc {
   }
 
   Future refreshUserData(
-      {String userId, String organizationId, bool forceRefresh}) async {
+      {required String userId, required String organizationId, required bool forceRefresh}) async {
     pp('💜 💜 💜 MonitorBloc: refreshUserData ... forceRefresh: $forceRefresh');
     try {
       await getOrganizationProjects(

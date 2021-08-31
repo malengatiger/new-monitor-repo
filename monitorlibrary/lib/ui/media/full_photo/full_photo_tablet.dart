@@ -14,7 +14,7 @@ class FullPhotoTablet extends StatefulWidget {
 
 class _FullPhotoTabletState extends State<FullPhotoTablet>
     with SingleTickerProviderStateMixin {
-  AnimationController _controller;
+  late AnimationController _controller;
 
   @override
   void initState() {

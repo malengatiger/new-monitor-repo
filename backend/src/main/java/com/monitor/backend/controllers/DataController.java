@@ -17,6 +17,7 @@ import java.util.logging.Logger;
 
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
+
 @RestController
 public class DataController {
     private static final Logger LOGGER = Logger.getLogger(DataController.class.getSimpleName());

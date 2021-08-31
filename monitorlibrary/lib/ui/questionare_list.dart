@@ -16,9 +16,9 @@ class QuestionnaireList extends StatefulWidget {
 }
 
 class _QuestionnaireListState extends State<QuestionnaireList> {
-  List<Questionnaire> questionnaires = List();
+  List<Questionnaire> questionnaires = [];
   bool isBusy = false;
-  User user;
+  User? user;
   @override
   void initState() {
     super.initState();
@@ -32,7 +32,7 @@ class _QuestionnaireListState extends State<QuestionnaireList> {
     user = await Prefs.getUser();
     if (user != null) {
       questionnaires =
-          await DataAPI.getQuestionnairesByOrganization(user.organizationId);
+          await DataAPI.getQuestionnairesByOrganization(user!.organizationId!);
     }
     setState(() {
       isBusy = false;
@@ -45,7 +45,7 @@ class _QuestionnaireListState extends State<QuestionnaireList> {
         stream: adminBloc.questionnaireStream,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            questionnaires = snapshot.data;
+            questionnaires = snapshot.data!;
           }
           return Scaffold(
             appBar: AppBar(
@@ -74,7 +74,7 @@ class _QuestionnaireListState extends State<QuestionnaireList> {
                             Expanded(
                                 child: Container(
                                     child: Text(
-                              user == null ? '' : '${user.organizationName}',
+                              user == null ? '' : '${user!.organizationName}',
                               style: Styles.whiteBoldSmall,
                               overflow: TextOverflow.clip,
                             ))),

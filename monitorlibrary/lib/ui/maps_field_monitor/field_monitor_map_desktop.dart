@@ -7,7 +7,6 @@ import 'package:monitorlibrary/api/data_api.dart';
 import 'package:monitorlibrary/data/position.dart';
 import 'package:monitorlibrary/data/user.dart';
 import 'package:monitorlibrary/snack.dart';
-import 'package:monitorlibrary/users/special_snack.dart';
 
 import '../../functions.dart';
 
@@ -21,14 +20,13 @@ class FieldMonitorMapDesktop extends StatefulWidget {
 }
 
 class _FieldMonitorMapDesktopState extends State<FieldMonitorMapDesktop>
-    with SingleTickerProviderStateMixin
-    implements SpecialSnackListener {
-  AnimationController _controller;
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
   Completer<GoogleMapController> _mapController = Completer();
   Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
   var random = Random(DateTime.now().millisecondsSinceEpoch);
   var _key = GlobalKey<ScaffoldState>();
-  bool busy;
+  bool busy = false;
 
   static final CameraPosition _kGooglePlex = CameraPosition(
     target: LatLng(37.42796133580664, -122.085749655962),
@@ -47,7 +45,7 @@ class _FieldMonitorMapDesktopState extends State<FieldMonitorMapDesktop>
     super.dispose();
   }
 
-  GoogleMapController googleMapController;
+  GoogleMapController? googleMapController;
   Future<void> _addMarker(double latitude, double longitude) async {
     pp('💜 💜 💜 💜 💜 💜 FieldMonitorMapDesktop: _addMarker: ....... 🍎 $latitude $longitude');
     markers.clear();
@@ -78,7 +76,7 @@ class _FieldMonitorMapDesktopState extends State<FieldMonitorMapDesktop>
       zoom: 14.4746,
     );
     googleMapController = await _mapController.future;
-    googleMapController.animateCamera(CameraUpdate.newCameraPosition(_first));
+    googleMapController!.animateCamera(CameraUpdate.newCameraPosition(_first));
   }
 
   void _onMarkerTapped() {
@@ -122,7 +120,7 @@ class _FieldMonitorMapDesktopState extends State<FieldMonitorMapDesktop>
         key: _key,
         appBar: AppBar(
           title: Text(
-            widget.user.name,
+            widget.user.name!,
             style: Styles.whiteSmall,
           ),
           bottom: PreferredSize(
@@ -165,6 +163,6 @@ class _FieldMonitorMapDesktopState extends State<FieldMonitorMapDesktop>
 
   @override
   onClose() {
-    ScaffoldMessenger.of(_key.currentState.context).removeCurrentSnackBar();
+    ScaffoldMessenger.of(_key.currentState!.context).removeCurrentSnackBar();
   }
 }

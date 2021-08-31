@@ -16,14 +16,14 @@ class LocalDBAPI {
 
   static String databaseName = 'MonDB001a';
 
-  static Box projectBox;
-  static Box photoBox;
-  static Box videoBox;
-  static Box userBox;
-  static Box projectPositionBox;
-  static Box conditionBox;
-  static Box orgMessageBox;
-  static Box scheduleBox;
+  static late Box projectBox;
+  static late Box photoBox;
+  static late Box videoBox;
+  static late Box userBox;
+  static late Box projectPositionBox;
+  static late Box conditionBox;
+  static late Box orgMessageBox;
+  static late Box scheduleBox;
 
   static const aa = 'LocalDBAPI: 🦠🦠🦠🦠🦠 ';
 
@@ -200,7 +200,7 @@ class LocalDBAPI {
     //todo - filter latest by project
 
     Map<String, FieldMonitorSchedule> map = Map();
-    mList.sort((a, b) => b.date.compareTo(a.date));
+    mList.sort((a, b) => b.date!.compareTo(a.date!));
     mList.forEach((element) {
       if (!map.containsKey(element.projectId)) {
         map['${element.projectId}'] = element;
@@ -256,63 +256,63 @@ class LocalDBAPI {
     return mList;
   }
 
-  static Future<int> addUsers({List<User> users}) async {
+  static Future<int> addUsers({required List<User> users}) async {
     for (var user in users) {
       await addUser(user: user);
     }
     return 0;
   }
 
-  static Future<int> addUser({@required User user}) async {
+  static Future<int> addUser({required User user}) async {
     await connectLocalDB();
     await userBox.put(user.userId, user.toJson());
     pp('$mx addUser: 🌼 1 user added...:  🔵 🔵 ${user.name} from ${user.organizationName}');
     return cnt;
   }
 
-  static Future<int> addProjects({@required List<Project> projects}) async {
+  static Future<int> addProjects({required List<Project> projects}) async {
     projects.forEach((element) async {
       await addProject(project: element);
     });
     return 0;
   }
 
-  static Future<int> addProject({@required Project project}) async {
+  static Future<int> addProject({required Project project}) async {
     await connectLocalDB();
     await projectBox.put(project.projectId, project.toJson());
     pp('$mx addProject: 🌼 1 project added...:  🔵 🔵 ${project.name}');
     return 0;
   }
 
-  static Future<int> addPhotos({@required List<Photo> photos}) async {
+  static Future<int> addPhotos({required List<Photo> photos}) async {
     photos.forEach((element) async {
       await addPhoto(photo: element);
     });
     return 0;
   }
 
-  static Future<int> addPhoto({@required Photo photo}) async {
+  static Future<int> addPhoto({required Photo photo}) async {
     await connectLocalDB();
     await photoBox.put(photo.photoId, photo.toJson());
     pp('$mx addPhoto: 🌼 1 photo added...  🔵 🔵  ${photo.url}');
     return 0;
   }
 
-  static Future<int> addVideos({@required List<Video> videos}) async {
+  static Future<int> addVideos({required List<Video> videos}) async {
     videos.forEach((element) async {
       await addVideo(video: element);
     });
     return 0;
   }
 
-  static Future<int> addVideo({@required Video video}) async {
+  static Future<int> addVideo({required Video video}) async {
     await connectLocalDB();
     await videoBox.put(video.videoId, video.toJson());
     pp('$mx addVideo: 🌼 1 video added...  🔵 🔵 ${video.url}');
     return 0;
   }
 
-  static Future<int> addCondition({@required Condition condition}) async {
+  static Future<int> addCondition({required Condition condition}) async {
     await connectLocalDB();
 
     await conditionBox.put(DateTime.now().toString(), condition.toJson());
@@ -320,7 +320,7 @@ class LocalDBAPI {
     return 0;
   }
 
-  static Future<int> addOrgMessage({@required OrgMessage message}) async {
+  static Future<int> addOrgMessage({required OrgMessage message}) async {
     await connectLocalDB();
     await orgMessageBox.put(message.created, message.toJson());
     pp('$mx addOrgMessage: 🌼 1 OrgMessage added ...  🔵 🔵 ');
@@ -328,7 +328,7 @@ class LocalDBAPI {
   }
 
   static Future<int> addProjectPositions(
-      {@required List<ProjectPosition> positions}) async {
+      {required List<ProjectPosition> positions}) async {
     positions.forEach((element) async {
       await addProjectPosition(projectPosition: element);
     });
@@ -336,7 +336,7 @@ class LocalDBAPI {
   }
 
   static Future<int> addProjectPosition(
-      {@required ProjectPosition projectPosition}) async {
+      {required ProjectPosition projectPosition}) async {
     await connectLocalDB();
     await projectPositionBox.put(
         projectPosition.created, projectPosition.toJson());
@@ -346,7 +346,7 @@ class LocalDBAPI {
   }
 
   static Future<int> addFieldMonitorSchedules(
-      {@required List<FieldMonitorSchedule> schedules}) async {
+      {required List<FieldMonitorSchedule> schedules}) async {
     pp('LocalDBAPI:addFieldMonitorSchedules : ${schedules.length}');
     schedules.forEach((element) async {
       await addFieldMonitorSchedule(schedule: element);
@@ -361,7 +361,7 @@ class LocalDBAPI {
   }
 
   static Future<int> addFieldMonitorSchedule(
-      {@required FieldMonitorSchedule schedule}) async {
+      {required FieldMonitorSchedule schedule}) async {
     await connectLocalDB();
     await scheduleBox.put(schedule.fieldMonitorScheduleId, schedule.toJson());
     var len = scheduleBox.values.length;
@@ -371,7 +371,7 @@ class LocalDBAPI {
   }
 
   static Future<List<ProjectPosition>> findProjectPositionsByLocation(
-      {@required latitude, @required longitude, @required radiusInKM}) async {
+      {required latitude, required longitude, required radiusInKM}) async {
     await connectLocalDB();
 
     List<ProjectPosition> list = [];

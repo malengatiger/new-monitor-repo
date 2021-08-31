@@ -23,9 +23,9 @@ class ProjectLocationMobile extends StatefulWidget {
 
 class _ProjectLocationMobileState extends State<ProjectLocationMobile>
     with SingleTickerProviderStateMixin {
-  AnimationController _controller;
+  late AnimationController _controller;
   var isBusy = false;
-  ProjectPosition _projectPosition;
+  ProjectPosition? _projectPosition;
   List<ProjectPosition> _projectPositions = [];
   var _key = GlobalKey<ScaffoldState>();
   static const mx = '💙 💙 💙 ProjectLocation Mobile: ';
@@ -49,9 +49,9 @@ class _ProjectLocationMobileState extends State<ProjectLocationMobile>
     for (var i = 0; i < _projectPositions.length; i++) {
       var dist = await locationBloc.getDistanceFromCurrentPosition(
           latitude:
-              _projectPositions.elementAt(i).position.coordinates.elementAt(1),
+              _projectPositions.elementAt(i).position!.coordinates.elementAt(1),
           longitude:
-              _projectPositions.elementAt(i).position.coordinates.elementAt(0));
+              _projectPositions.elementAt(i).position!.coordinates.elementAt(0));
       map[dist] = _projectPositions.elementAt(i);
     }
     if (map.length == 0) {
@@ -69,7 +69,7 @@ class _ProjectLocationMobileState extends State<ProjectLocationMobile>
   void _getProjectPositions(bool forceRefresh) async {
     try {
       _projectPositions = await monitorBloc.getProjectPositions(
-          projectId: widget.project.projectId, forceRefresh: forceRefresh);
+          projectId: widget.project.projectId!, forceRefresh: forceRefresh);
     } catch (e) {
       print(e);
       AppSnackbar.showErrorSnackbar(
@@ -90,10 +90,10 @@ class _ProjectLocationMobileState extends State<ProjectLocationMobile>
     }
 
     List<Placemark> placeMarks =
-        await placemarkFromCoordinates(_position.latitude, _position.longitude);
+        await placemarkFromCoordinates(_position!.latitude, _position!.longitude);
     List<City> cities = await DataAPI.findCitiesByLocation(
-        latitude: _position.latitude,
-        longitude: _position.longitude,
+        latitude: _position!.latitude,
+        longitude: _position!.longitude,
         radiusInKM: 10.0);
     pp('$mx Cities found for project position: ${cities.length}');
 
@@ -109,7 +109,7 @@ class _ProjectLocationMobileState extends State<ProjectLocationMobile>
     });
     try {
       pp('$mx submitting current position ..........');
-      Placemark pm;
+      Placemark? pm;
       if (placeMarks.isNotEmpty) {
         pm = placeMarks.first;
         pp('$mx Placemark for project location: ${pm.toString()}');
@@ -121,14 +121,14 @@ class _ProjectLocationMobileState extends State<ProjectLocationMobile>
           created: DateTime.now().toIso8601String(),
           position: mon.Position(
               type: 'Point',
-              coordinates: [_position.longitude, _position.latitude]),
+              coordinates: [_position!.longitude, _position!.latitude]),
           projectId: widget.project.projectId,
           nearestCities: cities);
       try {
         var m = await DataAPI.addProjectPosition(position: loc);
         pp('$mx  _submit: new projectPosition added .........  🍅 ${m.toJson()} 🍅');
         await monitorBloc.getProjectPositions(
-            projectId: widget.project.projectId);
+            projectId: widget.project.projectId!, forceRefresh: true);
       } catch (e) {
         AppSnackbar.showErrorSnackbar(
             scaffoldKey: _key, message: 'Project Position failed');
@@ -143,7 +143,7 @@ class _ProjectLocationMobileState extends State<ProjectLocationMobile>
     }
   }
 
-  Position _position;
+  Position? _position;
 
   Future _getLocation() async {
     setState(() {
@@ -153,7 +153,7 @@ class _ProjectLocationMobileState extends State<ProjectLocationMobile>
     setState(() {
       isBusy = false;
     });
-    pp('🎽 🎽 🎽 _submit: current location found: .........  🍅 ${_position.toJson()} 🍅');
+    pp('🎽 🎽 🎽 _submit: current location found: .........  🍅 ${_position!.toJson()} 🍅');
     return _position;
   }
 
@@ -223,7 +223,7 @@ class _ProjectLocationMobileState extends State<ProjectLocationMobile>
                                     width: 12,
                                   ),
                                   Text(
-                                    '${_position.latitude}',
+                                    '${_position!.latitude}',
                                     style: Styles.blackBoldMedium,
                                   ),
                                 ],
@@ -238,7 +238,7 @@ class _ProjectLocationMobileState extends State<ProjectLocationMobile>
                                     width: 12,
                                   ),
                                   Text(
-                                    '${_position.longitude}',
+                                    '${_position!.longitude}',
                                     style: Styles.blackBoldMedium,
                                   ),
                                 ],

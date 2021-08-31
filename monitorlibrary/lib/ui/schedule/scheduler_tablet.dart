@@ -11,7 +11,7 @@ class SchedulerTablet extends StatefulWidget {
 
 class _SchedulerTabletState extends State<SchedulerTablet>
     with SingleTickerProviderStateMixin {
-  AnimationController _controller;
+  late AnimationController _controller;
 
   @override
   void initState() {

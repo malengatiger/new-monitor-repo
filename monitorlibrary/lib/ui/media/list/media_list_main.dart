@@ -19,7 +19,7 @@ class MediaListMain extends StatefulWidget {
 
 class _MediaListMainState extends State<MediaListMain>
     with SingleTickerProviderStateMixin {
-  AnimationController _controller;
+  late AnimationController _controller;
   var isBusy = false;
 
   @override
@@ -36,10 +36,10 @@ class _MediaListMainState extends State<MediaListMain>
     if (widget.project != null) {
       pp('MediaListMain: 💜 💜 💜 getting media for PROJECT: ${widget.project.name}');
       await monitorBloc.refreshProjectData(
-          projectId: widget.project.projectId, forceRefresh: false);
+          projectId: widget.project.projectId!, forceRefresh: false);
     } else {
       var user = await Prefs.getUser();
-      pp('MediaListMain: 💜 💜 💜 getting media for ORGANIZATION: ${user.organizationName}');
+      pp('MediaListMain: 💜 💜 💜 getting media for ORGANIZATION: ${user!.organizationName!}');
       await monitorBloc.refreshOrgDashboardData(forceRefresh: false);
     }
     setState(() {

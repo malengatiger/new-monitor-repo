@@ -1,16 +1,17 @@
 import 'package:meta/meta.dart';
+import 'package:monitorlibrary/data/position.dart';
 
 class City {
-  String name, countryId, countryName, provinceName, cityId, created;
-  dynamic position;
+  String? name, countryId, countryName, provinceName, cityId, created;
+  Position? position;
 
   City(
-      {@required this.name,
-      @required this.countryId,
-      @required this.provinceName,
-      @required this.countryName,
-      @required this.position,
-      @required this.created});
+      {required this.name,
+      required this.countryId,
+      required this.provinceName,
+      required this.countryName,
+      required this.position,
+      required this.created});
 
   City.fromJson(Map data) {
     this.name = data['name'];
@@ -20,7 +21,10 @@ class City {
     this.countryName = data['countryName'];
     this.created = data['created'];
     this.cityId = data['cityId'];
-    this.position = data['position'];
+    if (data['position'] != null) {
+      this.position = Position.fromJson( data['position']);
+    }
+
   }
   Map<String, dynamic> toJson() {
     Map<String, dynamic> map = {

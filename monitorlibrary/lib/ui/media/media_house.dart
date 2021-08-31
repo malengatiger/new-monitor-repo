@@ -26,7 +26,7 @@ class MediaHouse extends StatefulWidget {
   final Project project;
   final ProjectPosition projectPosition;
 
-  MediaHouse({@required this.project, @required this.projectPosition});
+  MediaHouse({required this.project, required this.projectPosition});
 
   @override
   _MediaHouseState createState() => _MediaHouseState();
@@ -35,18 +35,18 @@ class MediaHouse extends StatefulWidget {
 class _MediaHouseState extends State<MediaHouse>
     with SingleTickerProviderStateMixin
     implements StorageBlocListener, MediaGridListener {
-  AnimationController _controller;
-  User user;
-  String filePath;
+  late AnimationController _controller;
+  User? user;
+  String? filePath;
   var _imageChannel = MethodChannel('com.boha.image.channel');
   var _videoChannel = MethodChannel('com.boha.video.channel');
-  img.Image thumbnail;
-  File imageFile;
-  File videoFile;
-  String imageFilePath;
-  String videoFilePath;
+  img.Image? thumbnail;
+  File? imageFile;
+  File? videoFile;
+  String? imageFilePath;
+  String? videoFilePath;
   var isVideo = false;
-  String label;
+  String? label;
 
   @override
   void initState() {
@@ -74,16 +74,16 @@ class _MediaHouseState extends State<MediaHouse>
         isUploading = true;
       });
       imageFile = File(result);
-      var thumbnailFile = await getThumbnail(imageFile);
+      var thumbnailFile = await getThumbnail(imageFile!);
       setState(() {
         isUploading = true;
       });
       storageBloc.uploadPhotoOrVideo(
           listener: this,
-          file: imageFile,
+          file: imageFile!,
           thumbnailFile: thumbnailFile,
           project: widget.project,
-          projectPosition: widget.projectPosition.position,
+          projectPosition: widget.projectPosition.position!,
           isVideo: false);
 
       setState(() {});
@@ -101,7 +101,7 @@ class _MediaHouseState extends State<MediaHouse>
       final result = await _videoChannel.invokeMethod('startVideoCamera');
       pp('Back from the BadLands: 💜 💜 💜 💜 video filePath: 🍏 🍏 🍏 $result 🍏 🍏 🍏');
       videoFile = File(result);
-      var len = await videoFile.length();
+      var len = await videoFile!.length();
       pp('Back from the BadLands: 💜 💜 💜 💜 video file length: 🍏 🍏 🍏 $len bytes 🍏 🍏 🍏');
       setState(() {
         isUploading = true;
@@ -109,10 +109,10 @@ class _MediaHouseState extends State<MediaHouse>
       //var thumbnailFile = await getVideoThumbnail(imageFile);
       storageBloc.uploadPhotoOrVideo(
           listener: this,
-          file: videoFile,
-          thumbnailFile: null,
+          file: videoFile!,
+          thumbnailFile: videoFile!,
           project: widget.project,
-          projectPosition: widget.projectPosition.position,
+          projectPosition: widget.projectPosition.position!,
           isVideo: true);
     } on PlatformException catch (e) {
       print("🌸 Failed to get or process video: ${e.message} ");
@@ -126,7 +126,7 @@ class _MediaHouseState extends State<MediaHouse>
         initialData: [],
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            mediaBags = snapshot.data;
+            mediaBags = snapshot.data!;
             pp('🇿🇦 💙💙 💙💙 💙💙 mediaStream reporting something in stream ... mediaBags: ${mediaBags.length}');
           }
           return SafeArea(
@@ -134,7 +134,7 @@ class _MediaHouseState extends State<MediaHouse>
               key: _key,
               appBar: AppBar(
                 title: Text(
-                  widget.project.name,
+                  widget.project.name!,
                   style: Styles.whiteBoldSmall,
                 ),
                 bottom: PreferredSize(
@@ -263,9 +263,7 @@ class _MediaHouseState extends State<MediaHouse>
                                 fit: BoxFit.fill,
                               )
                             : Image.file(
-                                item.thumbnailFile == null
-                                    ? item.file
-                                    : item.thumbnailFile,
+                                item.thumbnailFile!,
                                 fit: BoxFit.fill,
                               ),
                       );
@@ -283,29 +281,29 @@ class _MediaHouseState extends State<MediaHouse>
   @override
   void onMediaSelected(MediaBag suitcase) {
     if (suitcase.video != null) {
-      pp('MediaListMobile: 🦠 🦠 🦠 _onMediaTapped: Play video from 🦠 ${suitcase.video.url} 🦠');
+      pp('MediaListMobile: 🦠 🦠 🦠 _onMediaTapped: Play video from 🦠 ${suitcase.video!.url!} 🦠');
       Navigator.push(
           context,
           PageTransition(
               type: PageTransitionType.scale,
               alignment: Alignment.bottomRight,
               duration: Duration(seconds: 1),
-              child: VideoMain(suitcase.video)));
+              child: VideoMain(suitcase.video!)));
     } else {
-      pp('MediaListMobile: 🦠 🦠 🦠 _onMediaTapped: show full image from 🍎 ${suitcase.photo.url} 🍎');
+      pp('MediaListMobile: 🦠 🦠 🦠 _onMediaTapped: show full image from 🍎 ${suitcase.photo!.url} 🍎');
       Navigator.push(
           context,
           PageTransition(
               type: PageTransitionType.scale,
               alignment: Alignment.bottomRight,
               duration: Duration(seconds: 1),
-              child: FullPhotoMain(suitcase.photo, widget.project)));
+              child: FullPhotoMain(suitcase.photo!, widget.project)));
     }
   }
 
   Future<File> getThumbnail(File file) async {
-    img.Image image = img.decodeImage(file.readAsBytesSync());
-    var thumbnail = img.copyResize(image, width: 160);
+    img.Image? image = img.decodeImage(file.readAsBytesSync());
+    var thumbnail = img.copyResize(image!, width: 160);
     final Directory directory = await getApplicationDocumentsDirectory();
     final File mFile = File(
         '${directory.path}/thumbnail${DateTime.now().millisecondsSinceEpoch}.jpg');
@@ -325,7 +323,7 @@ class _MediaHouseState extends State<MediaHouse>
         // specify the width of the thumbnail, let the height auto-scaled to keep the source aspect ratio
         quality: 90,
       );
-      var thumb = File(path);
+      var thumb = File(path!);
       var len = await thumb.length();
       pp('....... 💜  .... video thumbnail generated: 😡 ${(len / 1024).toStringAsFixed(1)} KB - 🍏 🍏 🍏 path: $path');
       return thumb;
@@ -351,16 +349,16 @@ class _MediaHouseState extends State<MediaHouse>
   }
 
   var isUploading = false;
-  String totalByteCount, bytesTransferred;
-  String fileUrl, thumbnailUrl;
-  Position nearestPosition;
+  String? totalByteCount, bytesTransferred;
+  String? fileUrl, thumbnailUrl;
+  Position? nearestPosition;
 
   @override
   onError(String message) {
     pp(message);
     AppSnackbar.showErrorSnackbar(
         scaffoldKey: _key,
-        message: message == null ? 'Download failed' : '$message',
+        message: '$message',
         actionLabel: '');
   }
 

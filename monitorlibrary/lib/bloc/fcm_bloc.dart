@@ -40,7 +40,7 @@ class FCMBloc {
   Stream<Condition> get conditionStream => _conditionController.stream;
   Stream<OrgMessage> get messageStream => _messageController.stream;
 
-  User user;
+  User? user;
   void closeStreams() {
     _userController.close();
     _projectController.close();
@@ -68,8 +68,8 @@ class FCMBloc {
       });
 
       FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-        RemoteNotification notification = message.notification;
-        AndroidNotification android = message.notification?.android;
+        RemoteNotification? notification = message.notification;
+        AndroidNotification? android = message.notification?.android;
         pp("$mm onMessage: 🍎 🍎  data: ${message.data} ... 🍎 🍎 ");
       });
 
@@ -81,8 +81,8 @@ class FCMBloc {
 
       if (user != null) {
         var token = await messaging.getToken();
-        if (token != user.fcmRegistration) {
-          await _updateUser(token);
+        if (token != user!.fcmRegistration) {
+          await _updateUser(token!);
         }
       }
     } else {
@@ -175,7 +175,7 @@ class FCMBloc {
         var m = jsonDecode(data['message']);
         var msg = OrgMessage.fromJson(m);
         await LocalDBAPI.addOrgMessage(message: msg);
-        if (user.userId != msg.adminId) {
+        if (user!.userId != msg.adminId) {
           _messageController.sink.add(msg);
         }
       }
@@ -187,10 +187,10 @@ class FCMBloc {
 
   Future _updateUser(String newToken) async {
     if (user != null) {
-      pp("$mm updateUser: 🍎 🍎  🍎 🍎  🍎 🍎  🍎 🍎  🍎 USER: 🍎 ${user.toJson()} ... 🍎 🍎 ");
-      user.fcmRegistration = newToken;
-      await DataAPI.updateUser(user);
-      await Prefs.saveUser(user);
+      pp("$mm updateUser: 🍎 🍎  🍎 🍎  🍎 🍎  🍎 🍎  🍎 USER: 🍎 ${user!.toJson()} ... 🍎 🍎 ");
+      user!.fcmRegistration = newToken;
+      await DataAPI.updateUser(user!);
+      await Prefs.saveUser(user!);
     }
   }
 }

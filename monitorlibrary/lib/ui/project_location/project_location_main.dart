@@ -18,7 +18,7 @@ class _ProjectLocationMainState extends State<ProjectLocationMain> {
   @override
   void initState() {
     super.initState();
-   // _getProjectLocations();
+    // _getProjectLocations();
   }
 
   var isBusy = false;
@@ -27,7 +27,8 @@ class _ProjectLocationMainState extends State<ProjectLocationMain> {
     setState(() {
       isBusy = true;
     });
-    await monitorBloc.getProjectPositions(projectId: widget.project.projectId);
+    await monitorBloc.getProjectPositions(
+        projectId: widget.project.projectId!, forceRefresh: true);
     setState(() {
       isBusy = false;
     });

@@ -31,6 +31,7 @@ public class ListController {
     @Autowired
     private ListService listService;
 
+
     @GetMapping("/findUserByEmail")
     public ResponseEntity<Object> findUserByEmail(@RequestParam String email) {
         LOGGER.info(Emoji.DICE.concat(Emoji.DICE).concat("findUserByEmail ... email: ".concat(email)));

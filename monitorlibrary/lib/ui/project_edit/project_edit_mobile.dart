@@ -20,13 +20,13 @@ class ProjectEditMobile extends StatefulWidget {
 
 class _ProjectEditMobileState extends State<ProjectEditMobile>
     with SingleTickerProviderStateMixin {
-  AnimationController _controller;
+  late AnimationController _controller;
   var nameController = TextEditingController();
   var descController = TextEditingController();
   var maxController = TextEditingController(text: '50.0');
   var isBusy = false;
 
-  User admin;
+  User? admin;
   final _formKey = GlobalKey<FormState>();
 
   @override
@@ -39,14 +39,16 @@ class _ProjectEditMobileState extends State<ProjectEditMobile>
 
   void _getUser() async {
     admin = await Prefs.getUser();
-    pp('🎽 🎽 🎽 We have an admin user? 🎽 🎽 🎽 ${admin.toJson()}');
-    setState(() {});
+    if (admin != null) {
+      pp('🎽 🎽 🎽 We have an admin user? 🎽 🎽 🎽 ${admin!.toJson()}');
+      setState(() {});
+    }
   }
 
   void _setup() {
     if (widget.project != null) {
-      nameController.text = widget.project.name;
-      descController.text = widget.project.description;
+      nameController.text = widget.project.name!;
+      descController.text = widget.project.description!;
       maxController.text = '${widget.project.monitorMaxDistanceInMetres}';
     }
   }
@@ -58,7 +60,7 @@ class _ProjectEditMobileState extends State<ProjectEditMobile>
   }
 
   void _submit() async {
-    if (_formKey.currentState.validate()) {
+    if (_formKey.currentState!.validate()) {
       setState(() {
         isBusy = true;
       });
@@ -70,10 +72,16 @@ class _ProjectEditMobileState extends State<ProjectEditMobile>
           mProject = Project(
               name: nameController.text,
               description: descController.text,
-              organizationId: admin.organizationId,
-              organizationName: admin.organizationName,
+              organizationId: admin!.organizationId!,
+              organizationName: admin!.organizationName!,
               created: DateTime.now().toIso8601String(),
               monitorMaxDistanceInMetres: double.parse(maxController.text),
+              photos: [],
+              videos: [],
+              communities: [],
+              monitorReports: [],
+              nearestCities: [],
+              projectPositions: [], ratings: [],
               projectId: uuid.v4());
           var m = await adminBloc.addProject(mProject);
           pp('🎽 🎽 🎽 _submit: new project added .........  ${m.toJson()}');
@@ -89,7 +97,7 @@ class _ProjectEditMobileState extends State<ProjectEditMobile>
           isBusy = false;
         });
         monitorBloc.getOrganizationProjects(
-            organizationId: mProject.organizationId, forceRefresh: true);
+            organizationId: mProject.organizationId!, forceRefresh: true);
         _navigateToProjectLocation(mProject);
       } catch (e) {
         setState(() {
@@ -154,7 +162,7 @@ class _ProjectEditMobileState extends State<ProjectEditMobile>
                   height: 8,
                 ),
                 Text(
-                  admin == null ? '' : '${admin.organizationName}',
+                  admin == null ? '' : '${admin!.organizationName!}',
                   style: Styles.whiteSmall,
                 ),
                 SizedBox(
@@ -190,7 +198,7 @@ class _ProjectEditMobileState extends State<ProjectEditMobile>
                             labelText: 'Project Name',
                             hintText: 'Enter Project Name'),
                         validator: (value) {
-                          if (value.isEmpty) {
+                          if (value!.isEmpty) {
                             return 'Please enter Project name';
                           }
                           return null;
@@ -213,7 +221,7 @@ class _ProjectEditMobileState extends State<ProjectEditMobile>
                             labelText: 'Description',
                             hintText: 'Enter Project Description'),
                         validator: (value) {
-                          if (value.isEmpty) {
+                          if (value!.isEmpty) {
                             return 'Please enter Project Description';
                           }
                           return null;
@@ -234,7 +242,7 @@ class _ProjectEditMobileState extends State<ProjectEditMobile>
                             hintText:
                                 'Enter Maximum Monitor Distance in metres'),
                         validator: (value) {
-                          if (value.isEmpty) {
+                          if (value!.isEmpty) {
                             return 'Please enter Maximum Monitor Distance in Metres';
                           }
                           return null;

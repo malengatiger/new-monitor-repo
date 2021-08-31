@@ -12,7 +12,7 @@ class MediaListTablet extends StatefulWidget {
 
 class _MediaListTabletState extends State<MediaListTablet>
     with SingleTickerProviderStateMixin {
-  AnimationController _controller;
+  late AnimationController _controller;
 
   @override
   void initState() {

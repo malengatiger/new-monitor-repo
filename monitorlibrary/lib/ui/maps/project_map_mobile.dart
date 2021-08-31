@@ -6,26 +6,24 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:monitorlibrary/data/photo.dart';
 import 'package:monitorlibrary/data/project.dart';
 import 'package:monitorlibrary/data/project_position.dart';
-import 'package:monitorlibrary/users/special_snack.dart';
 
 import '../../functions.dart';
 
 class ProjectMapMobile extends StatefulWidget {
   final Project project;
   final List<ProjectPosition> projectPositions;
-  final Photo photo;
+  final Photo? photo;
 
   ProjectMapMobile(
-      {@required this.project, @required this.projectPositions, this.photo});
+      {required this.project, required this.projectPositions, this.photo});
 
   @override
   _ProjectMapMobileState createState() => _ProjectMapMobileState();
 }
 
 class _ProjectMapMobileState extends State<ProjectMapMobile>
-    with SingleTickerProviderStateMixin
-    implements SpecialSnackListener {
-  AnimationController _controller;
+    with SingleTickerProviderStateMixin{
+  late AnimationController _controller;
   Completer<GoogleMapController> _mapController = Completer();
   Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
   var random = Random(DateTime.now().millisecondsSinceEpoch);
@@ -49,7 +47,7 @@ class _ProjectMapMobileState extends State<ProjectMapMobile>
     super.dispose();
   }
 
-  GoogleMapController googleMapController;
+  GoogleMapController? googleMapController;
   Future<void> _addMarkers() async {
     pp('💜 💜 💜 💜 💜 💜 ProjectMapMobile: _addMarkers: ....... 🍎 ${widget.projectPositions.length}');
     markers.clear();
@@ -60,8 +58,8 @@ class _ProjectMapMobileState extends State<ProjectMapMobile>
         markerId: markerId,
         // icon: markerIcon,
         position: LatLng(
-          projectPosition.position.coordinates.elementAt(1),
-          projectPosition.position.coordinates.elementAt(0),
+          projectPosition.position!.coordinates.elementAt(1),
+          projectPosition.position!.coordinates.elementAt(0),
         ),
         infoWindow: InfoWindow(
             title: projectPosition.projectName,
@@ -76,18 +74,18 @@ class _ProjectMapMobileState extends State<ProjectMapMobile>
       target: LatLng(
           widget.projectPositions
               .elementAt(0)
-              .position
+              .position!
               .coordinates
               .elementAt(1),
           widget.projectPositions
               .elementAt(0)
-              .position
+              .position!
               .coordinates
               .elementAt(0)),
       zoom: 14.4746,
     );
     googleMapController = await _mapController.future;
-    googleMapController.animateCamera(CameraUpdate.newCameraPosition(_first));
+    googleMapController!.animateCamera(CameraUpdate.newCameraPosition(_first));
   }
 
   void _onMarkerTapped(ProjectPosition projectPosition) {
@@ -101,7 +99,7 @@ class _ProjectMapMobileState extends State<ProjectMapMobile>
         key: _key,
         appBar: AppBar(
           title: Text(
-            widget.project.name,
+            widget.project.name!,
             style: Styles.whiteSmall,
           ),
         ),
@@ -134,13 +132,13 @@ class _ProjectMapMobileState extends State<ProjectMapMobile>
                               height: 12,
                             ),
                             Image.network(
-                              widget.photo.thumbnailUrl,
+                              widget.photo!.thumbnailUrl!,
                               width: 140,
                               height: 140,
                               fit: BoxFit.fill,
                             ),
                             Text(
-                              '${getFormattedDateShortestWithTime(widget.photo.created, context)}',
+                              '${getFormattedDateShortestWithTime(widget.photo!.created!, context)}',
                               style: Styles.whiteTiny,
                             )
                           ],
@@ -157,6 +155,6 @@ class _ProjectMapMobileState extends State<ProjectMapMobile>
 
   @override
   onClose() {
-    ScaffoldMessenger.of(_key.currentState.context).removeCurrentSnackBar();
+    ScaffoldMessenger.of(_key.currentState!.context).removeCurrentSnackBar();
   }
 }

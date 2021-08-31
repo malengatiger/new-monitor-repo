@@ -9,14 +9,14 @@ import '../../functions.dart';
 class MessageMobile extends StatefulWidget {
   final User user;
 
-  const MessageMobile({Key key, this.user}) : super(key: key);
+  const MessageMobile({Key? key, required this.user}) : super(key: key);
   @override
   _MessageMobileState createState() => _MessageMobileState();
 }
 
 class _MessageMobileState extends State<MessageMobile>
     with SingleTickerProviderStateMixin {
-  AnimationController _controller;
+  late AnimationController _controller;
   var _key = GlobalKey<ScaffoldState>();
   List<Project> _projects = [];
 
@@ -44,13 +44,13 @@ class _MessageMobileState extends State<MessageMobile>
       isBusy = true;
     });
     _projects = await monitorBloc.getOrganizationProjects(
-        organizationId: widget.user.organizationId, forceRefresh: force);
+        organizationId: widget.user.organizationId!, forceRefresh: force);
     setState(() {
       isBusy = false;
     });
   }
 
-  Project _selectedProject;
+  Project? _selectedProject;
   bool _genericMessage = false;
 
   @override
@@ -94,7 +94,7 @@ class _MessageMobileState extends State<MessageMobile>
                         elevation: 8,
                         child: SingleChildScrollView(
                             child: GenericMessage(
-                                project: _selectedProject, user: widget.user))),
+                                project: _selectedProject!, user: widget.user))),
                   ),
                 ),
                 SizedBox(

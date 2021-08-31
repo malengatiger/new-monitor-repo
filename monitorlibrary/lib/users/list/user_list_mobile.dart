@@ -25,11 +25,11 @@ class UserListMobile extends StatefulWidget {
 
 class _UserListMobileState extends State<UserListMobile>
     with SingleTickerProviderStateMixin {
-  AnimationController _controller;
+  late AnimationController _controller;
   bool isBusy = false;
   var _users = <User>[];
   var _key = GlobalKey<ScaffoldState>();
-  User _user;
+  User? _user;
 
   @override
   void initState() {
@@ -58,9 +58,9 @@ class _UserListMobileState extends State<UserListMobile>
     try {
       _user = await Prefs.getUser();
       _users = await monitorBloc.getOrganizationUsers(
-          organizationId: widget.user.organizationId,
+          organizationId: widget.user!.organizationId!,
           forceRefresh: forceRefresh);
-      _users.sort((a, b) => (a.name.compareTo(b.name)));
+      _users.sort((a, b) => (a.name!.compareTo(b.name!)));
     } catch (e) {
       AppSnackbar.showErrorSnackbar(
           scaffoldKey: _key, message: 'Organization user refresh failed');
@@ -153,7 +153,7 @@ class _UserListMobileState extends State<UserListMobile>
           }));
     }
     if (widget.user.userType == FIELD_MONITOR) {
-      if (_user.userId == user.userId) {
+      if (_user!.userId == user.userId) {
         list.add(FocusedMenuItem(
             title: Text('FieldMonitor Home Base'),
             trailingIcon: Icon(
@@ -186,7 +186,7 @@ class _UserListMobileState extends State<UserListMobile>
           stream: monitorBloc.usersStream,
           builder: (context, snapshot) {
             if (snapshot.hasData) {
-              _users = snapshot.data;
+              _users = snapshot.data!;
             }
             return Scaffold(
               key: _key,
@@ -202,7 +202,7 @@ class _UserListMobileState extends State<UserListMobile>
                     child: Column(
                       children: [
                         Text(
-                          widget.user.organizationName,
+                          widget.user.organizationName!,
                           style: Styles.whiteBoldSmall,
                         ),
                         SizedBox(
@@ -282,11 +282,11 @@ class _UserListMobileState extends State<UserListMobile>
                                         color: Theme.of(context).primaryColor,
                                       ),
                                       subtitle: Text(
-                                        user.email,
+                                        user.email!,
                                         style: Styles.greyLabelSmall,
                                       ),
                                       title: Text(
-                                        user.name,
+                                        user.name!,
                                         style: Styles.blackBoldSmall,
                                       ),
                                     ),
@@ -317,20 +317,20 @@ class _UserListMobileState extends State<UserListMobile>
     );
   }
 
-  void _navigateToUserEdit(User user) async {
+  void _navigateToUserEdit(User? user) async {
     var list = await Navigator.push(
         context,
         PageTransition(
             type: PageTransitionType.scale,
             alignment: Alignment.topLeft,
             duration: Duration(seconds: 1),
-            child: UserEditMain(user)));
+            child: UserEditMain(user!)));
     pp('UserListMobile: 💛️ 💛️ Back from user edit, check if we need to refresh? list: ${list.length}');
 
     if (list != null) {
       if (mounted) {
         _users = list;
-        _users.sort((a, b) => (a.name.compareTo(b.name)));
+        _users.sort((a, b) => (a.name!.compareTo(b.name!)));
         setState(() {});
       }
     }

@@ -4,12 +4,12 @@ import '../functions.dart';
 
 class RoundNumber extends StatelessWidget {
   final int number;
-  final double height, width;
-  final Color color;
-  final TextStyle textStyle;
+  final double? height, width;
+  final Color? color;
+  final TextStyle? textStyle;
 
   const RoundNumber(this.number,
-      {this.height, this.width, this.color, this.textStyle});
+      {required this.height, required this.width, required this.color, required this.textStyle});
 
   @override
   Widget build(BuildContext context) {

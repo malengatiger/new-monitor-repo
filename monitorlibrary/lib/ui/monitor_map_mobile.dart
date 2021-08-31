@@ -21,14 +21,14 @@ class MonitorMapMobile extends StatefulWidget {
 
 class _MonitorMapMobileState extends State<MonitorMapMobile>
     with SingleTickerProviderStateMixin {
-  AnimationController _controller;
+  late AnimationController _controller;
   List<ProjectPosition> projectPositions = [];
   List<Project> projects = [];
-  User user;
+  User? user;
   bool isBusy = false;
-  GoogleMapController googleMapController;
+  GoogleMapController? googleMapController;
 
-  BitmapDescriptor markerIcon;
+  BitmapDescriptor? markerIcon;
 
   bool isPortrait = true;
 
@@ -57,7 +57,7 @@ class _MonitorMapMobileState extends State<MonitorMapMobile>
       isBusy = true;
     });
     user = await Prefs.getUser();
-    pp('🍎 🍎 🍎 user found: 🍎 ${user.name}');
+    pp('🍎 🍎 🍎 user found: 🍎 ${user!.name!}');
     setState(() {
       isBusy = false;
     });
@@ -71,11 +71,11 @@ class _MonitorMapMobileState extends State<MonitorMapMobile>
     try {
       user = await Prefs.getUser();
       projects = await monitorBloc.getOrganizationProjects(
-          organizationId: user.organizationId, forceRefresh: forceRefresh);
+          organizationId: user!.organizationId!, forceRefresh: forceRefresh);
 
       for (var i = 0; i < projects.length; i++) {
         var pos = await monitorBloc.getProjectPositions(
-            projectId: projects.elementAt(i).projectId,
+            projectId: projects.elementAt(i).projectId!,
             forceRefresh: forceRefresh);
         projectPositions.addAll(pos);
       }
@@ -112,8 +112,8 @@ class _MonitorMapMobileState extends State<MonitorMapMobile>
         markerId: markerId,
         // icon: markerIcon,
         position: LatLng(
-          projectPosition.position.coordinates.elementAt(1),
-          projectPosition.position.coordinates.elementAt(0),
+          projectPosition.position!.coordinates.elementAt(1),
+          projectPosition.position!.coordinates.elementAt(0),
         ),
         infoWindow: InfoWindow(
             title: projectPosition.projectName,
@@ -129,12 +129,12 @@ class _MonitorMapMobileState extends State<MonitorMapMobile>
     });
     final CameraPosition _first = CameraPosition(
       target: LatLng(
-          projectPositions.elementAt(0).position.coordinates.elementAt(1),
-          projectPositions.elementAt(0).position.coordinates.elementAt(0)),
+          projectPositions.elementAt(0).position!.coordinates.elementAt(1),
+          projectPositions.elementAt(0).position!.coordinates.elementAt(0)),
       zoom: 14.4746,
     );
     googleMapController = await _mapController.future;
-    googleMapController.animateCamera(CameraUpdate.newCameraPosition(_first));
+    googleMapController!.animateCamera(CameraUpdate.newCameraPosition(_first));
   }
 
   var _key = GlobalKey<ScaffoldState>();
@@ -164,13 +164,13 @@ class _MonitorMapMobileState extends State<MonitorMapMobile>
                       child: Column(
                         children: [
                           Text(
-                            user == null ? '' : user.name,
+                            user == null ? '' : user!.name!,
                             style: Styles.whiteBoldSmall,
                           ),
                           SizedBox(
                             height: 20,
                           ),
-                          Text(user == null ? '' : user.organizationName,
+                          Text(user == null ? '' : user!.organizationName!,
                               style: Styles.blackBoldSmall),
                           SizedBox(
                             height: 40,
@@ -234,7 +234,7 @@ class _MonitorMapMobileState extends State<MonitorMapMobile>
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: [
                                 Text(
-                                  user == null ? '' : user.organizationName,
+                                  user == null ? '' : user!.organizationName!,
                                   style: Styles.blackBoldSmall,
                                 ),
                                 SizedBox(

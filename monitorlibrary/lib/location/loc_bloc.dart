@@ -23,7 +23,7 @@ class LocationBloc {
   }
 
   Future<double> getDistanceFromCurrentPosition(
-      {@required double latitude, @required double longitude}) async {
+      {required double latitude, required double longitude}) async {
     assert(latitude != null);
     assert(longitude != null);
     var pos = await getLocation();

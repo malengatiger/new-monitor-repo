@@ -1,0 +1,2160 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "OpenAPI definition",
+    "version": "v0"
+  },
+  "servers": [
+    {
+      "url": "http://192.168.86.240:8087",
+      "description": "Generated server url"
+    }
+  ],
+  "paths": {
+    "/updateUser": {
+      "post": {
+        "tags": [
+          "data-controller"
+        ],
+        "operationId": "updateUser",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/User"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/updateProject": {
+      "post": {
+        "tags": [
+          "data-controller"
+        ],
+        "operationId": "updateProject",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Project"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sendMessage": {
+      "post": {
+        "tags": [
+          "data-controller"
+        ],
+        "operationId": "sendMessage",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OrgMessage"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/addVideo": {
+      "post": {
+        "tags": [
+          "data-controller"
+        ],
+        "operationId": "addVideo",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Video"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/addUser": {
+      "post": {
+        "tags": [
+          "data-controller"
+        ],
+        "operationId": "addUser",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/User"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/addProject": {
+      "post": {
+        "tags": [
+          "data-controller"
+        ],
+        "operationId": "addProject",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Project"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/addProjectPosition": {
+      "post": {
+        "tags": [
+          "data-controller"
+        ],
+        "operationId": "addProjectPosition",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProjectPosition"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/addPhoto": {
+      "post": {
+        "tags": [
+          "data-controller"
+        ],
+        "operationId": "addPhoto",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Photo"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/addOrganization": {
+      "post": {
+        "tags": [
+          "data-controller"
+        ],
+        "operationId": "addOrganization",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Organization"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/addFieldMonitorSchedule": {
+      "post": {
+        "tags": [
+          "data-controller"
+        ],
+        "operationId": "addFieldMonitorSchedule",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FieldMonitorSchedule"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/addCountry": {
+      "post": {
+        "tags": [
+          "data-controller"
+        ],
+        "operationId": "addCountry",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Country"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/addCondition": {
+      "post": {
+        "tags": [
+          "data-controller"
+        ],
+        "operationId": "addCondition",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Condition"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/addCommunity": {
+      "post": {
+        "tags": [
+          "data-controller"
+        ],
+        "operationId": "addCommunity",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Community"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/addCity": {
+      "post": {
+        "tags": [
+          "data-controller"
+        ],
+        "operationId": "addCity",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/City"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/ping": {
+      "get": {
+        "tags": [
+          "data-controller"
+        ],
+        "operationId": "ping",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/migrateCities": {
+      "get": {
+        "tags": [
+          "generator-controller"
+        ],
+        "operationId": "migrateCities",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/getUsers": {
+      "get": {
+        "tags": [
+          "list-controller"
+        ],
+        "operationId": "getUsers",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/getUserProjectVideos": {
+      "get": {
+        "tags": [
+          "list-controller"
+        ],
+        "operationId": "getUserProjectVideos",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/getUserProjectPhotos": {
+      "get": {
+        "tags": [
+          "list-controller"
+        ],
+        "operationId": "getUserProjectPhotos",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/getQuestionnairesByOrganization": {
+      "get": {
+        "tags": [
+          "list-controller"
+        ],
+        "operationId": "getQuestionnairesByOrganization",
+        "parameters": [
+          {
+            "name": "organizationId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/getProjects": {
+      "get": {
+        "tags": [
+          "list-controller"
+        ],
+        "operationId": "getProjects",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/getProjectVideos": {
+      "get": {
+        "tags": [
+          "list-controller"
+        ],
+        "operationId": "getProjectVideos",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/getProjectPositions": {
+      "get": {
+        "tags": [
+          "list-controller"
+        ],
+        "operationId": "getProjectPositions",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/getProjectPhotos": {
+      "get": {
+        "tags": [
+          "list-controller"
+        ],
+        "operationId": "getProjectPhotos",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/getProjectFieldMonitorSchedules": {
+      "get": {
+        "tags": [
+          "list-controller"
+        ],
+        "operationId": "getProjectFieldMonitorSchedules",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/getProjectConditions": {
+      "get": {
+        "tags": [
+          "list-controller"
+        ],
+        "operationId": "getProjectConditions",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/getOrganizations": {
+      "get": {
+        "tags": [
+          "list-controller"
+        ],
+        "operationId": "getOrganizations",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/getOrganizationVideos": {
+      "get": {
+        "tags": [
+          "list-controller"
+        ],
+        "operationId": "getOrganizationVideos",
+        "parameters": [
+          {
+            "name": "organizationId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/getOrganizationUsers": {
+      "get": {
+        "tags": [
+          "list-controller"
+        ],
+        "operationId": "getOrganizationUsers",
+        "parameters": [
+          {
+            "name": "organizationId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/getOrganizationProjects": {
+      "get": {
+        "tags": [
+          "list-controller"
+        ],
+        "operationId": "getOrganizationProjects",
+        "parameters": [
+          {
+            "name": "organizationId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/getOrganizationPhotos": {
+      "get": {
+        "tags": [
+          "list-controller"
+        ],
+        "operationId": "getOrganizationPhotos",
+        "parameters": [
+          {
+            "name": "organizationId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/getOrgFieldMonitorSchedules": {
+      "get": {
+        "tags": [
+          "list-controller"
+        ],
+        "operationId": "getOrgFieldMonitorSchedules",
+        "parameters": [
+          {
+            "name": "organizationId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/getNearbyCities": {
+      "get": {
+        "tags": [
+          "list-controller"
+        ],
+        "operationId": "getNearbyCities",
+        "parameters": [
+          {
+            "name": "latitude",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "number",
+              "format": "double"
+            }
+          },
+          {
+            "name": "longitude",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "number",
+              "format": "double"
+            }
+          },
+          {
+            "name": "radiusInKM",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "number",
+              "format": "double"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/getMonitorFieldMonitorSchedules": {
+      "get": {
+        "tags": [
+          "list-controller"
+        ],
+        "operationId": "getMonitorFieldMonitorSchedules",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/getCountsByUser": {
+      "get": {
+        "tags": [
+          "list-controller"
+        ],
+        "operationId": "getCountsByUser",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/getCountsByProject": {
+      "get": {
+        "tags": [
+          "list-controller"
+        ],
+        "operationId": "getCountsByProject",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/getCountryOrganizations": {
+      "get": {
+        "tags": [
+          "list-controller"
+        ],
+        "operationId": "getCountryOrganizations",
+        "parameters": [
+          {
+            "name": "countryId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/getCountries": {
+      "get": {
+        "tags": [
+          "list-controller"
+        ],
+        "operationId": "getCountries",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/getCommunities": {
+      "get": {
+        "tags": [
+          "list-controller"
+        ],
+        "operationId": "getCommunities",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/getCities": {
+      "get": {
+        "tags": [
+          "list-controller"
+        ],
+        "operationId": "getCities",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/generateUsers": {
+      "get": {
+        "tags": [
+          "generator-controller"
+        ],
+        "operationId": "generateUsers",
+        "parameters": [
+          {
+            "name": "eraseExistingUsers",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/generateProjects": {
+      "get": {
+        "tags": [
+          "generator-controller"
+        ],
+        "operationId": "generateProjects",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/generateOrganizations": {
+      "get": {
+        "tags": [
+          "generator-controller"
+        ],
+        "operationId": "generateOrganizations",
+        "parameters": [
+          {
+            "name": "numberOfOrgs",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/generateCountries": {
+      "get": {
+        "tags": [
+          "generator-controller"
+        ],
+        "operationId": "generateCountries",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/generateCommunities": {
+      "get": {
+        "tags": [
+          "generator-controller"
+        ],
+        "operationId": "generateCommunities",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/findUserByEmail": {
+      "get": {
+        "tags": [
+          "list-controller"
+        ],
+        "operationId": "findUserByEmail",
+        "parameters": [
+          {
+            "name": "email",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/findProjectsByOrganization": {
+      "get": {
+        "tags": [
+          "list-controller"
+        ],
+        "operationId": "findProjectsByOrganization",
+        "parameters": [
+          {
+            "name": "organizationId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/findProjectsByLocation": {
+      "get": {
+        "tags": [
+          "list-controller"
+        ],
+        "operationId": "findProjectsByLocation",
+        "parameters": [
+          {
+            "name": "latitude",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "number",
+              "format": "double"
+            }
+          },
+          {
+            "name": "longitude",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "number",
+              "format": "double"
+            }
+          },
+          {
+            "name": "radiusInKM",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "number",
+              "format": "double"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/findProjectPositionsByLocation": {
+      "get": {
+        "tags": [
+          "list-controller"
+        ],
+        "operationId": "findProjectPositionsByLocation",
+        "parameters": [
+          {
+            "name": "latitude",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "number",
+              "format": "double"
+            }
+          },
+          {
+            "name": "longitude",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "number",
+              "format": "double"
+            }
+          },
+          {
+            "name": "radiusInKM",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "number",
+              "format": "double"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/findCommunitiesByCountry": {
+      "get": {
+        "tags": [
+          "list-controller"
+        ],
+        "operationId": "findCommunitiesByCountry",
+        "parameters": [
+          {
+            "name": "countryId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/findCitiesByLocation": {
+      "get": {
+        "tags": [
+          "list-controller"
+        ],
+        "operationId": "findCitiesByLocation",
+        "parameters": [
+          {
+            "name": "latitude",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "number",
+              "format": "double"
+            }
+          },
+          {
+            "name": "longitude",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "number",
+              "format": "double"
+            }
+          },
+          {
+            "name": "radiusInKM",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "number",
+              "format": "double"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/countVideosByUser": {
+      "get": {
+        "tags": [
+          "list-controller"
+        ],
+        "operationId": "countVideosByUser",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/countVideosByProject": {
+      "get": {
+        "tags": [
+          "list-controller"
+        ],
+        "operationId": "countVideosByProject",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/countPhotosByUser": {
+      "get": {
+        "tags": [
+          "list-controller"
+        ],
+        "operationId": "countPhotosByUser",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/countPhotosByProject": {
+      "get": {
+        "tags": [
+          "list-controller"
+        ],
+        "operationId": "countPhotosByProject",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Position": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "coordinates": {
+            "type": "array",
+            "items": {
+              "type": "number",
+              "format": "double"
+            }
+          }
+        }
+      },
+      "User": {
+        "type": "object",
+        "properties": {
+          "get_partitionKey": {
+            "type": "string"
+          },
+          "get_id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "cellphone": {
+            "type": "string"
+          },
+          "userId": {
+            "type": "string"
+          },
+          "organizationId": {
+            "type": "string"
+          },
+          "organizationName": {
+            "type": "string"
+          },
+          "created": {
+            "type": "string"
+          },
+          "fcmRegistration": {
+            "type": "string"
+          },
+          "userType": {
+            "type": "string",
+            "enum": [
+              "ORG_ADMINISTRATOR",
+              "OFFICIAL",
+              "EXECUTIVE",
+              "FIELD_MONITOR",
+              "ORGANIZATION_USER",
+              "NETWORK_ADMINISTRATOR"
+            ]
+          },
+          "password": {
+            "type": "string"
+          },
+          "position": {
+            "$ref": "#/components/schemas/Position"
+          }
+        }
+      },
+      "City": {
+        "type": "object",
+        "properties": {
+          "get_partitionKey": {
+            "type": "string"
+          },
+          "get_id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "cityId": {
+            "type": "string"
+          },
+          "countryId": {
+            "type": "string"
+          },
+          "provinceName": {
+            "type": "string"
+          },
+          "position": {
+            "$ref": "#/components/schemas/Position"
+          }
+        }
+      },
+      "Project": {
+        "type": "object",
+        "properties": {
+          "get_partitionKey": {
+            "type": "string"
+          },
+          "get_id": {
+            "type": "string"
+          },
+          "projectId": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "organizationId": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "organizationName": {
+            "type": "string"
+          },
+          "monitorMaxDistanceInMetres": {
+            "type": "number",
+            "format": "double"
+          },
+          "created": {
+            "type": "string"
+          },
+          "nearestCities": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/City"
+            }
+          },
+          "position": {
+            "$ref": "#/components/schemas/Position"
+          }
+        }
+      },
+      "OrgMessage": {
+        "type": "object",
+        "properties": {
+          "organizationId": {
+            "type": "string"
+          },
+          "projectId": {
+            "type": "string"
+          },
+          "userId": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "created": {
+            "type": "string"
+          },
+          "fcmRegistration": {
+            "type": "string"
+          },
+          "projectName": {
+            "type": "string"
+          },
+          "adminId": {
+            "type": "string"
+          },
+          "adminName": {
+            "type": "string"
+          },
+          "frequency": {
+            "type": "string"
+          },
+          "result": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "Video": {
+        "type": "object",
+        "properties": {
+          "get_partitionKey": {
+            "type": "string"
+          },
+          "get_id": {
+            "type": "string"
+          },
+          "projectId": {
+            "type": "string"
+          },
+          "projectName": {
+            "type": "string"
+          },
+          "videoId": {
+            "type": "string"
+          },
+          "organizationId": {
+            "type": "string"
+          },
+          "projectPosition": {
+            "$ref": "#/components/schemas/Position"
+          },
+          "distanceFromProjectPosition": {
+            "type": "number",
+            "format": "double"
+          },
+          "url": {
+            "type": "string"
+          },
+          "thumbnailUrl": {
+            "type": "string"
+          },
+          "caption": {
+            "type": "string"
+          },
+          "userId": {
+            "type": "string"
+          },
+          "userName": {
+            "type": "string"
+          },
+          "created": {
+            "type": "string"
+          }
+        }
+      },
+      "Placemark": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "street": {
+            "type": "string"
+          },
+          "isoCountryCode": {
+            "type": "string"
+          },
+          "country": {
+            "type": "string"
+          },
+          "postalCode": {
+            "type": "string"
+          },
+          "administrativeArea": {
+            "type": "string"
+          },
+          "locality": {
+            "type": "string"
+          },
+          "subLocality": {
+            "type": "string"
+          },
+          "subThoroughfare": {
+            "type": "string"
+          },
+          "thoroughfare": {
+            "type": "string"
+          }
+        }
+      },
+      "ProjectPosition": {
+        "type": "object",
+        "properties": {
+          "projectId": {
+            "type": "string"
+          },
+          "position": {
+            "$ref": "#/components/schemas/Position"
+          },
+          "projectName": {
+            "type": "string"
+          },
+          "caption": {
+            "type": "string"
+          },
+          "created": {
+            "type": "string"
+          },
+          "placemark": {
+            "$ref": "#/components/schemas/Placemark"
+          },
+          "nearestCities": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/City"
+            }
+          }
+        }
+      },
+      "Photo": {
+        "type": "object",
+        "properties": {
+          "get_partitionKey": {
+            "type": "string"
+          },
+          "get_id": {
+            "type": "string"
+          },
+          "projectId": {
+            "type": "string"
+          },
+          "projectName": {
+            "type": "string"
+          },
+          "photoId": {
+            "type": "string"
+          },
+          "organizationId": {
+            "type": "string"
+          },
+          "projectPosition": {
+            "$ref": "#/components/schemas/Position"
+          },
+          "distanceFromProjectPosition": {
+            "type": "number",
+            "format": "double"
+          },
+          "url": {
+            "type": "string"
+          },
+          "thumbnailUrl": {
+            "type": "string"
+          },
+          "caption": {
+            "type": "string"
+          },
+          "userId": {
+            "type": "string"
+          },
+          "userName": {
+            "type": "string"
+          },
+          "created": {
+            "type": "string"
+          },
+          "height": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "width": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "Organization": {
+        "type": "object",
+        "properties": {
+          "get_partitionKey": {
+            "type": "string"
+          },
+          "get_id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "countryName": {
+            "type": "string"
+          },
+          "countryId": {
+            "type": "string"
+          },
+          "organizationId": {
+            "type": "string"
+          },
+          "created": {
+            "type": "string"
+          }
+        }
+      },
+      "FieldMonitorSchedule": {
+        "type": "object",
+        "properties": {
+          "adminId": {
+            "type": "string"
+          },
+          "projectId": {
+            "type": "string"
+          },
+          "fieldMonitorScheduleId": {
+            "type": "string"
+          },
+          "date": {
+            "type": "string"
+          },
+          "organizationId": {
+            "type": "string"
+          },
+          "fieldMonitorId": {
+            "type": "string"
+          },
+          "projectName": {
+            "type": "string"
+          },
+          "organizationName": {
+            "type": "string"
+          },
+          "perDay": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "perWeek": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "perMonth": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "Country": {
+        "type": "object",
+        "properties": {
+          "get_partitionKey": {
+            "type": "string"
+          },
+          "get_id": {
+            "type": "string"
+          },
+          "countryId": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "countryCode": {
+            "type": "string"
+          },
+          "position": {
+            "$ref": "#/components/schemas/Position"
+          }
+        }
+      },
+      "Condition": {
+        "type": "object",
+        "properties": {
+          "get_partitionKey": {
+            "type": "string"
+          },
+          "get_id": {
+            "type": "string"
+          },
+          "projectId": {
+            "type": "string"
+          },
+          "organizationId": {
+            "type": "string"
+          },
+          "projectName": {
+            "type": "string"
+          },
+          "projectPosition": {
+            "$ref": "#/components/schemas/Position"
+          },
+          "rating": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "caption": {
+            "type": "string"
+          },
+          "userId": {
+            "type": "string"
+          },
+          "userName": {
+            "type": "string"
+          },
+          "created": {
+            "type": "string"
+          }
+        }
+      },
+      "Community": {
+        "type": "object",
+        "properties": {
+          "get_partitionKey": {
+            "type": "string"
+          },
+          "get_id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "communityId": {
+            "type": "string"
+          },
+          "countryId": {
+            "type": "string"
+          },
+          "population": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "countryName": {
+            "type": "string"
+          },
+          "polygon": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Position"
+            }
+          },
+          "photos": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Photo"
+            }
+          },
+          "videos": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Video"
+            }
+          },
+          "nearestCities": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/City"
+            }
+          }
+        }
+      }
+    }
+  }
+}

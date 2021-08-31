@@ -12,7 +12,7 @@ class VideoDesktop extends StatefulWidget {
 
 class _VideoDesktopState extends State<VideoDesktop>
     with SingleTickerProviderStateMixin {
-  AnimationController _controller;
+  late AnimationController _controller;
 
   @override
   void initState() {

@@ -8,7 +8,7 @@ import 'package:responsive_builder/responsive_builder.dart';
 class CreditCardHandlerMain extends StatefulWidget {
   final User user;
 
-  const CreditCardHandlerMain({Key key, this.user}) : super(key: key);
+  const CreditCardHandlerMain({Key? key, required this.user}) : super(key: key);
 
   @override
   _CreditCardHandlerMainState createState() => _CreditCardHandlerMainState();
@@ -16,7 +16,7 @@ class CreditCardHandlerMain extends StatefulWidget {
 
 class _CreditCardHandlerMainState extends State<CreditCardHandlerMain>
     with SingleTickerProviderStateMixin {
-  AnimationController _controller;
+  late AnimationController _controller;
 
   @override
   void initState() {

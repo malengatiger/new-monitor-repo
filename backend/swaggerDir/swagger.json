@@ -1,0 +1,13 @@
+{
+  "swagger" : "2.0",
+  "info" : {
+    "description" : "This is the backend api for the Monitor Platform",
+    "version" : "0.0.1",
+    "title" : "MonitorAPI",
+    "contact" : {
+      "name" : "Monitor Support",
+      "url" : "http://www.swagger.io/support",
+      "email" : "aubrey@aftarobot.com"
+    }
+  }
+}

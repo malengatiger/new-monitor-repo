@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:monitorlibrary/data/user.dart';
 
 class UserEditDesktop extends StatefulWidget {
-  final User user;
+  final User? user;
 
   UserEditDesktop(this.user);
 
@@ -12,7 +12,7 @@ class UserEditDesktop extends StatefulWidget {
 
 class _UserEditDesktopState extends State<UserEditDesktop>
     with SingleTickerProviderStateMixin {
-  AnimationController _controller;
+  late AnimationController _controller;
 
   @override
   void initState() {

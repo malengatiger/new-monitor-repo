@@ -1,7 +1,7 @@
 import 'package:meta/meta.dart';
 
 class FieldMonitorSchedule {
-  String fieldMonitorScheduleId,
+  String? fieldMonitorScheduleId,
       fieldMonitorId,
       adminId,
       organizationId,
@@ -9,20 +9,20 @@ class FieldMonitorSchedule {
       projectName,
       date,
       organizationName;
-  int perDay, perWeek, perMonth;
+  int? perDay, perWeek, perMonth;
 
   FieldMonitorSchedule(
-      {@required this.fieldMonitorId,
-      @required this.adminId,
-      @required this.projectId,
-      @required this.date,
-      @required this.fieldMonitorScheduleId,
+      {required this.fieldMonitorId,
+      required this.adminId,
+      required this.projectId,
+      required this.date,
+      required this.fieldMonitorScheduleId,
       this.perDay,
       this.perWeek,
       this.perMonth,
       this.projectName,
       this.organizationName,
-      @required this.organizationId});
+      required this.organizationId});
 
   FieldMonitorSchedule.fromJson(Map data) {
     this.fieldMonitorId = data['fieldMonitorId'];

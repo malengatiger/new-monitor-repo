@@ -13,8 +13,8 @@ class MonitorMessage extends StatefulWidget {
   final User user;
 
   MonitorMessage({
-    this.project,
-    this.user,
+    required this.project,
+    required this.user,
   });
 
   @override
@@ -34,8 +34,8 @@ class _MonitorMessageState extends State<MonitorMessage> {
 
   void _sendMessage() async {
     if (frequency == null) {
-      AppSnackbar.showErrorSnackbar(
-          scaffoldKey: widget.key, message: 'Please select frequency');
+      // AppSnackbar.showErrorSnackbar(
+      //     scaffoldKey: widget.key, message: 'Please select frequency');
       return;
     }
 
@@ -59,8 +59,8 @@ class _MonitorMessageState extends State<MonitorMessage> {
         var res = await DataAPI.sendMessage(msg);
         pp('MessageMobile:  🏓  🏓  🏓 Response from server:  🏓 ${res.toJson()}  🏓');
       } catch (e) {
-        AppSnackbar.showErrorSnackbar(
-            scaffoldKey: widget.key, message: 'Message Send failed : $e');
+        // AppSnackbar.showErrorSnackbar(
+        //     scaffoldKey: widget.key, message: 'Message Send failed : $e');
       }
       setState(() {
         isBusy = false;

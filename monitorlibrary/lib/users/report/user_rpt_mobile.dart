@@ -13,9 +13,9 @@ class UserReportMobile extends StatefulWidget {
 
 class _UserReportMobileState extends State<UserReportMobile>
     with SingleTickerProviderStateMixin {
-  AnimationController _controller;
+  late AnimationController _controller;
 
-  User admin;
+  User? admin;
 
   @override
   void initState() {

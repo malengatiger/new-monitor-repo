@@ -5,7 +5,7 @@ import 'package:monitorlibrary/data/project_position.dart';
 class ProjectMapTablet extends StatefulWidget {
   final Project project;
   final List<ProjectPosition> projectPositions;
-  ProjectMapTablet({this.project, this.projectPositions});
+  ProjectMapTablet({required this.project, required this.projectPositions});
 
   @override
   _ProjectMapTabletState createState() => _ProjectMapTabletState();
@@ -13,7 +13,7 @@ class ProjectMapTablet extends StatefulWidget {
 
 class _ProjectMapTabletState extends State<ProjectMapTablet>
     with SingleTickerProviderStateMixin {
-  AnimationController _controller;
+  late AnimationController _controller;
 
   @override
   void initState() {

@@ -21,9 +21,9 @@ class SchedulerMobile extends StatefulWidget {
 
 class _SchedulerMobileState extends State<SchedulerMobile>
     with SingleTickerProviderStateMixin {
-  AnimationController _controller;
+  late AnimationController _controller;
   bool busy = false;
-  User _adminUser;
+  User? _adminUser;
   List<Project> _projects = [];
   var _key = GlobalKey<ScaffoldState>();
   static const mm = 'SchedulerMobile: 🍏 🍏 🍏 🍏 ';
@@ -48,7 +48,7 @@ class _SchedulerMobileState extends State<SchedulerMobile>
     try {
       _adminUser = await Prefs.getUser();
       _projects = await monitorBloc.getOrganizationProjects(
-          organizationId: widget.user.organizationId, forceRefresh: refresh);
+          organizationId: widget.user.organizationId!, forceRefresh: refresh);
       pp('$mm ${_projects.length} projects ...');
     } catch (e) {
       AppSnackbar.showErrorSnackbar(
@@ -70,7 +70,7 @@ class _SchedulerMobileState extends State<SchedulerMobile>
                   child: Column(
                     children: [
                       Text(
-                        widget.user.name,
+                        widget.user.name!,
                         style: Styles.blackBoldMedium,
                       ),
                       Text(
@@ -117,7 +117,7 @@ class _SchedulerMobileState extends State<SchedulerMobile>
                                         color: Theme.of(context).primaryColor,
                                       ),
                                       title: Text(
-                                        _projects.elementAt(index).name,
+                                        _projects.elementAt(index).name!,
                                         style: Styles.blackBoldSmall,
                                       ),
                                     ),
@@ -140,7 +140,7 @@ class _SchedulerMobileState extends State<SchedulerMobile>
             duration: Duration(seconds: 1),
             child: FrequencyEditor(
               project: project,
-              adminUser: _adminUser,
+              adminUser: _adminUser!,
               fieldUser: widget.user,
             )));
     if (result is bool) {
@@ -160,7 +160,7 @@ class FrequencyEditor extends StatefulWidget {
   final Project project;
   final User adminUser, fieldUser;
 
-  const FrequencyEditor({Key key, this.project, this.adminUser, this.fieldUser})
+  const FrequencyEditor({Key? key, required this.project, required this.adminUser, required this.fieldUser})
       : super(key: key);
 
   @override
@@ -193,7 +193,7 @@ class _FrequencyEditorState extends State<FrequencyEditor> {
             child: Column(
               children: [
                 Text(
-                  widget.fieldUser.name,
+                  widget.fieldUser.name!,
                   style: Styles.blackBoldMedium,
                 ),
                 Text(
@@ -341,7 +341,7 @@ class _FrequencyEditorState extends State<FrequencyEditor> {
     ));
   }
 
-  void _doSubmit({String perDay, String perWeek, String perMonth}) async {
+  void _doSubmit({required String perDay, required String perWeek, required String perMonth}) async {
     pp('SchedulerMobile: ............. '
         '🍏 🍏 🍏 🍏 _doSubmit: ...perDay: $perDay perWeek: $perWeek perMonth: $perMonth');
     Uuid uuid = Uuid();
@@ -374,8 +374,8 @@ class _FrequencyEditorState extends State<FrequencyEditor> {
       });
       Navigator.pop(context, true);
     } catch (e) {
-      AppSnackbar.showErrorSnackbar(
-          scaffoldKey: widget.key, message: 'Scheduling failed: $e');
+      // AppSnackbar.showErrorSnackbar(
+      //     scaffoldKey: widget.key, message: 'Scheduling failed: $e');
     }
     setState(() {
       busy = false;

@@ -12,7 +12,7 @@ class VideoTablet extends StatefulWidget {
 
 class _VideoTabletState extends State<VideoTablet>
     with SingleTickerProviderStateMixin {
-  AnimationController _controller;
+  late AnimationController _controller;
 
   @override
   void initState() {

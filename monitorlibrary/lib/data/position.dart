@@ -1,11 +1,11 @@
 import 'package:meta/meta.dart';
 
 class Position {
-  List coordinates;
-  String type = 'Point';
+  List coordinates = [];
+  String? type = 'Point';
   Position({
-    @required this.coordinates,
-    @required this.type,
+    required this.coordinates,
+    required this.type,
   });
 
   Position.fromJson(Map data) {

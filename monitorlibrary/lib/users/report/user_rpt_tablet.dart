@@ -12,7 +12,7 @@ class UserReportTablet extends StatefulWidget {
 
 class _UserReportTabletState extends State<UserReportTablet>
     with SingleTickerProviderStateMixin {
-  AnimationController _controller;
+  late AnimationController _controller;
 
   @override
   void initState() {

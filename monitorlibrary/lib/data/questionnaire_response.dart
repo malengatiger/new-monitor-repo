@@ -5,12 +5,12 @@ import 'package:monitorlibrary/data/section.dart';
 import 'content.dart';
 
 class QuestionnaireResponse {
-  String questionnaireId, userId, respondentId, questionnaireResponseId;
-  List<Section> sections;
+  String? questionnaireId, userId, respondentId, questionnaireResponseId;
+  List<Section>? sections;
 
-
-  QuestionnaireResponse(this.questionnaireId, this.userId, this.respondentId,
-      this.questionnaireResponseId, this.sections);
+  QuestionnaireResponse({required this.questionnaireId, required this.userId,
+    required this.respondentId,
+    required this.questionnaireResponseId, required this.sections});
 
   QuestionnaireResponse.fromJson(Map data) {
     this.userId = data['userId'];
@@ -18,13 +18,11 @@ class QuestionnaireResponse {
     this.sections = data['sections'];
     this.respondentId = data['respondentId'];
     this.questionnaireId = data['questionnaireId'];
-
-
   }
   Map<String, dynamic> toJson() {
-    List mSecs = List();
+    List mSecs = [];
     if (sections != null) {
-      sections.forEach((s) {
+      sections!.forEach((s) {
         mSecs.add(s.toJson());
       });
     }
@@ -35,8 +33,6 @@ class QuestionnaireResponse {
       'sections': mSecs,
       'respondentId': respondentId,
       'questionnaireId': questionnaireId,
-
-
     };
     return map;
   }

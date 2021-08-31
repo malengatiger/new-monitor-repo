@@ -9,20 +9,20 @@ data class MonitorReport(var monitorReportId: String?, var projectId: String,
                          var videos: List<Video>, var description: String, var created: String) {}
  */
 class MonitorReport {
-  String projectId, created;
-  Rating rating;
-  String description;
-  List<ph.Photo> photos;
-  List<ph.Video> videos;
-  User user;
+  String? projectId, created;
+  Rating? rating;
+  String? description;
+  List<ph.Photo> photos = [];
+  List<ph.Video> videos = [];
+  User? user;
   MonitorReport(
-      {@required this.projectId,
+      {required this.projectId,
       this.description,
-      @required this.created,
-      this.user,
-      this.photos,
-      this.videos,
-      this.rating});
+      required this.created,
+        required this.user,
+        required this.photos,
+        required this.videos,
+        required this.rating});
 
   MonitorReport.fromJson(Map data) {
     this.projectId = data['projectId'];

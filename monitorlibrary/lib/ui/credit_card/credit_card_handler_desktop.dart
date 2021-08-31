@@ -4,7 +4,7 @@ import 'package:monitorlibrary/data/user.dart';
 class CreditCardHandlerDesktop extends StatefulWidget {
   final User user;
 
-  const CreditCardHandlerDesktop({Key key, this.user}) : super(key: key);
+  const CreditCardHandlerDesktop({Key? key, required this.user}) : super(key: key);
   @override
   _CreditCardHandlerDesktopState createState() =>
       _CreditCardHandlerDesktopState();
@@ -12,7 +12,7 @@ class CreditCardHandlerDesktop extends StatefulWidget {
 
 class _CreditCardHandlerDesktopState extends State<CreditCardHandlerDesktop>
     with SingleTickerProviderStateMixin {
-  AnimationController _controller;
+  late AnimationController _controller;
 
   @override
   void initState() {

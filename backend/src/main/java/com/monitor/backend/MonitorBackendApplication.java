@@ -34,6 +34,7 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+
 import java.io.PrintStream;
 import java.lang.reflect.Method;
 import java.time.Duration;
@@ -95,14 +96,13 @@ public class MonitorBackendApplication implements ApplicationListener<Applicatio
     @Autowired
     private ProjectRepository projectRepository;
 
-//    @Autowired
-//    private HazelcastInstance hzInstance;
-//
 //    @Bean
-//    public Config hazelCastConfig() {
-//        Config config = new Config();
-//        config.setInstanceName("my-hazelcast-instance");
-//        return config;
+//    public SecurityConfiguration securityConfiguration() {
+//        LOGGER.info(Emoji.RED_APPLE + Emoji.RED_APPLE   + Emoji.RED_APPLE + Emoji.KEY
+//                + " SecurityConfiguration bean " + Emoji.KEY);
+//        return SecurityConfigurationBuilder.builder()
+//                .enableCsrfSupport(true)
+//                .build();
 //    }
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
@@ -113,7 +113,7 @@ public class MonitorBackendApplication implements ApplicationListener<Applicatio
         Bandwidth limit = Bandwidth.classic(10, refill).withInitialTokens(1);
 
         Bucket bucket = Bucket4j.builder().addLimit(limit).build();
-        registry.addInterceptor(new RateLimitInterceptor(bucket, 1)).addPathPatterns("/*");
+        registry.addInterceptor(new RateLimitInterceptor(bucket, 1)).addPathPatterns(".*");
 
         Refill refill2 = Refill.greedy(10, Duration.ofMinutes(1));
         Bandwidth limit2 = Bandwidth.classic(10, refill2);

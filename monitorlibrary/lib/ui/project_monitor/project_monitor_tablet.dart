@@ -11,7 +11,7 @@ class ProjectMonitorTablet extends StatefulWidget {
 
 class _ProjectMonitorTabletState extends State<ProjectMonitorTablet>
     with SingleTickerProviderStateMixin {
-  AnimationController _controller;
+  late AnimationController _controller;
 
   @override
   void initState() {

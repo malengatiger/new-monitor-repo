@@ -21,10 +21,10 @@ class ProjectMonitorMobile extends StatefulWidget {
 
 class _ProjectMonitorMobileState extends State<ProjectMonitorMobile>
     with SingleTickerProviderStateMixin {
-  AnimationController _controller;
+  late AnimationController _controller;
   var isBusy = false;
   var _key = GlobalKey<ScaffoldState>();
-  var positions = List<ProjectPosition>();
+  var positions = <ProjectPosition>[];
 
   @override
   void initState() {
@@ -43,7 +43,7 @@ class _ProjectMonitorMobileState extends State<ProjectMonitorMobile>
     });
     try {
       positions = await monitorBloc.getProjectPositions(
-          projectId: widget.project.projectId, forceRefresh: false);
+          projectId: widget.project.projectId!, forceRefresh: false);
     } catch (e) {
       print(e);
       AppSnackbar.showErrorSnackbar(
@@ -68,7 +68,7 @@ class _ProjectMonitorMobileState extends State<ProjectMonitorMobile>
       child: Scaffold(
         key: _key,
         appBar: AppBar(
-          title: Text(widget.project.organizationName,
+          title: Text(widget.project.organizationName!,
               style: Styles.whiteBoldSmall),
           actions: [
             IconButton(
@@ -81,7 +81,7 @@ class _ProjectMonitorMobileState extends State<ProjectMonitorMobile>
               padding: const EdgeInsets.all(20.0),
               child: Column(
                 children: [
-                  Text(widget.project.name, style: Styles.blackBoldSmall),
+                  Text(widget.project.name!, style: Styles.blackBoldSmall),
                   SizedBox(
                     height: 60,
                   ),
@@ -192,18 +192,18 @@ class _ProjectMonitorMobileState extends State<ProjectMonitorMobile>
   }
 
   // ignore: missing_return
-  Future<ProjectPosition> _findNearestProjectPosition() async {
-    var bags = List<BagX>();
-    if (widget.project.projectPositions.isEmpty) {
+  Future<ProjectPosition?> _findNearestProjectPosition() async {
+    var bags = <BagX>[];
+    if (widget.project.projectPositions!.isEmpty) {
       _navigateToProjectLocation();
     } else {
-      if (widget.project.projectPositions.length == 1) {
-        return widget.project.projectPositions.first;
+      if (widget.project.projectPositions!.length == 1) {
+        return widget.project.projectPositions!.first;
       }
-      widget.project.projectPositions.forEach((pos) async {
+      widget.project.projectPositions!.forEach((pos) async {
         var distance = await locationBloc.getDistanceFromCurrentPosition(
-            latitude: widget.project.position.coordinates[1],
-            longitude: widget.project.position.coordinates[0]);
+            latitude: widget.project.position!.coordinates[1],
+            longitude: widget.project.position!.coordinates[0]);
         bags.add(BagX(distance, pos));
       });
       bags.sort((a, b) => a.distance.compareTo(b.distance));
@@ -212,7 +212,7 @@ class _ProjectMonitorMobileState extends State<ProjectMonitorMobile>
   }
 
   bool isWithinDistance = false;
-  ProjectPosition nearestProjectPosition;
+  ProjectPosition? nearestProjectPosition;
 
   Future<bool> _checkProjectDistance() async {
     setState(() {
@@ -220,11 +220,11 @@ class _ProjectMonitorMobileState extends State<ProjectMonitorMobile>
     });
     nearestProjectPosition = await _findNearestProjectPosition();
     var distance = await locationBloc.getDistanceFromCurrentPosition(
-        latitude: nearestProjectPosition.position.coordinates[1],
-        longitude: nearestProjectPosition.position.coordinates[0]);
+        latitude: nearestProjectPosition!.position!.coordinates[1],
+        longitude: nearestProjectPosition!.position!.coordinates[0]);
 
     pp("🍏 🍏 🍏 App is ${distance.toStringAsFixed(1)} metres from the project point");
-    if (distance > widget.project.monitorMaxDistanceInMetres) {
+    if (distance > widget.project.monitorMaxDistanceInMetres!) {
       pp("🔆🔆🔆 App is ${distance.toStringAsFixed(1)} metres is greater than allowed project.monitorMaxDistanceInMetres: "
           "🍎 ${widget.project.monitorMaxDistanceInMetres} metres");
       isWithinDistance = false;
@@ -250,7 +250,7 @@ class _ProjectMonitorMobileState extends State<ProjectMonitorMobile>
             duration: Duration(seconds: 1),
             child: MediaHouse(
               project: widget.project,
-              projectPosition: nearestProjectPosition,
+              projectPosition: nearestProjectPosition!,
             )));
   }
 
@@ -268,7 +268,7 @@ class _ProjectMonitorMobileState extends State<ProjectMonitorMobile>
   void _navigateToDirections() async {
     pp('🏖 🍎 🍎 🍎 start Google Maps Directions .....');
     var origin =
-        '${widget.project.position.coordinates[1]},${widget.project.position.coordinates[0]}';
+        '${widget.project.position!.coordinates[1]},${widget.project.position!.coordinates[0]}';
     var position = await locationBloc.getLocation();
     var destination = '${position.latitude},${position.longitude}';
 
@@ -297,7 +297,7 @@ class _ProjectMonitorMobileState extends State<ProjectMonitorMobile>
         if (widget.project.projectPositions == null) {
           widget.project.projectPositions = [];
         }
-        widget.project.projectPositions.add(projectPosition);
+        widget.project.projectPositions!.add(projectPosition);
         _checkProjectDistance();
       }
     }

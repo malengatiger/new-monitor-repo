@@ -24,32 +24,17 @@ public class Scheduler {
                 "Scheduler constructed. Waiting to be triggered ".concat(Emoji.YELLOW_BIRD));
     }
 
-    @Scheduled(fixedRate = 1000 * 60 * 60)
-//    @Scheduled(fixedRate = 1000 * 15)
+    @Scheduled(fixedRate = 1000 * 60 * 60 * 4) //4 Hours
+
     public void fixedRateScheduled() throws Exception {
         LOGGER.info(Emoji.PRETZEL.concat(Emoji.PRETZEL).concat(Emoji.PRETZEL) + "Fixed Rate scheduler; " +
                 "\uD83C\uDF3C CALCULATE LOAN BALANCES or OTHER NECESSARY WORK: " + new DateTime().toDateTimeISO().toString()
                 + " " + Emoji.RED_APPLE);
-//        try {
-//            fileCleanUp();
-//        } catch (Exception e) {
-//            LOGGER.info(Emoji.NOT_OK.concat(Emoji.NOT_OK) + "File CleanUp fell down");
-//            e.printStackTrace();
-//        }
+
         try {
 
-//              firebaseService.
-//            List<Anchor> anchors = firebaseService.getAnchors();
-//            if (!anchors.isEmpty()) {
-//                Anchor anchor = anchors.get(0);
-//
-//                List<Agent> list = firebaseService.getAgents(anchor.getAnchorId());
-//                for (Agent agent : list) {
-//                    LOGGER.info(Emoji.DICE.concat(Emoji.DICE) + "Agent: ".concat(agent.getFullName()).concat(" ")
-//                            .concat(Emoji.HEART_BLUE));
-//                }
-//
-//            }
+            LOGGER.info(Emoji.PRETZEL.concat(Emoji.PRETZEL).concat(Emoji.PRETZEL) +
+                    "Nothing do do thus far ... ");
 
         } catch (Exception e) {
             e.printStackTrace();

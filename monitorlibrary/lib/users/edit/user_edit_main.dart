@@ -6,7 +6,7 @@ import 'package:monitorlibrary/users/edit/user_edit_tablet.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 
 class UserEditMain extends StatelessWidget {
-  final User user;
+  final User? user;
 
   UserEditMain(this.user);
 

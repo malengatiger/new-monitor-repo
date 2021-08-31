@@ -4,14 +4,14 @@ import 'package:monitorlibrary/data/user.dart';
 class MessageTablet extends StatefulWidget {
   final User user;
 
-  const MessageTablet({Key key, this.user}) : super(key: key);
+  const MessageTablet({Key? key, required this.user}) : super(key: key);
   @override
   _MessageTabletState createState() => _MessageTabletState();
 }
 
 class _MessageTabletState extends State<MessageTablet>
     with SingleTickerProviderStateMixin {
-  AnimationController _controller;
+  late AnimationController _controller;
 
   @override
   void initState() {

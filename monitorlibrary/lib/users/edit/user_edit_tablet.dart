@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:monitorlibrary/data/user.dart';
 
 class UserEditTablet extends StatefulWidget {
-  final User user;
+  final User? user;
 
   UserEditTablet(this.user);
 
@@ -12,7 +12,7 @@ class UserEditTablet extends StatefulWidget {
 
 class _UserEditTabletState extends State<UserEditTablet>
     with SingleTickerProviderStateMixin {
-  AnimationController _controller;
+  late AnimationController _controller;
 
   @override
   void initState() {

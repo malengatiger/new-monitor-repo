@@ -19,7 +19,7 @@ class _CountriesDropDownState extends State<CountriesDropDown> {
     _getCountries();
   }
 
-  List<Country> _countries = List();
+  List<Country> _countries = [];
   _getCountries() async {
     _countries = await DataAPI.getCountries();
     pp('🦠 🦠 🦠 getCountries .....🦠 ${_countries.length} found');
@@ -37,7 +37,7 @@ class _CountriesDropDownState extends State<CountriesDropDown> {
     setState(() {});
   }
 
-  List<DropdownMenuItem<Country>> items = List();
+  List<DropdownMenuItem<Country>> items = [];
 
   @override
   Widget build(BuildContext context) {
@@ -51,9 +51,9 @@ class _CountriesDropDownState extends State<CountriesDropDown> {
     );
   }
 
-  void _onDropDownChanged(Country value) {
+  void _onDropDownChanged(Country? value) {
     pp('🔆🔆🔆 _onDropDownChanged ... ');
-    widget.countryListener.onCountrySelected(value);
+    widget.countryListener.onCountrySelected(value!);
   }
 }
 
