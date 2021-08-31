@@ -217,6 +217,7 @@ public class MonitorBackendApplication implements ApplicationListener<Applicatio
 
     @Autowired
     CountryRepository countryRepository;
+
     @Autowired
     MongoGenerator mongoGenerator;
 

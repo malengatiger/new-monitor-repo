@@ -278,7 +278,7 @@ public class DataService {
         return org;
     }
 
-    public void createUser(User user) throws Exception {
+    public String createUser(User user) throws Exception {
         FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
         UserRecord.CreateRequest createRequest = new UserRecord.CreateRequest();
         createRequest.setEmail(user.getEmail());
@@ -295,6 +295,6 @@ public class DataService {
 
 
         addUser(user);
-
+        return uid;
     }
 }

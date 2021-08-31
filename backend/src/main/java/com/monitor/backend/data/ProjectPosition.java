@@ -4,7 +4,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.List;
 
-@Document(collection = "projectPositions")
+@Document(collection = "projectPosition")
 public class ProjectPosition {
 
     private String projectId;

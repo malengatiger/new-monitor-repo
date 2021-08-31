@@ -4,23 +4,23 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 
-@Document(collection = "photos")
+@Document(collection = "photo")
 public class Photo {
-    private String  _partitionKey;
+    private String _partitionKey;
     @Id
-    private String  _id;
-    private String  projectId;
-    private String  projectName;
-    private String  photoId;
-    private String  organizationId;
-    private Position  projectPosition;
-    private double  distanceFromProjectPosition;
-    private String  url;
-    private String  thumbnailUrl;
-    private String  caption;
-    private String  userId;
-    private String  userName;
-    private String  created;
+    private String _id;
+    private String projectId;
+    private String projectName;
+    private String photoId;
+    private String organizationId;
+    private Position projectPosition;
+    private double distanceFromProjectPosition;
+    private String url;
+    private String thumbnailUrl;
+    private String caption;
+    private String userId;
+    private String userName;
+    private String created;
     private int height, width;
 
     public Photo() {
@@ -56,6 +56,7 @@ public class Photo {
     public int getWidth() {
         return width;
     }
+
     public void setWidth(int width) {
         this.width = width;
     }

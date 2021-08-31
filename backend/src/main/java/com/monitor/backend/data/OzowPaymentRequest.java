@@ -29,7 +29,7 @@ CB26FCD87A60
         2. Token String (Max) Yes The token returned in the token response sent to the
         TokenNotificationUrl.
  */
-@Document(collection = "ozowPaymentRequests")
+@Document(collection = "ozowPaymentRequest")
 public class OzowPaymentRequest {
     private String SiteCode, CountryCode, CurrencyCode,
             TransactionReference, BankReference;

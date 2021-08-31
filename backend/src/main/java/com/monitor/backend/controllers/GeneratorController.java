@@ -53,11 +53,11 @@ public class GeneratorController {
     }
 
 
-    @GetMapping("/generateCountries")
-    public String generateCountries() throws Exception {
-        LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS).concat("generateCountries: Adding Countries to MongoDB ...."));
-        mongoGenerator.generateCountries();
-        return Emoji.RAIN_DROPS + Emoji.RAIN_DROPS + " ..... MongoGenerator:generateCountries completed";
+    @GetMapping("/generate")
+    public String generate() throws Exception {
+        LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS).concat("generate: Generate Monitor Demo users and data ...."));
+        mongoGenerator.generate();
+        return Emoji.RAIN_DROPS + Emoji.RAIN_DROPS + " ..... MongoGenerator: Monitor Demo users and data added OK! Mission completed!!" + Emoji.RED_APPLE;
     }
     @GetMapping("/generateOrganizations")
     public String generateOrganizations(int numberOfOrgs) throws Exception {

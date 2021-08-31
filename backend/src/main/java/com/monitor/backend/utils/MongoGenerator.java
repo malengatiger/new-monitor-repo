@@ -7,6 +7,8 @@ import com.google.cloud.firestore.QuerySnapshot;
 import com.google.firebase.auth.ExportedUserRecord;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.ListUsersPage;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
@@ -32,7 +34,7 @@ import java.util.logging.Logger;
 @Service
 public class MongoGenerator {
     private static final Logger LOGGER = Logger.getLogger(MongoGenerator.class.getSimpleName());
-
+    private static final Gson G = new GsonBuilder().setPrettyPrinting().create();
     public MongoGenerator() {
         LOGGER.info(Emoji.DOLPHIN.concat(Emoji.DOLPHIN) + "MongoGenerator is up and good ".concat(Emoji.DOLPHIN));
     }
@@ -50,7 +52,7 @@ public class MongoGenerator {
     private static final double latitudeRosebank = -26.140499438, longitudeRosebank = 28.037666516;
     private static final double latitudeJHB = -26.195246, longitudeJHB = 28.034088;
 
-    public void generateCountries() throws Exception {
+    public void generate() throws Exception {
         LOGGER.info(Emoji.DICE + Emoji.DICE + " -------- Generating countries .... ");
         List<Country> countries = new ArrayList<>();
         List<Double> cords = new ArrayList<>();
@@ -187,9 +189,6 @@ public class MongoGenerator {
         }
     }
 
-    /*
-    db.members.createIndex( { groupNumber: 1, lastname: 1, firstname: 1 }, { unique: true } )
-     */
     private void createUniqueCityIndex() {
         LOGGER.info(Emoji.FOOTBALL + Emoji.FOOTBALL + "Creating unique index to catch name duplication within province");
         MongoDatabase db = mongoClient.getDatabase("monitordb");
@@ -201,7 +200,6 @@ public class MongoGenerator {
                 " City unique index : city name + provinceName - should be created on city collection: " +
                 Emoji.RED_APPLE + result);
     }
-
     private void createCityIndexes() {
         //add index
         MongoDatabase db = mongoClient.getDatabase("monitordb");
@@ -380,6 +378,7 @@ public class MongoGenerator {
         setLastNames();
         setOrgNames();
         setCommunityNames();
+        setProjectNames();
         createOrganizationIndexes();
         List<Country> countries = countryRepository.findAll();
         List<Organization> organizations = new ArrayList<>();
@@ -436,14 +435,15 @@ public class MongoGenerator {
 
             Position pos = new Position("Point", coordinates);
 
-
             Project p0 = new Project(organization.getOrganizationId(),null,
                     UUID.randomUUID().toString(),
-                    loc.name, Objects.requireNonNull(organization.getOrganizationId()),
+                    loc.name,
+                    Objects.requireNonNull(organization.getOrganizationId()),
                     testProjectDesc,
                     organization.getName(),
                     monitorMaxDistanceInMetres,
                     new DateTime().toDateTimeISO().toString(), new ArrayList<>(), pos);
+
             projectRepository.save(p0);
 
             ProjectPosition pPos = new ProjectPosition(
@@ -452,6 +452,7 @@ public class MongoGenerator {
                     p0.getName(),
                     "tbd",
                     new DateTime().toDateTimeISO().toString(), null, new ArrayList<>());
+
             projectPositionRepository.save(pPos);
 
             LOGGER.info(" \uD83E\uDD6C \uD83E\uDD6C \uD83E\uDD6C " +
@@ -506,17 +507,17 @@ public class MongoGenerator {
             for (int i = 0; i < 5; i++) {
                 String name = getRandomFirstName() + " " + getRandomLastName();
                 if (i == 0) {
-                    buildUser(organization, "org", Type.USER_TYPE_ORG_ADMINISTRATOR);
+                    buildUser(organization, name, "org", Type.USER_TYPE_ORG_ADMINISTRATOR);
                     cnt++;
                 }
 
                 if (i == 1 || i == 2 || i == 3) {
-                    buildUser(organization, "monitor", Type.USER_TYPE_FIELD_MONITOR);
+                    buildUser(organization, name,"monitor", Type.USER_TYPE_FIELD_MONITOR);
                     cnt++;
                 }
 
                 if (i == 4) {
-                    buildUser(organization, "exec", Type.USER_TYPE_EXECUTIVE);
+                    buildUser(organization, name,"exec", Type.USER_TYPE_EXECUTIVE);
                     cnt++;
                 }
             }
@@ -524,20 +525,27 @@ public class MongoGenerator {
         LOGGER.info(Emoji.PEAR + Emoji.PEAR + Emoji.PEAR + " Users added : " + cnt);
     }
 
-    private void buildUser(Organization org, String prefix, String userType) throws Exception {
+    private void buildUser(Organization org, String userName, String prefix, String userType) throws Exception {
+
+        String email = buildEmail(prefix);
         User u = new User();
         u.setName(getRandomFirstName() + " " + getRandomLastName());
         u.setOrganizationId(org.getOrganizationId());
         u.setCellphone(getRandomCellphone());
-        u.setEmail(buildEmail(prefix));
+        u.setEmail(email);
         u.setCreated(new DateTime().toDateTimeISO().toString());
         u.setUserType(userType);
+        u.setName(userName);
         u.setUserId(UUID.randomUUID().toString());
         u.setPassword("pass123");
 
+        String uid = dataService.createUser(u);
+        u.setUserId(uid);
         User result2 = userRepository.save(u);
-        dataService.createUser(result2);
-        LOGGER.info(Emoji.FERN + Emoji.FERN + " User saved on MongoDB and Firebase auth " + Emoji.FERN + Emoji.FERN + u.getName());
+
+        LOGGER.info(Emoji.FERN + Emoji.FERN +
+                " User saved on MongoDB and Firebase auth: "
+                + G.toJson(result2) + Emoji.FERN + Emoji.FERN + u.getName());
 
     }
 
@@ -593,6 +601,8 @@ public class MongoGenerator {
     private final List<String> lastNames = new ArrayList<>();
     private final List<String> organizationNames = new ArrayList<>();
     private final List<String> communities = new ArrayList<>();
+    private final List<String> projectNames = new ArrayList<>();
+
     private final Random random = new Random(System.currentTimeMillis());
 
     private String getRandomFirstName() {
@@ -610,7 +620,7 @@ public class MongoGenerator {
     //orgadmin1596705856490@monitor.com
     private void setOrgNames() {
         organizationNames.clear();
-        organizationNames.add("Thabang M Construction Ltd");
+        organizationNames.add("Madibeng Municipality");
         organizationNames.add("Sithole RoadBuilders Ltd");
         organizationNames.add("KK Projects Inc.");
         organizationNames.add("Gauteng Housing Agency");
@@ -707,6 +717,18 @@ public class MongoGenerator {
         lastNames.add("Hlungwane");
         lastNames.add("Makhubela");
         lastNames.add("Mthombeni");
+    }
+
+    private void setProjectNames() {
+        projectNames.clear();
+        projectNames.add("Road Renovation Project");
+        projectNames.add("New Road Project");
+        projectNames.add("Sanitation Plant Project");
+        projectNames.add("School Renovation Project");
+        projectNames.add("New School Project");
+        projectNames.add("Community Centre Construction");
+        projectNames.add("Sport Facility Construction");
+
     }
 
 

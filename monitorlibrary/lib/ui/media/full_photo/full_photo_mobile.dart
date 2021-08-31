@@ -47,7 +47,7 @@ class _FullPhotoMobileState extends State<FullPhotoMobile>
             child: Column(
               children: [
                 Text(
-                  '${getFormattedDateLongWithTime(widget.photo!.created!, context)}',
+                  '${getFormattedDateLongWithTime(widget.photo.created!, context)}',
                   style: Styles.blackBoldSmall,
                 ),
                 SizedBox(
@@ -61,7 +61,7 @@ class _FullPhotoMobileState extends State<FullPhotoMobile>
         body: Stack(
           children: [
             CachedNetworkImage(
-              imageUrl: widget.photo!.url!,
+              imageUrl: widget.photo.url!,
               fit: BoxFit.fitHeight,
               progressIndicatorBuilder: (context, url, downloadProgress) =>
                   Center(

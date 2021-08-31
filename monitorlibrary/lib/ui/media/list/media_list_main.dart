@@ -9,7 +9,7 @@ import 'package:monitorlibrary/ui/media/list/media_list_tablet.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 
 class MediaListMain extends StatefulWidget {
-  final Project project;
+  final Project? project;
 
   MediaListMain(this.project);
 
@@ -34,9 +34,9 @@ class _MediaListMainState extends State<MediaListMain>
       isBusy = true;
     });
     if (widget.project != null) {
-      pp('MediaListMain: 💜 💜 💜 getting media for PROJECT: ${widget.project.name}');
+      pp('MediaListMain: 💜 💜 💜 getting media for PROJECT: ${widget.project!.name!}');
       await monitorBloc.refreshProjectData(
-          projectId: widget.project.projectId!, forceRefresh: false);
+          projectId: widget.project!.projectId!, forceRefresh: false);
     } else {
       var user = await Prefs.getUser();
       pp('MediaListMain: 💜 💜 💜 getting media for ORGANIZATION: ${user!.organizationName!}');
@@ -77,9 +77,9 @@ class _MediaListMainState extends State<MediaListMain>
             ),
           )
         : ScreenTypeLayout(
-            mobile: MediaListMobile(widget.project),
-            tablet: MediaListTablet(widget.project),
-            desktop: MediaListDesktop(widget.project),
+            mobile: MediaListMobile(widget.project!),
+            tablet: MediaListTablet(widget.project!),
+            desktop: MediaListDesktop(widget.project!),
           );
   }
 }

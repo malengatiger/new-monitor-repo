@@ -3,16 +3,8 @@ package com.monitor.backend.data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-/*
-data class Organization(String _partitionKey;
-                        @Id String _id;
-                        String name;
-                        String countryName;
-                        String countryId;
-                        String organizationId;
-                        String created;
- */
-@Document(collection = "organizations")
+
+@Document(collection = "organization")
 public class Organization {
   private String _partitionKey;
     @Id

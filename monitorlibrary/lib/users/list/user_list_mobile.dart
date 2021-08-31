@@ -58,7 +58,7 @@ class _UserListMobileState extends State<UserListMobile>
     try {
       _user = await Prefs.getUser();
       _users = await monitorBloc.getOrganizationUsers(
-          organizationId: widget.user!.organizationId!,
+          organizationId: widget.user.organizationId!,
           forceRefresh: forceRefresh);
       _users.sort((a, b) => (a.name!.compareTo(b.name!)));
     } catch (e) {

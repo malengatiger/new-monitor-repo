@@ -8,7 +8,7 @@ import java.util.List;
 /*
 
  */
-@Document(collection = "monitorReports")
+@Document(collection = "monitorReport")
 public class MonitorReport {
     private String  _partitionKey;
     @Id

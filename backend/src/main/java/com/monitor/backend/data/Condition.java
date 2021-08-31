@@ -3,7 +3,7 @@ package com.monitor.backend.data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-@Document(collection = "conditions")
+@Document(collection = "condition")
 public class Condition {
     private String _partitionKey;
     @Id

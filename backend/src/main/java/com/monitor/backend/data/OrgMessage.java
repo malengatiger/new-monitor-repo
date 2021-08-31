@@ -2,7 +2,7 @@ package com.monitor.backend.data;
 
 import org.springframework.data.mongodb.core.mapping.Document;
 
-@Document(collection = "orgMessages")
+@Document(collection = "orgMessage")
 public class OrgMessage {
     private String organizationId, projectId, userId, message, created, fcmRegistration;
     private String projectName, adminId, adminName;
