@@ -1,5 +1,8 @@
 package com.monitor.backend.data;
 
+import org.springframework.data.mongodb.core.mapping.Document;
+
+@Document(collection = "fieldMonitorSchedules")
 public class FieldMonitorSchedule {
     private String adminId, projectId, fieldMonitorScheduleId,
             date, organizationId, fieldMonitorId;

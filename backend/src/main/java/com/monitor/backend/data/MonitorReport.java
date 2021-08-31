@@ -1,12 +1,14 @@
 package com.monitor.backend.data;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.List;
 
 /*
 
  */
+@Document(collection = "monitorReports")
 public class MonitorReport {
     private String  _partitionKey;
     @Id
@@ -14,7 +16,7 @@ public class MonitorReport {
     private String  monitorReportId;
     private String  projectId;
     private User  user;
-    private Type.Rating rating;
+    private String rating;
     private List<Photo> photos;
     private List<Video>  videos;
     private String  description;
@@ -64,11 +66,11 @@ public class MonitorReport {
         this.user = user;
     }
 
-    public Type.Rating getRating() {
+    public String getRating() {
         return rating;
     }
 
-    public void setRating(Type.Rating rating) {
+    public void setRating(String rating) {
         this.rating = rating;
     }
 

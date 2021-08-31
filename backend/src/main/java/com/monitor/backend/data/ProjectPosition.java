@@ -1,7 +1,10 @@
 package com.monitor.backend.data;
 
+import org.springframework.data.mongodb.core.mapping.Document;
+
 import java.util.List;
 
+@Document(collection = "projectPositions")
 public class ProjectPosition {
 
     private String projectId;

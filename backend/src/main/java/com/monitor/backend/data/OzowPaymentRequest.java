@@ -1,5 +1,7 @@
 package com.monitor.backend.data;
 
+import org.springframework.data.mongodb.core.mapping.Document;
+
 /*
 The bank that the payment should be made to. Merchant
 needs to be enabled to send through banking details (18 - 21) in
@@ -27,6 +29,7 @@ CB26FCD87A60
         2. Token String (Max) Yes The token returned in the token response sent to the
         TokenNotificationUrl.
  */
+@Document(collection = "ozowPaymentRequests")
 public class OzowPaymentRequest {
     private String SiteCode, CountryCode, CurrencyCode,
             TransactionReference, BankReference;

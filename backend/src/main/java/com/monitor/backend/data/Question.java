@@ -13,13 +13,13 @@ public class Question {
     private String _id;
     private String text;
     private List<Answer> answers;
-    private Type.QuestionType questionType;
+    private String questionType;
     private List<String> choices;
 
     public Question() {
     }
 
-    public Question(String _partitionKey, String _id, String text, List<Answer> answers, Type.QuestionType questionType, List<String> choices) {
+    public Question(String _partitionKey, String _id, String text, List<Answer> answers, String questionType, List<String> choices) {
         this._partitionKey = _partitionKey;
         this._id = _id;
         this.text = text;
@@ -60,11 +60,11 @@ public class Question {
         this.answers = answers;
     }
 
-    public Type.QuestionType getQuestionType() {
+    public String getQuestionType() {
         return questionType;
     }
 
-    public void setQuestionType(Type.QuestionType questionType) {
+    public void setQuestionType(String questionType) {
         this.questionType = questionType;
     }
 

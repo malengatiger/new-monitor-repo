@@ -1,7 +1,9 @@
 package com.monitor.backend.data;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
+@Document(collection = "users")
 public class User {
     String _partitionKey;
     @Id
@@ -13,7 +15,7 @@ public class User {
     String organizationId;
     String organizationName;
     String created, fcmRegistration;
-    Type.UserType userType;
+    String userType;
     String password;
     Position position;
 
@@ -22,7 +24,7 @@ public class User {
 
     public User(String name, String email, String cellphone, String userId,
                 String organizationId, String organizationName, String created,
-                String fcmRegistration, Type.UserType userType, String password, Position position) {
+                String fcmRegistration, String userType, String password, Position position) {
         this.name = name;
         this.email = email;
         this.cellphone = cellphone;
@@ -124,11 +126,11 @@ public class User {
         this.created = created;
     }
 
-    public Type.UserType getUserType() {
+    public String getUserType() {
         return userType;
     }
 
-    public void setUserType(Type.UserType userType) {
+    public void setUserType(String userType) {
         this.userType = userType;
     }
 

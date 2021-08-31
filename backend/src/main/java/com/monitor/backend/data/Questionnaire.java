@@ -1,9 +1,11 @@
 package com.monitor.backend.data;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.List;
 
+@Document(collection = "questionnaires")
 public class Questionnaire {
 
     private String _partitionKey;

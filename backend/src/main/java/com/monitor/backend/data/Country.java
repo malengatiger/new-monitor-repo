@@ -1,7 +1,9 @@
 package com.monitor.backend.data;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
+@Document(collection = "countries")
 public class Country {
     private String _partitionKey;
     @Id

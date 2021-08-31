@@ -1,24 +1,10 @@
 package com.monitor.backend.data;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-/*
 
-data class Photo(private String  _partitionKey;
-                @Id private String  _id;
-                 private String  projectId;
-                 private String  projectName;
-                 private String  photoId;
-                 private String  organizationId;
-                 private String  projectPosition: Position,
-                 private String  distanceFromProjectPosition: Double,
-                 private String  url;
-                 private String  thumbnailUrl;
-                 private String  caption;
-                 private String  userId;
-                 private String  userName;
-                 private String  created: String) {}
- */
+@Document(collection = "photos")
 public class Photo {
     private String  _partitionKey;
     @Id

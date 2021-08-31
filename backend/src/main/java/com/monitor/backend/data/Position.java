@@ -1,11 +1,10 @@
 package com.monitor.backend.data;
 
+import org.springframework.data.mongodb.core.mapping.Document;
+
 import java.util.List;
 
-/*
-data class Position(var type: String, var coordinates: List<Double>) {
-}
- */
+
 public class Position {
     String type;
     List<Double> coordinates;

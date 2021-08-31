@@ -506,17 +506,17 @@ public class MongoGenerator {
             for (int i = 0; i < 5; i++) {
                 String name = getRandomFirstName() + " " + getRandomLastName();
                 if (i == 0) {
-                    buildUser(organization, "org", Type.UserType.ORG_ADMINISTRATOR);
+                    buildUser(organization, "org", Type.USER_TYPE_ORG_ADMINISTRATOR);
                     cnt++;
                 }
 
                 if (i == 1 || i == 2 || i == 3) {
-                    buildUser(organization, "monitor", Type.UserType.FIELD_MONITOR);
+                    buildUser(organization, "monitor", Type.USER_TYPE_FIELD_MONITOR);
                     cnt++;
                 }
 
                 if (i == 4) {
-                    buildUser(organization, "exec", Type.UserType.EXECUTIVE);
+                    buildUser(organization, "exec", Type.USER_TYPE_EXECUTIVE);
                     cnt++;
                 }
             }
@@ -524,7 +524,7 @@ public class MongoGenerator {
         LOGGER.info(Emoji.PEAR + Emoji.PEAR + Emoji.PEAR + " Users added : " + cnt);
     }
 
-    private void buildUser(Organization org, String prefix, Type.UserType userType) throws Exception {
+    private void buildUser(Organization org, String prefix, String userType) throws Exception {
         User u = new User();
         u.setName(getRandomFirstName() + " " + getRandomLastName());
         u.setOrganizationId(org.getOrganizationId());
