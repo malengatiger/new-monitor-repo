@@ -149,7 +149,7 @@ class AdminBloc {
     var user = await Prefs.getUser();
     if (user != null) {
       await getQuestionnairesByOrganization(user.organizationId!);
-      pp('🤟🤟🤟 Org questionnaires refreshed after 🤟 successfull addition to DB 🌹');
+      pp('🤟🤟🤟 Org questionnaires refreshed after 🤟 successful addition to DB 🌹');
     }
   }
 

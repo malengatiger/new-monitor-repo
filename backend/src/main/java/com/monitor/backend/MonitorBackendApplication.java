@@ -7,13 +7,16 @@ import com.monitor.backend.data.User;
 import com.monitor.backend.models.*;
 import com.monitor.backend.services.DataService;
 import com.monitor.backend.services.ListService;
+import com.monitor.backend.services.MessageService;
 import com.monitor.backend.utils.Emoji;
 import com.monitor.backend.utils.MongoGenerator;
 import com.monitor.backend.utils.RateLimitInterceptor;
+import com.sun.org.apache.xerces.internal.parsers.SecurityConfiguration;
 import io.github.bucket4j.Bandwidth;
 import io.github.bucket4j.Bucket;
 import io.github.bucket4j.Bucket4j;
 import io.github.bucket4j.Refill;
+import io.micrometer.core.instrument.Counter;
 import org.jetbrains.annotations.NotNull;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,6 +52,7 @@ import java.util.logging.Logger;
 public class MonitorBackendApplication implements ApplicationListener<ApplicationReadyEvent>, CommandLineRunner, WebMvcConfigurer {
 
     public static final Logger LOGGER = Logger.getLogger(MonitorBackendApplication.class.getName());
+    private Counter SecurityConfigurationBuilder;
 
     public static void main(String[] args) {
         LOGGER.info("\uD83D\uDE21 \uD83D\uDE21 \uD83D\uDE21 \uD83D\uDE21 MonitorBackendApplication Starting ...");
@@ -91,19 +95,15 @@ public class MonitorBackendApplication implements ApplicationListener<Applicatio
     private ListController listController;
 
     @Autowired
+    private MessageService messageService;
+
+    @Autowired
     private UserRepository userRepository;
 
     @Autowired
     private ProjectRepository projectRepository;
 
-//    @Bean
-//    public SecurityConfiguration securityConfiguration() {
-//        LOGGER.info(Emoji.RED_APPLE + Emoji.RED_APPLE   + Emoji.RED_APPLE + Emoji.KEY
-//                + " SecurityConfiguration bean " + Emoji.KEY);
-//        return SecurityConfigurationBuilder.builder()
-//                .enableCsrfSupport(true)
-//                .build();
-//    }
+
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         LOGGER.info(Emoji.RED_APPLE + Emoji.RED_APPLE   + Emoji.RED_APPLE + Emoji.KEY
@@ -158,8 +158,8 @@ public class MonitorBackendApplication implements ApplicationListener<Applicatio
                     Emoji.PEACH, "DataService method: ", Emoji.FLOWER_YELLOW);
             LOGGER.info(Emoji.PEACH + " -------- end of DataService methods ");
 
-            printServiceMethods(listService.getClass().getMethods(), Emoji.BLUE_THINGY, "ListService method: ", Emoji.BLUE_THINGY);
-            LOGGER.info(Emoji.BLUE_THINGY + " -------- end of ListService methods ");
+            printServiceMethods(messageService.getClass().getMethods(), Emoji.BLUE_THINGY, "MessageService method: ", Emoji.BLUE_THINGY);
+            LOGGER.info(Emoji.BLUE_THINGY + " -------- end of MessageService methods ");
 
             printServiceMethods(dataController.getClass().getMethods(), Emoji.BLUE_BIRD, "DataController method: ", Emoji.BLUE_BIRD);
             LOGGER.info(Emoji.BLUE_BIRD + " -------- end of DataController methods ");
