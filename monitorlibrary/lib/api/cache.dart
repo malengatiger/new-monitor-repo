@@ -62,6 +62,6 @@ abstract class LocalDatabase {
   Future<List<FieldMonitorSchedule>> getFieldMonitorSchedules(String userId);
   Future<List<FieldMonitorSchedule>> getOrganizationMonitorSchedules(String organizationId);
   List<FieldMonitorSchedule> filterSchedulesByProject(
-      List<FieldMonitorSchedule> mList);
+      List<FieldMonitorSchedule> mList, String projectId);
   Future<List<ar.User>> getUsers();
 }
