@@ -19,6 +19,8 @@ import 'package:monitorlibrary/data/section.dart';
 import 'package:monitorlibrary/data/user.dart';
 import 'package:monitorlibrary/functions.dart';
 
+import 'local_mongo.dart';
+
 class DataAPI {
   static Map<String, String> headers = {
     'Content-type': 'application/json',
@@ -57,7 +59,9 @@ class DataAPI {
     pp('DataAPI: ☕️ ☕️ ☕️ bag about to be sent to backend: check name: ☕️ $bag');
     try {
       var result = await _callWebAPIPost(mURL! + 'addFieldMonitorSchedule', bag);
-      return FieldMonitorSchedule.fromJson(result);
+      var s = FieldMonitorSchedule.fromJson(result);
+      await localMongo.addFieldMonitorSchedule(schedule: s);
+      return s;
     } catch (e) {
       pp(e);
       throw e;
@@ -75,6 +79,7 @@ class DataAPI {
         mList.add(FieldMonitorSchedule.fromJson(element));
       });
       pp('🌿 🌿 🌿 getProjectFieldMonitorSchedules returned: 🌿 ${mList.length}');
+      await localMongo.addFieldMonitorSchedules(schedules: mList);
       return mList;
     } catch (e) {
       pp(e);
@@ -93,6 +98,7 @@ class DataAPI {
         mList.add(FieldMonitorSchedule.fromJson(element));
       });
       pp('🌿 🌿 🌿 getMonitorFieldMonitorSchedules returned: 🌿 ${mList.length}');
+      await localMongo.addFieldMonitorSchedules(schedules: mList);
       return mList;
     } catch (e) {
       pp(e);
@@ -111,6 +117,7 @@ class DataAPI {
         mList.add(FieldMonitorSchedule.fromJson(element));
       });
       pp('🌿 🌿 🌿 getOrgFieldMonitorSchedules returned: 🌿 ${mList.length}');
+      await localMongo.addFieldMonitorSchedules(schedules: mList);
       return mList;
     } catch (e) {
       pp(e);
@@ -124,7 +131,9 @@ class DataAPI {
     pp('DataAPI: ☕️ ☕️ ☕️ bag about to be sent to backend: check name: ☕️ $bag');
     try {
       var result = await _callWebAPIPost(mURL! + 'addUser', bag);
-      return User.fromJson(result);
+      var u = User.fromJson(result);
+      await localMongo.addUser(user: u);
+      return u;
     } catch (e) {
       pp(e);
       throw e;
@@ -178,7 +187,9 @@ class DataAPI {
     };
     try {
       var result = await _callWebAPIPost(mURL! + 'findProjectById', bag);
-      return Project.fromJson(result);
+      var p = Project.fromJson(result);
+      await localMongo.addProject(project: p);
+      return p;
     } catch (e) {
       pp(e);
       throw e;
@@ -198,6 +209,7 @@ class DataAPI {
       result.forEach((m) {
         list.add(ProjectPosition.fromJson(m));
       });
+      await localMongo.addProjectPositions(positions: list);
       return list;
     } catch (e) {
       pp(e);
@@ -215,6 +227,7 @@ class DataAPI {
       result.forEach((m) {
         list.add(Photo.fromJson(m));
       });
+      await localMongo.addPhotos(photos: list);
       return list;
     } catch (e) {
       pp(e);
@@ -232,6 +245,7 @@ class DataAPI {
       result.forEach((m) {
         list.add(Photo.fromJson(m));
       });
+      await localMongo.addPhotos(photos: list);
       return list;
     } catch (e) {
       pp(e);
@@ -249,6 +263,7 @@ class DataAPI {
       result.forEach((m) {
         list.add(Video.fromJson(m));
       });
+      await localMongo.addVideos(videos: list);
       return list;
     } catch (e) {
       pp(e);
@@ -266,6 +281,7 @@ class DataAPI {
       result.forEach((m) {
         list.add(Video.fromJson(m));
       });
+      await localMongo.addVideos(videos: list);
       return list;
     } catch (e) {
       pp(e);
@@ -284,7 +300,7 @@ class DataAPI {
       result.forEach((m) {
         list.add(User.fromJson(m));
       });
-      await LocalDBAPI.addUsers(users: list);
+      await localMongo.addUsers(users: list);
       return list;
     } catch (e) {
       pp(e);
@@ -305,6 +321,7 @@ class DataAPI {
       result.forEach((m) {
         list.add(Project.fromJson(m));
       });
+      await localMongo.addProjects(projects: list);
       return list;
     } catch (e) {
       pp('Houston, 😈😈😈😈😈 we have a problem! 😈😈😈😈😈 $e');
@@ -326,6 +343,7 @@ class DataAPI {
       result.forEach((m) {
         list.add(Photo.fromJson(m));
       });
+      await localMongo.addPhotos(photos: list);
       return list;
     } catch (e) {
       pp('Houston, 😈😈😈😈😈 we have a problem! 😈😈😈😈😈');
@@ -346,6 +364,7 @@ class DataAPI {
       result.forEach((m) {
         list.add(Video.fromJson(m));
       });
+      await localMongo.addVideos(videos: list);
       return list;
     } catch (e) {
       pp('Houston, 😈😈😈😈😈 we have a problem! 😈😈😈😈😈');
@@ -367,6 +386,7 @@ class DataAPI {
       result.forEach((m) {
         list.add(Project.fromJson(m));
       });
+      await localMongo.addProjects(projects: list);
       return list;
     } catch (e) {
       pp(e);
@@ -388,6 +408,7 @@ class DataAPI {
         list.add(City.fromJson(m));
       });
       pp('🍏 🍏 🍏 DataAPI: findCitiesByLocation: 🍏 found: ${list.length} cities');
+      await localMongo.addCities(cities: list);
       return list;
     } catch (e) {
       pp(e);
@@ -414,11 +435,11 @@ class DataAPI {
     }
   }
 
-  static Future<Community> updateSettlement(Community settlement) async {
+  static Future<Community> updateCommunity(Community community) async {
     String? mURL = await getUrl();
-    Map bag = settlement.toJson();
+    Map bag = community.toJson();
     try {
-      var result = await _callWebAPIPost(mURL! + 'updateSettlement', bag);
+      var result = await _callWebAPIPost(mURL! + 'updateCommunity', bag);
       return Community.fromJson(result);
     } catch (e) {
       pp(e);
@@ -426,12 +447,14 @@ class DataAPI {
     }
   }
 
-  static Future<Community> addSettlement(Community settlement) async {
+  static Future<Community> addCommunity(Community community) async {
     String? mURL = await getUrl();
-    Map bag = settlement.toJson();
+    Map bag = community.toJson();
     try {
-      var result = await _callWebAPIPost(mURL! + 'addSettlement', bag);
-      return Community.fromJson(result);
+      var result = await _callWebAPIPost(mURL! + 'addCommunity', bag);
+      var c = Community.fromJson(result);
+      await localMongo.addCommunity(community: c);
+      return c;
     } catch (e) {
       pp(e);
       throw e;
@@ -439,12 +462,12 @@ class DataAPI {
   }
 
   static Future addPointToPolygon(
-      {required String settlementId,
+      {required String communityId,
       required double latitude,
       required double longitude}) async {
     String? mURL = await getUrl();
     Map bag = {
-      'settlementId': settlementId,
+      'communityId': communityId,
       'latitude': latitude,
       'longitude': longitude,
     };
@@ -487,6 +510,7 @@ class DataAPI {
       communityList.add(Community.fromJson(m));
     });
     pp('🍏 🍏 🍏 findCommunitiesByCountry found ${communityList.length}');
+    await localMongo.addCommunities(communities: communityList);
     return communityList;
   }
 
@@ -495,7 +519,9 @@ class DataAPI {
     Map bag = project.toJson();
     try {
       var result = await _callWebAPIPost(mURL! + 'addProject', bag);
-      return Project.fromJson(result);
+      var p = Project.fromJson(result);
+      await localMongo.addProject(project: p);
+      return p;
     } catch (e) {
       pp(e);
       throw e;
@@ -507,7 +533,9 @@ class DataAPI {
     Map bag = project.toJson();
     try {
       var result = await _callWebAPIPost(mURL! + 'updateProject', bag);
-      return Project.fromJson(result);
+      var p = Project.fromJson(result);
+      await localMongo.addProject(project: p);
+      return p;
     } catch (e) {
       pp(e);
       throw e;
@@ -523,7 +551,9 @@ class DataAPI {
     };
     try {
       var result = await _callWebAPIPost(mURL! + 'addSettlementToProject', bag);
-      return Project.fromJson(result);
+      var proj = Project.fromJson(result);
+      await localMongo.addProject(project: proj);
+      return proj;
     } catch (e) {
       pp(e);
       throw e;
@@ -536,7 +566,10 @@ class DataAPI {
     Map bag = position.toJson();
     try {
       var result = await _callWebAPIPost(mURL! + 'addProjectPosition', bag);
-      return ProjectPosition.fromJson(result);
+
+      var pp =  ProjectPosition.fromJson(result);
+      await localMongo.addProjectPosition(projectPosition: pp);
+      return pp;
     } catch (e) {
       pp(e);
       throw e;
@@ -547,6 +580,7 @@ class DataAPI {
     String? mURL = await getUrl();
     try {
       var result = await _callWebAPIPost(mURL! + 'addPhoto', photo.toJson());
+      await localMongo.addPhoto(photo: photo);
       return result;
     } catch (e) {
       pp(e);
@@ -560,6 +594,7 @@ class DataAPI {
     try {
       var result = await _callWebAPIPost(mURL! + 'addVideo', video.toJson());
       pp(result);
+      await localMongo.addVideo(video: video);
       return result;
     } catch (e) {
       pp(e);
@@ -571,8 +606,9 @@ class DataAPI {
     String? mURL = await getUrl();
 
     try {
-      var result = await _callWebAPIPost(mURL! + 'addVideo', condition.toJson());
+      var result = await _callWebAPIPost(mURL! + 'addCondition', condition.toJson());
       pp(result);
+      await localMongo.addCondition(condition: condition);
       return result;
     } catch (e) {
       pp(e);
@@ -580,7 +616,7 @@ class DataAPI {
     }
   }
 
-  static Future<Community> addSettlementPhoto(
+  static Future<Photo> addSettlementPhoto(
       {required String settlementId,
         required String url,
         required String comment,
@@ -598,14 +634,17 @@ class DataAPI {
     };
     try {
       var result = await _callWebAPIPost(mURL! + 'addSettlementPhoto', bag);
-      return Community.fromJson(result);
+
+      var photo = Photo.fromJson(result);
+      await localMongo.addPhoto(photo: photo);
+      return photo;
     } catch (e) {
       pp(e);
       throw e;
     }
   }
 
-  static Future<Project> addProjectVideo(
+  static Future<Video> addProjectVideo(
       {required String projectId,
         required String url,
         required String comment,
@@ -623,7 +662,9 @@ class DataAPI {
     };
     try {
       var result = await _callWebAPIPost(mURL! + 'addProjectVideo', bag);
-      return Project.fromJson(result);
+      var video = Video.fromJson(result);
+      await localMongo.addVideo(video: video);
+      return video;
     } catch (e) {
       pp(e);
       throw e;
@@ -679,6 +720,7 @@ class DataAPI {
       result.forEach((m) {
         list.add(Project.fromJson(m));
       });
+      await localMongo.addProjects(projects: list);
       return list;
     } catch (e) {
       pp(e);
@@ -693,7 +735,9 @@ class DataAPI {
     pp('DataAPI_addOrganization:  🍐 org Bag to be sent, check properties:  🍐 $bag');
     try {
       var result = await _callWebAPIPost(mURL! + 'addOrganization', bag);
-      return Organization.fromJson(result);
+      var o = Organization.fromJson(result);
+      await localMongo.addOrganization(organization: o);
+      return o;
     } catch (e) {
       pp(e);
       throw e;
@@ -707,7 +751,9 @@ class DataAPI {
     pp('DataAPI_sendMessage:  🍐 org message to be sent, check properties:  🍐 $bag');
     try {
       var result = await _callWebAPIPost(mURL! + 'sendMessage', bag);
-      return OrgMessage.fromJson(result);
+      var m = OrgMessage.fromJson(result);
+      await localMongo.addOrgMessage(message: m);
+      return m;
     } catch (e) {
       pp(e);
       throw e;
@@ -777,7 +823,7 @@ class DataAPI {
     pp('DataAPI: 🔴 🔴 🔴 ping: $result');
   }
 
-  static Future _callWebAPIPost(String mUrl, Map bag) async {
+  static Future _callWebAPIPost(String mUrl, Map? bag) async {
     pp('$xz http POST call: 🔆 🔆 🔆  calling : 💙  $mUrl  💙 ');
 
     var mBag;

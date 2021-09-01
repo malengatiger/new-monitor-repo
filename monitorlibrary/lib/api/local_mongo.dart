@@ -11,6 +11,7 @@ import 'package:monitorlibrary/data/organization.dart';
 import 'package:monitorlibrary/data/photo.dart';
 import 'package:monitorlibrary/data/project.dart';
 import 'package:monitorlibrary/data/project_position.dart';
+import 'package:monitorlibrary/data/section.dart';
 import 'package:monitorlibrary/data/user.dart';
 import 'package:monitorlibrary/functions.dart';
 
@@ -22,18 +23,17 @@ class LocalMongo implements LocalDatabase {
   bool dbConnected = false;
   static int cnt = 0;
   static const mm = '🌼🌼 🌼🌼 🌼🌼 LocalMongo: 🌼🌼 ';
-
   String databaseName = 'ARDB001b';
 
 
   LocalMongo() {
-    pp('\n\n$mm 🍎 🍎 🍎  setting up MongoDB Mobile  🍎 🍎 🍎  🍎 🍎 🍎 ');
+    pp('\n\n$mm 🍎 🍎 🍎  setting up MongoDB Mobile ... 🍎 🍎 🍎 ');
     _connectToLocalDB();
   }
   
 
   Future _setAppID() async {
-    pp('\n\n🍎 🍎 🍎  setting MongoDB Mobile appID  🍎 🍎 🍎  🍎 🍎 🍎 ');
+    pp('🍎 🍎 🍎 setting MongoDB Mobile appID  ... 🍎 🍎 🍎 ');
     try {
       var res = await MobMongo.setAppID({
         'appID': APP_ID,
@@ -50,9 +50,9 @@ class LocalMongo implements LocalDatabase {
     if (dbConnected) {
       return null;
     }
-    pp('\n\n\n$mm .... Connecting to MongoDB Mobile ... 🔵 🔵 🔵 🔵 🔵 🔵 🔵 ');
+    pp('$mm .... Connecting to MongoDB Mobile ... 🔵 🔵 🔵 🔵 🔵 🔵 🔵 ');
     try {
-      print('$mm 🧩 🧩 🧩_connectToLocalDB: will create indexes ......');
+      pp('$mm 🧩 🧩 🧩_connectToLocalDB: will create indexes ......');
       _setAppID();
       await _createIndices();
       dbConnected = true;
@@ -148,7 +148,7 @@ class LocalMongo implements LocalDatabase {
 
   @override
   Future<int> addCondition({required Condition condition}) async {
-    print('$mm .... addCondition .....');
+    pp('$mm .... addCondition .....');
     Carrier carrier = Carrier(
       db: databaseName,
       collection: Constants.CONDITION,
@@ -168,7 +168,7 @@ class LocalMongo implements LocalDatabase {
 
   @override
   Future<int> addOrgMessage({required OrgMessage message}) async {
-    print('$mm .... addOrgMessage .....');
+    pp('$mm .... addOrgMessage .....');
     Carrier carrier = Carrier(
       db: databaseName,
       collection: Constants.ORG_MESSAGE,
@@ -361,7 +361,7 @@ class LocalMongo implements LocalDatabase {
 
   @override
   Future<List<FieldMonitorSchedule>> getOrganizationMonitorSchedules(String organizationId) async {
-    print('$mm .... getProjectMonitorSchedules .....');
+    pp('$mm .... getProjectMonitorSchedules .....');
     Carrier carrier = Carrier(
       db: databaseName,
       collection: Constants.FIELD_MONITOR_SCHEDULE,
@@ -385,7 +385,7 @@ class LocalMongo implements LocalDatabase {
 
   @override
   Future<List<FieldMonitorSchedule>> getProjectMonitorSchedules(String projectId) async {
-    print('$mm .... getProjectMonitorSchedules .....');
+    pp('$mm .... getProjectMonitorSchedules .....');
     Carrier carrier = Carrier(
       db: databaseName,
       collection: Constants.FIELD_MONITOR_SCHEDULE,
@@ -439,7 +439,7 @@ class LocalMongo implements LocalDatabase {
 
   @override
   Future<List<User>> getUsers() async {
-    print('$mm .... getUsers .....');
+    pp('$mm .... getUsers .....');
     Carrier carrier = Carrier(
       db: databaseName,
       collection: Constants.USER,
@@ -454,7 +454,7 @@ class LocalMongo implements LocalDatabase {
 
   @override
   Future<List<Video>> getVideos() async {
-    print('$mm .... getUsers .....');
+    pp('$mm .... getUsers .....');
     Carrier carrier = Carrier(
       db: databaseName,
       collection: Constants.VIDEO,
@@ -469,7 +469,7 @@ class LocalMongo implements LocalDatabase {
 
   @override
   Future<int> addFieldMonitorSchedule({required FieldMonitorSchedule schedule}) async  {
-    print('$mm .... addFieldMonitorSchedule .....');
+    pp('$mm .... addFieldMonitorSchedule .....');
     Carrier carrier = Carrier(
       db: databaseName,
       collection: Constants.FIELD_MONITOR_SCHEDULE,
@@ -481,7 +481,7 @@ class LocalMongo implements LocalDatabase {
 
   @override
   Future<int> addPhoto({required Photo photo}) async {
-    print('$mm .... addPhoto .....');
+    pp('$mm .... addPhoto .....');
       Carrier carrier = Carrier(
         db: databaseName,
         collection: Constants.PHOTO,
@@ -493,7 +493,7 @@ class LocalMongo implements LocalDatabase {
 
   @override
   Future<int> addProject({required Project project}) async {
-      print('$mm .... addProject .....');
+      pp('$mm .... addProject .....');
       Carrier carrier = Carrier(
         db: databaseName,
         collection: Constants.PROJECT,
@@ -505,7 +505,7 @@ class LocalMongo implements LocalDatabase {
 
   @override
   Future<int> addProjectPosition({required ProjectPosition projectPosition}) async {
-      print('$mm .... addProjectPosition .....');
+      pp('$mm .... addProjectPosition .....');
       Carrier carrier = Carrier(
         db: databaseName,
         collection: Constants.PROJECT_POSITION,
@@ -517,7 +517,7 @@ class LocalMongo implements LocalDatabase {
 
   @override
   Future<int> addUser({required User user}) async{
-      print('$mm .... addProjectPosition .....');
+      pp('$mm .... addProjectPosition .....');
       Carrier carrier = Carrier(
         db: databaseName,
         collection: Constants.USER,
@@ -529,7 +529,7 @@ class LocalMongo implements LocalDatabase {
 
   @override
   Future<int> addVideo({required Video video}) async {
-    print('$mm .... addVideo .....');
+    pp('$mm .... addVideo .....');
     Carrier carrier = Carrier(
       db: databaseName,
       collection: Constants.VIDEO,
@@ -541,7 +541,7 @@ class LocalMongo implements LocalDatabase {
 
   @override
   Future<List<Project>> getProjects() async {
-      print('$mm .... getProjects .....');
+      pp('$mm .... getProjects .....');
       Carrier carrier = Carrier(
         db: databaseName,
         collection: Constants.PROJECT,
@@ -564,7 +564,7 @@ class LocalMongo implements LocalDatabase {
 
   @override
   Future<int> addCity({required City city}) async {
-      print('$mm .... addCity .....');
+      pp('$mm .... addCity .....');
       Carrier carrier = Carrier(
         db: databaseName,
         collection: Constants.CITY,
@@ -576,7 +576,7 @@ class LocalMongo implements LocalDatabase {
 
   @override
   Future<int> addMonitorReport({required MonitorReport monitorReport}) async {
-    print('$mm .... addMonitorReport .....');
+    pp('$mm .... addMonitorReport .....');
     Carrier carrier = Carrier(
       db: databaseName,
       collection: Constants.MONITOR_REPORT,
@@ -604,7 +604,7 @@ class LocalMongo implements LocalDatabase {
 
   @override
   Future<int> addCommunity({required Community community}) async {
-    print('$mm .... addCommunity .....');
+    pp('$mm .... addCommunity .....');
     Carrier carrier = Carrier(
       db: databaseName,
       collection: Constants.COMMUNITY,
@@ -616,7 +616,7 @@ class LocalMongo implements LocalDatabase {
 
   @override
   Future<int> addOrganization({required Organization organization}) async {
-    print('$mm .... addCommunity .....');
+    pp('$mm .... addCommunity .....');
     Carrier carrier = Carrier(
       db: databaseName,
       collection: Constants.ORGANIZATION,
@@ -634,7 +634,7 @@ class LocalMongo implements LocalDatabase {
 
   @override
   Future<List<Community>> getCommunities() async {
-    print('$mm .... getCommunities .....');
+    pp('$mm .... getCommunities .....');
     Carrier carrier = Carrier(
       db: databaseName,
       collection: Constants.COMMUNITY,
@@ -649,7 +649,7 @@ class LocalMongo implements LocalDatabase {
 
   @override
   Future<List<Organization>> getOrganizations() async {
-    print('$mm .... getProjects .....');
+    pp('$mm .... getProjects .....');
     Carrier carrier = Carrier(
       db: databaseName,
       collection: Constants.ORGANIZATION,
@@ -660,5 +660,17 @@ class LocalMongo implements LocalDatabase {
       orgs.add(Organization.fromJson(json.decode(r)));
     });
     return orgs;
+  }
+
+  @override
+  Future<int> addSection({required Section section}) {
+    // TODO: implement addSection
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<List<Photo>> getSections(String questionnaireId) {
+    // TODO: implement getSections
+    throw UnimplementedError();
   }
 }

@@ -7,6 +7,7 @@ import 'package:monitorlibrary/data/organization.dart';
 import 'package:monitorlibrary/data/photo.dart';
 import 'package:monitorlibrary/data/project.dart';
 import 'package:monitorlibrary/data/project_position.dart';
+import 'package:monitorlibrary/data/section.dart';
 import 'package:monitorlibrary/data/user.dart' as ar;
 import 'package:monitorlibrary/data/user.dart';
 
@@ -28,6 +29,7 @@ abstract class LocalDatabase {
   Future<int> addVideo({required Video video});
   Future<int> addCondition({required Condition condition});
   Future<int> addOrgMessage({required OrgMessage message});
+  Future<int> addSection({required Section section});
   Future<int> addProjectPositions(
       {required List<ProjectPosition> positions});
   Future<int> addProjectPosition(
@@ -56,6 +58,7 @@ abstract class LocalDatabase {
   Future<List<Photo>> getPhotos();
   Future<List<Video>> getVideos();
   Future<List<Photo>> getProjectPhotos(String projectId);
+  Future<List<Photo>> getSections(String questionnaireId);
   Future<List<Photo>> getUserPhotos(String userId);
   Future<List<Video>> getProjectVideos(String projectId);
   Future<List<FieldMonitorSchedule>> getProjectMonitorSchedules(String projectId);

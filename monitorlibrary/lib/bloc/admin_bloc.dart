@@ -93,7 +93,7 @@ class AdminBloc {
       required double latitude,
       required double longitude}) async {
     var res = await DataAPI.addPointToPolygon(
-        settlementId: settlementId, latitude: latitude, longitude: longitude);
+        communityId: settlementId, latitude: latitude, longitude: longitude);
     pp('Bloc: 🐬 🐬 addToPolygon ... check response below');
 
     var country = await Prefs.getCountry();
@@ -118,15 +118,15 @@ class AdminBloc {
     return res;
   }
 
-  Future addCommunity(Community sett) async {
-    var res = await DataAPI.addSettlement(sett);
+  Future addCommunity(Community community) async {
+    var res = await DataAPI.addCommunity(community);
     _communities.add(res);
     _settController.sink.add(_communities);
-    await findCommunitiesByCountry(sett.countryId!);
+    await findCommunitiesByCountry(community.countryId!);
   }
 
   Future updateCommunity(Community sett) async {
-    var res = await DataAPI.updateSettlement(sett);
+    var res = await DataAPI.updateCommunity(sett);
     _communities.add(res);
     _settController.sink.add(_communities);
     await findCommunitiesByCountry(sett.countryId!);
