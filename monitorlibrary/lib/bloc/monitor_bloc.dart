@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:geolocator/geolocator.dart';
 import 'package:monitorlibrary/api/data_api.dart';
-import 'package:monitorlibrary/api/local_db_api.dart';
+import 'package:monitorlibrary/api/local_mongo.dart';
 import 'package:monitorlibrary/api/sharedprefs.dart';
 import 'package:monitorlibrary/data/community.dart';
 import 'package:monitorlibrary/data/country.dart';
@@ -142,11 +142,11 @@ class MonitorBloc {
     pp('💜 💜 💜 💜 MonitorBloc: getOrganizationProjects: for organizationId: $organizationId ; '
         'user: 💜 ${user.name} user.organizationId: ${user.organizationId} user.organizationName: ${user.organizationName} ');
 
-    _projects = await LocalDBAPI.getProjects();
+    _projects = await localMongo.getProjects();
 
     if (_projects.isEmpty || forceRefresh) {
       _projects = await DataAPI.findProjectsByOrganization(organizationId);
-      await LocalDBAPI.addProjects(projects: _projects);
+      await localMongo.addProjects(projects: _projects);
     }
     _projController.sink.add(_projects);
     pp('💜 💜 💜 💜 MonitorBloc: OrganizationProjects found: 💜 ${_projects.length} projects 💜');
@@ -176,11 +176,11 @@ class MonitorBloc {
 
   Future<List<User>> getOrganizationUsers(
       {required String organizationId, required bool forceRefresh}) async {
-    _users = await LocalDBAPI.getUsers();
+    _users = await localMongo.getUsers();
 
     if (_users.isEmpty || forceRefresh) {
       _users = await DataAPI.findUsersByOrganization(organizationId);
-      await LocalDBAPI.addUsers(users: _users);
+      await localMongo.addUsers(users: _users);
     }
     _userController.sink.add(_users);
     pp('💜 💜 💜 MonitorBloc: getOrganizationUsers found: 💜 ${_users.length} users ');
@@ -193,12 +193,12 @@ class MonitorBloc {
 
   Future<List<ProjectPosition>> getProjectPositions(
       {required String projectId, required bool forceRefresh}) async {
-    _projectPositions = await LocalDBAPI.getProjectPositions(projectId);
+    _projectPositions = await localMongo.getProjectPositions(projectId);
 
     if (_projectPositions.isEmpty || forceRefresh) {
       _projectPositions = await DataAPI.findProjectPositionsById(projectId);
 
-      await LocalDBAPI.addProjectPositions(positions: _projectPositions);
+      await localMongo.addProjectPositions(positions: _projectPositions);
     }
     _projPositionsController.sink.add(_projectPositions);
     pp('💜 💜 💜 MonitorBloc: getProjectPositions found: 💜 ${_projectPositions.length} projectPositions ');
@@ -209,11 +209,11 @@ class MonitorBloc {
       {required String projectId, required bool forceRefresh }) async {
     List<Photo> photos = [];
 
-    photos = await LocalDBAPI.getProjectPhotos(projectId);
+    photos = await localMongo.getProjectPhotos(projectId);
 
     if (photos.isEmpty || forceRefresh) {
       photos = await DataAPI.findPhotosByProject(projectId);
-      await LocalDBAPI.addPhotos(photos: photos);
+      await localMongo.addPhotos(photos: photos);
     }
     _projectPhotoController.sink.add(photos);
     pp('💜 💜 💜 MonitorBloc: getProjectPhotos found: 💜 ${photos.length} photos ');
@@ -223,11 +223,11 @@ class MonitorBloc {
 
   Future<List<FieldMonitorSchedule>> getProjectFieldMonitorSchedules(
       {required String projectId, required bool forceRefresh}) async {
-    _schedules = await LocalDBAPI.getProjectMonitorSchedules(projectId);
+    _schedules = await localMongo.getProjectMonitorSchedules(projectId);
 
     if (_schedules.isEmpty || forceRefresh) {
       _schedules = await DataAPI.getProjectFieldMonitorSchedules(projectId);
-      await LocalDBAPI.addFieldMonitorSchedules(schedules: _schedules);
+      await localMongo.addFieldMonitorSchedules(schedules: _schedules);
     }
     var m = filterSchedulesByProject(_schedules);
     _schedules = m;
@@ -239,11 +239,11 @@ class MonitorBloc {
 
   Future<List<FieldMonitorSchedule>> getMonitorFieldMonitorSchedules(
       {required String userId, required bool forceRefresh}) async {
-    _schedules = await LocalDBAPI.getFieldMonitorSchedules(userId);
+    _schedules = await localMongo.getFieldMonitorSchedules(userId);
 
     if (_schedules.isEmpty || forceRefresh) {
       _schedules = await DataAPI.getMonitorFieldMonitorSchedules(userId);
-      await LocalDBAPI.addFieldMonitorSchedules(schedules: _schedules);
+      await localMongo.addFieldMonitorSchedules(schedules: _schedules);
     }
     _schedules.sort((a, b) => b.date!.compareTo(a.date!));
     var m = filterSchedulesByProject(_schedules);
@@ -280,11 +280,11 @@ class MonitorBloc {
   Future<List<FieldMonitorSchedule>> getOrgFieldMonitorSchedules(
       {required String organizationId, required bool forceRefresh}) async {
     _schedules =
-        await LocalDBAPI.getOrganizationMonitorSchedules(organizationId);
+        await localMongo.getOrganizationMonitorSchedules(organizationId);
 
     if (_schedules.isEmpty || forceRefresh) {
       _schedules = await DataAPI.getOrgFieldMonitorSchedules(organizationId);
-      await LocalDBAPI.addFieldMonitorSchedules(schedules: _schedules);
+      await localMongo.addFieldMonitorSchedules(schedules: _schedules);
     }
     var m = filterSchedulesByProject(_schedules);
     _schedules = m;
@@ -299,14 +299,14 @@ class MonitorBloc {
     try {
       var android = UniversalPlatform.isAndroid;
       if (android) {
-        _photos = await LocalDBAPI.getPhotos();
+        _photos = await localMongo.getPhotos();
       } else {
         _photos.clear();
       }
 
       if (_photos.isEmpty || forceRefresh) {
         _photos = await DataAPI.getOrganizationPhotos(organizationId);
-        if (android) await LocalDBAPI.addPhotos(photos: _photos);
+        if (android) await localMongo.addPhotos(photos: _photos);
       }
       _photoController.sink.add(_photos);
       pp('💜 💜 💜 MonitorBloc: getOrganizationPhotos found: 💜 ${_photos.length} photos 💜 ');
@@ -323,13 +323,13 @@ class MonitorBloc {
     try {
       var android = UniversalPlatform.isAndroid;
       if (android) {
-        _videos = await LocalDBAPI.getVideos();
+        _videos = await localMongo.getVideos();
       } else {
         _videos.clear();
       }
       if (_videos.isEmpty || forceRefresh) {
         _videos = await DataAPI.getOrganizationVideos(organizationId);
-        if (android) await LocalDBAPI.addVideos(videos: _videos);
+        if (android) await localMongo.addVideos(videos: _videos);
       }
       _videoController.sink.add(_videos);
       pp('💜 💜 💜 MonitorBloc: getOrganizationVideos found: 💜 ${_videos.length} videos ');
@@ -346,11 +346,11 @@ class MonitorBloc {
     List<Video> videos = [];
     var android = UniversalPlatform.isAndroid;
     if (android) {
-      videos = await LocalDBAPI.getProjectVideos(projectId);
+      videos = await localMongo.getProjectVideos(projectId);
     }
     if (videos.isEmpty || forceRefresh) {
       videos = await DataAPI.findVideosById(projectId);
-      if (android) await LocalDBAPI.addVideos(videos: videos);
+      if (android) await localMongo.addVideos(videos: videos);
     }
     _projectVideoController.sink.add(videos);
     pp('💜 💜 💜 MonitorBloc: getProjectVideos found: 💜 ${videos.length} videos ');
@@ -370,14 +370,14 @@ class MonitorBloc {
       {required String userId, required bool forceRefresh}) async {
     var android = UniversalPlatform.isAndroid;
     if (android) {
-      _photos = await LocalDBAPI.getUserPhotos(userId);
+      _photos = await localMongo.getUserPhotos(userId);
     } else {
       _photos.clear();
     }
 
     if (_photos.isEmpty || forceRefresh) {
       _photos = await DataAPI.getUserProjectPhotos(userId);
-      if (android) await LocalDBAPI.addPhotos(photos: _photos);
+      if (android) await localMongo.addPhotos(photos: _photos);
     }
     _photoController.sink.add(_photos);
     pp('💜 💜 💜 MonitorBloc: getUserProjectPhotos found: 💜 ${_photos.length} photos ');
@@ -388,14 +388,14 @@ class MonitorBloc {
       {required String userId, required bool forceRefresh}) async {
     var android = UniversalPlatform.isAndroid;
     if (android) {
-      _videos = await LocalDBAPI.getUserVideos(userId);
+      _videos = await localMongo.getUserVideos(userId);
     } else {
       _videos.clear();
     }
 
     if (_videos.isEmpty || forceRefresh) {
       _videos = await DataAPI.getUserProjectVideos(userId);
-      if (android) await LocalDBAPI.addVideos(videos: _videos);
+      if (android) await localMongo.addVideos(videos: _videos);
     }
     _videoController.sink.add(_videos);
     pp('💜 💜 💜 MonitorBloc: getUserProjectVideos found: 💜 ${_videos.length} videos ');

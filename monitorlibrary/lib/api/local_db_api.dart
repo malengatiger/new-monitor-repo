@@ -9,7 +9,7 @@ import 'package:path_provider/path_provider.dart' as path_provider;
 
 import '../functions.dart';
 
-class LocalDBAPI {
+class LocalDBAPIx {
   static const APP_ID = 'monAppID_0';
   static bool dbConnected = false;
   static int cnt = 0;

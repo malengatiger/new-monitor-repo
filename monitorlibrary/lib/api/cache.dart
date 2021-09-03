@@ -58,8 +58,10 @@ abstract class LocalDatabase {
   Future<List<Photo>> getPhotos();
   Future<List<Video>> getVideos();
   Future<List<Photo>> getProjectPhotos(String projectId);
+  Future<List<ProjectPosition>> getProjectPositions(String projectId);
   Future<List<Photo>> getSections(String questionnaireId);
   Future<List<Photo>> getUserPhotos(String userId);
+  Future<List<Video>> getUserVideos(String userId);
   Future<List<Video>> getProjectVideos(String projectId);
   Future<List<FieldMonitorSchedule>> getProjectMonitorSchedules(String projectId);
   Future<List<FieldMonitorSchedule>> getFieldMonitorSchedules(String userId);
