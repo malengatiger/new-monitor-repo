@@ -197,19 +197,7 @@ public class DataService {
                 + " " + Emoji.RAIN_DROPS);
         List<ProjectPosition> positions = projectPositionRepository
                 .findByProjectId(projectPosition.getProjectId());
-
-        Project project = projectRepository.findByProjectId(projectPosition.getProjectId());
-        if (project.getPosition() == null) {
-            if (!positions.isEmpty()) {
-                project.setPosition(positions.get(0).getPosition());
-                projectRepository.save(project);
-                LOGGER.info(Emoji.YELLOW_BIRD + Emoji.YELLOW_BIRD +
-                        "Project updated with position: " + project.getName()
-                        + " " + Emoji.RAIN_DROPS);
-            }
-        }
-
-
+        
         LOGGER.info(Emoji.LEAF.concat(Emoji.LEAF)
                 .concat("ProjectPosition added: " + projectPosition.getProjectId()));
         return m;

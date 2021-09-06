@@ -80,12 +80,13 @@ const labels = [
 class OrgMessage {
   String? name, userId, message, created, organizationId, projectId;
   String? projectName, adminId, adminName;
-  String? frequency, result;
+  String? frequency, result, orgMessageId;
 
   OrgMessage(
       {required this.name,
       required this.message,
       required this.userId,
+        required this.orgMessageId,
       required this.created,
       required this.projectId,
       required this.projectName,
@@ -97,6 +98,7 @@ class OrgMessage {
   OrgMessage.fromJson(Map data) {
     this.name = data['name'];
     this.userId = data['userId'];
+    this.orgMessageId = data['orgMessageId'];
     this.message = data['message'];
     this.created = data['created'];
     this.organizationId = data['organizationId'];
@@ -111,6 +113,7 @@ class OrgMessage {
     Map<String, dynamic> map = {
       'name': name,
       'userId': userId,
+      'orgMessageId': orgMessageId,
       'message': message,
       'created': created,
       'organizationId': organizationId,

@@ -9,14 +9,14 @@ data class MonitorReport(var monitorReportId: String?, var projectId: String,
                          var videos: List<Video>, var description: String, var created: String) {}
  */
 class MonitorReport {
-  String? projectId, created;
+  String? projectId, created, monitorReportId;
   Rating? rating;
   String? description;
   List<ph.Photo> photos = [];
   List<ph.Video> videos = [];
   User? user;
   MonitorReport(
-      {required this.projectId,
+      {required this.projectId, required this.monitorReportId,
       this.description,
       required this.created,
         required this.user,
@@ -25,6 +25,7 @@ class MonitorReport {
         required this.rating});
 
   MonitorReport.fromJson(Map data) {
+    this.monitorReportId = data['monitorReportId'];
     this.projectId = data['projectId'];
     this.rating = data['rating'];
     this.created = data['created'];
@@ -57,6 +58,7 @@ class MonitorReport {
       'rating': rating,
       'created': created,
       'description': description,
+      'monitorReportId': monitorReportId,
     };
     return map;
   }

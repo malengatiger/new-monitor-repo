@@ -6,13 +6,12 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class OrgMessage {
     private String organizationId, projectId, userId, message, created, fcmRegistration;
     private String projectName, adminId, adminName;
-    private String frequency, result, name;
+    private String frequency, result, name, orgMessageId;
 
     public OrgMessage() {
     }
 
-    public OrgMessage(String organizationId, String projectId, String userId, String message, String created, String fcmRegistration, String projectName,
-                      String adminId, String adminName, String frequency, String name) {
+    public OrgMessage(String organizationId, String projectId, String userId, String message, String created, String fcmRegistration, String projectName, String adminId, String adminName, String frequency, String result, String name, String orgMessageId) {
         this.organizationId = organizationId;
         this.projectId = projectId;
         this.userId = userId;
@@ -23,8 +22,17 @@ public class OrgMessage {
         this.adminId = adminId;
         this.adminName = adminName;
         this.frequency = frequency;
+        this.result = result;
         this.name = name;
+        this.orgMessageId = orgMessageId;
+    }
 
+    public String getOrgMessageId() {
+        return orgMessageId;
+    }
+
+    public void setOrgMessageId(String orgMessageId) {
+        this.orgMessageId = orgMessageId;
     }
 
     public String getName() {

@@ -1,21 +1,17 @@
-import 'package:meta/meta.dart';
 import 'package:monitorlibrary/data/monitor_report.dart';
-import 'package:monitorlibrary/data/position.dart';
 import 'package:monitorlibrary/data/project_position.dart';
 import 'package:monitorlibrary/data/ratingContent.dart';
 
+import '../functions.dart';
 import 'city.dart';
 import 'community.dart';
 import 'photo.dart' as ph;
 
-/*
-var projectPositions: List<Position>?
- */
 class Project {
   String? _id, name, projectId, description, organizationId, created;
   String? organizationName;
   List<City>? nearestCities;
-  Position? position;
+
   List<ProjectPosition>? projectPositions;
   List<ph.Photo>? photos;
   List<ph.Video>? videos;
@@ -34,7 +30,6 @@ class Project {
       required this.ratings,
       required this.created,
       required this.projectPositions,
-      this.position,
       required this.monitorReports,
       required this.organizationName,
       required this.monitorMaxDistanceInMetres,
@@ -48,11 +43,10 @@ class Project {
     this.organizationId = data['organizationId'];
     this.created = data['created'];
     this.organizationName = data['organizationName'];
+    pp('Project.fromJson 😑 😑 😑 log 1 ...');
     this.monitorMaxDistanceInMetres = data['monitorMaxDistanceInMetres'];
 
-    if (data['position'] != null) {
-      position = Position.fromJson(data['position']);
-    }
+    pp('Project.fromJson 😑 😑 😑 log 2 ...');
     this.monitorReports = [];
     if (data['monitorReports'] != null) {
       List list = data['monitorReports'];
@@ -67,7 +61,7 @@ class Project {
         this.communities!.add(Community.fromJson(m));
       });
     }
-
+    pp('Project.fromJson 😑 😑 😑 log 3 ...');
     this.nearestCities = [];
     if (data['nearestCities'] != null) {
       List list = data['nearestCities'];
@@ -75,6 +69,7 @@ class Project {
         this.nearestCities!.add(City.fromJson(m));
       });
     }
+    pp('Project.fromJson 😑 😑 😑 log 4 ...');
     this.projectPositions = [];
     if (data['projectPositions'] != null) {
       List list = data['projectPositions'];
@@ -82,6 +77,7 @@ class Project {
         this.projectPositions!.add(ProjectPosition.fromJson(m));
       });
     }
+    pp('Project.fromJson 😑 😑 😑 log 5 ...');
     this.photos = [];
     if (data['photos'] != null) {
       List list = data['photos'];
@@ -89,6 +85,7 @@ class Project {
         this.photos!.add(ph.Photo.fromJson(m));
       });
     }
+    pp('Project.fromJson 😑 😑 😑 log 6 ...');
     this.videos = [];
     if (data['videos'] != null) {
       List list = data['videos'];
@@ -96,6 +93,7 @@ class Project {
         this.videos!.add(ph.Video.fromJson(m));
       });
     }
+    pp('Project.fromJson 😑 😑 😑 log 7 ...');
     this.ratings = [];
     if (data['ratings'] != null) {
       List list = data['ratings'];
@@ -103,6 +101,7 @@ class Project {
         this.ratings!.add(RatingContent.fromJson(m));
       });
     }
+    pp('Project.fromJson 😑 😑 😑 logs end ...');
   }
   Map<String, dynamic> toJson() {
     List mProjectPositions = [];
@@ -154,7 +153,6 @@ class Project {
       'videos': mVideos,
       'ratings': mRatings,
       'created': created,
-      'position': position == null ? null : position!.toJson(),
       'projectPositions': mProjectPositions,
     };
     return map;

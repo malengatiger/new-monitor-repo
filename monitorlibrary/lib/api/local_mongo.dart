@@ -14,39 +14,16 @@ import 'package:monitorlibrary/data/project_position.dart';
 import 'package:monitorlibrary/data/section.dart';
 import 'package:monitorlibrary/data/user.dart';
 import 'package:monitorlibrary/functions.dart';
-
 import '../constants.dart';
-import 'cache.dart';
 
-final LocalMongo localMongo = LocalMongo();
-
-class LocalMongo implements LocalDatabase {
+class LocalMongo {
   static const APP_ID = 'monAppID1';
-  bool dbConnected = false;
+  static bool dbConnected = false;
   static int cnt = 0;
   static const mm = '🌼🌼 🌼🌼 🌼🌼 LocalMongo: 🌼🌼 ';
-  String databaseName = 'monDB001b';
+  static String databaseName = 'monDB001b';
 
-  LocalMongo() {
-    pp('\n\n$mm 🍎 🍎 🍎 constructor: setting up MongoDB Mobile ... 🍎 🍎 🍎 ');
-  }
-
-  Future setAppID() async {
-    pp('🍎 🍎 🍎 setting MongoDB Mobile appID  ... 🍎 🍎 🍎 ');
-    try {
-      var res = await MobMongo.setAppID({
-        'appID': APP_ID,
-        'type': MobMongo.LOCAL_DATABASE,
-      });
-      pp('$mm result of MobMongo.setAppID:  $res');
-      await _connectToLocalDB();
-    } on PlatformException catch (f) {
-      pp('👿👿👿👿👿👿👿👿 PlatformException 🍎 🍎 🍎 - $f');
-      throw Exception(f.message);
-    }
-  }
-
-  Future _connectToLocalDB() async {
+  static Future _connectToLocalDB() async {
     if (dbConnected) {
       return null;
     }
@@ -63,17 +40,21 @@ class LocalMongo implements LocalDatabase {
     }
   }
 
-  Future _createIndices() async {
+  static Future _createIndices() async {
     pp('$mm ................ _createIndices .....');
     try {
       var carr1 = Carrier(
           db: databaseName, collection: Constants.CITY, index: {"cityId": 1});
       await MobMongo.createIndex(carr1);
       var carr1b = Carrier(
-          db: databaseName, collection: Constants.CITY, index: {"countryId": 1});
+          db: databaseName,
+          collection: Constants.CITY,
+          index: {"countryId": 1});
       await MobMongo.createIndex(carr1b);
       var carr1a = Carrier(
-          db: databaseName, collection: Constants.CITY, index: {"position": "2dsphere"});
+          db: databaseName,
+          collection: Constants.CITY,
+          index: {"position": "2dsphere"});
       await MobMongo.createIndex(carr1a);
       pp('$mm city indexes added');
 
@@ -117,9 +98,7 @@ class LocalMongo implements LocalDatabase {
           index: {"projectId": 1});
       await MobMongo.createIndex(carr6);
       var carr6a = Carrier(
-          db: databaseName,
-          collection: Constants.PHOTO,
-          index: {"userId": 1});
+          db: databaseName, collection: Constants.PHOTO, index: {"userId": 1});
       await MobMongo.createIndex(carr6a);
       pp('$mm photo indexes added');
 
@@ -129,9 +108,7 @@ class LocalMongo implements LocalDatabase {
           index: {"projectId": 1});
       await MobMongo.createIndex(carr7);
       var carr7a = Carrier(
-          db: databaseName,
-          collection: Constants.VIDEO,
-          index: {"userId": 1});
+          db: databaseName, collection: Constants.VIDEO, index: {"userId": 1});
       await MobMongo.createIndex(carr7a);
       var carr8 = Carrier(
           db: databaseName,
@@ -183,20 +160,23 @@ class LocalMongo implements LocalDatabase {
     }
   }
 
-  @override
-  Future<int> addCondition({required Condition condition}) async {
+  static Future  addCondition({required Condition condition}) async {
     pp('$mm .... addCondition .....');
+    await delete(
+        field: 'conditionId',
+        id: condition.conditionId!,
+        collectionName: Constants.CONDITION);
     Carrier carrier = Carrier(
       db: databaseName,
       collection: Constants.CONDITION,
+      data: condition.toJson(),
     );
     var result = await MobMongo.insert(carrier);
     pp('$mm Condition added to local cache: ${condition.projectName}');
     return result;
   }
 
-  @override
-  Future<int> addFieldMonitorSchedules(
+  static Future  addFieldMonitorSchedules(
       {required List<FieldMonitorSchedule> schedules}) async {
     for (var s in schedules) {
       await addFieldMonitorSchedule(schedule: s);
@@ -204,60 +184,59 @@ class LocalMongo implements LocalDatabase {
     return 0;
   }
 
-  @override
-  Future<int> addOrgMessage({required OrgMessage message}) async {
+  static Future  addOrgMessage({required OrgMessage message}) async {
     pp('$mm .... addOrgMessage .....');
+    await delete(
+        field: 'orgMessageId',
+        id: message.orgMessageId!,
+        collectionName: Constants.ORG_MESSAGE);
     Carrier carrier = Carrier(
       db: databaseName,
       collection: Constants.ORG_MESSAGE,
+      data: message.toJson(),
     );
     var result = await MobMongo.insert(carrier);
     pp('$mm OrgMessage added to local cache: ${message.projectName}');
     return result;
   }
 
-  @override
-  Future<int> addPhotos({required List<Photo> photos}) async {
+  static Future  addPhotos({required List<Photo> photos}) async {
     for (var v in photos) {
       await addPhoto(photo: v);
     }
-    return 0;
+    return photos.length;
   }
 
-  @override
-  Future<int> addProjectPositions(
+  static Future  addProjectPositions(
       {required List<ProjectPosition> positions}) async {
     for (var v in positions) {
       await addProjectPosition(projectPosition: v);
     }
-    return 0;
+    return positions.length;
   }
 
-  @override
-  Future<int> addProjects({required List<Project> projects}) async {
+  static Future  addProjects({required List<Project> projects}) async {
     for (var v in projects) {
       await addProject(project: v);
     }
-    return 0;
+    return projects.length;
   }
 
-  @override
-  Future<int> addUsers({required List<User> users}) async {
+  static Future addUsers({required List<User> users}) async {
+    pp('$mm adding ${users.length} users to local cache ...');
     for (var v in users) {
       await addUser(user: v);
     }
-    return 0;
+    return users.length;
   }
 
-  @override
-  Future<int> addVideos({required List<Video> videos}) async {
+  static Future  addVideos({required List<Video> videos}) async {
     for (var v in videos) {
       await addVideo(video: v);
     }
-    return 0;
+    return videos.length;
   }
 
-  @override
   List<FieldMonitorSchedule> filterSchedulesByProject(
       List<FieldMonitorSchedule> mList, String projectId) {
     List<FieldMonitorSchedule> list = [];
@@ -269,9 +248,9 @@ class LocalMongo implements LocalDatabase {
     return list;
   }
 
-  @override
-  Future<List<MonitorReport>> findMonitorReportsByLocation(
+  static Future<List<MonitorReport>> findMonitorReportsByLocation(
       {required latitude, required longitude, required radiusInKM}) async {
+    await _connectToLocalDB();
     var radius = radiusInKM * 1000;
     Carrier carrier =
         Carrier(db: databaseName, collection: Constants.MONITOR_REPORT, query: {
@@ -295,9 +274,9 @@ class LocalMongo implements LocalDatabase {
     return list;
   }
 
-  @override
-  Future<List<Photo>> findPhotosByLocation(
+  static Future<List<Photo>> findPhotosByLocation(
       {required latitude, required longitude, required radiusInKM}) async {
+    await _connectToLocalDB();
     var radius = radiusInKM * 1000;
     Carrier carrier =
         Carrier(db: databaseName, collection: Constants.PHOTO, query: {
@@ -321,9 +300,9 @@ class LocalMongo implements LocalDatabase {
     return list;
   }
 
-  @override
-  Future<List<ProjectPosition>> findProjectPositionsByLocation(
+  static Future<List<ProjectPosition>> findProjectPositionsByLocation(
       {required latitude, required longitude, required radiusInKM}) async {
+    await _connectToLocalDB();
     var radius = radiusInKM * 1000;
     Carrier carrier = Carrier(
         db: databaseName,
@@ -349,9 +328,9 @@ class LocalMongo implements LocalDatabase {
     return list;
   }
 
-  @override
-  Future<List<Project>> findProjectsByLocation(
+  static Future<List<Project>> findProjectsByLocation(
       {required latitude, required longitude, required radiusInKM}) async {
+    await _connectToLocalDB();
     var radius = radiusInKM * 1000;
     Carrier carrier =
         Carrier(db: databaseName, collection: Constants.PROJECT, query: {
@@ -375,9 +354,9 @@ class LocalMongo implements LocalDatabase {
     return list;
   }
 
-  @override
-  Future<List<Video>> findVideosByLocation(
+  static Future<List<Video>> findVideosByLocation(
       {required latitude, required longitude, required radiusInKM}) async {
+    await _connectToLocalDB();
     var radius = radiusInKM * 1000;
     Carrier carrier =
         Carrier(db: databaseName, collection: Constants.VIDEO, query: {
@@ -401,16 +380,29 @@ class LocalMongo implements LocalDatabase {
     return list;
   }
 
-  @override
-  Future<List<FieldMonitorSchedule>> getFieldMonitorSchedules(
+  static Future<List<FieldMonitorSchedule>> getFieldMonitorSchedules(
       String userId) async {
-    throw UnimplementedError();
+    pp('$mm .... getOrganizationMonitorSchedules .....userId: $userId');
+    await _connectToLocalDB();
+    Carrier carrier = Carrier(
+      db: databaseName,
+      collection: Constants.FIELD_MONITOR_SCHEDULE,
+    );
+    List result = await (MobMongo.getAll(carrier));
+    List<FieldMonitorSchedule> schedules = [];
+    result.forEach((r) {
+      var x = FieldMonitorSchedule.fromJson(json.decode(r));
+      // if (x.userId == userId) {
+      schedules.add(r);
+      // }
+    });
+    return schedules;
   }
 
-  @override
-  Future<List<FieldMonitorSchedule>> getOrganizationMonitorSchedules(
+  static Future<List<FieldMonitorSchedule>> getOrganizationMonitorSchedules(
       String organizationId) async {
-    pp('$mm .... getProjectMonitorSchedules .....');
+    pp('$mm .... getOrganizationMonitorSchedules .....organizationId: $organizationId');
+    await _connectToLocalDB();
     Carrier carrier = Carrier(
       db: databaseName,
       collection: Constants.FIELD_MONITOR_SCHEDULE,
@@ -426,16 +418,26 @@ class LocalMongo implements LocalDatabase {
     return schedules;
   }
 
-  @override
-  Future<List<Photo>> getPhotos() {
-    // TODO: implement getPhotos
-    throw UnimplementedError();
+  static Future<List<Photo>> getPhotos() async {
+    pp('$mm .... getPhotos ..... ');
+    await _connectToLocalDB();
+    Carrier carrier = Carrier(
+      db: databaseName,
+      collection: Constants.PHOTO,
+    );
+    List result = await (MobMongo.getAll(carrier));
+    List<Photo> schedules = [];
+    result.forEach((r) {
+      var x = Photo.fromJson(json.decode(r));
+      schedules.add(r);
+    });
+    return schedules;
   }
 
-  @override
-  Future<List<FieldMonitorSchedule>> getProjectMonitorSchedules(
+  static Future<List<FieldMonitorSchedule>> getProjectMonitorSchedules(
       String projectId) async {
-    pp('$mm .... getProjectMonitorSchedules .....');
+    pp('$mm .... getProjectMonitorSchedules ..... projectId: $projectId');
+    await _connectToLocalDB();
     Carrier carrier = Carrier(
       db: databaseName,
       collection: Constants.FIELD_MONITOR_SCHEDULE,
@@ -451,8 +453,7 @@ class LocalMongo implements LocalDatabase {
     return schedules;
   }
 
-  @override
-  Future<List<Photo>> getProjectPhotos(String projectId) async {
+  static Future<List<Photo>> getProjectPhotos(String projectId) async {
     var list = await getPhotos();
     List<Photo> mList = [];
     list.forEach((element) {
@@ -463,8 +464,7 @@ class LocalMongo implements LocalDatabase {
     return mList;
   }
 
-  @override
-  Future<List<Video>> getProjectVideos(String projectId) async {
+  static Future<List<Video>> getProjectVideos(String projectId) async {
     var list = await getVideos();
     List<Video> mList = [];
     list.forEach((element) {
@@ -475,8 +475,7 @@ class LocalMongo implements LocalDatabase {
     return mList;
   }
 
-  @override
-  Future<List<Photo>> getUserPhotos(String userId) async {
+  static Future<List<Photo>> getUserPhotos(String userId) async {
     var list = await getPhotos();
     List<Photo> mList = [];
     list.forEach((element) {
@@ -487,9 +486,9 @@ class LocalMongo implements LocalDatabase {
     return mList;
   }
 
-  @override
-  Future<List<User>> getUsers() async {
+  static Future<List<User>> getUsers() async {
     pp('$mm .... getUsers .....');
+    await _connectToLocalDB();
     Carrier carrier = Carrier(
       db: databaseName,
       collection: Constants.USER,
@@ -502,9 +501,9 @@ class LocalMongo implements LocalDatabase {
     return users;
   }
 
-  @override
-  Future<List<Video>> getVideos() async {
-    pp('$mm .... getUsers .....');
+  static Future<List<Video>> getVideos() async {
+    pp('$mm .... getVideos .....');
+    await _connectToLocalDB();
     Carrier carrier = Carrier(
       db: databaseName,
       collection: Constants.VIDEO,
@@ -514,86 +513,107 @@ class LocalMongo implements LocalDatabase {
     result.forEach((r) {
       videos.add(Video.fromJson(json.decode(r)));
     });
+
     return videos;
   }
 
-  @override
-  Future<int> addFieldMonitorSchedule(
+  static Future  addFieldMonitorSchedule(
       {required FieldMonitorSchedule schedule}) async {
     pp('$mm .... addFieldMonitorSchedule .....');
+    await delete(
+        field: 'fieldMonitorScheduleId',
+        id: schedule.fieldMonitorScheduleId!,
+        collectionName: Constants.FIELD_MONITOR_SCHEDULE);
     Carrier carrier = Carrier(
       db: databaseName,
       collection: Constants.FIELD_MONITOR_SCHEDULE,
+      data: schedule.toJson(),
     );
     var result = await MobMongo.insert(carrier);
-    pp('$mm FieldMonitorSchedule added to local cache: ${schedule.projectName}');
+    pp('$mm FieldMonitorSchedule added to local cache:  🔵 🔵 ${schedule.projectName}');
     return result;
   }
 
-  @override
-  Future<int> addPhoto({required Photo photo}) async {
+  static Future  addPhoto({required Photo photo}) async {
     pp('$mm .... addPhoto .....');
+    await delete(
+        field: 'photoId', id: photo.photoId!, collectionName: Constants.PHOTO);
     Carrier carrier = Carrier(
       db: databaseName,
       collection: Constants.PHOTO,
+      data: photo.toJson(),
     );
     var result = await MobMongo.insert(carrier);
-    pp('$mm Photo added to local cache: ${photo.projectName}');
+    pp('$mm Photo added to local cache:  🔵 🔵 ${photo.projectName}');
     return result;
   }
 
-  @override
-  Future<int> addProject({required Project project}) async {
-    pp('$mm .... adding Project .....');
+  static Future addProject({required Project project}) async {
+    pp('$mm .... ........... adding Project .....  🔵 🔵 ${project.toJson()}');
+    await delete(
+        field: 'projectId',
+        id: project.projectId!,
+        collectionName: Constants.PROJECT);
     Carrier carrier = Carrier(
       db: databaseName,
       collection: Constants.PROJECT,
+      data: project.toJson(),
     );
+    pp('$mm .... ........... adding Project .....insert using carrier.collection: ${carrier.collection}');
     var result = await MobMongo.insert(carrier);
-    pp('$mm Project added to local cache: ${project.name}');
+    pp('$mm Project added to local cache:  🔵 🔵 ${project.name} result: $result');
     return result;
   }
 
-  @override
-  Future<int> addProjectPosition(
+  static Future  addProjectPosition(
       {required ProjectPosition projectPosition}) async {
-    pp('$mm .... addProjectPosition .....');
+    pp('$mm .... addProjectPosition .....  🔵 🔵 ${projectPosition.toJson()}');
+    await delete(
+        field: 'projectPositionId',
+        id: projectPosition.projectPositionId!,
+        collectionName: Constants.PROJECT_POSITION);
     Carrier carrier = Carrier(
       db: databaseName,
       collection: Constants.PROJECT_POSITION,
+      data: projectPosition.toJson(),
     );
     var result = await MobMongo.insert(carrier);
-    pp('$mm ProjectPosition added to local cache: ${projectPosition.projectName}');
+    pp('$mm ProjectPosition added to local cache:  🔵 🔵 ${projectPosition.projectName}');
     return result;
   }
 
-  @override
-  Future<int> addUser({required User user}) async {
-    pp('$mm .... addProjectPosition .....');
+  static Future addUser({required User user}) async {
+    pp('$mm .... addUser .....  🔵 🔵 ${user.toJson()}');
+    await _connectToLocalDB();
+    await delete(
+        field: 'userId', id: user.userId!, collectionName: Constants.USER);
     Carrier carrier = Carrier(
       db: databaseName,
       collection: Constants.USER,
+      data: user.toJson(),
     );
     var result = await MobMongo.insert(carrier);
-    pp('$mm User added to local cache: ${user.name}');
+    pp('$mm User added to local cache: 🔵 🔵  ${user.name} mongo result result: $result');
     return result;
   }
 
-  @override
-  Future<int> addVideo({required Video video}) async {
-    pp('$mm .... addVideo .....');
+  static Future  addVideo({required Video video}) async {
+    pp('$mm .... addVideo .....  🔵 🔵 ${video.toJson()}');
+    await delete(
+        field: 'videoId', id: video.videoId!, collectionName: Constants.VIDEO);
     Carrier carrier = Carrier(
       db: databaseName,
       collection: Constants.VIDEO,
+      data: video.toJson(),
     );
     var result = await MobMongo.insert(carrier);
-    pp('$mm Video added to local cache: ${video.projectName}');
+    pp('$mm Video added to local cache:  🔵 🔵 ${video.projectName}');
     return result;
   }
 
-  @override
-  Future<List<Project>> getProjects() async {
+  static Future<List<Project>> getProjects() async {
     pp('$mm .... getProjects .....');
+    await _connectToLocalDB();
     Carrier carrier = Carrier(
       db: databaseName,
       collection: Constants.PROJECT,
@@ -603,43 +623,49 @@ class LocalMongo implements LocalDatabase {
     result.forEach((r) {
       projects.add(Project.fromJson(json.decode(r)));
     });
+    pp('$mm .... getProjects ..... found:  🌼 ${projects.length}  🌼');
     return projects;
   }
 
-  @override
-  Future<int> addCities({required List<City> cities}) async {
+  static Future  addCities({required List<City> cities}) async {
     for (var city in cities) {
       await addCity(city: city);
     }
     return 0;
   }
 
-  @override
-  Future<int> addCity({required City city}) async {
-    pp('$mm .... addCity .....');
+  static Future  addCity({required City city}) async {
+    pp('$mm .... addCity .....  🔵 🔵 ${city.toJson()}');
+    await delete(
+        field: 'cityId', id: city.cityId!, collectionName: Constants.CITY);
     Carrier carrier = Carrier(
       db: databaseName,
       collection: Constants.CITY,
+      data: city.toJson(),
     );
     var result = await MobMongo.insert(carrier);
-    pp('$mm City added to local cache: ${city.name}');
+    pp('$mm City added to local cache: 🌿 ${city.name}');
     return result;
   }
 
-  @override
-  Future<int> addMonitorReport({required MonitorReport monitorReport}) async {
-    pp('$mm .... addMonitorReport .....');
+  static Future  addMonitorReport(
+      {required MonitorReport monitorReport}) async {
+    pp('$mm .... addMonitorReport .....  🔵 🔵 ${monitorReport.toJson()}');
+    await delete(
+        field: 'monitorReportId',
+        id: monitorReport.monitorReportId!,
+        collectionName: Constants.MONITOR_REPORT);
     Carrier carrier = Carrier(
       db: databaseName,
       collection: Constants.MONITOR_REPORT,
+      data: monitorReport.toJson(),
     );
     var result = await MobMongo.insert(carrier);
-    pp('$mm MonitorReport added to local cache: ${monitorReport.projectId}');
+    pp('$mm MonitorReport added to local cache: 🌿 ${monitorReport.projectId}');
     return result;
   }
 
-  @override
-  Future<int> addMonitorReports(
+  static Future  addMonitorReports(
       {required List<MonitorReport> monitorReports}) async {
     for (var r in monitorReports) {
       await addMonitorReport(monitorReport: r);
@@ -647,48 +673,56 @@ class LocalMongo implements LocalDatabase {
     return 0;
   }
 
-  @override
-  Future<int> addCommunities({required List<Community> communities}) async {
+  static Future  addCommunities(
+      {required List<Community> communities}) async {
     for (var c in communities) {
       await addCommunity(community: c);
     }
     return 0;
   }
 
-  @override
-  Future<int> addCommunity({required Community community}) async {
-    pp('$mm .... addCommunity .....');
+  static Future  addCommunity({required Community community}) async {
+    pp('$mm .... addCommunity .....  🔵 🔵 ${community.toJson()}');
+    await delete(
+        field: 'communityId',
+        id: community.communityId!,
+        collectionName: Constants.COMMUNITY);
     Carrier carrier = Carrier(
       db: databaseName,
       collection: Constants.COMMUNITY,
+      data: community.toJson(),
     );
     var result = await MobMongo.insert(carrier);
     pp('$mm Community added to local cache: ${community.name}');
     return result;
   }
 
-  @override
-  Future<int> addOrganization({required Organization organization}) async {
-    pp('$mm .... addCommunity .....');
+  static Future  addOrganization(
+      {required Organization organization}) async {
+    pp('$mm .... addOrganization .....  🔵 🔵 ${organization.toJson()}');
+    await delete(
+        field: 'organizationId',
+        id: organization.organizationId!,
+        collectionName: Constants.ORGANIZATION);
     Carrier carrier = Carrier(
       db: databaseName,
       collection: Constants.ORGANIZATION,
+      data: organization.toJson(),
     );
     var result = await MobMongo.insert(carrier);
-    pp('$mm Community added to local cache: ${organization.name}');
+    pp('$mm Organization added to local cache: ${organization.name}');
     return result;
   }
 
-  @override
-  Future<List<City>> findCitiesByLocation(
+  static Future<List<City>> findCitiesByLocation(
       {required latitude, required longitude, required radiusInKM}) {
     // TODO: implement findCitiesByLocation
     throw UnimplementedError();
   }
 
-  @override
-  Future<List<Community>> getCommunities() async {
+  static Future<List<Community>> getCommunities() async {
     pp('$mm .... getCommunities .....');
+    await _connectToLocalDB();
     Carrier carrier = Carrier(
       db: databaseName,
       collection: Constants.COMMUNITY,
@@ -698,12 +732,13 @@ class LocalMongo implements LocalDatabase {
     result.forEach((r) {
       comms.add(Community.fromJson(json.decode(r)));
     });
+    pp('$mm .... getCommunities ..... found:  🌼 ${comms.length}  🌼');
     return comms;
   }
 
-  @override
-  Future<List<Organization>> getOrganizations() async {
-    pp('$mm .... getProjects .....');
+  static Future<List<Organization>> getOrganizations() async {
+    pp('$mm .... getOrganizations .....');
+    await _connectToLocalDB();
     Carrier carrier = Carrier(
       db: databaseName,
       collection: Constants.ORGANIZATION,
@@ -713,24 +748,32 @@ class LocalMongo implements LocalDatabase {
     result.forEach((r) {
       orgs.add(Organization.fromJson(json.decode(r)));
     });
+    pp('$mm .... getOrganizations ..... found:  🌼 ${orgs.length}  🌼');
     return orgs;
   }
 
-  @override
-  Future<int> addSection({required Section section}) {
-    // TODO: implement addSection
-    throw UnimplementedError();
+  static Future  addSection({required Section section}) async {
+    pp('$mm .... addSection .....  🔵 🔵 ${section.toJson()}');
+    await delete(field: 'sectionId', id: section.sectionId!, collectionName: Constants.SECTION);
+    Carrier carrier = Carrier(
+      db: databaseName,
+      collection: Constants.SECTION,
+      data: section.toJson(),
+    );
+    var result = await MobMongo.insert(carrier);
+    pp('$mm section added to local cache:  🔵 🔵 sectionNumber: ${section.sectionNumber}');
+    return result;
   }
 
-  @override
-  Future<List<Photo>> getSections(String questionnaireId) {
+  static Future<List<Photo>> getSections(String questionnaireId) {
     // TODO: implement getSections
     throw UnimplementedError();
   }
 
-  @override
-  Future<List<ProjectPosition>> getProjectPositions(String projectId) async {
+  static Future<List<ProjectPosition>> getProjectPositions(
+      String projectId) async {
     pp('$mm .... getProjectPositions .....');
+    await _connectToLocalDB();
     Carrier carrier = Carrier(
       db: databaseName,
       collection: Constants.PROJECT_POSITION,
@@ -743,11 +786,13 @@ class LocalMongo implements LocalDatabase {
         positions.add(r);
       }
     });
+    pp('$mm .... getProjectPositions ..... found:  🌼 ${positions.length}  🌼');
     return positions;
   }
-  @override
-  Future<List<Video>> getUserVideos(String userId) async {
+
+  static Future<List<Video>> getUserVideos(String userId) async {
     pp('$mm .... getUserVideos .....');
+    await _connectToLocalDB();
     Carrier carrier = Carrier(
       db: databaseName,
       collection: Constants.VIDEO,
@@ -760,6 +805,22 @@ class LocalMongo implements LocalDatabase {
         videos.add(r);
       }
     });
+    pp('$mm .... getUserVideos ..... found:  🌼 ${videos.length}  🌼');
     return videos;
+  }
+
+  static Future delete(
+      {required String field,
+      required String id,
+      required String collectionName}) async {
+    pp('$mm .... delete ..... field: $field collectionName: $collectionName id: $id');
+    await _connectToLocalDB();
+    Carrier c = Carrier(db: databaseName, collection: collectionName, id: {
+      'field': field,
+      'value': id,
+    });
+    var result = await MobMongo.delete(c);
+    pp('🐥 $field - Record deleted from local DB, result: $result ');
+    return result;
   }
 }

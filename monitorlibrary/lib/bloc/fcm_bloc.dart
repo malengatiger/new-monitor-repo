@@ -82,7 +82,11 @@ class FCMBloc {
       if (user != null) {
         var token = await messaging.getToken();
         if (token != user!.fcmRegistration) {
-          await _updateUser(token!);
+          try {
+            await _updateUser(token!);
+          } catch (e) {
+            pp('$mm 🚨 🚨 🚨 🚨 🚨 🚨 Cannot update the user token ... important for direct device notification only');
+          }
         }
       }
     } else {
@@ -139,42 +143,42 @@ class FCMBloc {
         pp("$mm processFCMMessage  🔵 🔵 🔵 ........................... cache USER  🍎  🍎 ");
         var m = jsonDecode(data['user']);
         var user = User.fromJson(m);
-        await localMongo.addUser(user: user);
+        await LocalMongo.addUser(user: user);
         _userController.sink.add(user);
       }
       if (data['project'] != null) {
         pp("$mm processFCMMessage  🔵 🔵 🔵 ........................... cache PROJECT  🍎  🍎");
         var m = jsonDecode(data['project']);
         var project = Project.fromJson(m);
-        await localMongo.addProject(project: project);
+        await LocalMongo.addProject(project: project);
         _projectController.sink.add(project);
       }
       if (data['photo'] != null) {
         pp("$mm processFCMMessage  🔵 🔵 🔵 ........................... cache PHOTO  🍎  🍎");
         var m = jsonDecode(data['photo']);
         var photo = Photo.fromJson(m);
-        await localMongo.addPhoto(photo: photo);
+        await LocalMongo.addPhoto(photo: photo);
         _photoController.sink.add(photo);
       }
       if (data['video'] != null) {
         pp("$mm processFCMMessage  🔵 🔵 🔵 ........................... cache VIDEO  🍎  🍎");
         var m = jsonDecode(data['video']);
         var video = Video.fromJson(m);
-        await localMongo.addVideo(video: video);
+        await LocalMongo.addVideo(video: video);
         _videoController.sink.add(video);
       }
       if (data['condition'] != null) {
         pp("$mm processFCMMessage  🔵 🔵 🔵 ........................... cache CONDITION  🍎  🍎");
         var m = jsonDecode(data['condition']);
         var condition = Condition.fromJson(m);
-        await localMongo.addCondition(condition: condition);
+        await LocalMongo.addCondition(condition: condition);
         _conditionController.sink.add(condition);
       }
       if (data['message'] != null) {
         pp("$mm processFCMMessage  🔵 🔵 🔵 ........................... cache ORG MESSAGE  🍎  🍎");
         var m = jsonDecode(data['message']);
         var msg = OrgMessage.fromJson(m);
-        await localMongo.addOrgMessage(message: msg);
+        await LocalMongo.addOrgMessage(message: msg);
         if (user!.userId != msg.adminId) {
           _messageController.sink.add(msg);
         }
@@ -203,37 +207,37 @@ Future<dynamic> myBackgroundMessageHandler(Map<String, dynamic> message) async {
     if (data['user'] != null) {
       var m = jsonDecode(data['user']);
       var user = User.fromJson(m);
-      localMongo.addUser(user: user);
+      LocalMongo.addUser(user: user);
     }
     if (data['project'] != null) {
       pp("$mm myBackgroundMessageHandler   🦠 🦠 🦠 ........................... cache PROJECT  🍎  🍎");
       var m = jsonDecode(data['project']);
       var project = Project.fromJson(m);
-      localMongo.addProject(project: project);
+      LocalMongo.addProject(project: project);
     }
     if (data['photo'] != null) {
       pp("$mm myBackgroundMessageHandler   🦠 🦠 🦠 ........................... cache PHOTO  🍎  🍎");
       var m = jsonDecode(data['photo']);
       var photo = Photo.fromJson(m);
-      localMongo.addPhoto(photo: photo);
+      LocalMongo.addPhoto(photo: photo);
     }
     if (data['video'] != null) {
       pp("$mm myBackgroundMessageHandler   🦠 🦠 🦠 ........................... cache VIDEO  🍎  🍎");
       var m = jsonDecode(data['video']);
       var video = Video.fromJson(m);
-      localMongo.addVideo(video: video);
+      LocalMongo.addVideo(video: video);
     }
     if (data['condition'] != null) {
       pp("$mm myBackgroundMessageHandler   🦠 🦠 🦠 ........................... cache CONDITION  🍎  🍎");
       var m = jsonDecode(data['condition']);
       var condition = Condition.fromJson(m);
-      localMongo.addCondition(condition: condition);
+      LocalMongo.addCondition(condition: condition);
     }
     if (data['message'] != null) {
       pp("$mm myBackgroundMessageHandler  🦠 🦠 🦠 ........................... cache ORG MESSAGE  🍎  🍎");
       var m = jsonDecode(data['message']);
       var msg = OrgMessage.fromJson(m);
-      localMongo.addOrgMessage(message: msg);
+      LocalMongo.addOrgMessage(message: msg);
     }
   } else {
     pp('👿 👿 👿 No data structure found in FCM message  👿  wtf?  👿');

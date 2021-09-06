@@ -5,14 +5,14 @@ import 'package:monitorlibrary/data/position.dart' as ar;
 import 'city.dart';
 
 class ProjectPosition {
-  String? projectName, projectId, caption, created;
+  String? projectName, projectId, caption, created, projectPositionId;
   ar.Position? position;
   Placemark? placemark;
   List<City>? nearestCities;
 
   ProjectPosition(
       {required this.projectName,
-      required this.caption,
+      required this.caption, required this.projectPositionId,
       required this.created,
       required this.position,
       this.placemark,
@@ -22,6 +22,7 @@ class ProjectPosition {
   ProjectPosition.fromJson(Map data) {
     this.projectName = data['projectName'];
     this.projectId = data['projectId'];
+    this.projectPositionId = data['projectPositionId'];
     this.caption = data['caption'];
     this.projectId = data['projectId'];
     this.created = data['created'];
@@ -49,6 +50,7 @@ class ProjectPosition {
     Map<String, dynamic> map = {
       'projectName': projectName,
       'projectId': projectId,
+      'projectPositionId': projectPositionId,
       'caption': caption,
       'created': created,
       'position': position == null ? null : position!.toJson(),

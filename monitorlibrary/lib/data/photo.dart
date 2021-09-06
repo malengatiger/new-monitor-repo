@@ -141,7 +141,7 @@ class Video {
 }
 
 class Condition {
-  String? url, caption, created;
+  String? url, caption, created, conditionId;
   String? userId, userName;
   Position? projectPosition;
   int? rating;
@@ -152,7 +152,8 @@ class Condition {
           this.url,
       this.caption,
       required
-          this.created,
+          this.created, required
+      this.conditionId,
       required
           this.userId,
       required
@@ -171,6 +172,7 @@ class Condition {
     this.caption = data['caption'];
     this.created = data['created'];
     this.userId = data['userId'];
+    this.conditionId = data['conditionId'];
 
     this.userName = data['userName'];
     this.rating = data['rating'];
@@ -184,6 +186,7 @@ class Condition {
     Map<String, dynamic> map = {
       'url': url,
       'caption': caption,
+      'conditionId': conditionId,
       'created': created,
       'userId': userId,
       'userName': userName,

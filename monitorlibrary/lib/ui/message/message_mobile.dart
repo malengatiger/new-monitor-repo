@@ -7,9 +7,9 @@ import 'package:monitorlibrary/ui/message/generic_message.dart';
 import '../../functions.dart';
 
 class MessageMobile extends StatefulWidget {
-  final User user;
+  final User? user;
 
-  const MessageMobile({Key? key, required this.user}) : super(key: key);
+  const MessageMobile({Key? key,  this.user}) : super(key: key);
   @override
   _MessageMobileState createState() => _MessageMobileState();
 }
@@ -34,7 +34,7 @@ class _MessageMobileState extends State<MessageMobile>
   }
 
   void _getProjects(bool force) async {
-    if (widget.user.userType == FIELD_MONITOR) {
+    if (widget.user!.userType == FIELD_MONITOR) {
       setState(() {
         _genericMessage = true;
       });
@@ -44,7 +44,7 @@ class _MessageMobileState extends State<MessageMobile>
       isBusy = true;
     });
     _projects = await monitorBloc.getOrganizationProjects(
-        organizationId: widget.user.organizationId!, forceRefresh: force);
+        organizationId: widget.user!.organizationId!, forceRefresh: force);
     setState(() {
       isBusy = false;
     });
@@ -81,7 +81,7 @@ class _MessageMobileState extends State<MessageMobile>
                   ],
                 ),
                 Text(
-                  '${widget.user.name}',
+                  '${widget.user!.name}',
                   style: Styles.blackBoldMedium,
                 ),
                 SizedBox(
@@ -94,7 +94,7 @@ class _MessageMobileState extends State<MessageMobile>
                         elevation: 8,
                         child: SingleChildScrollView(
                             child: GenericMessage(
-                                project: _selectedProject!, user: widget.user))),
+                                project: _selectedProject!, user: widget.user!))),
                   ),
                 ),
                 SizedBox(
@@ -105,7 +105,7 @@ class _MessageMobileState extends State<MessageMobile>
             preferredSize: Size.fromHeight(_genericMessage ? 320 : 360)),
       ),
       backgroundColor: Colors.brown[100],
-      body: widget.user.userType == ORG_ADMINISTRATOR
+      body: widget.user!.userType == ORG_ADMINISTRATOR
           ? Stack(
               children: [
                 Padding(

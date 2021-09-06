@@ -4,6 +4,7 @@ import 'package:monitorlibrary/api/data_api.dart';
 import 'package:monitorlibrary/api/sharedprefs.dart';
 import 'package:monitorlibrary/data/project.dart';
 import 'package:monitorlibrary/data/user.dart';
+import 'package:uuid/uuid.dart';
 
 import '../../functions.dart';
 import '../../snack.dart';
@@ -54,7 +55,8 @@ class _MonitorMessageState extends State<MonitorMessage> {
           userId: widget.user.userId,
           created: DateTime.now().toUtc().toIso8601String(),
           projectId: widget.project.projectId,
-          organizationId: widget.project.organizationId);
+          organizationId: widget.project.organizationId,
+          orgMessageId: Uuid().v4());
       try {
         var res = await DataAPI.sendMessage(msg);
         pp('MessageMobile:  🏓  🏓  🏓 Response from server:  🏓 ${res.toJson()}  🏓');

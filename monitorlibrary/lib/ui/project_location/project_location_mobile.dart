@@ -9,6 +9,7 @@ import 'package:monitorlibrary/data/project.dart';
 import 'package:monitorlibrary/data/project_position.dart';
 import 'package:monitorlibrary/location/loc_bloc.dart';
 import 'package:monitorlibrary/snack.dart';
+import 'package:uuid/uuid.dart';
 
 import '../../functions.dart';
 
@@ -123,7 +124,7 @@ class _ProjectLocationMobileState extends State<ProjectLocationMobile>
               type: 'Point',
               coordinates: [_position!.longitude, _position!.latitude]),
           projectId: widget.project.projectId,
-          nearestCities: cities);
+          nearestCities: cities, projectPositionId: Uuid().v4());
       try {
         var m = await DataAPI.addProjectPosition(position: loc);
         pp('$mx  _submit: new projectPosition added .........  🍅 ${m.toJson()} 🍅');

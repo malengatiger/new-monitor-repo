@@ -6,7 +6,7 @@ class Constants {
       ORGANIZATION = 'organization',
       ORG_MESSAGE = 'orgMessage',
       QUESTIONNAIRE = 'questionnaire',
-      USER = 'user',
+      USER = 'user',  SECTION = 'section',
       CONDITION = 'condition',
       MONITOR_REPORT = 'monitor_report',
       FIELD_MONITOR_SCHEDULE = 'fieldMonitorSchedule',

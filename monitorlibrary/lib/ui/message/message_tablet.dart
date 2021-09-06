@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:monitorlibrary/data/user.dart';
 
 class MessageTablet extends StatefulWidget {
-  final User user;
+  final User? user;
 
-  const MessageTablet({Key? key, required this.user}) : super(key: key);
+  const MessageTablet({Key? key,  this.user}) : super(key: key);
   @override
   _MessageTabletState createState() => _MessageTabletState();
 }

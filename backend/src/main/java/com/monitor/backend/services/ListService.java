@@ -195,17 +195,19 @@ public class ListService {
         LOGGER.info(Emoji.DICE.concat(Emoji.DICE).concat(" findProjectsByLocation ..."));
         Point point = new Point(longitude, latitude);
         Distance distance = new Distance(radiusInKM, Metrics.KILOMETERS);
-        List<com.monitor.backend.data.Project> projects = projectRepository.findByPositionNear(point, distance);
+        List<com.monitor.backend.data.ProjectPosition> projects = projectPositionRepository.findByPositionNear(point, distance);
         LOGGER.info(Emoji.DOLPHIN.concat(Emoji.DOLPHIN).concat(Emoji.DOLPHIN)
                 + " Nearby Projects found: " + projects.size() + " : " + Emoji.RED_APPLE + " radius: " + radiusInKM);
-        for (com.monitor.backend.data.Project project : projects) {
-            LOGGER.info(Emoji.DOLPHIN.concat(Emoji.DOLPHIN) + project.getName() + ", "
-                    + project.getOrganizationId() + " "
+        List<com.monitor.backend.data.Project> fList = new ArrayList<>();
+        for (com.monitor.backend.data.ProjectPosition projectPosition : projects) {
+            LOGGER.info(Emoji.DOLPHIN.concat(Emoji.DOLPHIN) + projectPosition.getProjectName() + ", "
                     + Emoji.COFFEE);
+            Project p = projectRepository.findByProjectId(projectPosition.getProjectId());
+            fList.add(p);
         }
         LOGGER.info(Emoji.HEART_ORANGE.concat(Emoji.HEART_ORANGE).concat(
                 "findProjectsByLocation: Nearby Projects found: " + projects.size() + " \uD83C\uDF3F"));
-        return projects;
+        return fList;
     }
 
     public List<City> findCitiesByLocation(double latitude, double longitude, double radiusInKM)  {

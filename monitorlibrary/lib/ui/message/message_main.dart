@@ -6,7 +6,7 @@ import 'package:monitorlibrary/ui/message/message_tablet.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 
 class MessageMain extends StatefulWidget {
-  final User user;
+  final User? user;
   MessageMain({Key? key, required this.user}) : super(key: key);
 
   @override

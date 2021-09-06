@@ -63,7 +63,7 @@ class _UserListMobileState extends State<UserListMobile>
       _users.sort((a, b) => (a.name!.compareTo(b.name!)));
     } catch (e) {
       AppSnackbar.showErrorSnackbar(
-          scaffoldKey: _key, message: 'Organization user refresh failed');
+          scaffoldKey: _key, message: 'Organization user refresh failed: $e');
     }
     setState(() {
       isBusy = false;

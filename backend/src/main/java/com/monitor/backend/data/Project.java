@@ -18,12 +18,11 @@ public class Project {
     double monitorMaxDistanceInMetres;
     String created;
     List<City> nearestCities;
-    Position position;
 
     public Project() {
     }
 
-    public Project(String _partitionKey, String _id, String projectId, String name, String organizationId, String description, String organizationName, double monitorMaxDistanceInMetres, String created, List<City> nearestCities, Position position) {
+    public Project(String _partitionKey, String _id, String projectId, String name, String organizationId, String description, String organizationName, double monitorMaxDistanceInMetres, String created, List<City> nearestCities) {
         this._partitionKey = _partitionKey;
         this._id = _id;
         this.projectId = projectId;
@@ -34,7 +33,6 @@ public class Project {
         this.monitorMaxDistanceInMetres = monitorMaxDistanceInMetres;
         this.created = created;
         this.nearestCities = nearestCities;
-        this.position = position;
     }
 
     public String get_partitionKey() {
@@ -117,11 +115,4 @@ public class Project {
         this.nearestCities = nearestCities;
     }
 
-    public Position getPosition() {
-        return position;
-    }
-
-    public void setPosition(Position position) {
-        this.position = position;
-    }
 }

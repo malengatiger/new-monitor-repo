@@ -442,13 +442,14 @@ public class MongoGenerator {
                     testProjectDesc,
                     organization.getName(),
                     monitorMaxDistanceInMetres,
-                    new DateTime().toDateTimeISO().toString(), new ArrayList<>(), pos);
+                    new DateTime().toDateTimeISO().toString(), new ArrayList<>());
 
             List<City> list = listService.findCitiesByLocation(loc.latitude, loc.longitude, 5);
             p0.setNearestCities(list);
             projectRepository.save(p0);
 
             ProjectPosition pPos = new ProjectPosition(
+                    UUID.randomUUID().toString(),
                     Objects.requireNonNull(p0.getProjectId()),
                     pos,
                     p0.getName(),

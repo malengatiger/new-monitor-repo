@@ -7,7 +7,7 @@ import java.util.List;
 @Document(collection = "projectPosition")
 public class ProjectPosition {
 
-    private String projectId;
+    private String projectId, projectPositionId;
     private Position position;
     private String projectName;
     private String caption;
@@ -16,10 +16,9 @@ public class ProjectPosition {
     private List<City> nearestCities;
 
 
-    public ProjectPosition(String projectId, Position position, String projectName,
-                           String caption, String created,
-                           Placemark placemark, List<City> nearestCities) {
+    public ProjectPosition(String projectPositionId, String projectId, Position position, String projectName, String caption, String created, Placemark placemark, List<City> nearestCities) {
         this.projectId = projectId;
+        this.projectPositionId = projectPositionId;
         this.position = position;
         this.projectName = projectName;
         this.caption = caption;
@@ -28,8 +27,15 @@ public class ProjectPosition {
         this.nearestCities = nearestCities;
     }
 
-
     public ProjectPosition() {
+    }
+
+    public String getProjectPositionId() {
+        return projectPositionId;
+    }
+
+    public void setProjectPositionId(String projectPositionId) {
+        this.projectPositionId = projectPositionId;
     }
 
     public List<City> getNearestCities() {

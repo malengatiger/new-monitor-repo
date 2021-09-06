@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:monitorlibrary/data/user.dart';
 
 class MessageDesktop extends StatefulWidget {
-  final User user;
+  final User? user;
 
-  const MessageDesktop({Key? key, required this.user}) : super(key: key);
+  const MessageDesktop({Key? key, this.user}) : super(key: key);
   @override
   _MessageDesktopState createState() => _MessageDesktopState();
 }

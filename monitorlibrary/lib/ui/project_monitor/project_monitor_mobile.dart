@@ -193,22 +193,22 @@ class _ProjectMonitorMobileState extends State<ProjectMonitorMobile>
 
   // ignore: missing_return
   Future<ProjectPosition?> _findNearestProjectPosition() async {
-    var bags = <BagX>[];
-    if (widget.project.projectPositions!.isEmpty) {
-      _navigateToProjectLocation();
-    } else {
-      if (widget.project.projectPositions!.length == 1) {
-        return widget.project.projectPositions!.first;
-      }
-      widget.project.projectPositions!.forEach((pos) async {
-        var distance = await locationBloc.getDistanceFromCurrentPosition(
-            latitude: widget.project.position!.coordinates[1],
-            longitude: widget.project.position!.coordinates[0]);
-        bags.add(BagX(distance, pos));
-      });
-      bags.sort((a, b) => a.distance.compareTo(b.distance));
-      return bags.first.position;
-    }
+    // var bags = <BagX>[];
+    // if (widget.project.projectPositions!.isEmpty) {
+    //   _navigateToProjectLocation();
+    // } else {
+    //   if (widget.project.projectPositions!.length == 1) {
+    //     return widget.project.projectPositions!.first;
+    //   }
+    //   widget.project.projectPositions!.forEach((pos) async {
+    //     var distance = await locationBloc.getDistanceFromCurrentPosition(
+    //         latitude: widget.project.position!.coordinates[1],
+    //         longitude: widget.project.position!.coordinates[0]);
+    //     bags.add(BagX(distance, pos));
+    //   });
+    //   bags.sort((a, b) => a.distance.compareTo(b.distance));
+    //   return bags.first.position;
+    // }
   }
 
   bool isWithinDistance = false;
@@ -267,20 +267,20 @@ class _ProjectMonitorMobileState extends State<ProjectMonitorMobile>
 
   void _navigateToDirections() async {
     pp('🏖 🍎 🍎 🍎 start Google Maps Directions .....');
-    var origin =
-        '${widget.project.position!.coordinates[1]},${widget.project.position!.coordinates[0]}';
-    var position = await locationBloc.getLocation();
-    var destination = '${position.latitude},${position.longitude}';
-
-    final AndroidIntent intent = new AndroidIntent(
-        action: 'action_view',
-        data: Uri.encodeFull("https://www.google.com/maps/dir/?api=1&origin=" +
-            origin +
-            "&destination=" +
-            destination +
-            "&travelmode=driving&dir_action=navigate"),
-        package: 'com.google.android.apps.maps');
-    intent.launch();
+    // var origin =
+    //     '${widget.project.position!.coordinates[1]},${widget.project.position!.coordinates[0]}';
+    // var position = await locationBloc.getLocation();
+    // var destination = '${position.latitude},${position.longitude}';
+    //
+    // final AndroidIntent intent = new AndroidIntent(
+    //     action: 'action_view',
+    //     data: Uri.encodeFull("https://www.google.com/maps/dir/?api=1&origin=" +
+    //         origin +
+    //         "&destination=" +
+    //         destination +
+    //         "&travelmode=driving&dir_action=navigate"),
+    //     package: 'com.google.android.apps.maps');
+    // intent.launch();
   }
 
   void _navigateToProjectLocation() async {

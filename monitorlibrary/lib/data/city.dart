@@ -32,10 +32,9 @@ class City {
       'countryId': countryId,
       'countryName': countryName,
       'provinceName': provinceName,
-      'countryName': countryName,
       'cityId': cityId,
-      'position': position,
       'created': created,
+      'position': position == null? null : position!.toJson(),
     };
     return map;
   }

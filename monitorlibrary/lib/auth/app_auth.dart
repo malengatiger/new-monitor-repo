@@ -76,7 +76,7 @@ class AppAuth {
     return mUser;
   }
 
-  static Future<String> getAuthToken() async {
+  static Future<String?> getAuthToken() async {
     _auth = FirebaseAuth.instance;
     var token = await _auth!.currentUser!.getIdToken();
     return token;

@@ -4,17 +4,18 @@ import 'package:monitorlibrary/data/question.dart';
 import 'content.dart';
 
 class Section {
-  String? title, description;
+  String? title, description, sectionId;
   List<Question>? questions;
   String? sectionNumber;
 
   Section(
       {required this.title,
         required this.sectionNumber,
-        required this.questions,
+        required this.questions, required this.sectionId,
         required this.description});
 
   Section.fromJson(Map data) {
+    this.sectionId = data['sectionId'];
     this.title = data['title'];
     this.sectionNumber = data['sectionNumber'];
     this.questions = [];
@@ -40,6 +41,7 @@ class Section {
       'sectionNumber': sectionNumber,
       'description': description,
       'questions': mQuestions,
+      'sectionId': sectionId,
 
 
     };

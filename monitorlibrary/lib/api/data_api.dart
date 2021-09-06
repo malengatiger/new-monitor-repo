@@ -1,4 +1,6 @@
+import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart' as dot;
@@ -58,9 +60,10 @@ class DataAPI {
     Map bag = monitorSchedule.toJson();
     pp('DataAPI: ☕️ ☕️ ☕️ bag about to be sent to backend: check name: ☕️ $bag');
     try {
-      var result = await _callWebAPIPost(mURL! + 'addFieldMonitorSchedule', bag);
+      var result =
+          await _callWebAPIPost(mURL! + 'addFieldMonitorSchedule', bag);
       var s = FieldMonitorSchedule.fromJson(result);
-      await localMongo.addFieldMonitorSchedule(schedule: s);
+      await LocalMongo.addFieldMonitorSchedule(schedule: s);
       return s;
     } catch (e) {
       pp(e);
@@ -79,7 +82,7 @@ class DataAPI {
         mList.add(FieldMonitorSchedule.fromJson(element));
       });
       pp('🌿 🌿 🌿 getProjectFieldMonitorSchedules returned: 🌿 ${mList.length}');
-      await localMongo.addFieldMonitorSchedules(schedules: mList);
+      await LocalMongo.addFieldMonitorSchedules(schedules: mList);
       return mList;
     } catch (e) {
       pp(e);
@@ -98,7 +101,7 @@ class DataAPI {
         mList.add(FieldMonitorSchedule.fromJson(element));
       });
       pp('🌿 🌿 🌿 getMonitorFieldMonitorSchedules returned: 🌿 ${mList.length}');
-      await localMongo.addFieldMonitorSchedules(schedules: mList);
+      await LocalMongo.addFieldMonitorSchedules(schedules: mList);
       return mList;
     } catch (e) {
       pp(e);
@@ -117,7 +120,7 @@ class DataAPI {
         mList.add(FieldMonitorSchedule.fromJson(element));
       });
       pp('🌿 🌿 🌿 getOrgFieldMonitorSchedules returned: 🌿 ${mList.length}');
-      await localMongo.addFieldMonitorSchedules(schedules: mList);
+      await LocalMongo.addFieldMonitorSchedules(schedules: mList);
       return mList;
     } catch (e) {
       pp(e);
@@ -132,7 +135,7 @@ class DataAPI {
     try {
       var result = await _callWebAPIPost(mURL! + 'addUser', bag);
       var u = User.fromJson(result);
-      await localMongo.addUser(user: u);
+      await LocalMongo.addUser(user: u);
       return u;
     } catch (e) {
       pp(e);
@@ -188,7 +191,7 @@ class DataAPI {
     try {
       var result = await _callWebAPIPost(mURL! + 'findProjectById', bag);
       var p = Project.fromJson(result);
-      await localMongo.addProject(project: p);
+      await LocalMongo.addProject(project: p);
       return p;
     } catch (e) {
       pp(e);
@@ -203,13 +206,13 @@ class DataAPI {
       'projectId': projectId,
     };
     try {
-      var result =
-          await _sendHttpGET(mURL! + 'getProjectPositions?projectId=$projectId');
+      var result = await _sendHttpGET(
+          mURL! + 'getProjectPositions?projectId=$projectId');
       List<ProjectPosition> list = [];
       result.forEach((m) {
         list.add(ProjectPosition.fromJson(m));
       });
-      await localMongo.addProjectPositions(positions: list);
+      await LocalMongo.addProjectPositions(positions: list);
       return list;
     } catch (e) {
       pp(e);
@@ -227,7 +230,7 @@ class DataAPI {
       result.forEach((m) {
         list.add(Photo.fromJson(m));
       });
-      await localMongo.addPhotos(photos: list);
+      await LocalMongo.addPhotos(photos: list);
       return list;
     } catch (e) {
       pp(e);
@@ -245,7 +248,7 @@ class DataAPI {
       result.forEach((m) {
         list.add(Photo.fromJson(m));
       });
-      await localMongo.addPhotos(photos: list);
+      await LocalMongo.addPhotos(photos: list);
       return list;
     } catch (e) {
       pp(e);
@@ -263,7 +266,7 @@ class DataAPI {
       result.forEach((m) {
         list.add(Video.fromJson(m));
       });
-      await localMongo.addVideos(videos: list);
+      await LocalMongo.addVideos(videos: list);
       return list;
     } catch (e) {
       pp(e);
@@ -281,7 +284,7 @@ class DataAPI {
       result.forEach((m) {
         list.add(Video.fromJson(m));
       });
-      await localMongo.addVideos(videos: list);
+      await LocalMongo.addVideos(videos: list);
       return list;
     } catch (e) {
       pp(e);
@@ -296,11 +299,13 @@ class DataAPI {
     var url = '$mURL$cmd';
     try {
       List result = await _sendHttpGET(url);
+      pp('$mm findUsersByOrganization: 🍏 found: ${result.length} users');
       List<User> list = [];
       result.forEach((m) {
         list.add(User.fromJson(m));
       });
-      await localMongo.addUsers(users: list);
+      await LocalMongo.addUsers(users: list);
+      pp('$mm findUsersByOrganization: 🍏 returning objects for: ${list.length} users');
       return list;
     } catch (e) {
       pp(e);
@@ -308,20 +313,22 @@ class DataAPI {
     }
   }
 
+  static const mm = '🍏 🍏 🍏 DataAPI: ';
   static Future<List<Project>> findProjectsByOrganization(
       String organizationId) async {
-    pp('🍏 🍏 🍏 DataAPI: findProjectsByOrganization: 🍏 id: $organizationId');
+    pp('$mm findProjectsByOrganization: 🍏 id: $organizationId');
     String? mURL = await getUrl();
     var cmd = 'findProjectsByOrganization';
     var url = '$mURL$cmd?organizationId=$organizationId';
     try {
       List result = await _sendHttpGET(url);
-      pp('🍏 🍏 🍏 DataAPI: findProjectsByOrganization: 🍏 result: ${result.length} projects');
+      pp('$mm findProjectsByOrganization: 🍏 result: ${result.length} projects');
       List<Project> list = [];
       result.forEach((m) {
         list.add(Project.fromJson(m));
       });
-      await localMongo.addProjects(projects: list);
+      pp('$mm ${list.length} project objects built .... about to cache in local mongo');
+      await LocalMongo.addProjects(projects: list);
       return list;
     } catch (e) {
       pp('Houston, 😈😈😈😈😈 we have a problem! 😈😈😈😈😈 $e');
@@ -332,18 +339,18 @@ class DataAPI {
 
   static Future<List<Photo>> getOrganizationPhotos(
       String organizationId) async {
-    pp('🍏 🍏 🍏 DataAPI: getOrganizationPhotos: 🍏 id: $organizationId');
+    pp('$mm getOrganizationPhotos: 🍏 id: $organizationId');
     String? mURL = await getUrl();
     var cmd = 'getOrganizationPhotos';
     var url = '$mURL$cmd?organizationId=$organizationId';
     try {
       List result = await _sendHttpGET(url);
-      pp('🍏 🍏 🍏 DataAPI: getOrganizationPhotos: 🍏 found: ${result.length} org photos');
+      pp('$mm getOrganizationPhotos: 🍏 found: ${result.length} org photos');
       List<Photo> list = [];
       result.forEach((m) {
         list.add(Photo.fromJson(m));
       });
-      await localMongo.addPhotos(photos: list);
+      await LocalMongo.addPhotos(photos: list);
       return list;
     } catch (e) {
       pp('Houston, 😈😈😈😈😈 we have a problem! 😈😈😈😈😈');
@@ -354,7 +361,7 @@ class DataAPI {
 
   static Future<List<Video>> getOrganizationVideos(
       String organizationId) async {
-    pp('🍏 🍏 🍏 DataAPI: getOrganizationVideos: 🍏 id: $organizationId');
+    pp('$mm getOrganizationVideos: 🍏 id: $organizationId');
     String? mURL = await getUrl();
     var cmd = 'getOrganizationVideos';
     var url = '$mURL$cmd?organizationId=$organizationId';
@@ -364,7 +371,7 @@ class DataAPI {
       result.forEach((m) {
         list.add(Video.fromJson(m));
       });
-      await localMongo.addVideos(videos: list);
+      await LocalMongo.addVideos(videos: list);
       return list;
     } catch (e) {
       pp('Houston, 😈😈😈😈😈 we have a problem! 😈😈😈😈😈');
@@ -374,8 +381,10 @@ class DataAPI {
   }
 
   static Future<List<Project>> findProjectsByLocation(
-      {required double latitude, required double longitude, required double radiusInKM}) async {
-    pp('🍏 🍏 🍏 DataAPI: findProjectsByLocation: 🍏 radiusInKM: $radiusInKM');
+      {required double latitude,
+      required double longitude,
+      required double radiusInKM}) async {
+    pp('$mm findProjectsByLocation: 🍏 radiusInKM: $radiusInKM');
     String? mURL = await getUrl();
     var cmd = 'findProjectsByLocation';
     var url =
@@ -386,7 +395,7 @@ class DataAPI {
       result.forEach((m) {
         list.add(Project.fromJson(m));
       });
-      await localMongo.addProjects(projects: list);
+      await LocalMongo.addProjects(projects: list);
       return list;
     } catch (e) {
       pp(e);
@@ -395,8 +404,10 @@ class DataAPI {
   }
 
   static Future<List<City>> findCitiesByLocation(
-      {required double latitude, required double longitude, required double radiusInKM}) async {
-    pp('🍏 🍏 🍏 DataAPI: findCitiesByLocation: 🍏 radiusInKM: $radiusInKM');
+      {required double latitude,
+      required double longitude,
+      required double radiusInKM}) async {
+    pp('$mm findCitiesByLocation: 🍏 radiusInKM: $radiusInKM');
     String? mURL = await getUrl();
     var cmd = 'findCitiesByLocation';
     var url =
@@ -407,8 +418,8 @@ class DataAPI {
       result.forEach((m) {
         list.add(City.fromJson(m));
       });
-      pp('🍏 🍏 🍏 DataAPI: findCitiesByLocation: 🍏 found: ${list.length} cities');
-      await localMongo.addCities(cities: list);
+      pp('$mm findCitiesByLocation: 🍏 found: ${list.length} cities');
+      await LocalMongo.addCities(cities: list);
       return list;
     } catch (e) {
       pp(e);
@@ -418,7 +429,7 @@ class DataAPI {
 
   static Future<List<Questionnaire>> getQuestionnairesByOrganization(
       String organizationId) async {
-    pp('🍏 🍏 🍏 DataAPI: getQuestionnairesByOrganization: 🍏 id: $organizationId');
+    pp('$mm getQuestionnairesByOrganization: 🍏 id: $organizationId');
     String? mURL = await getUrl();
     var cmd = 'getQuestionnairesByOrganization?organizationId=$organizationId';
     var url = '$mURL$cmd';
@@ -453,7 +464,7 @@ class DataAPI {
     try {
       var result = await _callWebAPIPost(mURL! + 'addCommunity', bag);
       var c = Community.fromJson(result);
-      await localMongo.addCommunity(community: c);
+      await LocalMongo.addCommunity(community: c);
       return c;
     } catch (e) {
       pp(e);
@@ -488,7 +499,8 @@ class DataAPI {
       'section': section.toJson(),
     };
     try {
-      var result = await _callWebAPIPost(mURL! + 'addQuestionnaireSection', bag);
+      var result =
+          await _callWebAPIPost(mURL! + 'addQuestionnaireSection', bag);
       return result;
     } catch (e) {
       pp(e);
@@ -510,7 +522,7 @@ class DataAPI {
       communityList.add(Community.fromJson(m));
     });
     pp('🍏 🍏 🍏 findCommunitiesByCountry found ${communityList.length}');
-    await localMongo.addCommunities(communities: communityList);
+    await LocalMongo.addCommunities(communities: communityList);
     return communityList;
   }
 
@@ -520,7 +532,7 @@ class DataAPI {
     try {
       var result = await _callWebAPIPost(mURL! + 'addProject', bag);
       var p = Project.fromJson(result);
-      await localMongo.addProject(project: p);
+      await LocalMongo.addProject(project: p);
       return p;
     } catch (e) {
       pp(e);
@@ -534,7 +546,7 @@ class DataAPI {
     try {
       var result = await _callWebAPIPost(mURL! + 'updateProject', bag);
       var p = Project.fromJson(result);
-      await localMongo.addProject(project: p);
+      await LocalMongo.addProject(project: p);
       return p;
     } catch (e) {
       pp(e);
@@ -552,7 +564,7 @@ class DataAPI {
     try {
       var result = await _callWebAPIPost(mURL! + 'addSettlementToProject', bag);
       var proj = Project.fromJson(result);
-      await localMongo.addProject(project: proj);
+      await LocalMongo.addProject(project: proj);
       return proj;
     } catch (e) {
       pp(e);
@@ -567,8 +579,8 @@ class DataAPI {
     try {
       var result = await _callWebAPIPost(mURL! + 'addProjectPosition', bag);
 
-      var pp =  ProjectPosition.fromJson(result);
-      await localMongo.addProjectPosition(projectPosition: pp);
+      var pp = ProjectPosition.fromJson(result);
+      await LocalMongo.addProjectPosition(projectPosition: pp);
       return pp;
     } catch (e) {
       pp(e);
@@ -580,7 +592,7 @@ class DataAPI {
     String? mURL = await getUrl();
     try {
       var result = await _callWebAPIPost(mURL! + 'addPhoto', photo.toJson());
-      await localMongo.addPhoto(photo: photo);
+      await LocalMongo.addPhoto(photo: photo);
       return result;
     } catch (e) {
       pp(e);
@@ -594,7 +606,7 @@ class DataAPI {
     try {
       var result = await _callWebAPIPost(mURL! + 'addVideo', video.toJson());
       pp(result);
-      await localMongo.addVideo(video: video);
+      await LocalMongo.addVideo(video: video);
       return result;
     } catch (e) {
       pp(e);
@@ -606,9 +618,10 @@ class DataAPI {
     String? mURL = await getUrl();
 
     try {
-      var result = await _callWebAPIPost(mURL! + 'addCondition', condition.toJson());
+      var result =
+          await _callWebAPIPost(mURL! + 'addCondition', condition.toJson());
       pp(result);
-      await localMongo.addCondition(condition: condition);
+      await LocalMongo.addCondition(condition: condition);
       return result;
     } catch (e) {
       pp(e);
@@ -618,11 +631,11 @@ class DataAPI {
 
   static Future<Photo> addSettlementPhoto(
       {required String settlementId,
-        required String url,
-        required String comment,
-        required double latitude,
+      required String url,
+      required String comment,
+      required double latitude,
       longitude,
-        required String userId}) async {
+      required String userId}) async {
     String? mURL = await getUrl();
     Map bag = {
       'settlementId': settlementId,
@@ -636,7 +649,7 @@ class DataAPI {
       var result = await _callWebAPIPost(mURL! + 'addSettlementPhoto', bag);
 
       var photo = Photo.fromJson(result);
-      await localMongo.addPhoto(photo: photo);
+      await LocalMongo.addPhoto(photo: photo);
       return photo;
     } catch (e) {
       pp(e);
@@ -646,11 +659,11 @@ class DataAPI {
 
   static Future<Video> addProjectVideo(
       {required String projectId,
-        required String url,
-        required String comment,
-        required double latitude,
+      required String url,
+      required String comment,
+      required double latitude,
       longitude,
-        required String userId}) async {
+      required String userId}) async {
     String? mURL = await getUrl();
     Map bag = {
       'projectId': projectId,
@@ -663,7 +676,7 @@ class DataAPI {
     try {
       var result = await _callWebAPIPost(mURL! + 'addProjectVideo', bag);
       var video = Video.fromJson(result);
-      await localMongo.addVideo(video: video);
+      await LocalMongo.addVideo(video: video);
       return video;
     } catch (e) {
       pp(e);
@@ -673,11 +686,11 @@ class DataAPI {
 
   static Future<Project> addProjectRating(
       {required String projectId,
-        required String rating,
-        required String comment,
-        required double latitude,
+      required String rating,
+      required String comment,
+      required double latitude,
       longitude,
-        required String userId}) async {
+      required String userId}) async {
     String? mURL = await getUrl();
     Map bag = {
       'projectId': projectId,
@@ -720,7 +733,7 @@ class DataAPI {
       result.forEach((m) {
         list.add(Project.fromJson(m));
       });
-      await localMongo.addProjects(projects: list);
+      await LocalMongo.addProjects(projects: list);
       return list;
     } catch (e) {
       pp(e);
@@ -736,7 +749,7 @@ class DataAPI {
     try {
       var result = await _callWebAPIPost(mURL! + 'addOrganization', bag);
       var o = Organization.fromJson(result);
-      await localMongo.addOrganization(organization: o);
+      await LocalMongo.addOrganization(organization: o);
       return o;
     } catch (e) {
       pp(e);
@@ -752,7 +765,7 @@ class DataAPI {
     try {
       var result = await _callWebAPIPost(mURL! + 'sendMessage', bag);
       var m = OrgMessage.fromJson(result);
-      await localMongo.addOrgMessage(message: m);
+      await LocalMongo.addOrgMessage(message: m);
       return m;
     } catch (e) {
       pp(e);
@@ -834,34 +847,50 @@ class DataAPI {
     var start = DateTime.now();
     var client = new http.Client();
     var token = await AppAuth.getAuthToken();
-    pp('$xz http POST call: 😡 😡 😡Firebase auth token: ❤️ $token ❤️');
-    headers['Authorization'] = 'Bearer $token';
-    pp('$xz http POST call: 😡 😡 😡 check the headers for the auth token: 💙 💙 💙 $headers 💙 💙 💙 ');
-    var resp = await client
-        .post(
-          Uri.parse(mUrl),
-          body: mBag,
-          headers: headers,
-        )
-        .whenComplete(() {});
-    if (resp.statusCode == 200) {
-      pp('$xz http POST call RESPONSE: 💙💙 statusCode: 👌👌👌 ${resp.statusCode} 👌👌👌 💙 for $mUrl');
-    } else {
-      pp('👿👿👿 DataAPI._callWebAPIPost: 🔆 statusCode: 👿👿👿 ${resp.statusCode} 🔆🔆🔆 for $mUrl');
-      throw Exception(
-          '🚨 🚨 Status Code 🚨 ${resp.statusCode} 🚨 ${resp.body}');
+    if (token != null) {
+      pp('$xz http POST call: 😡 😡 😡 Firebase Auth Token: 💙️ Token is GOOD! 💙');
     }
-    var end = DateTime.now();
-    pp('$xz http POST call: 🔆 elapsed time: ${end.difference(start).inSeconds} seconds 🔆 \n\n');
-    pp(resp.body);
+    headers['Authorization'] = 'Bearer $token';
     try {
-      var mJson = json.decode(resp.body);
-      return mJson;
-    } catch (e) {
-      pp("👿👿👿👿👿👿👿 json.decode failed, returning response body");
-      return resp.body;
+      var resp = await client
+          .post(
+            Uri.parse(mUrl),
+            body: mBag,
+            headers: headers,
+          );
+      if (resp.statusCode == 200) {
+        pp('$xz http POST call RESPONSE: 💙💙 statusCode: 👌👌👌 ${resp.statusCode} 👌👌👌 💙 for $mUrl');
+      } else {
+        pp('👿👿👿 DataAPI._callWebAPIPost: 🔆 statusCode: 👿👿👿 ${resp.statusCode} 🔆🔆🔆 for $mUrl');
+        throw Exception(
+            '🚨 🚨 Status Code 🚨 ${resp.statusCode} 🚨 ${resp.body}');
+      }
+      var end = DateTime.now();
+      pp('$xz http POST call: 🔆 elapsed time: ${end.difference(start).inSeconds} seconds 🔆 \n\n');
+      pp(resp.body);
+      try {
+        var mJson = json.decode(resp.body);
+        return mJson;
+      } catch (e) {
+        pp("👿👿👿👿👿👿👿 json.decode failed, returning response body");
+        return resp.body;
+      }
+    } on SocketException {
+      pp('$xz 😑 Monitor Backend not available. Possible Internet Connection issue 😑 😑 😑');
+      throw 'Monitor Backend not available. Possible Internet Connection issue';
+    } on HttpException {
+      pp("$xz Couldn't find the post 😱");
+      throw 'Could not find the post';
+    } on FormatException {
+      pp("$xz Bad response format 👎");
+      throw 'Bad response format';
+    } on TimeoutException {
+      pp("$xz POST Request has timed out in $TIMEOUT_IN_SECONDS seconds 👎");
+      throw 'Request has timed out in $TIMEOUT_IN_SECONDS seconds';
     }
   }
+
+  static const TIMEOUT_IN_SECONDS = 180;
 
   static const xz = '🌎 🌎 🌎 🌎 🌎 🌎 DataAPI: ';
   static Future _sendHttpGET(String mUrl) async {
@@ -869,28 +898,36 @@ class DataAPI {
     var start = DateTime.now();
     var client = new http.Client();
     var token = await AppAuth.getAuthToken();
-    pp('$xz http GET call: 😡 😡 😡 Firebase Auth Token: 💙️ $token 💙');
+    if (token != null) {
+      pp('$xz http GET call: 😡 😡 😡 Firebase Auth Token: 💙️ Token is GOOD! 💙');
+    }
     headers['Authorization'] = 'Bearer $token';
 
-    pp('$xz http GET call: 😡 😡 😡 check the headers for the auth token: 💙 💙 💙 $headers 💙 💙 💙 ');
-    var resp = await client
-        .get(
-          Uri.parse(mUrl),
-          headers: headers,
-        )
-        .whenComplete(() {})
-        .onError((error, stackTrace) {
-      var msg = 'We are fucked without benefit of vaseline!';
-      pp(' $msg ');
-      throw Exception('$xz $msg : $error');
-    });
-
-    pp('$xz http GET call RESPONSE: .... : 💙 statusCode: 👌👌👌 ${resp.statusCode} 👌👌👌 💙 for $mUrl');
-    var end = DateTime.now();
-    pp('$xz http GET call: 🔆 elapsed time for http: ${end.difference(start).inSeconds} seconds 🔆 \n\n');
-    sendError(resp);
-    var mJson = json.decode(resp.body);
-    return mJson;
+    try {
+      var resp = await client
+          .get(
+            Uri.parse(mUrl),
+            headers: headers,
+          );
+      pp('$xz http GET call RESPONSE: .... : 💙 statusCode: 👌👌👌 ${resp.statusCode} 👌👌👌 💙 for $mUrl');
+      var end = DateTime.now();
+      pp('$xz http GET call: 🔆 elapsed time for http: ${end.difference(start).inSeconds} seconds 🔆 \n\n');
+      sendError(resp);
+      var mJson = json.decode(resp.body);
+      return mJson;
+    } on SocketException {
+      pp('$xz No Internet connection 😑');
+      throw 'No Internet Connection';
+    } on HttpException {
+      pp("$xz Couldn't find the post 😱");
+      throw 'Could not find the post';
+    } on FormatException {
+      pp("$xz Bad response format 👎");
+      throw 'Bad response format';
+    } on TimeoutException {
+      pp("$xz GET Request has timed out in $TIMEOUT_IN_SECONDS seconds 👎");
+      throw 'Request has timed out in $TIMEOUT_IN_SECONDS seconds';
+    }
   }
 
   static void sendError(http.Response resp) {
