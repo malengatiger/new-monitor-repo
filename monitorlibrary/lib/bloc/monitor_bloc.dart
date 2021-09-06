@@ -197,15 +197,17 @@ class MonitorBloc {
 
   Future<List<ProjectPosition>> getProjectPositions(
       {required String projectId, required bool forceRefresh}) async {
+
     _projectPositions = await LocalMongo.getProjectPositions(projectId);
+    pp('$mm getProjectPositions found ${_projectPositions.length} positions in local cache ');
 
     if (_projectPositions.isEmpty || forceRefresh) {
       _projectPositions = await DataAPI.findProjectPositionsById(projectId);
-
+      pp('$mm getProjectPositions found ${_projectPositions.length} positions from remote database ');
       await LocalMongo.addProjectPositions(positions: _projectPositions);
     }
     _projPositionsController.sink.add(_projectPositions);
-    pp('💜 💜 💜 MonitorBloc: getProjectPositions found: 💜 ${_projectPositions.length} projectPositions ');
+    pp('$mm getProjectPositions found: 💜 ${_projectPositions.length} projectPositions from local or remote db ');
     return _projectPositions;
   }
 

@@ -549,7 +549,7 @@ class LocalMongo {
   }
 
   static Future addProject({required Project project}) async {
-    pp('$mm .... ........... adding Project .....  🔵 🔵 ${project.toJson()}');
+    pp('$mm .... ........... adding Project .....  🔵 🔵 ${project.name} nearestCities: ${project.nearestCities!.length}');
     await delete(
         field: 'projectId',
         id: project.projectId!,
@@ -559,9 +559,8 @@ class LocalMongo {
       collection: Constants.PROJECT,
       data: project.toJson(),
     );
-    pp('$mm .... ........... adding Project .....insert using carrier.collection: ${carrier.collection}');
     var result = await MobMongo.insert(carrier);
-    pp('$mm Project added to local cache:  🔵 🔵 ${project.name} result: $result');
+    pp('$mm Project added to local cache:  🔵 🔵 ${project.name} result of call: $result');
     return result;
   }
 
@@ -772,21 +771,27 @@ class LocalMongo {
 
   static Future<List<ProjectPosition>> getProjectPositions(
       String projectId) async {
-    pp('$mm .... getProjectPositions .....');
+    pp('$mm .... getProjectPositions ..... projectId: $projectId');
     await _connectToLocalDB();
     Carrier carrier = Carrier(
       db: databaseName,
       collection: Constants.PROJECT_POSITION,
     );
     List result = await (MobMongo.getAll(carrier));
+    pp('$mm .... getProjectPositions ..... 🌺 un-parsed results:  🌼 ${result.length}  🌼');
     List<ProjectPosition> positions = [];
     result.forEach((r) {
-      var x = ProjectPosition.fromJson(json.decode(r));
-      if (x.projectId == projectId) {
-        positions.add(r);
+      var mJson = jsonDecode(r);
+      var projPos = ProjectPosition.fromJson(mJson);
+      pp('$mm 🌺 🌺 🌺 Do we get here? projPos: ${projPos.projectId} - $projectId 🌼 ${projPos.projectName}');
+      if (projPos.projectId == projectId) {
+        positions.add(projPos);
+        pp('$mm 🌺 🌺 🌺 added a position to list: ${positions.length}');
+      } else {
+        pp('.......... ignored a position ......');
       }
     });
-    pp('$mm .... getProjectPositions ..... found:  🌼 ${positions.length}  🌼');
+    pp('$mm .... getProjectPositions ..... 🌺 found:  🌼 ${positions.length}  🌼');
     return positions;
   }
 

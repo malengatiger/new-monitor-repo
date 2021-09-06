@@ -43,10 +43,10 @@ class Project {
     this.organizationId = data['organizationId'];
     this.created = data['created'];
     this.organizationName = data['organizationName'];
-    pp('Project.fromJson 😑 😑 😑 log 1 ...');
+    // //pp('Project.fromJson 😑 😑 😑 log 1 ...');
     this.monitorMaxDistanceInMetres = data['monitorMaxDistanceInMetres'];
 
-    pp('Project.fromJson 😑 😑 😑 log 2 ...');
+    //pp('Project.fromJson 😑 😑 😑 log 2 ...');
     this.monitorReports = [];
     if (data['monitorReports'] != null) {
       List list = data['monitorReports'];
@@ -61,7 +61,7 @@ class Project {
         this.communities!.add(Community.fromJson(m));
       });
     }
-    pp('Project.fromJson 😑 😑 😑 log 3 ...');
+    //pp('Project.fromJson 😑 😑 😑 log 3 ...');
     this.nearestCities = [];
     if (data['nearestCities'] != null) {
       List list = data['nearestCities'];
@@ -69,7 +69,7 @@ class Project {
         this.nearestCities!.add(City.fromJson(m));
       });
     }
-    pp('Project.fromJson 😑 😑 😑 log 4 ...');
+    //pp('Project.fromJson 😑 😑 😑 log 4 ...');
     this.projectPositions = [];
     if (data['projectPositions'] != null) {
       List list = data['projectPositions'];
@@ -77,7 +77,7 @@ class Project {
         this.projectPositions!.add(ProjectPosition.fromJson(m));
       });
     }
-    pp('Project.fromJson 😑 😑 😑 log 5 ...');
+    //pp('Project.fromJson 😑 😑 😑 log 5 ...');
     this.photos = [];
     if (data['photos'] != null) {
       List list = data['photos'];
@@ -85,7 +85,7 @@ class Project {
         this.photos!.add(ph.Photo.fromJson(m));
       });
     }
-    pp('Project.fromJson 😑 😑 😑 log 6 ...');
+    //pp('Project.fromJson 😑 😑 😑 log 6 ...');
     this.videos = [];
     if (data['videos'] != null) {
       List list = data['videos'];
@@ -93,7 +93,7 @@ class Project {
         this.videos!.add(ph.Video.fromJson(m));
       });
     }
-    pp('Project.fromJson 😑 😑 😑 log 7 ...');
+    //pp('Project.fromJson 😑 😑 😑 log 7 ...');
     this.ratings = [];
     if (data['ratings'] != null) {
       List list = data['ratings'];
@@ -101,7 +101,7 @@ class Project {
         this.ratings!.add(RatingContent.fromJson(m));
       });
     }
-    pp('Project.fromJson 😑 😑 😑 logs end ...');
+    //pp('Project.fromJson 😑 😑 😑 logs end ...');
   }
   Map<String, dynamic> toJson() {
     List mProjectPositions = [];

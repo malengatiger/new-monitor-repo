@@ -39,13 +39,15 @@ public class MonitorAuthenticationFilter extends OncePerRequestFilter {
         print(httpServletRequest);
         //TODO - 🔺 🔺 🔺 allow the following calls ONLY if in dev !!!! 🔺
         String url = httpServletRequest.getRequestURL().toString();
-        if (url.contains("192.168.86.240:8087")) {   //this is my local machine
-            LOGGER.info(Emoji.ANGRY + "this request is not subject to authentication: "
-                    + Emoji.HAND2 + url);
-            doFilter(httpServletRequest, httpServletResponse, filterChain);
-            return;
-        }
+//        if (url.contains("192.168.86.240:8087")) {   //this is my local machine
+//            LOGGER.info(Emoji.ANGRY + "this request is not subject to authentication: "
+//                    + Emoji.HAND2 + url);
+//            doFilter(httpServletRequest, httpServletResponse, filterChain);
+//            return;
+//        }
 
+        LOGGER.info(Emoji.ANGRY + Emoji.ANGRY + "this request IS subject to authentication: "
+                + Emoji.HAND2 + url);
         String m = httpServletRequest.getHeader("Authorization");
         if (m == null) {
             String msg = "\uD83D\uDC7F \uD83D\uDC7F \uD83D\uDC7F " +

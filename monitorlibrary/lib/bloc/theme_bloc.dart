@@ -57,8 +57,9 @@ class ThemeBloc {
 
   _setStream(int index) {
     pp('✈️✈️ _setStream: setting stream .... to theme index: $index');
-    _themeController.sink.add(index);
     Prefs.setThemeIndex(index);
+    _themeController.sink.add(index);
+
   }
 
   closeStream() {
@@ -74,17 +75,12 @@ class ThemeUtil {
   static int index = 0;
 
   static ThemeData getTheme({required int themeIndex}) {
-    print('🌈 🌈 getting theme with index: 🌈 $index');
+    print('🌈 🌈 getting theme with index: 🌈 $themeIndex');
     if (_themes.isEmpty) {
       _setThemes();
     }
 
-    index++;
-    if (index == _themes.length) {
-      index = 0;
-    }
-
-    return _themes.elementAt(index);
+    return _themes.elementAt(themeIndex);
   }
 
   static int getThemeCount() {

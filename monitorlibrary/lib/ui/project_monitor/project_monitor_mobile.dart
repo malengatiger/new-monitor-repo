@@ -52,6 +52,7 @@ class _ProjectMonitorMobileState extends State<ProjectMonitorMobile>
 
     setState(() {
       widget.project.projectPositions = positions;
+      isBusy = false;
     });
     _checkProjectDistance();
   }
@@ -219,24 +220,33 @@ class _ProjectMonitorMobileState extends State<ProjectMonitorMobile>
       isBusy = true;
     });
     nearestProjectPosition = await _findNearestProjectPosition();
-    var distance = await locationBloc.getDistanceFromCurrentPosition(
-        latitude: nearestProjectPosition!.position!.coordinates[1],
-        longitude: nearestProjectPosition!.position!.coordinates[0]);
+    if (nearestProjectPosition != null) {
+      var distance = await locationBloc.getDistanceFromCurrentPosition(
+          latitude: nearestProjectPosition!.position!.coordinates[1],
+          longitude: nearestProjectPosition!.position!.coordinates[0]);
 
-    pp("🍏 🍏 🍏 App is ${distance.toStringAsFixed(1)} metres from the project point");
-    if (distance > widget.project.monitorMaxDistanceInMetres!) {
-      pp("🔆🔆🔆 App is ${distance.toStringAsFixed(1)} metres is greater than allowed project.monitorMaxDistanceInMetres: "
-          "🍎 ${widget.project.monitorMaxDistanceInMetres} metres");
-      isWithinDistance = false;
-    } else {
-      isWithinDistance = true;
-      pp('🌸 🌸 🌸 The app is within the allowable project.monitorMaxDistanceInMetres of '
-          '${widget.project.monitorMaxDistanceInMetres} metres');
+      pp("🍏 🍏 🍏 App is ${distance.toStringAsFixed(
+          1)} metres from the project point");
+      if (distance > widget.project.monitorMaxDistanceInMetres!) {
+        pp("🔆🔆🔆 App is ${distance.toStringAsFixed(
+            1)} metres is greater than allowed project.monitorMaxDistanceInMetres: "
+            "🍎 ${widget.project.monitorMaxDistanceInMetres} metres");
+        isWithinDistance = false;
+      } else {
+        isWithinDistance = true;
+        pp(
+            '🌸 🌸 🌸 The app is within the allowable project.monitorMaxDistanceInMetres of '
+                '${widget.project.monitorMaxDistanceInMetres} metres');
+      }
+      setState(() {
+        isBusy = false;
+      });
+      return isWithinDistance;
     }
     setState(() {
       isBusy = false;
     });
-    return isWithinDistance;
+    return false;
   }
 
   void _startMonitoring() async {
