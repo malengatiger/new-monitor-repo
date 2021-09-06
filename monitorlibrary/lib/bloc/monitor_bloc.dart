@@ -136,23 +136,32 @@ class MonitorBloc {
 
   Future<List<Project>> getOrganizationProjects(
       {required String organizationId, required bool forceRefresh}) async {
-    if (_user == null) {
-      _user = await Prefs.getUser();
-    }
-    pp('💜 💜 💜 💜 MonitorBloc: getOrganizationProjects: for organizationId: $organizationId ; '
-        'user: 💜 ${user.name} user.organizationId: ${user.organizationId} user.organizationName: ${user.organizationName} ');
+    try {
+      if (_user == null) {
+        _user = await Prefs.getUser();
+      }
+      pp(
+          '💜 💜 💜 💜 MonitorBloc: getOrganizationProjects: for organizationId: $organizationId ; '
+              'user: 💜 ${user.name} user.organizationId: ${user
+              .organizationId} user.organizationName: ${user
+              .organizationName} ');
 
-    _projects = await LocalMongo.getProjects();
+      _projects = await LocalMongo.getProjects();
 
-    if (_projects.isEmpty || forceRefresh) {
-      _projects = await DataAPI.findProjectsByOrganization(organizationId);
-      await LocalMongo.addProjects(projects: _projects);
+      if (_projects.isEmpty || forceRefresh) {
+        _projects = await DataAPI.findProjectsByOrganization(organizationId);
+        await LocalMongo.addProjects(projects: _projects);
+      }
+      _projController.sink.add(_projects);
+      pp('💜 💜 💜 💜 MonitorBloc: OrganizationProjects found: 💜 ${_projects
+          .length} projects 💜');
+      _projects.forEach((project) {
+        pp('💜 💜 💜 💜 Org PROJECT: ${project.name} 🍏 ${project
+            .organizationName}  🍏 ${project.organizationId}');
+      });
+    } catch (e) {
+      pp('$mm $e');
     }
-    _projController.sink.add(_projects);
-    pp('💜 💜 💜 💜 MonitorBloc: OrganizationProjects found: 💜 ${_projects.length} projects 💜');
-    _projects.forEach((project) {
-      pp('💜 💜 💜 💜 Org PROJECT: ${project.name} 🍏 ${project.organizationName}  🍏 ${project.organizationId}');
-    });
 
     return _projects;
   }

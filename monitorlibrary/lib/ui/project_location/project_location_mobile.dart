@@ -29,7 +29,7 @@ class _ProjectLocationMobileState extends State<ProjectLocationMobile>
   ProjectPosition? _projectPosition;
   List<ProjectPosition> _projectPositions = [];
   var _key = GlobalKey<ScaffoldState>();
-  static const mx = '💙 💙 💙 ProjectLocation Mobile: ';
+  static const mx = '💙 💙 💙 ProjectLocation Mobile: 💙 : ';
 
   @override
   void initState() {
@@ -45,22 +45,25 @@ class _ProjectLocationMobileState extends State<ProjectLocationMobile>
     super.dispose();
   }
 
-  Future<bool> isLocationWithinFiftyMetres() async {
+  Future<bool> _isLocationWithinProjectMonitorDistance() async {
+    pp('$mx calculating _isLocationWithinProjectMonitorDistance .... '
+        '${widget.project.monitorMaxDistanceInMetres!} metres');
     var map = Map<double, ProjectPosition>();
     for (var i = 0; i < _projectPositions.length; i++) {
+      var projPos = _projectPositions.elementAt(i);
       var dist = await locationBloc.getDistanceFromCurrentPosition(
-          latitude:
-              _projectPositions.elementAt(i).position!.coordinates.elementAt(1),
-          longitude:
-              _projectPositions.elementAt(i).position!.coordinates.elementAt(0));
-      map[dist] = _projectPositions.elementAt(i);
+          latitude: projPos.position!.coordinates.elementAt(1),
+          longitude: projPos.position!.coordinates.elementAt(0));
+
+      map[dist] = projPos;
+      pp('$mx Distance: 🌶 $dist metres 🌶 projectId: ${projPos.projectId} 🐊 projectPositionId: ${projPos.projectPositionId}');
     }
     if (map.length == 0) {
       return false;
     }
     var list = map.keys.toList();
     list.sort();
-    if (list.elementAt(0) < 50.0) {
+    if (list.elementAt(0) < widget.project.monitorMaxDistanceInMetres!.toInt()) {
       return true;
     } else {
       return false;
@@ -71,6 +74,8 @@ class _ProjectLocationMobileState extends State<ProjectLocationMobile>
     try {
       _projectPositions = await monitorBloc.getProjectPositions(
           projectId: widget.project.projectId!, forceRefresh: forceRefresh);
+      pp('$mx _projectPositions found: ${_projectPositions.length}; checking location within project monitorDistance...');
+      _isLocationWithinProjectMonitorDistance();
     } catch (e) {
       print(e);
       AppSnackbar.showErrorSnackbar(
@@ -80,7 +85,7 @@ class _ProjectLocationMobileState extends State<ProjectLocationMobile>
 
   void _submit() async {
     await _getLocation();
-    var isWithin = await isLocationWithinFiftyMetres();
+    var isWithin = await _isLocationWithinProjectMonitorDistance();
     if (isWithin) {
       AppSnackbar.showErrorSnackbar(
           scaffoldKey: _key,

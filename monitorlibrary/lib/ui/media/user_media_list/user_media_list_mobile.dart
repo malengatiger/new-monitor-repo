@@ -207,7 +207,7 @@ class _UserMediaListMobileState extends State<UserMediaListMobile>
                 ? Center(
                     child: Container(
                       child: Text(
-                        'No media found',
+                        'No User Media found',
                         style: Styles.blackBoldMedium,
                       ),
                     ),

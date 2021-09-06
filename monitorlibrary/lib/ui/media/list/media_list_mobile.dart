@@ -11,6 +11,7 @@ import 'package:monitorlibrary/ui/media/full_photo/full_photo_main.dart';
 import 'package:monitorlibrary/ui/media/list/media_grid.dart';
 import 'package:monitorlibrary/ui/media/video/video_main.dart';
 import 'package:monitorlibrary/ui/project_monitor/project_monitor_main.dart';
+import 'package:monitorlibrary/ui/project_monitor/project_monitor_mobile.dart';
 import 'package:page_transition/page_transition.dart';
 
 import '../../../functions.dart';
@@ -240,7 +241,7 @@ class _MediaListMobileState extends State<MediaListMobile>
                             height: 120,
                           ),
                           Text(
-                            'No media found',
+                            'No Monitor Reports yet',
                             style: Styles.blackBoldMedium,
                           ),
                           SizedBox(
@@ -301,7 +302,7 @@ class _MediaListMobileState extends State<MediaListMobile>
             type: PageTransitionType.scale,
             alignment: Alignment.topLeft,
             duration: Duration(milliseconds: 1500),
-            child: ProjectMonitorMain(widget.project)));
+            child: ProjectMonitorMobile(widget.project)));
   }
 
   @override

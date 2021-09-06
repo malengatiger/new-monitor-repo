@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.logging.Logger;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
-
 @RestController
+
 public class GeneratorController {
     private static final Logger LOGGER = Logger.getLogger(GeneratorController.class.getSimpleName());
 

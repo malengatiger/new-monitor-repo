@@ -14,15 +14,13 @@ import org.springframework.data.geo.Distance;
 import org.springframework.data.geo.Metrics;
 import org.springframework.data.geo.Point;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
+
 public class ListController {
     public static final Logger LOGGER = LoggerFactory.getLogger(ListController.class.getSimpleName());
     private static final Gson G = new GsonBuilder().setPrettyPrinting().create();
@@ -34,19 +32,19 @@ public class ListController {
     @Autowired
     private ListService listService;
 
+    @GetMapping("/hello")
+    public String hello() throws Exception {
+        LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS).concat("saying HELLO! the backend application .... : ".concat(Emoji.FLOWER_YELLOW)));
+        return Emoji.HAND2 + Emoji.HAND2 + "PROJECT MONITOR SERVICES PLATFORM says Hi, Nigga! "
+                + Emoji.RED_APPLE.concat(new DateTime().toDateTimeISO().toString());
+    }
+    @PostMapping("/post")
+    public String post() throws Exception {
+        LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS).concat("testing POST on the backend application .... : ".concat(Emoji.FLOWER_YELLOW)));
+        return Emoji.HAND2 + Emoji.HAND2 + "PROJECT MONITOR SERVICES PLATFORM tested POST OK!"
+                + Emoji.RED_APPLE.concat(new DateTime().toDateTimeISO().toString());
+    }
 
-//    @GetMapping("/ping")
-//    public ResponseEntity<Object> ping() {
-//        LOGGER.info(Emoji.DICE.concat(Emoji.DICE).concat("ping requested: "));
-//        try {
-//            return ResponseEntity.ok("Hey, nice of you to ping ::: " + new DateTime().toDateTimeISO().toString());
-//        } catch (Exception e) {
-//            return ResponseEntity.badRequest().body(
-//                    new CustomErrorResponse(400,
-//                            "ping failed: " + e.getMessage(),
-//                            new DateTime().toDateTimeISO().toString()));
-//        }
-//    }
     @GetMapping("/findUserByEmail")
     public ResponseEntity<Object> findUserByEmail(@RequestParam String email) {
         LOGGER.info(Emoji.DICE.concat(Emoji.DICE).concat("findUserByEmail ... email: ".concat(email)));

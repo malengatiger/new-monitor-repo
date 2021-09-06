@@ -49,10 +49,10 @@ import java.util.logging.Logger;
 @EnableCaching
 @EnableAutoConfiguration
 @EnableMongoRepositories(basePackages = {"com.monitor.backend.models"})
+
 public class MonitorBackendApplication implements ApplicationListener<ApplicationReadyEvent>, CommandLineRunner, WebMvcConfigurer {
 
     public static final Logger LOGGER = Logger.getLogger(MonitorBackendApplication.class.getName());
-    private Counter SecurityConfigurationBuilder;
 
     public static void main(String[] args) {
         LOGGER.info("\uD83D\uDE21 \uD83D\uDE21 \uD83D\uDE21 \uD83D\uDE21 MonitorBackendApplication Starting ...");
@@ -120,7 +120,9 @@ public class MonitorBackendApplication implements ApplicationListener<Applicatio
 
         Bucket bucket2 = Bucket4j.builder().addLimit(limit2).build();
         registry.addInterceptor(new RateLimitInterceptor(bucket2, 1))
-                .addPathPatterns("/ping");
+                .addPathPatterns("/*");
+        LOGGER.info(Emoji.RED_APPLE + Emoji.RED_APPLE   + Emoji.RED_APPLE + Emoji.KEY
+                + " Rate Limiting Interceptors have been set up  " + Emoji.KEY);
     }
 
     @Bean
@@ -169,6 +171,9 @@ public class MonitorBackendApplication implements ApplicationListener<Applicatio
 
             LOGGER.info(Emoji.FERN + " -------- end of Generator methods ");
 
+            LOGGER.info(Emoji.FERN + Emoji.WINE + Emoji.WINE + Emoji.WINE +
+                    " Get data from MongoDB - Users and Projects");
+
             List<User> users = (List<User>) userRepository.findAll(Sort.by("organizationId"));
 
             for (User user : users) {
@@ -177,8 +182,8 @@ public class MonitorBackendApplication implements ApplicationListener<Applicatio
                         + " " + user.getEmail()+ " " + Emoji.YELLOW_DIAMOND + " " + user.getUserType()
                          + " " + Emoji.RED_TRIANGLE + " " + user.getOrganizationName());
             }
-            List<com.monitor.backend.data.Project> projects = (List<com.monitor.backend.data.Project>) projectRepository.findAll(Sort.by("organizationName"));
 
+            List<com.monitor.backend.data.Project> projects = (List<com.monitor.backend.data.Project>) projectRepository.findAll(Sort.by("organizationName"));
             for (Project project : projects) {
                 LOGGER.info(Emoji.WINE + Emoji.WINE + Emoji.WINE + Emoji.WINE +
                         " Project: " + project.getName() + " " + Emoji.FERN

@@ -778,17 +778,12 @@ class LocalMongo {
       collection: Constants.PROJECT_POSITION,
     );
     List result = await (MobMongo.getAll(carrier));
-    pp('$mm .... getProjectPositions ..... 🌺 un-parsed results:  🌼 ${result.length}  🌼');
     List<ProjectPosition> positions = [];
     result.forEach((r) {
       var mJson = jsonDecode(r);
       var projPos = ProjectPosition.fromJson(mJson);
-      pp('$mm 🌺 🌺 🌺 Do we get here? projPos: ${projPos.projectId} - $projectId 🌼 ${projPos.projectName}');
       if (projPos.projectId == projectId) {
         positions.add(projPos);
-        pp('$mm 🌺 🌺 🌺 added a position to list: ${positions.length}');
-      } else {
-        pp('.......... ignored a position ......');
       }
     });
     pp('$mm .... getProjectPositions ..... 🌺 found:  🌼 ${positions.length}  🌼');

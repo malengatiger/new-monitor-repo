@@ -36,8 +36,8 @@ public class MonitorAuthenticationFilter extends OncePerRequestFilter {
                                     @NotNull HttpServletResponse httpServletResponse,
                                     @NotNull FilterChain filterChain) throws ServletException, IOException {
 
-        print(httpServletRequest);
-        //TODO - 🔺 🔺 🔺 allow the following calls ONLY if in dev !!!! 🔺
+//        print(httpServletRequest);
+
         String url = httpServletRequest.getRequestURL().toString();
 //        if (url.contains("192.168.86.240:8087")) {   //this is my local machine
 //            LOGGER.info(Emoji.ANGRY + "this request is not subject to authentication: "
@@ -45,7 +45,6 @@ public class MonitorAuthenticationFilter extends OncePerRequestFilter {
 //            doFilter(httpServletRequest, httpServletResponse, filterChain);
 //            return;
 //        }
-
         LOGGER.info(Emoji.ANGRY + Emoji.ANGRY + "this request IS subject to authentication: "
                 + Emoji.HAND2 + url);
         String m = httpServletRequest.getHeader("Authorization");
@@ -54,14 +53,16 @@ public class MonitorAuthenticationFilter extends OncePerRequestFilter {
                     "Authorization Header is missing. Needs JWT token! \uD83C\uDF4E "
                     + httpServletRequest.getQueryString() + " \uD83C\uDF4E \uD83C\uDF4E";
             LOGGER.info(msg);
-            throw new ServletException("\uD83D\uDC7F \uD83D\uDC7F \uD83D\uDC7F Not Authorized; Piss off! \uD83D\uDC7F \uD83D\uDC7F \uD83D\uDC7F");
+            httpServletResponse.sendError(403, "GTFO");
+            return;
+//            throw new ServletException("Forbidden!");
         }
         String token = m.substring(7);
         try {
             dataService.initializeFirebase();
             ApiFuture<FirebaseToken> future = FirebaseAuth.getInstance().verifyIdTokenAsync(token, true);
             FirebaseToken mToken = future.get();
-            LOGGER.info("\uD83D\uDE21 \uD83D\uDE21 \uD83D\uDE21 Authentication executed, uid: "
+            LOGGER.info("\uD83D\uDE21 \uD83D\uDE21 \uD83D\uDE21 \uD83D\uDE21 Authentication executed, uid: "
                     + mToken.getUid() + " \uD83D\uDE21 email: " + mToken.getEmail()
                     + "  \uD83C\uDF38" +
                     " \uD83C\uDF4E request authenticated OK!! \uD83C\uDF4E");
@@ -70,7 +71,9 @@ public class MonitorAuthenticationFilter extends OncePerRequestFilter {
         } catch (Exception e) {
             String msg = "\uD83D\uDD06 \uD83D\uDD06 \uD83D\uDD06 " +
                     "FirebaseAuthException happened: \uD83C\uDF4E " + e.getMessage();
-            throw new ServletException(msg);
+            LOGGER.info("\uD83D\uDE21 \uD83D\uDE21 \uD83D\uDE21 " + msg);
+            httpServletResponse.sendError(403, "GTFO");
+//            throw new ServletException("Forbidden!");
         }
 
     }
@@ -101,8 +104,8 @@ public class MonitorAuthenticationFilter extends OncePerRequestFilter {
             String m = names.nextElement();
             LOGGER.info("\uD83D\uDE21 \uD83D\uDE21 \uD83D\uDE21 headerName: " + m);
         }
-        LOGGER.info("\uD83D\uDC9A\uD83D\uDC9A\uD83D\uDC9A Header: Authorization: "
-                + httpServletRequest.getHeader("Authorization") + " \uD83D\uDC9A");
+        LOGGER.info("\uD83D\uDC9A \uD83D\uDC9A \uD83D\uDC9A Authorization: "
+                + httpServletRequest.getHeader("Authorization") + " \uD83D\uDC9A \uD83D\uDC9A");
     }
 
 }

@@ -17,8 +17,8 @@ import java.util.logging.Logger;
 
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
-
 @RestController
+
 public class DataController {
     private static final Logger LOGGER = Logger.getLogger(DataController.class.getSimpleName());
 
@@ -36,13 +36,11 @@ public class DataController {
     @Autowired
     private MessageService messageService;
 
-//    @Autowired
-//    OzowService ozowService;
 
     @GetMapping("/ping")
     public String ping() throws Exception {
         LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS).concat("pinging the backend application .... : ".concat(Emoji.FLOWER_YELLOW)));
-        return Emoji.HAND2 + Emoji.HAND2 + "  PROJECT MONITOR SERVICES PLATFORM pinged at ".concat(new DateTime().toDateTimeISO().toString());
+        return Emoji.HAND2 + Emoji.HAND2 + "PROJECT MONITOR SERVICES PLATFORM pinged at ".concat(new DateTime().toDateTimeISO().toString());
     }
 
     @PostMapping("/addOrganization")

@@ -47,7 +47,7 @@ class _MediaHouseState extends State<MediaHouse>
   String? videoFilePath;
   var isVideo = false;
   String? label;
-
+  static const mm = '✳️  ✳️  ✳️ Media House  ✳️ : ';
   @override
   void initState() {
     _controller = AnimationController(vsync: this);
@@ -57,6 +57,7 @@ class _MediaHouseState extends State<MediaHouse>
 
   void _getUser() async {
     user = await Prefs.getUser();
+    pp('$mm user of record: ${user!.name}');
   }
 
   @override
@@ -66,10 +67,10 @@ class _MediaHouseState extends State<MediaHouse>
   }
 
   void _openImageCamera() async {
-    print('_openImageCamera ......................');
+    pp('$mm _openImageCamera ......................');
     try {
       final result = await _imageChannel.invokeMethod('startImageCamera');
-      pp('💜 💜 💜 💜  MediaHouse: Back from the BadLands: 💜 imageFilePath: 🍏 🍏 🍏 $result 🍏 🍏 🍏');
+      pp('$mm Back from the BadLands: 💜 imageFilePath: 🍏 🍏 🍏 $result 🍏 🍏 🍏');
       setState(() {
         isUploading = true;
       });
@@ -88,7 +89,7 @@ class _MediaHouseState extends State<MediaHouse>
 
       setState(() {});
     } on PlatformException catch (e) {
-      pp("🌸 Failed to get or process image: ${e.message} ");
+      pp("$mm 🌸 Failed to get or process image: ${e.message} ");
       AppSnackbar.showErrorSnackbar(
           scaffoldKey: _key, message: 'Failed to get picture');
     }
@@ -99,7 +100,7 @@ class _MediaHouseState extends State<MediaHouse>
 
     try {
       final result = await _videoChannel.invokeMethod('startVideoCamera');
-      pp('Back from the BadLands: 💜 💜 💜 💜 video filePath: 🍏 🍏 🍏 $result 🍏 🍏 🍏');
+      pp('$mm Back from the BadLands: 💜 💜 💜 💜 video filePath: 🍏 🍏 🍏 $result 🍏 🍏 🍏');
       videoFile = File(result);
       var len = await videoFile!.length();
       pp('Back from the BadLands: 💜 💜 💜 💜 video file length: 🍏 🍏 🍏 $len bytes 🍏 🍏 🍏');
@@ -115,7 +116,7 @@ class _MediaHouseState extends State<MediaHouse>
           projectPosition: widget.projectPosition.position!,
           isVideo: true);
     } on PlatformException catch (e) {
-      print("🌸 Failed to get or process video: ${e.message} ");
+      pp("$mm 🌸 Failed to get or process video: ${e.message} ");
     }
   }
 
@@ -127,7 +128,7 @@ class _MediaHouseState extends State<MediaHouse>
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             mediaBags = snapshot.data!;
-            pp('🇿🇦 💙💙 💙💙 💙💙 mediaStream reporting something in stream ... mediaBags: ${mediaBags.length}');
+            pp('$mm 🇿🇦 💙💙 💙💙 💙💙 mediaStream reporting something in stream ... mediaBags: ${mediaBags.length}');
           }
           return SafeArea(
             child: Scaffold(
@@ -281,7 +282,7 @@ class _MediaHouseState extends State<MediaHouse>
   @override
   void onMediaSelected(MediaBag suitcase) {
     if (suitcase.video != null) {
-      pp('MediaListMobile: 🦠 🦠 🦠 _onMediaTapped: Play video from 🦠 ${suitcase.video!.url!} 🦠');
+      pp('$mm 🦠 🦠 🦠 _onMediaTapped: Play video from 🦠 ${suitcase.video!.url!} 🦠');
       Navigator.push(
           context,
           PageTransition(
@@ -290,7 +291,7 @@ class _MediaHouseState extends State<MediaHouse>
               duration: Duration(seconds: 1),
               child: VideoMain(suitcase.video!)));
     } else {
-      pp('MediaListMobile: 🦠 🦠 🦠 _onMediaTapped: show full image from 🍎 ${suitcase.photo!.url} 🍎');
+      pp('$mm 🦠 🦠 🦠 _onMediaTapped: show full image from 🍎 ${suitcase.photo!.url} 🍎');
       Navigator.push(
           context,
           PageTransition(
@@ -309,7 +310,7 @@ class _MediaHouseState extends State<MediaHouse>
         '${directory.path}/thumbnail${DateTime.now().millisecondsSinceEpoch}.jpg');
     var thumb = mFile..writeAsBytesSync(img.encodeJpg(thumbnail, quality: 90));
     var len = await thumb.length();
-    pp('....... 💜  .... thumbnail generated: 😡 ${(len / 1024).toStringAsFixed(1)} KB');
+    pp('$mm ....... 💜  .... thumbnail generated: 😡 ${(len / 1024).toStringAsFixed(1)} KB');
     return thumb;
   }
 
@@ -325,19 +326,19 @@ class _MediaHouseState extends State<MediaHouse>
       );
       var thumb = File(path!);
       var len = await thumb.length();
-      pp('....... 💜  .... video thumbnail generated: 😡 ${(len / 1024).toStringAsFixed(1)} KB - 🍏 🍏 🍏 path: $path');
+      pp('$mm....... 💜  .... video thumbnail generated: 😡 ${(len / 1024).toStringAsFixed(1)} KB - 🍏 🍏 🍏 path: $path');
       return thumb;
     } catch (e) {
       //get default image from assets as a file
       //read and write
-      pp('MediaHouse: 😈😈😈😈😈😈😈😈😈😈😈😈😈😈😈😈😈😈😈 video thumbnail failed, using local asset file 😈😈😈 ');
+      pp('M$mm 😈😈😈😈😈😈😈😈😈😈😈😈😈😈😈😈😈😈😈 video thumbnail failed, using local asset file 😈😈😈 ');
       final filename = 'video3.png';
       var bytes = await rootBundle.load("assets/video3.png");
       String dir = (await getApplicationDocumentsDirectory()).path;
       writeToFile(bytes, '$dir/$filename');
       var thumb = File('$dir/$filename');
       var len = await thumb.length();
-      pp('....... 💜  .... video thumbnail from assets: 😡 ${(len / 1024).toStringAsFixed(1)} KB - 🍏 🍏 🍏 ');
+      pp('$mm ....... 💜  .... video thumbnail from assets: 😡 ${(len / 1024).toStringAsFixed(1)} KB - 🍏 🍏 🍏 ');
       return thumb;
     }
   }
@@ -364,7 +365,7 @@ class _MediaHouseState extends State<MediaHouse>
 
   @override
   onFileProgress(int totalByteCount, int bytesTransferred) {
-    pp('MediaHouse: 🍏 🍏 🍏 file Upload progress: bytesTransferred: ${(bytesTransferred / 1024).toStringAsFixed(1)} KB '
+    pp('$mm 🍏 🍏 🍏 file Upload progress: bytesTransferred: ${(bytesTransferred / 1024).toStringAsFixed(1)} KB '
         'of totalByteCount: ${(totalByteCount / 1024).toStringAsFixed(1)} KB');
     setState(() {
       this.totalByteCount = '${(totalByteCount / 1024).toStringAsFixed(1)} KB';
@@ -375,7 +376,7 @@ class _MediaHouseState extends State<MediaHouse>
 
   @override
   onFileUploadComplete(String url, int totalByteCount, int bytesTransferred) {
-    pp('MediaHouse: 🍏 🍏 🍏 😡 file Upload has been completed 😡 bytesTransferred: ${(bytesTransferred / 1024).toStringAsFixed(1)} KB '
+    pp('$mm 🍏 🍏 🍏 😡 file Upload has been completed 😡 bytesTransferred: ${(bytesTransferred / 1024).toStringAsFixed(1)} KB '
         'of totalByteCount: ${(totalByteCount / 1024).toStringAsFixed(1)} KB');
     pp('MediaHouse: 😡 😡 😡 this file url should be saved somewhere .... 😡😡 $url 😡😡');
     if (isVideo) {
@@ -387,14 +388,14 @@ class _MediaHouseState extends State<MediaHouse>
 
   @override
   onThumbnailProgress(int totalByteCount, int bytesTransferred) {
-    pp('MediaHouse: 🍏 🍏 🍏 thumbnail Upload progress: bytesTransferred: ${(bytesTransferred / 1024).toStringAsFixed(1)} KB '
+    pp('$mm 🍏 🍏 🍏 thumbnail Upload progress: bytesTransferred: ${(bytesTransferred / 1024).toStringAsFixed(1)} KB '
         'of totalByteCount: ${(totalByteCount / 1024).toStringAsFixed(1)} KB');
   }
 
   @override
   onThumbnailUploadComplete(
       String url, int totalByteCount, int bytesTransferred) async {
-    pp('MediaHouse: 🍏 🍏 🍏 😡 thumbnail Upload has been completed 😡 bytesTransferred: ${(bytesTransferred / 1024).toStringAsFixed(1)} KB '
+    pp('$mm 🍏 🍏 🍏 😡 thumbnail Upload has been completed 😡 bytesTransferred: ${(bytesTransferred / 1024).toStringAsFixed(1)} KB '
         'of totalByteCount: ${(totalByteCount / 1024).toStringAsFixed(1)} KB');
     setState(() {
       isUploading = false;

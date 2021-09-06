@@ -74,10 +74,8 @@ public class DataService {
     public void initializeFirebase() throws Exception {
         String fbConfig = env.getProperty("FIREBASE_CONFIG");
         CredentialsProvider credentialsProvider = null;
-        LOGGER.info("\uD83C\uDFBD \uD83C\uDFBD \uD83C\uDFBD \uD83C\uDFBD  " +
-                "DataService: initializeFirebase: \uD83C\uDF4E  ....... ");
-        FirebaseApp app;
 
+        FirebaseApp app;
         try {
             if (!isInitialized) {
                 LOGGER.info("\uD83C\uDFBD \uD83C\uDFBD \uD83C\uDFBD \uD83C\uDFBD  " +
@@ -111,8 +109,8 @@ public class DataService {
 
 
             } else {
-                LOGGER.info("\uD83C\uDFBD \uD83C\uDFBD \uD83C\uDFBD \uD83C\uDFBD  DataService: initializeFirebase: ... \uD83C\uDF4F" +
-                        ".... \uD83D\uDC99 \uD83D\uDC99 isInitialized: " + true + " .... what the fuck? .... \uD83D\uDC99 \uD83D\uDC99 "
+                LOGGER.info("\uD83C\uDFBD \uD83C\uDFBD \uD83C\uDFBD \uD83C\uDFBD  DataService: Firebase is already initialized: ... \uD83C\uDF4F" +
+                        ".... \uD83D\uDC99 \uD83D\uDC99 isInitialized: " + true + " \uD83D\uDC99 \uD83D\uDC99 "
                         + Emoji.HEART_PURPLE + Emoji.HEART_BLUE + Emoji.HEART_BLUE);
             }
         } catch (Exception e) {
@@ -197,7 +195,7 @@ public class DataService {
                 + " " + Emoji.RAIN_DROPS);
         List<ProjectPosition> positions = projectPositionRepository
                 .findByProjectId(projectPosition.getProjectId());
-        
+
         LOGGER.info(Emoji.LEAF.concat(Emoji.LEAF)
                 .concat("ProjectPosition added: " + projectPosition.getProjectId()));
         return m;
