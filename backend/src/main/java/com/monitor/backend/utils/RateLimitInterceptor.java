@@ -33,10 +33,6 @@ public class RateLimitInterceptor implements HandlerInterceptor {
     public boolean preHandle(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response,
                              @NotNull Object handler) {
 
-//        String url = request.getRequestURL().toString();
-//        LOGGER.info(mm + " ... RateLimitInterceptor:preHandle: " + url
-//        +  " - date: " + new DateTime().toDateTimeISO().toString());
-
         ConsumptionProbe probe = this.bucket.tryConsumeAndReturnRemaining(this.numTokens);
         if (probe.isConsumed()) {
             LOGGER.info(mm + Emoji.OK + Emoji.OK + " RateLimitInterceptor: RemainingTokens: "
@@ -47,7 +43,8 @@ public class RateLimitInterceptor implements HandlerInterceptor {
             return true;
         }
 
-        LOGGER.info(mm + Emoji.NOT_OK + Emoji.NOT_OK +  Emoji.NOT_OK +  "RateLimitInterceptor: RemainingTokens: "
+        LOGGER.info(mm + Emoji.NOT_OK + Emoji.NOT_OK +  Emoji.NOT_OK
+                +  "RateLimitInterceptor: RemainingTokens: "
                 + probe.getRemainingTokens() + " " + Emoji.ERROR);
 
         response.setStatus(HttpStatus.TOO_MANY_REQUESTS.value());

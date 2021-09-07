@@ -109,14 +109,14 @@ public class MonitorBackendApplication implements ApplicationListener<Applicatio
         LOGGER.info(Emoji.RED_APPLE + Emoji.RED_APPLE   + Emoji.RED_APPLE + Emoji.KEY
                 + " addInterceptors: set up Rate Limiting " + Emoji.KEY);
 
-        Refill refill = Refill.greedy(10, Duration.ofMinutes(1));
-        Bandwidth limit = Bandwidth.classic(10, refill).withInitialTokens(1);
+        Refill refill = Refill.greedy(30, Duration.ofMinutes(1));
+        Bandwidth limit = Bandwidth.classic(30, refill).withInitialTokens(1);
 
         Bucket bucket = Bucket4j.builder().addLimit(limit).build();
         registry.addInterceptor(new RateLimitInterceptor(bucket, 1)).addPathPatterns(".*");
 
-        Refill refill2 = Refill.greedy(10, Duration.ofMinutes(1));
-        Bandwidth limit2 = Bandwidth.classic(10, refill2);
+        Refill refill2 = Refill.greedy(30, Duration.ofMinutes(1));
+        Bandwidth limit2 = Bandwidth.classic(30, refill2);
 
         Bucket bucket2 = Bucket4j.builder().addLimit(limit2).build();
         registry.addInterceptor(new RateLimitInterceptor(bucket2, 1))

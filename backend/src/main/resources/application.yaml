@@ -27,7 +27,7 @@ bucket4j:
         - expression: "getHeader('Authorization')"
 #          execute-condition: "getHeader('Authorization')"
           bandwidths:
-            - capacity: 20
+            - capacity: 100
               time: 1
               unit: hours
 #        - expression: "getHeader('Authorization')"

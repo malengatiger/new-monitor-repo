@@ -474,11 +474,11 @@ class _FieldCameraState extends State<FieldCamera>
           pp('$mm onTakePictureButtonPressed ....  🔵  🔵  🔵 file to upload: ${mImageFile.path} size: ${await mImageFile.length()} 🔵');
           _imageFiles.add(mImageFile);
           pp('$mm onTakePictureButtonPressed ....  🔵  🔵  🔵 files to upload: ${_imageFiles.length} 🔵');
-
+          var thumbnailFile = await getThumbnail(mImageFile);
           storageBloc.uploadPhotoOrVideo(
               listener: this,
               file: mImageFile,
-              thumbnailFile: mImageFile,
+              thumbnailFile: thumbnailFile,
               project: widget.project,
               projectPosition: widget.projectPosition.position!,
               isVideo: false);
@@ -488,7 +488,7 @@ class _FieldCameraState extends State<FieldCamera>
               message: 'Picture file saved',
               backgroundColor: Colors.teal, textStyle: Styles.whiteSmall,
               toastGravity: ToastGravity.TOP, duration: Duration(seconds: 2));
-          var thumbnailFile = await getThumbnail(mImageFile);
+
           var mediaBag = StorageMediaBag(
               url: '',
               thumbnailUrl: '',
