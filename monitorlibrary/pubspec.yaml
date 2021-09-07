@@ -48,6 +48,7 @@ dependencies:
   geocoding:
   chewie: ^1.2.2
   video_player: ^2.1.15
+  camera: ^0.9.2+2
   maps_toolkit: ^2.0.0
   focused_menu: ^1.0.5
   universal_platform: ^1.0.0+1
@@ -59,6 +60,8 @@ dependencies:
   crypto:
   hive: ^2.0.4
   connectivity: ^3.0.6
+  fluttertoast: ^8.0.8
+  georange: ^1.0.0
 
 
 dev_dependencies:

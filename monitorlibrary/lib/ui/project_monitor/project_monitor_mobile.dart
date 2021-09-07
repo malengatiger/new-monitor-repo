@@ -7,6 +7,7 @@ import 'package:monitorlibrary/data/project_position.dart';
 import 'package:monitorlibrary/functions.dart';
 import 'package:monitorlibrary/location/loc_bloc.dart';
 import 'package:monitorlibrary/snack.dart';
+import 'package:monitorlibrary/ui/camera/field_camera.dart';
 import 'package:monitorlibrary/ui/media/media_house.dart';
 import 'package:monitorlibrary/ui/project_location/project_location_main.dart';
 import 'package:page_transition/page_transition.dart';
@@ -266,7 +267,7 @@ class _ProjectMonitorMobileState extends State<ProjectMonitorMobile>
             type: PageTransitionType.scale,
             alignment: Alignment.topLeft,
             duration: Duration(seconds: 1),
-            child: MediaHouse(
+            child: FieldCamera(
               project: widget.project,
               projectPosition: nearestProjectPosition!,
             )));
