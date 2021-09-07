@@ -440,7 +440,7 @@ class LocalMongo {
     result.forEach((r) {
       var x = FieldMonitorSchedule.fromJson(json.decode(r));
       if (x.organizationId == organizationId) {
-        schedules.add(r);
+        schedules.add(x);
       }
     });
     return schedules;

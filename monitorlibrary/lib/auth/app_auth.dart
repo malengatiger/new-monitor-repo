@@ -16,22 +16,14 @@ class AppAuth {
     var app = await Firebase.initializeApp();
     pp('😎😎😎😎 AppAuth: isUserSignedIn :: 😎😎😎 Firebase has been initialized; '
         '😎 or not? 🍀🍀 app: ${app.options.databaseURL}');
-    // _auth = FirebaseAuth.instance;
-    // var authUser = _auth.currentUser;
-    // if (authUser == null) {
-    //   pp('👿👿👿 👿👿👿 user is not signed in yet .... 👿👿👿 👿👿👿 ');
-    //   return null;
-    // }
+
     var user = await Prefs.getUser();
     if (user == null) {
+      pp('🦠🦠🦠 user is NOT signed in. 🦠 ');
       return null;
     } else {
-      if (user != null) {
-        pp('🦠🦠🦠 user is signed in. 🦠 .... ${user.toJson()}');
-        return user;
-      } else {
-        return null;
-      }
+      pp('🦠🦠🦠 user is signed in. 🦠 .... ${user.toJson()}');
+      return user;
     }
   }
 
@@ -47,32 +39,51 @@ class AppAuth {
       pp('👿👿👿 User create failed : $e');
       throw e;
     });
-    mon.User mUser;
 
-      user.userId = fbUser.user!.uid;
-      var fcm = await fbUser.user!.getIdToken();
-      user.fcmRegistration = fcm;
-      mUser = await DataAPI.addUser(user);
-      pp('AppAuth: 💜 💜 createUser: added to database ... 💛️ 💛️ ${mUser.toJson()}');
+    mon.User? mUser;
 
-      if (isLocalAdmin) {
-        pp('AppAuth: 💜 💜 createUser: saving user to local cache: '
-            '💛️ 💛️ isLocalAdmin: $isLocalAdmin 💛️ 💛️');
-        await Prefs.saveUser(mUser);
-        var countries = await DataAPI.getCountries();
-        if (countries.isNotEmpty) {
-          await Prefs.saveCountry(countries.elementAt(0));
-        }
-      } else {
-        pp('AppAuth: 💜 💜 createUser:  '
-            '💛️ 💛️ isLocalAdmin: $isLocalAdmin 💛️ 💛️ normal user (non-original user)');
-      }
+    user.userId = fbUser.user!.uid;
+    var fcm = await fbUser.user!.getIdToken();
+    user.fcmRegistration = fcm;
+    mUser = await DataAPI.addUser(user);
+    pp('AppAuth: 💜 💜 createUser: added to database ... 💛️ 💛️ ${mUser.toJson()}');
 
-    if (mUser != null) {
-      pp('AppAuth:  💜 💜 💜 💜 createUser, after adding to Mongo database ....... ${mUser.toJson()}');
+    String? url;
+    var status = dot.dotenv.env['status'];
+    if (status == 'dev') {
+      url = dot.dotenv.env['devURL'];
     } else {
-      pp('AppAuth: 👿👿👿 createUser: this is a Houston kind of problem, Mongo api call failed ');
+      url = dot.dotenv.env['prodURL'];
     }
+    if (url != null) {
+      var suffix = '/verify?userId=${user.userId}';
+      var finalUrl = 'https://fieldmonitor3.page.link/fieldmonitor$suffix';
+      pp('AppAuth: 💜 💜 createUser: link for user: $finalUrl ');
+      await _auth!.sendSignInLinkToEmail(
+          email: user.email!,
+          actionCodeSettings: ActionCodeSettings(
+              androidPackageName: 'com.boha.fieldmonitorb',
+              url: finalUrl,
+              androidInstallApp: true,
+              handleCodeInApp: true));
+      pp('AppAuth: 💜 💜 createUser: auth!.sendSignInLinkToEmail has executed ... email link should be sent ??? ');
+    }
+
+    if (isLocalAdmin) {
+      pp('AppAuth: 💜 💜 createUser: saving user to local cache: '
+          '💛️ 💛️ isLocalAdmin: $isLocalAdmin 💛️ 💛️');
+      await Prefs.saveUser(mUser);
+      var countries = await DataAPI.getCountries();
+      if (countries.isNotEmpty) {
+        await Prefs.saveCountry(countries.elementAt(0));
+      }
+    } else {
+      pp('AppAuth: 💜 💜 createUser:  '
+          '💛️ 💛️ isLocalAdmin: $isLocalAdmin 💛️ 💛️ normal user (non-original user)');
+    }
+
+    pp('AppAuth:  💜 💜 💜 💜 createUser, after adding to Mongo database ....... ${mUser.toJson()}');
+
     return mUser;
   }
 
@@ -99,29 +110,28 @@ class AppAuth {
     });
     pp('🔐 🔐 🔐 🔐 Firebase auth user to be checked ......... ');
 
-      pp('🔐 🔐 🔐 🔐 Auth finding user by email $email 🔐 🔐 🔐 🔐 ${fbUser.user!.email} -  ${fbUser.user!.displayName} ');
-      var user = await DataAPI.findUserByEmail(fbUser.user!.email!);
-      if (user == null) {
-        pp('👎🏽 👎🏽 👎🏽 User not registered yet 👿');
-        throw Exception("User not found on Firebase auth 👿 👿 👿 ");
-      }
-      if (user.userType != type) {
-        pp('👎🏽 👎🏽 👎🏽 There is a fuck up somewhere, user type ${user.userType} is WRONG! 👿 The app is the wrong one!! 👿 👿 👿 ');
-        throw Exception("Incorrect SignIn. The app is the wrong one 👎🏽 👎🏽");
-      } else {
-        pp('🐤🐤🐤🐤 User found on database. Yeah! 🐤 🐤 🐤');
-      }
-      pp('🐤🐤🐤🐤 about to cache the user on the device ...');
-      await Prefs.saveUser(user);
-      var countries = await DataAPI.getCountries();
-      if (countries.isNotEmpty) {
-        pp("🥏 🥏 🥏 First country found in list: ${countries.elementAt(0).name}");
-        await Prefs.saveCountry(countries.elementAt(0));
-      } else {
-        pp('👿 👿 Country not found');
-      }
-      return user;
-
+    pp('🔐 🔐 🔐 🔐 Auth finding user by email $email 🔐 🔐 🔐 🔐 ${fbUser.user!.email} -  ${fbUser.user!.displayName} ');
+    var user = await DataAPI.findUserByEmail(fbUser.user!.email!);
+    if (user == null) {
+      pp('👎🏽 👎🏽 👎🏽 User not registered yet 👿');
+      throw Exception("User not found on Firebase auth 👿 👿 👿 ");
+    }
+    if (user.userType != type) {
+      pp('👎🏽 👎🏽 👎🏽 There is a fuck up somewhere, user type ${user.userType} is WRONG! 👿 The app is the wrong one!! 👿 👿 👿 ');
+      throw Exception("Incorrect SignIn. The app is the wrong one 👎🏽 👎🏽");
+    } else {
+      pp('🐤🐤🐤🐤 User found on database. Yeah! 🐤 🐤 🐤');
+    }
+    pp('🐤🐤🐤🐤 about to cache the user on the device ...');
+    await Prefs.saveUser(user);
+    var countries = await DataAPI.getCountries();
+    if (countries.isNotEmpty) {
+      pp("🥏 🥏 🥏 First country found in list: ${countries.elementAt(0).name}");
+      await Prefs.saveCountry(countries.elementAt(0));
+    } else {
+      pp('👿 👿 Country not found');
+    }
+    return user;
   }
 
   static Future getCountry() async {}
@@ -131,8 +141,8 @@ class AppAuth {
     var password = dot.dotenv.env['password'];
     _auth = FirebaseAuth.instance;
 
-    var res = await _auth!.signInWithEmailAndPassword(
-        email: email!, password: password!);
+    var res = await _auth!
+        .signInWithEmailAndPassword(email: email!, password: password!);
     if (res.user != null) {
       return await res.user!.getIdToken();
     } else {

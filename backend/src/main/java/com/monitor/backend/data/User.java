@@ -8,7 +8,7 @@ public class User {
     String _partitionKey;
     @Id
     String _id;
-    String name;
+    String name, gender;
     String email;
     String cellphone;
     String userId;
@@ -24,7 +24,7 @@ public class User {
 
     public User(String name, String email, String cellphone, String userId,
                 String organizationId, String organizationName, String created,
-                String fcmRegistration, String userType, String password, Position position) {
+                String fcmRegistration, String userType, String password, Position position, String gender) {
         this.name = name;
         this.email = email;
         this.cellphone = cellphone;
@@ -36,6 +36,15 @@ public class User {
         this.userType = userType;
         this.password = password;
         this.position = position;
+        this.gender = gender;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
     }
 
     public Position getPosition() {

@@ -5,7 +5,7 @@ import 'package:monitorlibrary/data/position.dart';
 class User {
   String? name,
       userId,
-      email,
+      email, gender,
       cellphone,
       created,
       userType,
@@ -20,7 +20,7 @@ class User {
       required this.userId,
       required this.cellphone,
       required this.created,
-      required this.userType,
+      required this.userType, required this.gender,
       required this.organizationName,
       required this.organizationId,
       this.position,
@@ -29,6 +29,7 @@ class User {
   User.fromJson(Map data) {
     this.name = data['name'];
     this.userId = data['userId'];
+    this.gender = data['gender'];
     this.fcmRegistration = data['fcmRegistration'];
     this.email = data['email'];
     this.cellphone = data['cellphone'];
@@ -44,6 +45,7 @@ class User {
     Map<String, dynamic> map = {
       'name': name,
       'userId': userId,
+      'gender': gender,
       'fcmRegistration': fcmRegistration,
       'email': email,
       'cellphone': cellphone,

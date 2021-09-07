@@ -7,6 +7,7 @@ import 'package:monitorlibrary/data/user.dart' as ar;
 import 'package:monitorlibrary/data/user.dart';
 import 'package:monitorlibrary/functions.dart';
 import 'package:monitorlibrary/snack.dart';
+import 'package:monitorlibrary/generic_functions.dart';
 
 class UserEditMobile extends StatefulWidget {
   final ar.User? user;
@@ -58,6 +59,15 @@ class _UserEditMobileState extends State<UserEditMobile>
 
   void _submit() async {
     if (_formKey.currentState!.validate()) {
+      //todo - validate
+      if (type == null) {
+        showToast(context: context, message: 'Please select user type', duration: Duration(seconds: 2), backgroundColor: Colors.pink, textStyle: Styles.whiteSmall);
+        return;
+      }
+      if (gender == null) {
+        showToast(context: context, message: 'Please select user gender', duration: Duration(seconds: 2),  backgroundColor: Colors.pink, textStyle: Styles.whiteSmall);
+        return;
+      }
       setState(() {
         isBusy = true;
       });
@@ -70,23 +80,29 @@ class _UserEditMobileState extends State<UserEditMobile>
               organizationId: admin!.organizationId!,
               organizationName: admin!.organizationName,
               userType: type,
+              gender: gender,
               created: DateTime.now().toIso8601String(),
               fcmRegistration: 'tbd',
               userId: 'tbd');
           pp('😡 😡 😡 _submit new user ......... ${user.toJson()}');
           try {
-            await AppAuth.createUser(
+            var mUser = await AppAuth.createUser(
               user: user,
               password: 'pass123',
               isLocalAdmin: admin == null ? true : false,
             );
-
-            var list = await monitorBloc.getOrganizationUsers(
+            pp('🍎 🍎 🍎 🍎 UserEditMobile: 🍎 A user has been created:  🍎 ${mUser.toJson()}');
+            gender = null;
+            type = null;
+            showToast(message: 'User created: ${user.name}', context: context,
+                backgroundColor: Colors.teal, textStyle: Styles.whiteSmall, duration: Duration(seconds: 5));
+            await monitorBloc.getOrganizationUsers(
                 organizationId: user.organizationId!, forceRefresh: true);
-            Navigator.pop(context, list);
+            Navigator.pop(context);
           } catch (e) {
+            pp(e);
             AppSnackbar.showErrorSnackbar(
-                scaffoldKey: _key, message: 'User create failed');
+                scaffoldKey: _key, message: 'User create failed: $e');
           }
         } else {
           widget.user!.name = nameController.text;
@@ -106,6 +122,7 @@ class _UserEditMobileState extends State<UserEditMobile>
           }
         }
       } catch (e) {
+        pp(e);
         AppSnackbar.showErrorSnackbar(
             scaffoldKey: _key, message: 'Failed : $e');
       }
@@ -116,6 +133,7 @@ class _UserEditMobileState extends State<UserEditMobile>
   }
 
   int userType = -1;
+  int genderType = -1;
 
   void _setTypeRadio() {
     if (widget.user != null) {
@@ -148,7 +166,7 @@ class _UserEditMobileState extends State<UserEditMobile>
             child: Column(
               children: [
                 Text(
-                  widget.user == null ? 'New User' : 'Edit User',
+                  widget.user == null ? 'New Monitor User' : 'Edit Monitor User',
                   style: Styles.blackBoldMedium,
                 ),
                 admin == null
@@ -170,15 +188,18 @@ class _UserEditMobileState extends State<UserEditMobile>
         ),
         backgroundColor: Colors.brown[100],
         body: Padding(
-          padding: const EdgeInsets.all(12.0),
+          padding: const EdgeInsets.all(8.0),
           child: SingleChildScrollView(
-            child: Card(
+            child: Card(elevation: 4,
               child: Padding(
                 padding: const EdgeInsets.all(12.0),
                 child: Form(
                   key: _formKey,
                   child: Column(
                     children: [
+                      SizedBox(
+                        height: 8,
+                      ),
                       TextFormField(
                         controller: nameController,
                         keyboardType: TextInputType.text,
@@ -236,31 +257,40 @@ class _UserEditMobileState extends State<UserEditMobile>
                           return null;
                         },
                       ),
+
                       SizedBox(
-                        height: 4,
+                        height: 16,
                       ),
-                      widget.user == null
-                          ? TextFormField(
-                              controller: passwordController,
-                              keyboardType: TextInputType.text,
-                              obscureText: false,
-                              decoration: InputDecoration(
-                                  icon: Icon(
-                                    Icons.lock,
-                                    color: Theme.of(context).primaryColor,
-                                  ),
-                                  labelText: 'Password',
-                                  hintText: 'Password'),
-                              validator: (value) {
-                                if (value!.isEmpty) {
-                                  return 'Please enter password';
-                                }
-                                return null;
-                              },
-                            )
-                          : Container(),
+                      Container(
+                        color: Colors.amber[50],
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: <Widget>[
+                            Radio(
+                              value: 0,
+                              groupValue: genderType,
+                              onChanged: _handleGenderValueChange,
+                            ),
+                            Text(
+                              'Male',
+                              style: Styles.blackTiny,
+                            ),
+                            Radio(
+                              value: 1,
+                              groupValue: genderType,
+                              onChanged: _handleGenderValueChange,
+                            ),
+                            Text('Female', style: Styles.blackTiny),
+
+                          ],
+                        ),
+                      ),
+                      // Text(
+                      //   gender == null ? '' : gender!,
+                      //   style: Styles.greyLabelSmall,
+                      // ),
                       SizedBox(
-                        height: 12,
+                        height: 16,
                       ),
                       Container(
                         color: Colors.brown[50],
@@ -294,12 +324,12 @@ class _UserEditMobileState extends State<UserEditMobile>
                           ],
                         ),
                       ),
-                      Text(
-                        type == null ? '' : type!,
-                        style: Styles.greyLabelSmall,
-                      ),
+                      // Text(
+                      //   type == null ? '' : type!,
+                      //   style: Styles.greyLabelSmall,
+                      // ),
                       SizedBox(
-                        height: 16,
+                        height: 28,
                       ),
                       isBusy
                           ? Container(
@@ -336,6 +366,27 @@ class _UserEditMobileState extends State<UserEditMobile>
   }
 
   String? type;
+  String? gender;
+  void _handleGenderValueChange(Object? value) {
+    pp('🌸 🌸 🌸 🌸 🌸 _handleGenderValueChange: 🌸 $value');
+    setState(() {
+      switch (value) {
+        case 0:
+          gender = 'Male';
+          genderType = 0;
+          break;
+        case 1:
+          gender = 'Female';
+          genderType = 1;
+          break;
+        case 2:
+          gender = 'Other';
+          genderType = 2;
+          break;
+      }
+    });
+  }
+
   void _handleRadioValueChange(Object? value) {
     pp('🌸 🌸 🌸 🌸 🌸 _handleRadioValueChange: 🌸 $value');
     setState(() {

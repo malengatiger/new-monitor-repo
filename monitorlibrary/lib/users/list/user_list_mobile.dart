@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:focused_menu/focused_menu.dart';
 import 'package:focused_menu/modals.dart';
+import 'package:monitorlibrary/api/local_mongo.dart';
 import 'package:monitorlibrary/api/sharedprefs.dart';
 import 'package:monitorlibrary/bloc/fcm_bloc.dart';
 import 'package:monitorlibrary/bloc/monitor_bloc.dart';
@@ -239,9 +240,9 @@ class _UserListMobileState extends State<UserListMobile>
               backgroundColor: Colors.brown[100],
               body: isBusy
                   ? Center(
-                      child: Container(
+                      child: Container(width: 16, height: 16,
                         child: CircularProgressIndicator(
-                          strokeWidth: 8,
+                          strokeWidth: 2,
                         ),
                       ),
                     )
@@ -318,22 +319,18 @@ class _UserListMobileState extends State<UserListMobile>
   }
 
   void _navigateToUserEdit(User? user) async {
-    var list = await Navigator.push(
+    await Navigator.push(
         context,
         PageTransition(
             type: PageTransitionType.scale,
             alignment: Alignment.topLeft,
             duration: Duration(seconds: 1),
-            child: UserEditMain(user!)));
-    pp('UserListMobile: 💛️ 💛️ Back from user edit, check if we need to refresh? list: ${list.length}');
+            child: UserEditMain(user)));
 
-    if (list != null) {
-      if (mounted) {
-        _users = list;
-        _users.sort((a, b) => (a.name!.compareTo(b.name!)));
-        setState(() {});
-      }
-    }
+    _users = await LocalMongo.getUsers();
+    setState(() {
+
+    });
   }
 
   void _navigateToUserReport(User user) {
