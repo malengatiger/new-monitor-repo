@@ -6,7 +6,7 @@ import 'package:monitorlibrary/ui/project_edit/project_edit_tablet.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 
 class ProjectEditMain extends StatelessWidget {
-  final Project project;
+  final Project? project;
 
   ProjectEditMain(this.project);
 

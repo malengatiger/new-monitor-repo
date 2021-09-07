@@ -3,7 +3,7 @@ import 'package:monitorlibrary/data/project.dart';
 import 'package:monitorlibrary/data/user.dart';
 
 class ProjectEditTablet extends StatefulWidget {
-  final Project project;
+  final Project? project;
 
   ProjectEditTablet(this.project);
 

@@ -16,8 +16,10 @@ import 'package:monitorlibrary/ui/maps/project_map_main.dart';
 import 'package:monitorlibrary/ui/maps/project_map_mobile.dart';
 import 'package:monitorlibrary/ui/media/list/media_list_main.dart';
 import 'package:monitorlibrary/ui/project_edit/project_edit_main.dart';
+import 'package:monitorlibrary/ui/project_edit/project_edit_mobile.dart';
 import 'package:monitorlibrary/ui/project_location/project_location_main.dart';
 import 'package:monitorlibrary/ui/project_monitor/project_monitor_main.dart';
+import 'package:monitorlibrary/ui/project_monitor/project_monitor_mobile.dart';
 import 'package:page_transition/page_transition.dart';
 
 import '../../snack.dart';
@@ -127,7 +129,7 @@ class _ProjectListMobileState extends State<ProjectListMobile>
 
   Project? _currentProject;
   bool openProjectActions = false;
-  void _navigateToDetail(Project p) {
+  void _navigateToDetail(Project? p) {
     if (user!.userType == FIELD_MONITOR) {
       Navigator.push(
           context,
@@ -135,7 +137,7 @@ class _ProjectListMobileState extends State<ProjectListMobile>
               type: PageTransitionType.scale,
               alignment: Alignment.topLeft,
               duration: Duration(milliseconds: 1500),
-              child: ProjectMonitorMain(p)));
+              child: ProjectEditMobile(p)));
     }
     if (user!.userType! == ORG_ADMINISTRATOR) {
       Navigator.push(
@@ -284,7 +286,7 @@ class _ProjectListMobileState extends State<ProjectListMobile>
             size: 20,
           ),
           onPressed: () {
-            //_navigateToDetail(null);
+            _navigateToDetail(null);
           },
         ),
       );

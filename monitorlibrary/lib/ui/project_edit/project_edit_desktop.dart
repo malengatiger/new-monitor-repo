@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:monitorlibrary/data/project.dart';
 
 class ProjectEditDesktop extends StatefulWidget {
-  final Project project;
+  final Project? project;
 
   ProjectEditDesktop(this.project);
 

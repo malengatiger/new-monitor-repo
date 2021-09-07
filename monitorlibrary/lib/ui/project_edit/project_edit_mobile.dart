@@ -11,7 +11,7 @@ import 'package:page_transition/page_transition.dart';
 import 'package:uuid/uuid.dart';
 
 class ProjectEditMobile extends StatefulWidget {
-  final Project project;
+  final Project? project;
   const ProjectEditMobile(this.project);
 
   @override
@@ -47,9 +47,9 @@ class _ProjectEditMobileState extends State<ProjectEditMobile>
 
   void _setup() {
     if (widget.project != null) {
-      nameController.text = widget.project.name!;
-      descController.text = widget.project.description!;
-      maxController.text = '${widget.project.monitorMaxDistanceInMetres}';
+      nameController.text = widget.project!.name!;
+      descController.text = widget.project!.description!;
+      maxController.text = '${widget.project!.monitorMaxDistanceInMetres}';
     }
   }
 
@@ -87,10 +87,10 @@ class _ProjectEditMobileState extends State<ProjectEditMobile>
           pp('🎽 🎽 🎽 _submit: new project added .........  ${m.toJson()}');
         } else {
           pp('😡 😡 😡 _submit existing project for update, soon! 🌸 ......... ');
-          widget.project.name = nameController.text;
-          widget.project.description = descController.text;
-          mProject = widget.project;
-          var m = await adminBloc.updateProject(widget.project);
+          widget.project!.name = nameController.text;
+          widget.project!.description = descController.text;
+          mProject = widget.project!;
+          var m = await adminBloc.updateProject(widget.project!);
           pp('🎽 🎽 🎽 _submit: new project updated .........  ${m.toJson()}');
         }
         setState(() {
@@ -146,7 +146,7 @@ class _ProjectEditMobileState extends State<ProjectEditMobile>
                     icon: Icon(Icons.location_on),
                     onPressed: () {
                       if (widget.project != null) {
-                        _navigateToProjectLocation(widget.project);
+                        _navigateToProjectLocation(widget.project!);
                       }
                     },
                   )
@@ -278,7 +278,7 @@ class _ProjectEditMobileState extends State<ProjectEditMobile>
                                           ),
                                           onPressed: () {
                                             _navigateToProjectLocation(
-                                                widget.project);
+                                                widget.project!);
                                           },
                                         ),
                                       ),
