@@ -25,6 +25,7 @@ class LocalMongo {
 
   static Future _connectToLocalDB() async {
     if (dbConnected) {
+      pp('$mm  🔵 🔵 MongoDB Mobile already connected 🔵 🔵  ');
       return null;
     }
     pp('$mm .... Connecting to MongoDB Mobile ... 🔵 🔵 🔵 🔵 🔵 🔵 🔵 ');
@@ -32,8 +33,9 @@ class LocalMongo {
       pp('$mm 🧩 🧩 🧩_connectToLocalDB: will create indexes ......');
       await _createIndices();
       dbConnected = true;
-      pp('$mm 👌 Connected to MongoDB Mobile. 🥬 DATABASE: $databaseName  🥬 APP_ID: $APP_ID  👌 👌 👌 '
-          ' necessary indices created for routes and landmarks 🧩 🧩 🧩');
+      pp(
+          '$mm 👌 Connected to MongoDB Mobile. 🥬 DATABASE: $databaseName  🥬 APP_ID: $APP_ID  👌 👌 👌 '
+              ' necessary indices created for routes and landmarks 🧩 🧩 🧩');
     } on PlatformException catch (e) {
       pp('👿👿👿👿👿👿👿👿👿👿 ${e.message}  👿👿👿👿');
       throw Exception(e);
@@ -98,7 +100,9 @@ class LocalMongo {
           index: {"projectId": 1});
       await MobMongo.createIndex(carr6);
       var carr6a = Carrier(
-          db: databaseName, collection: Constants.PHOTO, index: {"userId": 1});
+          db: databaseName,
+          collection: Constants.PHOTO,
+          index: {"userId": 1});
       await MobMongo.createIndex(carr6a);
       pp('$mm photo indexes added');
 
@@ -108,7 +112,9 @@ class LocalMongo {
           index: {"projectId": 1});
       await MobMongo.createIndex(carr7);
       var carr7a = Carrier(
-          db: databaseName, collection: Constants.VIDEO, index: {"userId": 1});
+          db: databaseName,
+          collection: Constants.VIDEO,
+          index: {"userId": 1});
       await MobMongo.createIndex(carr7a);
       var carr8 = Carrier(
           db: databaseName,
@@ -144,23 +150,22 @@ class LocalMongo {
           collection: Constants.FIELD_MONITOR_SCHEDULE,
           index: {"projectId": 1});
       await MobMongo.createIndex(carr12);
-
       var carr13 = Carrier(
           db: databaseName,
           collection: Constants.FIELD_MONITOR_SCHEDULE,
-          index: {"userId": 1});
+          index: {"fieldMonitorId": 1});
       await MobMongo.createIndex(carr13);
       pp('$mm fieldMonitorSchedule indexes added');
 
-      pp('$mm 🧩 🧩 🧩  🧩 🧩 🧩 ALL local indices built! - 👌 👌 👌');
+      pp('$mm 🧩 🧩 🧩 🧩 🧩 🧩 ALL local MongoDB indices built! - 👌 👌 👌');
     } catch (e) {
-      pp('$mm 👿👿👿👿 🍎  🍎  🍎  🍎  🍎  🍎  🍎 '
+      pp('$mm 👿👿👿👿 '
           'Fell down creating local mongo indexes: '
           '👿👿👿👿 $e');
     }
   }
 
-  static Future  addCondition({required Condition condition}) async {
+  static Future addCondition({required Condition condition}) async {
     pp('$mm .... addCondition .....');
     await delete(
         field: 'conditionId',
@@ -176,7 +181,7 @@ class LocalMongo {
     return result;
   }
 
-  static Future  addFieldMonitorSchedules(
+  static Future addFieldMonitorSchedules(
       {required List<FieldMonitorSchedule> schedules}) async {
     for (var s in schedules) {
       await addFieldMonitorSchedule(schedule: s);
@@ -184,7 +189,7 @@ class LocalMongo {
     return 0;
   }
 
-  static Future  addOrgMessage({required OrgMessage message}) async {
+  static Future addOrgMessage({required OrgMessage message}) async {
     pp('$mm .... addOrgMessage .....');
     await delete(
         field: 'orgMessageId',
@@ -200,14 +205,14 @@ class LocalMongo {
     return result;
   }
 
-  static Future  addPhotos({required List<Photo> photos}) async {
+  static Future addPhotos({required List<Photo> photos}) async {
     for (var v in photos) {
       await addPhoto(photo: v);
     }
     return photos.length;
   }
 
-  static Future  addProjectPositions(
+  static Future addProjectPositions(
       {required List<ProjectPosition> positions}) async {
     for (var v in positions) {
       await addProjectPosition(projectPosition: v);
@@ -215,7 +220,7 @@ class LocalMongo {
     return positions.length;
   }
 
-  static Future  addProjects({required List<Project> projects}) async {
+  static Future addProjects({required List<Project> projects}) async {
     for (var v in projects) {
       await addProject(project: v);
     }
@@ -230,7 +235,7 @@ class LocalMongo {
     return users.length;
   }
 
-  static Future  addVideos({required List<Video> videos}) async {
+  static Future addVideos({required List<Video> videos}) async {
     for (var v in videos) {
       await addVideo(video: v);
     }
@@ -253,7 +258,7 @@ class LocalMongo {
     await _connectToLocalDB();
     var radius = radiusInKM * 1000;
     Carrier carrier =
-        Carrier(db: databaseName, collection: Constants.MONITOR_REPORT, query: {
+    Carrier(db: databaseName, collection: Constants.MONITOR_REPORT, query: {
       "eq": {
         'position': {
           "\$near": {
@@ -279,7 +284,7 @@ class LocalMongo {
     await _connectToLocalDB();
     var radius = radiusInKM * 1000;
     Carrier carrier =
-        Carrier(db: databaseName, collection: Constants.PHOTO, query: {
+    Carrier(db: databaseName, collection: Constants.PHOTO, query: {
       "eq": {
         'position': {
           "\$near": {
@@ -328,12 +333,34 @@ class LocalMongo {
     return list;
   }
 
+  static Future<Project?> getProjectById(
+      {required String projectId}) async {
+    await _connectToLocalDB();
+    Carrier carrier =
+    Carrier(db: databaseName, collection: Constants.PROJECT, query: {
+      "eq": {
+        'projectId': projectId
+      }
+    });
+    var result = await MobMongo.query(carrier);
+    List<Project> list = [];
+    result.forEach((m) {
+      list.add(Project.fromJson(json.decode(m)));
+    });
+    if (list.isNotEmpty) {
+      return list.first;
+    } else {
+      return null;
+    }
+
+  }
+
   static Future<List<Project>> findProjectsByLocation(
-      {required latitude, required longitude, required radiusInKM}) async {
+      {required double latitude, required double longitude, required double radiusInKM}) async {
     await _connectToLocalDB();
     var radius = radiusInKM * 1000;
     Carrier carrier =
-        Carrier(db: databaseName, collection: Constants.PROJECT, query: {
+    Carrier(db: databaseName, collection: Constants.PROJECT, query: {
       "eq": {
         'position': {
           "\$near": {
@@ -359,7 +386,7 @@ class LocalMongo {
     await _connectToLocalDB();
     var radius = radiusInKM * 1000;
     Carrier carrier =
-        Carrier(db: databaseName, collection: Constants.VIDEO, query: {
+    Carrier(db: databaseName, collection: Constants.VIDEO, query: {
       "eq": {
         'position': {
           "\$near": {
@@ -392,16 +419,17 @@ class LocalMongo {
     List<FieldMonitorSchedule> schedules = [];
     result.forEach((r) {
       var x = FieldMonitorSchedule.fromJson(json.decode(r));
-      // if (x.userId == userId) {
-      schedules.add(r);
-      // }
+      if (x.fieldMonitorId == userId) {
+        schedules.add(x);
+      }
     });
     return schedules;
   }
 
   static Future<List<FieldMonitorSchedule>> getOrganizationMonitorSchedules(
       String organizationId) async {
-    pp('$mm .... getOrganizationMonitorSchedules .....organizationId: $organizationId');
+    pp(
+        '$mm .... getOrganizationMonitorSchedules .....organizationId: $organizationId');
     await _connectToLocalDB();
     Carrier carrier = Carrier(
       db: databaseName,
@@ -429,7 +457,7 @@ class LocalMongo {
     List<Photo> schedules = [];
     result.forEach((r) {
       var x = Photo.fromJson(json.decode(r));
-      schedules.add(r);
+      schedules.add(x);
     });
     return schedules;
   }
@@ -447,7 +475,7 @@ class LocalMongo {
     result.forEach((r) {
       var x = FieldMonitorSchedule.fromJson(json.decode(r));
       if (x.projectId == projectId) {
-        schedules.add(r);
+        schedules.add(x);
       }
     });
     return schedules;
@@ -517,7 +545,7 @@ class LocalMongo {
     return videos;
   }
 
-  static Future  addFieldMonitorSchedule(
+  static Future addFieldMonitorSchedule(
       {required FieldMonitorSchedule schedule}) async {
     pp('$mm .... addFieldMonitorSchedule .....');
     await delete(
@@ -530,11 +558,12 @@ class LocalMongo {
       data: schedule.toJson(),
     );
     var result = await MobMongo.insert(carrier);
-    pp('$mm FieldMonitorSchedule added to local cache:  🔵 🔵 ${schedule.projectName}');
+    pp('$mm FieldMonitorSchedule added to local cache:  🔵 🔵 ${schedule
+        .projectName}');
     return result;
   }
 
-  static Future  addPhoto({required Photo photo}) async {
+  static Future addPhoto({required Photo photo}) async {
     pp('$mm .... addPhoto .....');
     await delete(
         field: 'photoId', id: photo.photoId!, collectionName: Constants.PHOTO);
@@ -549,7 +578,8 @@ class LocalMongo {
   }
 
   static Future addProject({required Project project}) async {
-    pp('$mm .... ........... adding Project .....  🔵 🔵 ${project.name} nearestCities: ${project.nearestCities!.length}');
+    pp('$mm .... ........... adding Project .....  🔵 🔵 ${project
+        .name} nearestCities: ${project.nearestCities!.length}');
     await delete(
         field: 'projectId',
         id: project.projectId!,
@@ -560,11 +590,12 @@ class LocalMongo {
       data: project.toJson(),
     );
     var result = await MobMongo.insert(carrier);
-    pp('$mm Project added to local cache:  🔵 🔵 ${project.name} result of call: $result');
+    pp('$mm Project added to local cache:  🔵 🔵 ${project
+        .name} result of call: $result');
     return result;
   }
 
-  static Future  addProjectPosition(
+  static Future addProjectPosition(
       {required ProjectPosition projectPosition}) async {
     pp('$mm .... addProjectPosition .....  🔵 🔵 ${projectPosition.toJson()}');
     await delete(
@@ -577,7 +608,8 @@ class LocalMongo {
       data: projectPosition.toJson(),
     );
     var result = await MobMongo.insert(carrier);
-    pp('$mm ProjectPosition added to local cache:  🔵 🔵 ${projectPosition.projectName}');
+    pp('$mm ProjectPosition added to local cache:  🔵 🔵 ${projectPosition
+        .projectName}');
     return result;
   }
 
@@ -592,11 +624,12 @@ class LocalMongo {
       data: user.toJson(),
     );
     var result = await MobMongo.insert(carrier);
-    pp('$mm User added to local cache: 🔵 🔵  ${user.name} mongo result result: $result');
+    pp('$mm User added to local cache: 🔵 🔵  ${user
+        .name} mongo result result: $result');
     return result;
   }
 
-  static Future  addVideo({required Video video}) async {
+  static Future addVideo({required Video video}) async {
     pp('$mm .... addVideo .....  🔵 🔵 ${video.toJson()}');
     await delete(
         field: 'videoId', id: video.videoId!, collectionName: Constants.VIDEO);
@@ -610,8 +643,8 @@ class LocalMongo {
     return result;
   }
 
-  static Future<List<Project>> getProjects() async {
-    pp('$mm .... getProjects .....');
+  static Future<List<Project>> getProjects(String organizationId) async {
+    pp('$mm .... getProjects ..... organizationId: $organizationId');
     await _connectToLocalDB();
     Carrier carrier = Carrier(
       db: databaseName,
@@ -620,20 +653,23 @@ class LocalMongo {
     List result = await (MobMongo.getAll(carrier));
     List<Project> projects = [];
     result.forEach((r) {
-      projects.add(Project.fromJson(json.decode(r)));
+      var p = Project.fromJson(json.decode(r));
+      if (p.organizationId == organizationId) {
+        projects.add(p);
+      }
     });
     pp('$mm .... getProjects ..... found:  🌼 ${projects.length}  🌼');
     return projects;
   }
 
-  static Future  addCities({required List<City> cities}) async {
+  static Future addCities({required List<City> cities}) async {
     for (var city in cities) {
       await addCity(city: city);
     }
     return 0;
   }
 
-  static Future  addCity({required City city}) async {
+  static Future addCity({required City city}) async {
     pp('$mm .... addCity .....  🔵 🔵 ${city.toJson()}');
     await delete(
         field: 'cityId', id: city.cityId!, collectionName: Constants.CITY);
@@ -647,8 +683,7 @@ class LocalMongo {
     return result;
   }
 
-  static Future  addMonitorReport(
-      {required MonitorReport monitorReport}) async {
+  static Future addMonitorReport({required MonitorReport monitorReport}) async {
     pp('$mm .... addMonitorReport .....  🔵 🔵 ${monitorReport.toJson()}');
     await delete(
         field: 'monitorReportId',
@@ -664,7 +699,7 @@ class LocalMongo {
     return result;
   }
 
-  static Future  addMonitorReports(
+  static Future addMonitorReports(
       {required List<MonitorReport> monitorReports}) async {
     for (var r in monitorReports) {
       await addMonitorReport(monitorReport: r);
@@ -672,15 +707,14 @@ class LocalMongo {
     return 0;
   }
 
-  static Future  addCommunities(
-      {required List<Community> communities}) async {
+  static Future addCommunities({required List<Community> communities}) async {
     for (var c in communities) {
       await addCommunity(community: c);
     }
     return 0;
   }
 
-  static Future  addCommunity({required Community community}) async {
+  static Future addCommunity({required Community community}) async {
     pp('$mm .... addCommunity .....  🔵 🔵 ${community.toJson()}');
     await delete(
         field: 'communityId',
@@ -696,8 +730,7 @@ class LocalMongo {
     return result;
   }
 
-  static Future  addOrganization(
-      {required Organization organization}) async {
+  static Future addOrganization({required Organization organization}) async {
     pp('$mm .... addOrganization .....  🔵 🔵 ${organization.toJson()}');
     await delete(
         field: 'organizationId',
@@ -751,16 +784,19 @@ class LocalMongo {
     return orgs;
   }
 
-  static Future  addSection({required Section section}) async {
+  static Future addSection({required Section section}) async {
     pp('$mm .... addSection .....  🔵 🔵 ${section.toJson()}');
-    await delete(field: 'sectionId', id: section.sectionId!, collectionName: Constants.SECTION);
+    await delete(field: 'sectionId',
+        id: section.sectionId!,
+        collectionName: Constants.SECTION);
     Carrier carrier = Carrier(
       db: databaseName,
       collection: Constants.SECTION,
       data: section.toJson(),
     );
     var result = await MobMongo.insert(carrier);
-    pp('$mm section added to local cache:  🔵 🔵 sectionNumber: ${section.sectionNumber}');
+    pp('$mm section added to local cache:  🔵 🔵 sectionNumber: ${section
+        .sectionNumber}');
     return result;
   }
 
@@ -786,7 +822,8 @@ class LocalMongo {
         positions.add(projPos);
       }
     });
-    pp('$mm .... getProjectPositions ..... 🌺 found:  🌼 ${positions.length}  🌼');
+    pp('$mm .... getProjectPositions ..... 🌺 found:  🌼 ${positions
+        .length}  🌼');
     return positions;
   }
 
@@ -809,11 +846,11 @@ class LocalMongo {
     return videos;
   }
 
-  static Future delete(
-      {required String field,
-      required String id,
-      required String collectionName}) async {
-    pp('$mm .... delete ..... field: $field collectionName: $collectionName id: $id');
+  static Future delete({required String field,
+    required String id,
+    required String collectionName}) async {
+    pp(
+        '$mm .... delete ..... field: $field collectionName: $collectionName id: $id');
     await _connectToLocalDB();
     Carrier c = Carrier(db: databaseName, collection: collectionName, id: {
       'field': field,

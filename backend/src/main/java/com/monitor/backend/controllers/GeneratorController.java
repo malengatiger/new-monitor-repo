@@ -79,7 +79,14 @@ public class GeneratorController {
         return Emoji.RAIN_DROPS + Emoji.RAIN_DROPS + " ..... MongoGenerator: generateProjects completed";
     }
 
-
+    @GetMapping("/generateFieldMonitorSchedules")
+    public String generateFieldMonitorSchedules() throws Exception {
+        LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS).concat(
+                "generateFieldMonitorSchedules: Adding users to MongoDB ...."));
+        mongoGenerator.generateFieldMonitorSchedules();
+        return Emoji.RAIN_DROPS + Emoji.RAIN_DROPS +
+                " ..... MongoGenerator: generateFieldMonitorSchedules completed";
+    }
 
     @Autowired
     MongoDataService mongoDataService;

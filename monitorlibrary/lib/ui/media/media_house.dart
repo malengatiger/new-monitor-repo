@@ -66,6 +66,8 @@ class _MediaHouseState extends State<MediaHouse>
     super.dispose();
   }
 
+  List<StorageMediaBag> _mediaBags = [];
+  
   void _openImageCamera() async {
     pp('$mm _openImageCamera ......................');
     try {
@@ -76,9 +78,18 @@ class _MediaHouseState extends State<MediaHouse>
       });
       imageFile = File(result);
       var thumbnailFile = await getThumbnail(imageFile!);
+      var mediaBag = StorageMediaBag(
+          url: '',
+          thumbnailUrl: '',
+          isVideo: false,
+          file: imageFile,
+          date: getFormattedDate(DateTime.now().toString()),
+          thumbnailFile: thumbnailFile);
+      _mediaBags.add(mediaBag);
       setState(() {
         isUploading = true;
       });
+
       storageBloc.uploadPhotoOrVideo(
           listener: this,
           file: imageFile!,
@@ -87,7 +98,7 @@ class _MediaHouseState extends State<MediaHouse>
           projectPosition: widget.projectPosition.position!,
           isVideo: false);
 
-      setState(() {});
+
     } on PlatformException catch (e) {
       pp("$mm 🌸 Failed to get or process image: ${e.message} ");
       AppSnackbar.showErrorSnackbar(
@@ -122,162 +133,152 @@ class _MediaHouseState extends State<MediaHouse>
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<List<StorageMediaBag>>(
-        stream: storageBloc.mediaStream,
-        initialData: [],
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            mediaBags = snapshot.data!;
-            pp('$mm 🇿🇦 💙💙 💙💙 💙💙 mediaStream reporting something in stream ... mediaBags: ${mediaBags.length}');
-          }
-          return SafeArea(
-            child: Scaffold(
-              key: _key,
-              appBar: AppBar(
-                title: Text(
-                  widget.project.name!,
-                  style: Styles.whiteBoldSmall,
-                ),
-                bottom: PreferredSize(
-                  child: Padding(
-                    padding: const EdgeInsets.all(12.0),
-                    child: Column(
-                      children: [
-                        isUploading
-                            ? Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Container(
-                                  color: Colors.white,
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Row(
-                                      children: [
-                                        Text(
-                                          '$bytesTransferred',
-                                          style: Styles.blackTiny,
-                                        ),
-                                        SizedBox(
-                                          width: 4,
-                                        ),
-                                        Text('of'),
-                                        SizedBox(
-                                          width: 4,
-                                        ),
-                                        Text('$totalByteCount',
-                                            style: Styles.blackTiny),
-                                        SizedBox(
-                                          width: 4,
-                                        ),
-                                        Text('downloaded',
-                                            style: Styles.blackTiny),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              )
-                            : Container(),
-                        SizedBox(
-                          height: 4,
-                        ),
-                        Row(
+    return SafeArea(
+      child: Scaffold(
+        key: _key,
+        appBar: AppBar(
+          title: Text(
+            widget.project.name!,
+            style: Styles.whiteBoldSmall,
+          ),
+          bottom: PreferredSize(
+            child: Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Column(
+                children: [
+                  isUploading
+                      ? Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Container(
+                      color: Colors.white,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Row(
                           children: [
                             Text(
-                              label == null ? 'Photos' : '$label',
-                              style: Styles.blackBoldSmall,
+                              '$bytesTransferred',
+                              style: Styles.blackTiny,
                             ),
                             SizedBox(
-                              width: 20,
+                              width: 4,
                             ),
-                            Switch(
-                              onChanged: (bool value) {
-                                pp('😡 😡 😡 switch changed to: 😡 isVideo = $value');
-                                if (value) {
-                                  label = 'Video';
-                                } else {
-                                  label = 'Photos';
-                                }
-                                setState(() {
-                                  isVideo = value;
-                                });
-                              },
-                              value: isVideo,
-                            ),
+                            Text('of'),
                             SizedBox(
-                              width: 40,
+                              width: 4,
                             ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                RaisedButton(
-                                  color: isVideo
-                                      ? Colors.pink[300]
-                                      : Colors.indigo[300],
-                                  elevation: 8,
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Text(
-                                      isVideo ? 'Shoot Video' : 'Take Picture',
-                                      style: Styles.whiteSmall,
-                                    ),
-                                  ),
-                                  onPressed: () {
-                                    if (isVideo) {
-                                      _openVideoCamera();
-                                    } else {
-                                      _openImageCamera();
-                                    }
-                                  },
-                                ),
-                              ],
-                            )
+                            Text('$totalByteCount',
+                                style: Styles.blackTiny),
+                            SizedBox(
+                              width: 4,
+                            ),
+                            Text('downloaded',
+                                style: Styles.blackTiny),
                           ],
                         ),
-                        SizedBox(
-                          height: 12,
-                        )
-                      ],
+                      ),
                     ),
+                  )
+                      : Container(),
+                  SizedBox(
+                    height: 4,
                   ),
-                  preferredSize: Size.fromHeight(120),
-                ),
-              ),
-              backgroundColor:
-                  filePath == null ? Colors.brown[100] : Colors.black,
-              body: Stack(
-                children: [
-                  GridView.builder(
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        mainAxisSpacing: 1,
-                        crossAxisSpacing: 1),
-                    itemCount: mediaBags.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      var item = mediaBags.elementAt(index);
-                      return Container(
-                        height: 180,
-                        width: 180,
-                        child: item.isVideo
-                            ? Image.asset(
-                                'assets/video3.png',
-                                width: 180,
-                                height: 180,
-                                fit: BoxFit.fill,
-                              )
-                            : Image.file(
-                                item.thumbnailFile!,
-                                fit: BoxFit.fill,
+                  Row(
+                    children: [
+                      Text(
+                        label == null ? 'Photos' : '$label',
+                        style: Styles.blackBoldSmall,
+                      ),
+                      SizedBox(
+                        width: 20,
+                      ),
+                      Switch(
+                        onChanged: (bool value) {
+                          pp('😡 😡 😡 switch changed to: 😡 isVideo = $value');
+                          if (value) {
+                            label = 'Video';
+                          } else {
+                            label = 'Photos';
+                          }
+                          setState(() {
+                            isVideo = value;
+                          });
+                        },
+                        value: isVideo,
+                      ),
+                      SizedBox(
+                        width: 40,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          RaisedButton(
+                            color: isVideo
+                                ? Colors.pink[300]
+                                : Colors.indigo[300],
+                            elevation: 8,
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                isVideo ? 'Shoot Video' : 'Take Picture',
+                                style: Styles.whiteSmall,
                               ),
-                      );
-                    },
+                            ),
+                            onPressed: () {
+                              if (isVideo) {
+                                _openVideoCamera();
+                              } else {
+                                _openImageCamera();
+                              }
+                            },
+                          ),
+                        ],
+                      )
+                    ],
                   ),
+                  SizedBox(
+                    height: 12,
+                  )
                 ],
               ),
             ),
-          );
-        });
+            preferredSize: Size.fromHeight(120),
+          ),
+        ),
+        backgroundColor:
+        filePath == null ? Colors.brown[100] : Colors.black,
+        body: Stack(
+          children: [
+            GridView.builder(
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  mainAxisSpacing: 1,
+                  crossAxisSpacing: 1),
+              itemCount: _mediaBags.length,
+              itemBuilder: (BuildContext context, int index) {
+                var item = _mediaBags.elementAt(index);
+                return Container(
+                  height: 180,
+                  width: 180,
+                  child: item.isVideo
+                      ? Image.asset(
+                    'assets/video3.png',
+                    width: 180,
+                    height: 180,
+                    fit: BoxFit.fill,
+                  )
+                      : Image.file(
+                    item.thumbnailFile!,
+                    fit: BoxFit.fill,
+                  ),
+                );
+              },
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
-  List<StorageMediaBag> mediaBags = [];
 
   @override
   void onMediaSelected(MediaBag suitcase) {

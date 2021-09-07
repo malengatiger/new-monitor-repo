@@ -34,6 +34,7 @@ import java.util.logging.Logger;
 public class MongoGenerator {
     private static final Logger LOGGER = Logger.getLogger(MongoGenerator.class.getSimpleName());
     private static final Gson G = new GsonBuilder().setPrettyPrinting().create();
+
     public MongoGenerator() {
         LOGGER.info(Emoji.DOLPHIN.concat(Emoji.DOLPHIN) + "MongoGenerator is up and good ".concat(Emoji.DOLPHIN));
     }
@@ -57,12 +58,12 @@ public class MongoGenerator {
         List<Double> cords = new ArrayList<>();
         cords.add(longitudeHarties);
         cords.add(latitudeHarties);
-        Country c1 = new Country("PUBLIC",null,
+        Country c1 = new Country("PUBLIC", null,
                 UUID.randomUUID().toString(), "South Africa", "ZAR",
-                new  com.monitor.backend.data.Position("Point", cords));
-        Country c2 = new Country("PUBLIC",null,
+                new com.monitor.backend.data.Position("Point", cords));
+        Country c2 = new Country("PUBLIC", null,
                 UUID.randomUUID().toString(), "Zimbabwe", "ZIM",
-                new  com.monitor.backend.data.Position("Point", cords));
+                new com.monitor.backend.data.Position("Point", cords));
 
         if (countryRepository == null) {
             throw new Exception("CountryRepository is NULL");
@@ -150,7 +151,7 @@ public class MongoGenerator {
                         }
                         cords.add(longitude);
                         cords.add(latitude);
-                        City city = new City("PUBLIC",null, cityName.trim(),
+                        City city = new City("PUBLIC", null, cityName.trim(),
                                 UUID.randomUUID().toString(), country.getCountryId(), province,
                                 new Position("Point", cords));
                         mCities.add(city);
@@ -199,6 +200,7 @@ public class MongoGenerator {
                 " City unique index : city name + provinceName - should be created on city collection: " +
                 Emoji.RED_APPLE + result);
     }
+
     private void createCityIndexes() {
         //add index
         MongoDatabase db = mongoClient.getDatabase("monitordb");
@@ -216,6 +218,7 @@ public class MongoGenerator {
                 " City cityId index should be created on city collection: " +
                 Emoji.RED_APPLE + result3);
     }
+
     private void createProjectPositionIndexes() {
         //add index
         MongoDatabase db = mongoClient.getDatabase("monitordb");
@@ -231,6 +234,7 @@ public class MongoGenerator {
                 Emoji.RED_APPLE + result2);
 
     }
+
     private void createPhotoIndexes() {
         //add index
         MongoDatabase db = mongoClient.getDatabase("monitordb");
@@ -246,6 +250,7 @@ public class MongoGenerator {
                 Emoji.RED_APPLE + result2);
 
     }
+
     private void createVideoIndexes() {
         //add index
         MongoDatabase db = mongoClient.getDatabase("monitordb");
@@ -287,7 +292,7 @@ public class MongoGenerator {
             }
             try {
                 List<City> mList = (List<City>) cityRepository.saveAll(mBatch);
-                LOGGER.info( Emoji.PEAR + Emoji.PEAR + Emoji.PEAR + Emoji.FERN + Emoji.FERN
+                LOGGER.info(Emoji.PEAR + Emoji.PEAR + Emoji.PEAR + Emoji.FERN + Emoji.FERN
                         + Emoji.PEAR + "...... Written to mongo:" +
                         Emoji.RED_APPLE + " CITY BATCH #" + i
                         + " batch size: " + mList.size());
@@ -323,12 +328,13 @@ public class MongoGenerator {
                 Emoji.RED_APPLE + result2);
 
     }
+
     private void createProjectIndexes() {
         //add index
         MongoDatabase db = mongoClient.getDatabase("monitordb");
         MongoCollection<Document> dbCollection = db.getCollection("project");
 
-        String result2 = dbCollection.createIndex(Indexes.ascending("organizationId","name"),
+        String result2 = dbCollection.createIndex(Indexes.ascending("organizationId", "name"),
                 new IndexOptions().unique(true));
         LOGGER.info(Emoji.LEAF + Emoji.LEAF + Emoji.LEAF + Emoji.LEAF +
                 " Project unique name index should be created on Project collection: " +
@@ -339,6 +345,7 @@ public class MongoGenerator {
                 " Project 2dSphere index should be created on project collection: " +
                 Emoji.RED_APPLE + result);
     }
+
     private void createUserIndexes() {
         //add index
         MongoDatabase db = mongoClient.getDatabase("monitordb");
@@ -355,6 +362,7 @@ public class MongoGenerator {
                 " user cellphone index should be created on user collection: " +
                 Emoji.RED_APPLE + result);
     }
+
     private void createCommunityIndexes() {
         //add index
         MongoDatabase db = mongoClient.getDatabase("monitordb");
@@ -396,7 +404,7 @@ public class MongoGenerator {
         }
         Collection<String> orgNames = hMap.values();
         for (String name : orgNames) {
-            Organization org1 = new Organization("PUBLIC",null,name, country.getName(),
+            Organization org1 = new Organization("PUBLIC", null, name, country.getName(),
                     Objects.requireNonNull(country.getCountryId()), UUID.randomUUID().toString(),
                     new DateTime().toDateTimeISO().toString());
             Organization id1 = organizationRepository.save(org1);
@@ -408,11 +416,56 @@ public class MongoGenerator {
         LOGGER.info(Emoji.LEAF + Emoji.LEAF + "Organizations generated: " + organizations.size());
         generateProjects();
         generateUsers(true);
+        generateFieldMonitorSchedules();
     }
 
-    //@Value("${monitorMaxDistanceInMetres}")
     private static final double monitorMaxDistanceInMetres = 500.0;
 
+    @Autowired
+    private FieldMonitorScheduleRepository fieldMonitorScheduleRepository;
+
+
+    public void generateFieldMonitorSchedules() {
+        LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS +
+                Emoji.RAIN_DROPS.concat(" generateFieldMonitorSchedules ...")));
+
+        Iterator<Organization> iterOrg= organizationRepository.findAll().iterator();
+
+        Iterator<ProjectPosition> iterProj = projectPositionRepository.findAll().iterator();
+        List<Organization> orgs = new ArrayList<>();
+
+        while (iterOrg.hasNext()) {
+            Organization u = iterOrg.next();
+            orgs.add(u);
+        }
+        for (Organization org : orgs) {
+            LOGGER.info("\n\n" + Emoji.BROCCOLI + Emoji.BROCCOLI + Emoji.BROCCOLI + Emoji.BROCCOLI + Emoji.RED_APPLE +"Organization Schedules: " + org.getName());
+            List<User> users = userRepository.findByOrganizationId(org.getOrganizationId());
+            List<Project> projects = projectRepository.findByOrganizationId(org.getOrganizationId());
+            LOGGER.info(Emoji.BROCCOLI + Emoji.BROCCOLI + Emoji.PRETZEL + org.getName() + " Users: " + users.size());
+            LOGGER.info(Emoji.BROCCOLI + Emoji.BROCCOLI + Emoji.PRETZEL +org.getName() + " Projects: " + projects.size());
+            for (User u : users) {
+                for (Project p : projects) {
+                    FieldMonitorSchedule schedule = new FieldMonitorSchedule();
+                    schedule.setAdminId(null);
+                    schedule.setFieldMonitorId(u.getUserId());
+                    schedule.setDate(new DateTime().toDateTimeISO().toString());
+                    schedule.setFieldMonitorScheduleId(UUID.randomUUID().toString());
+                    schedule.setOrganizationId(u.getOrganizationId());
+                    schedule.setOrganizationName(u.getOrganizationName());
+                    schedule.setFieldMonitorName(u.getName());
+                    schedule.setPerDay(3);
+                    schedule.setProjectId(p.getProjectId());
+                    schedule.setProjectName(p.getName());
+                    fieldMonitorScheduleRepository.save(schedule);
+                    LOGGER.info(Emoji.BROCCOLI + Emoji.BROCCOLI
+                            + "fieldMonitorSchedule added, " +Emoji.RED_APPLE+ " fieldMonitor: " + u.getName() + " - "
+                            + " project: " + p.getName());
+                }
+            }
+        }
+
+    }
 
     public void generateProjects() {
         setLocations();
@@ -425,7 +478,7 @@ public class MongoGenerator {
         createVideoIndexes();
 
         for (ProjectLocation loc : projectLocations) {
-           //assign this project location to a random organization
+            //assign this project location to a random organization
             int index = random.nextInt(organizations.size() - 1);
             Organization organization = organizations.get(index);
             List<Double> coordinates = new ArrayList<>();
@@ -435,7 +488,7 @@ public class MongoGenerator {
 
             Position pos = new Position("Point", coordinates);
 
-            Project p0 = new Project(organization.getOrganizationId(),null,
+            Project p0 = new Project(organization.getOrganizationId(), null,
                     UUID.randomUUID().toString(),
                     loc.name,
                     Objects.requireNonNull(organization.getOrganizationId()),
@@ -495,6 +548,7 @@ public class MongoGenerator {
                 random.nextInt(9) +
                 random.nextInt(9);
     }
+
     public void generateUsers(boolean eraseExistingUsers) throws Exception {
         LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS + Emoji.RAIN_DROPS.concat(" Generating Users ...")));
         List<Organization> organizations = (List<Organization>) organizationRepository.findAll();
@@ -517,12 +571,12 @@ public class MongoGenerator {
                 }
 
                 if (i == 1 || i == 2 || i == 3) {
-                    buildUser(organization, name,"monitor", Type.USER_TYPE_FIELD_MONITOR);
+                    buildUser(organization, name, "monitor", Type.USER_TYPE_FIELD_MONITOR);
                     cnt++;
                 }
 
                 if (i == 4) {
-                    buildUser(organization, name,"exec", Type.USER_TYPE_EXECUTIVE);
+                    buildUser(organization, name, "exec", Type.USER_TYPE_EXECUTIVE);
                     cnt++;
                 }
             }
@@ -582,17 +636,17 @@ public class MongoGenerator {
         }
         setCommunityNames();
         LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS + Emoji.RAIN_DROPS
-                .concat(" Generating "+communities.size()+" Communities ...")));
+                .concat(" Generating " + communities.size() + " Communities ...")));
         for (String name : communities) {
-            Community c = new Community(country.getCountryId(),null, name,"id",
-                    Objects.requireNonNull(country.getCountryId()),getPopulation(),
+            Community c = new Community(country.getCountryId(), null, name, "id",
+                    Objects.requireNonNull(country.getCountryId()), getPopulation(),
                     country.getName(),
-                    new ArrayList<>(),new ArrayList<>(),new ArrayList<>(),new ArrayList<>());
+                    new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
             Community sComm = communityRepository.save(c);
             LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS + Emoji.RAIN_DROPS
-                    .concat(" Community Generated "+ Emoji.LEMON + Emoji.LEMON +
-                            sComm.getName()+  " " + Emoji.LEMON + " on mongodb database "
-                    + Emoji.RED_APPLE+ Emoji.RED_APPLE + Emoji.RED_APPLE)));
+                    .concat(" Community Generated " + Emoji.LEMON + Emoji.LEMON +
+                            sComm.getName() + " " + Emoji.LEMON + " on mongodb database "
+                            + Emoji.RED_APPLE + Emoji.RED_APPLE + Emoji.RED_APPLE)));
         }
     }
 
@@ -797,6 +851,7 @@ public class MongoGenerator {
     }
 
     private final List<ProjectLocation> projectLocations = new ArrayList<>();
+
     private void setLocations() {
         ProjectLocation loc1 = new ProjectLocation(latitudeLanseria, longitudeLanseria, "Lanseria Road Upgrades");
         projectLocations.add(loc1);
@@ -844,8 +899,9 @@ public class MongoGenerator {
         LOGGER.info(Emoji.RAINBOW + Emoji.RAINBOW +
                 "Test Project Locations have been set: " + projectLocations.size());
     }
+
     private static class ProjectLocation {
-        double latitude,  longitude;
+        double latitude, longitude;
         String name;
 
         public ProjectLocation(double latitude, double longitude, String name) {

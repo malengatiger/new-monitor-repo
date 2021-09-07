@@ -5,7 +5,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(collection = "fieldMonitorSchedule")
 public class FieldMonitorSchedule {
     private String adminId, projectId, fieldMonitorScheduleId,
-            date, organizationId, fieldMonitorId;
+            date, organizationId, fieldMonitorId, fieldMonitorName;
     private String projectName, organizationName;
     private int perDay, perWeek, perMonth;
 
@@ -15,6 +15,14 @@ public class FieldMonitorSchedule {
 
     public void setFieldMonitorScheduleId(String fieldMonitorScheduleId) {
         this.fieldMonitorScheduleId = fieldMonitorScheduleId;
+    }
+
+    public String getFieldMonitorName() {
+        return fieldMonitorName;
+    }
+
+    public void setFieldMonitorName(String fieldMonitorName) {
+        this.fieldMonitorName = fieldMonitorName;
     }
 
     public String getFieldMonitorId() {

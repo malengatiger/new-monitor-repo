@@ -24,7 +24,7 @@ final StorageBloc storageBloc = StorageBloc();
 class StorageBloc {
   FirebaseStorage _firebaseStorage = FirebaseStorage.instance;
   Random rand = new Random(new DateTime.now().millisecondsSinceEpoch);
-
+  static const mm = '☕️ ☕️ ☕️ ☕️ ☕️ ☕️ StorageBloc: 💚 ';
   List<StorageMediaBag> _mediaBags = [];
   StreamController<List<StorageMediaBag>> _mediaStreamController =
       StreamController.broadcast();
@@ -53,7 +53,7 @@ class StorageBloc {
         DateTime.now().toUtc().toIso8601String() +
         '.${isVideo ? 'mp4' : 'jpg'}';
     try {
-      pp('☕️☕️☕️ .uploadPhoto ------------ ..... ☕️ path: ${file.path}');
+      pp('$mm️ uploadPhoto ☕️ file path: ${file.path}');
       var firebaseStorageRef =
           FirebaseStorage.instance.ref().child(storageName).child(name);
 
@@ -65,13 +65,12 @@ class StorageBloc {
         var bytesTransferred = snapShot.bytesTransferred;
         var bt = (bytesTransferred / 1024).toStringAsFixed(2) + ' KB';
         var tot = (totalByteCount / 1024).toStringAsFixed(2) + ' KB';
-        pp('☕️☕️☕️ .uploadPhoto:  💚 💚 💚 💚 💚 💚 '
+        pp('$mm uploadTask: 💚 💚 '
             'photo upload complete '
-            '******* 🧩 $bt KB of $tot KB 🧩 transferred.'
+            ' 🧩 $bt of $tot 🧩 transferred.'
             ' date: ${DateTime.now().toIso8601String()}\n\n');
 
         var fileUrl = await firebaseStorageRef.getDownloadURL();
-
         listener.onFileUploadComplete(
             fileUrl, snapShot.totalBytes, snapShot.bytesTransferred);
 
@@ -88,7 +87,7 @@ class StorageBloc {
             project: project);
       }).catchError((e) {
         pp(e);
-        if (listener != null) listener.onError('👿👿👿👿 Photo upload failed');
+        listener.onError('👿👿👿👿 Photo upload failed');
       });
     } catch (e) {
       pp(e);
@@ -123,14 +122,14 @@ class StorageBloc {
         '.$type';
     String thumbnailUrl;
     final size = ImageSizeGetter.getSize(FileInput(file));
-    pp('☕️☕️☕️ .uploadPhoto:  💚 💚 💚 💚 💚 💚 image height: ${size.height} width: ${size.width}');
+    pp('$mm uploadThumbnail:  💚 image height: ${size.height} width: ${size.width}');
     try {
       if (isVideo) {
         _addVideoBagToStream(
             fileUrl: fileUrl, project: project, position: position, file: file);
         return null;
       }
-      pp('☕️☕️☕️ .uploadThumbnail ------------ ..... ☕️ path: ${thumbnailFile.path}');
+      pp('$mm uploadThumbnail  ☕️ file path: ${thumbnailFile.path}');
       var firebaseStorageRef =
           FirebaseStorage.instance.ref().child("monitorPhotos").child(name);
 
@@ -142,13 +141,13 @@ class StorageBloc {
         var bt = (bytesTransferred / 1024).toStringAsFixed(2) + ' KB';
         var tot = (totalByteCount / 1024).toStringAsFixed(2) + ' KB';
 
-        pp('☕️☕️☕️ .uploadThumbnail:  🥦 🥦 🥦 🥦 '
+        pp('$mm uploadTask: 🥦 🥦 🥦 🥦 '
             'thumbnail upload complete '
-            '******* 🍓 $bt KB of $tot KB 🍓 transferred.'
+            ' 🍓 $bt of $tot 🍓 transferred.'
             ' ${DateTime.now().toIso8601String()}\n\n');
 
         thumbnailUrl = await firebaseStorageRef.getDownloadURL();
-        pp('☕️☕️☕️ .uploadThumbnail:  🥦 🥦 🥦 🥦 thumbnailUrl from storage: $thumbnailUrl');
+        pp('$mm uploadThumbnail:  🥦 🥦 🥦 🥦 thumbnailUrl from storage: $thumbnailUrl');
         listener.onThumbnailUploadComplete(
             thumbnailUrl, snap.totalBytes, snap.bytesTransferred);
         _writePhoto(
@@ -167,7 +166,7 @@ class StorageBloc {
             thumbnailFile: thumbnailFile);
 
         _mediaBags.add(mediaBag);
-        pp('\n\n🍇🍇🍇🍇 uploadTask.whenComplete: 🇿🇦 💙💙 💙💙 💙💙 mediaStream: '
+        pp('$mm 🍇 uploadTask.whenComplete: 🇿🇦 💙💙 mediaStream: '
             '......... Sending result of upload in mediaBag to stream: '
             '🍇 ${_mediaBags.length} 🍇 mediaBags in stream\n\n');
         _mediaStreamController.sink.add(_mediaBags);
@@ -188,11 +187,12 @@ class StorageBloc {
       required Project project,
       required Position position}) {
     var mediaBag = StorageMediaBag(
-        url: fileUrl,
-        thumbnailUrl: '',
-        isVideo: true,
-        file: file,
-        date: getFormattedDate(DateTime.now().toString()),);
+      url: fileUrl,
+      thumbnailUrl: '',
+      isVideo: true,
+      file: file,
+      date: getFormattedDate(DateTime.now().toString()),
+    );
 
     _mediaBags.add(mediaBag);
     pp('\n\n🍇🍇🍇🍇 uploadTask.whenComplete: 🇿🇦 💙💙 💙💙 💙💙 mediaStream: '
@@ -257,9 +257,9 @@ class StorageBloc {
 
   void _writeVideo(
       {required Project project,
-        required Position projectPosition,
-        required String fileUrl,
-        required String thumbnailUrl}) async {
+      required Position projectPosition,
+      required String fileUrl,
+      required String thumbnailUrl}) async {
     pp('🎽 🎽 🎽 🎽 StorageBloc: _writeVideo : 🎽 🎽 adding video .....');
     if (_user == null) {
       await getUser();
@@ -376,9 +376,9 @@ class StorageMediaBag {
 
   StorageMediaBag(
       {required this.url,
-        required this.file,
-        required this.thumbnailUrl,
-        required this.isVideo,
+      required this.file,
+      required this.thumbnailUrl,
+      required this.isVideo,
       this.thumbnailFile,
-        required this.date});
+      required this.date});
 }

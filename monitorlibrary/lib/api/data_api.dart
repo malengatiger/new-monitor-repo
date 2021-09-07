@@ -848,7 +848,7 @@ class DataAPI {
     var client = new http.Client();
     var token = await AppAuth.getAuthToken();
     if (token != null) {
-      pp('$xz http POST call: 😡 😡 😡 Firebase Auth Token: 💙️ Token is GOOD! 💙 $token');
+      pp('$xz http POST call: 😡 😡 😡 Firebase Auth Token: 💙️ Token is GOOD! 💙 ');
     }
     headers['Authorization'] = 'Bearer $token';
     try {
@@ -899,7 +899,7 @@ class DataAPI {
     var client = new http.Client();
     var token = await AppAuth.getAuthToken();
     if (token != null) {
-      pp('$xz http GET call: 😡 😡 😡 Firebase Auth Token: 💙️ Token is GOOD! 💙 $token');
+      pp('$xz http GET call: 😡 😡 😡 Firebase Auth Token: 💙️ Token is GOOD! 💙 ');
     }
     headers['Authorization'] = 'Bearer $token';
 

@@ -12,7 +12,7 @@ class Prefs {
   static void setThemeIndex(int index) async {
     final preferences = await SharedPreferences.getInstance();
     await preferences.setInt('index', index);
-    print('🔵 🔵 🔵 Prefs: theme index set to: $index 🍎 🍎 ');
+    pp('🔵 🔵 🔵 Prefs: theme index set to: $index 🍎 🍎 ');
   }
 
   static Future<int> getThemeIndex() async {
@@ -21,7 +21,7 @@ class Prefs {
     if (b == null) {
       return 0;
     } else {
-      print('🔵 🔵 🔵  theme index retrieved: $b 🍏 🍏 ');
+      pp('🔵 🔵 🔵  theme index retrieved: $b 🍏 🍏 ');
       return b;
     }
   }

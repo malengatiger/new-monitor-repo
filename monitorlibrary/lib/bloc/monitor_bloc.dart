@@ -146,7 +146,7 @@ class MonitorBloc {
               .organizationId} user.organizationName: ${user
               .organizationName} ');
 
-      _projects = await LocalMongo.getProjects();
+      _projects = await LocalMongo.getProjects(organizationId);
 
       if (_projects.isEmpty || forceRefresh) {
         _projects = await DataAPI.findProjectsByOrganization(organizationId);
@@ -244,8 +244,7 @@ class MonitorBloc {
       _schedules = await DataAPI.getProjectFieldMonitorSchedules(projectId);
       await LocalMongo.addFieldMonitorSchedules(schedules: _schedules);
     }
-    var m = filterSchedulesByProject(_schedules);
-    _schedules = m;
+
     _fieldMonitorScheduleController.sink.add(_schedules);
     pp('🔵 🔵 🔵  MonitorBloc: getProjectFieldMonitorSchedules found: 💜 ${_schedules.length} schedules ');
 
@@ -254,6 +253,7 @@ class MonitorBloc {
 
   Future<List<FieldMonitorSchedule>> getMonitorFieldMonitorSchedules(
       {required String userId, required bool forceRefresh}) async {
+
     _schedules = await LocalMongo.getFieldMonitorSchedules(userId);
 
     if (_schedules.isEmpty || forceRefresh) {
@@ -261,8 +261,6 @@ class MonitorBloc {
       await LocalMongo.addFieldMonitorSchedules(schedules: _schedules);
     }
     _schedules.sort((a, b) => b.date!.compareTo(a.date!));
-    var m = filterSchedulesByProject(_schedules);
-    _schedules = m;
     _fieldMonitorScheduleController.sink.add(_schedules);
     pp('🔵 🔵 🔵  MonitorBloc: getMonitorFieldMonitorSchedules found: 💜 ${_schedules.length} schedules ');
 
@@ -270,27 +268,6 @@ class MonitorBloc {
     return _schedules;
   }
 
-  static List<FieldMonitorSchedule> filterSchedulesByProject(
-      List<FieldMonitorSchedule> mList) {
-    pp('🔵 🔵 🔵  MonitorBloc: filterSchedulesByProject: 🦠 filter ${mList.length} schedules by projectId');
-    mList.forEach((element) {
-      pp('PreFilter: Schedule: ${element.toJson()}');
-    });
-    //todo - filter latest by project
-
-    Map<String, FieldMonitorSchedule> map = Map();
-    mList.sort((a, b) => b.date!.compareTo(a.date!));
-    mList.forEach((element) {
-      if (!map.containsKey(element.projectId)) {
-        map['${element.projectId}'] = element;
-      }
-    });
-    mList = map.values.toList();
-    mList.forEach((element) {
-      pp('PostFilter: Schedule: ${element.toJson()}');
-    });
-    return mList;
-  }
 
   Future<List<FieldMonitorSchedule>> getOrgFieldMonitorSchedules(
       {required String organizationId, required bool forceRefresh}) async {
@@ -301,8 +278,7 @@ class MonitorBloc {
       _schedules = await DataAPI.getOrgFieldMonitorSchedules(organizationId);
       await LocalMongo.addFieldMonitorSchedules(schedules: _schedules);
     }
-    var m = filterSchedulesByProject(_schedules);
-    _schedules = m;
+
     _fieldMonitorScheduleController.sink.add(_schedules);
     pp('🔵 🔵 🔵 MonitorBloc: getOrgFieldMonitorSchedules found: 🔵 ${_schedules.length} schedules ');
 
@@ -422,13 +398,13 @@ class MonitorBloc {
       {required String userId, required String organizationId, required bool forceRefresh}) async {
     pp('💜 💜 💜 MonitorBloc: refreshUserData ... forceRefresh: $forceRefresh');
     try {
-      getOrganizationProjects(
+      await getOrganizationProjects(
           organizationId: organizationId, forceRefresh: forceRefresh);
-      getOrganizationUsers(
+      await getOrganizationUsers(
           organizationId: organizationId, forceRefresh: forceRefresh);
-      getUserProjectPhotos(userId: userId, forceRefresh: forceRefresh);
-      getUserProjectVideos(userId: userId, forceRefresh: forceRefresh);
-      getMonitorFieldMonitorSchedules(
+      await getUserProjectPhotos(userId: userId, forceRefresh: forceRefresh);
+      await getUserProjectVideos(userId: userId, forceRefresh: forceRefresh);
+      await getMonitorFieldMonitorSchedules(
           userId: userId, forceRefresh: forceRefresh);
     } catch (e) {
       pp('We seem fucked! ');

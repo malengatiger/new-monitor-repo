@@ -71,6 +71,10 @@ class _ProjectMonitorMobileState extends State<ProjectMonitorMobile>
               style: Styles.whiteBoldSmall),
           actions: [
             IconButton(
+              icon: Icon(Icons.refresh),
+              onPressed: _checkProjectDistance,
+            ),
+            IconButton(
               icon: Icon(Icons.directions),
               onPressed: _navigateToDirections,
             )
@@ -280,21 +284,28 @@ class _ProjectMonitorMobileState extends State<ProjectMonitorMobile>
   }
 
   void _navigateToDirections() async {
-    pp('🏖 🍎 🍎 🍎 start Google Maps Directions ..... TODO!!!');
-    // var origin =
-    //     '${widget.project.position!.coordinates[1]},${widget.project.position!.coordinates[0]}';
-    // var position = await locationBloc.getLocation();
-    // var destination = '${position.latitude},${position.longitude}';
-    //
-    // final AndroidIntent intent = new AndroidIntent(
-    //     action: 'action_view',
-    //     data: Uri.encodeFull("https://www.google.com/maps/dir/?api=1&origin=" +
-    //         origin +
-    //         "&destination=" +
-    //         destination +
-    //         "&travelmode=driving&dir_action=navigate"),
-    //     package: 'com.google.android.apps.maps');
-    // intent.launch();
+    pp('🏖 🍎 🍎 🍎 start Google Maps Directions .....');
+    nearestProjectPosition = await _findNearestProjectPosition();
+    if (nearestProjectPosition != null) {
+      pp('🏖 🍎 🍎 🍎 start Google Maps Directions ..... '
+          'nearestProjectPosition: ${nearestProjectPosition!.toJson()}');
+      var destination =
+          '${nearestProjectPosition!.position!
+          .coordinates[1]},${nearestProjectPosition!.position!.coordinates[0]}';
+      var position = await locationBloc.getLocation();
+      var origin = '${position.latitude},${position.longitude}';
+
+      final AndroidIntent intent = new AndroidIntent(
+          action: 'action_view',
+          data: Uri.encodeFull(
+              "https://www.google.com/maps/dir/?api=1&origin=" +
+                  origin +
+                  "&destination=" +
+                  destination +
+                  "&travelmode=driving&dir_action=navigate"),
+          package: 'com.google.android.apps.maps');
+      intent.launch();
+    }
   }
 
   void _navigateToProjectLocation() async {
