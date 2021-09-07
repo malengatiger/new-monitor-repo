@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:focused_menu/focused_menu.dart';
 import 'package:focused_menu/modals.dart';
+import 'package:monitorlibrary/api/local_mongo.dart';
 import 'package:monitorlibrary/api/sharedprefs.dart';
 import 'package:monitorlibrary/bloc/fcm_bloc.dart';
 import 'package:monitorlibrary/bloc/monitor_bloc.dart';
@@ -10,7 +11,9 @@ import 'package:monitorlibrary/data/project.dart';
 import 'package:monitorlibrary/data/user.dart';
 import 'package:monitorlibrary/data/user.dart' as mon;
 import 'package:monitorlibrary/functions.dart';
+import 'package:monitorlibrary/ui/maps/org_map_mobile.dart';
 import 'package:monitorlibrary/ui/maps/project_map_main.dart';
+import 'package:monitorlibrary/ui/maps/project_map_mobile.dart';
 import 'package:monitorlibrary/ui/media/list/media_list_main.dart';
 import 'package:monitorlibrary/ui/project_edit/project_edit_main.dart';
 import 'package:monitorlibrary/ui/project_location/project_location_main.dart';
@@ -165,19 +168,29 @@ class _ProjectListMobileState extends State<ProjectListMobile>
             child: MediaListMain(p)));
   }
 
-  void _navigateToOrgMap(Project p) {
+  void _navigateToOrgMap() {
     pp('_navigateToOrgMap: ');
-    if (p != null) {
+
       Navigator.push(
           context,
           PageTransition(
               type: PageTransitionType.scale,
               alignment: Alignment.topLeft,
-              duration: Duration(milliseconds: 1500),
-              child: ProjectMapMain(
-                project: p, photo: null,
-              )));
-    }
+              duration: Duration(milliseconds: 1000),
+              child: OrganizationMapMobile()));
+
+  }
+  void _navigateToProjectMap(Project p) async {
+    pp('_navigateToProjectMap: ');
+    var pos = await LocalMongo.getProjectPositions(p.projectId!);
+    Navigator.push(
+        context,
+        PageTransition(
+            type: PageTransitionType.scale,
+            alignment: Alignment.topLeft,
+            duration: Duration(milliseconds: 1000),
+            child: ProjectMapMobile(project: p, projectPositions: pos,)));
+
   }
 
   List<FocusedMenuItem> getPopUpMenuItems(Project p) {
@@ -190,7 +203,7 @@ class _ProjectListMobileState extends State<ProjectListMobile>
             color: Theme.of(context).primaryColor,
           ),
           onPressed: () {
-            _navigateToOrgMap(p);
+            _navigateToProjectMap(p);
           }),
     );
     menuItems.add(
@@ -258,7 +271,7 @@ class _ProjectListMobileState extends State<ProjectListMobile>
         IconButton(
           icon: Icon(Icons.map),
           onPressed: () {
-           //_navigateToOrgMap();
+           _navigateToOrgMap();
           },
         ),
       );

@@ -359,6 +359,19 @@ public class ListController {
                             new DateTime().toDateTimeISO().toString()));
         }
     }
+    @GetMapping("/getOrganizationProjectPositions")
+    public ResponseEntity<Object> getOrganizationProjectPositions(String organizationId) {
+        LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS)
+                .concat("getOrganizationProjectPositions: " + organizationId));
+        try {
+            return ResponseEntity.ok(listService.getOrganizationProjectPositions(organizationId));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(
+                    new CustomErrorResponse(400,
+                            "getOrganizationProjectPositions failed: " + e.getMessage(),
+                            new DateTime().toDateTimeISO().toString()));
+        }
+    }
 
     @GetMapping("/countPhotosByProject")
     public ResponseEntity<Object> countPhotosByProject(String projectId) {

@@ -320,6 +320,22 @@ public class ListService {
         LOGGER.info(Emoji.LEAF.concat(Emoji.LEAF).concat("ProjectPositions found: " + m.size()));
         return m;
     }
+    public List<ProjectPosition> getOrganizationProjectPositions(String organizationId)  {
+        LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS).concat("getOrganizationProjectPositions: "
+                .concat(Emoji.FLOWER_YELLOW)));
+
+        List<Project> projects = projectRepository.findByOrganizationId(organizationId);
+        List<ProjectPosition> mList = new ArrayList<>();
+        for (Project project : projects) {
+            List<ProjectPosition> m = projectPositionRepository.findByProjectId(project.getProjectId());
+            mList.addAll(m);
+        }
+
+
+
+        LOGGER.info(Emoji.LEAF.concat(Emoji.LEAF).concat("OrgProjectPositions found: " + mList.size()));
+        return mList;
+    }
 
 
     public List<City> getNearbyCities(double latitude, double longitude, double radiusInKM)  {

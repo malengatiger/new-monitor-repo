@@ -219,6 +219,24 @@ class DataAPI {
       throw e;
     }
   }
+  static Future<List<ProjectPosition>> getOrganizationProjectPositions(
+      String organizationId) async {
+    String? mURL = await getUrl();
+
+    try {
+      var result = await _sendHttpGET(
+          mURL! + 'getOrganizationProjectPositions?organizationId=$organizationId');
+      List<ProjectPosition> list = [];
+      result.forEach((m) {
+        list.add(ProjectPosition.fromJson(m));
+      });
+      await LocalMongo.addProjectPositions(positions: list);
+      return list;
+    } catch (e) {
+      pp(e);
+      throw e;
+    }
+  }
 
   static Future<List<Photo>> findPhotosByProject(String projectId) async {
     String? mURL = await getUrl();

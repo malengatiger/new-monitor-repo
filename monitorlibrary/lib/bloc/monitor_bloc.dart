@@ -181,6 +181,8 @@ class MonitorBloc {
         organizationId: _user!.organizationId!, forceRefresh: forceRefresh);
     await getOrgFieldMonitorSchedules(
         organizationId: _user!.organizationId!, forceRefresh: forceRefresh);
+    await getOrganizationProjectPositions(
+        organizationId: _user!.organizationId!, forceRefresh: forceRefresh);
   }
   static const mm = '💜 💜 💜 💜 💜 💜 MonitorBloc 💜 💜 ';
 
@@ -202,6 +204,23 @@ class MonitorBloc {
     });
 
     return _users;
+  }
+
+
+  Future<List<ProjectPosition>> getOrganizationProjectPositions(
+      {required String organizationId, required bool forceRefresh}) async {
+
+    _projectPositions = await LocalMongo.getOrganizationProjectPositions();
+    pp('$mm getOrganizationProjectPositions found ${_projectPositions.length} positions in local cache ');
+
+    if (_projectPositions.isEmpty || forceRefresh) {
+      _projectPositions = await DataAPI.getOrganizationProjectPositions(organizationId);
+      pp('$mm getOrganizationProjectPositions found ${_projectPositions.length} positions from remote database ');
+      await LocalMongo.addProjectPositions(positions: _projectPositions);
+    }
+    _projPositionsController.sink.add(_projectPositions);
+    pp('$mm getOrganizationProjectPositions found: 💜 ${_projectPositions.length} projectPositions from local or remote db ');
+    return _projectPositions;
   }
 
   Future<List<ProjectPosition>> getProjectPositions(
