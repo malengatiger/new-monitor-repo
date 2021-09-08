@@ -94,7 +94,7 @@ class _MessageMobileState extends State<MessageMobile>
                         elevation: 8,
                         child: SingleChildScrollView(
                             child: GenericMessage(
-                                project: _selectedProject!, user: widget.user!))),
+                                project: _selectedProject == null? null: _selectedProject!, user: widget.user!))),
                   ),
                 ),
                 SizedBox(

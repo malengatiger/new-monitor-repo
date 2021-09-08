@@ -425,6 +425,7 @@ class MonitorBloc {
       await getUserProjectVideos(userId: userId, forceRefresh: forceRefresh);
       await getMonitorFieldMonitorSchedules(
           userId: userId, forceRefresh: forceRefresh);
+      await getOrganizationProjectPositions(organizationId: organizationId, forceRefresh: forceRefresh);
     } catch (e) {
       pp('We seem fucked! ');
       throw e;

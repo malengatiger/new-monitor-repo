@@ -9,11 +9,11 @@ import '../../functions.dart';
 import '../../snack.dart';
 
 class GenericMessage extends StatefulWidget {
-  final Project project;
+  final Project? project;
   final User user;
 
   GenericMessage({
-    required this.project,
+    this.project,
     required this.user,
   });
 
@@ -48,13 +48,13 @@ class _GenericMessageState extends State<GenericMessage> {
           name: widget.user.name,
           adminId: admin.userId,
           adminName: admin.name,
-          projectName: widget.project.name,
+          projectName: widget.project == null? null: widget.project!.name,
           frequency: frequency,
           message: message,
           userId: widget.user.userId,
           created: DateTime.now().toUtc().toIso8601String(),
-          projectId: widget.project.projectId,
-          organizationId: widget.project.organizationId, orgMessageId: Uuid().v4());
+          projectId: widget.project == null? null: widget.project!.projectId,
+          organizationId: widget.project == null? null: widget.project!.organizationId, orgMessageId: Uuid().v4());
       try {
         var res = await DataAPI.sendMessage(msg);
         pp('GenericMessage:  🏓  🏓  🏓 Response from server:  🏓 ${res.toJson()}  🏓');
@@ -81,7 +81,7 @@ class _GenericMessageState extends State<GenericMessage> {
             title: AnimatedContainer(
               duration: Duration(milliseconds: 1000),
               child: Text(
-                '${widget.project == null ? '' : widget.project.name}',
+                '${widget.project == null ? '' : widget.project!.name}',
                 style: Styles.blackBoldSmall,
               ),
             ),
