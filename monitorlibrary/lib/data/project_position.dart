@@ -6,18 +6,20 @@ import '../functions.dart';
 import 'city.dart';
 
 class ProjectPosition {
-  String? projectName, projectId, caption, created, projectPositionId;
+  String? projectName, projectId, caption, created, projectPositionId, organizationId;
   ar.Position? position;
   Placemark? placemark;
   List<City>? nearestCities;
 
   ProjectPosition(
       {required this.projectName,
-      required this.caption, required this.projectPositionId,
+      required this.caption,
+        required this.projectPositionId,
       required this.created,
       required this.position,
       this.placemark,
       required this.nearestCities,
+        required this.organizationId,
       required this.projectId});
 
   ProjectPosition.fromJson(Map data) {
@@ -29,6 +31,7 @@ class ProjectPosition {
     //pp(' 💜 ProjectPosition.fromJson: log 2');
     this.caption = data['caption'];
     this.projectId = data['projectId'];
+    this.organizationId = data['organizationId'];
     this.created = data['created'];
     //pp(' 💜 ProjectPosition.fromJson: log 3');
 
@@ -58,6 +61,7 @@ class ProjectPosition {
     Map<String, dynamic> map = {
       'projectName': projectName,
       'projectId': projectId,
+      'organizationId': organizationId,
       'projectPositionId': projectPositionId,
       'caption': caption,
       'created': created,

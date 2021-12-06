@@ -26,6 +26,8 @@ public class ListService {
     public static final Logger LOGGER = LoggerFactory.getLogger(ListService.class.getSimpleName());
     private static final Gson G = new GsonBuilder().setPrettyPrinting().create();
     @Autowired
+    GeofenceEventRepository geofenceEventRepository;
+    @Autowired
     CountryRepository countryRepository;
     @Autowired
     CityRepository cityRepository;
@@ -336,7 +338,22 @@ public class ListService {
         LOGGER.info(Emoji.LEAF.concat(Emoji.LEAF).concat("OrgProjectPositions found: " + mList.size()));
         return mList;
     }
+    public List<GeofenceEvent> getGeofenceEventsByUser(String userId)  {
+        LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS).concat("getGeofenceEventsByUser: "
+                .concat(Emoji.FLOWER_YELLOW)));
 
+        List<GeofenceEvent> events = geofenceEventRepository.findByUserId(userId);
+        LOGGER.info(Emoji.LEAF.concat(Emoji.LEAF).concat("GeofenceEvents found: " + events.size()));
+        return events;
+    }
+    public List<GeofenceEvent> getGeofenceEventsByProjectPosition(String projectPositionId)  {
+        LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS).concat("getGeofenceEventsByProjectPosition: "
+                .concat(Emoji.FLOWER_YELLOW)));
+
+        List<GeofenceEvent> events = geofenceEventRepository.findByProjectPositionId(projectPositionId);
+        LOGGER.info(Emoji.LEAF.concat(Emoji.LEAF).concat("GeofenceEvents found: " + events.size()));
+        return events;
+    }
 
     public List<City> getNearbyCities(double latitude, double longitude, double radiusInKM)  {
 

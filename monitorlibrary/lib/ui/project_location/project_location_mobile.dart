@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:monitorlibrary/api/data_api.dart';
+import 'package:monitorlibrary/api/sharedprefs.dart';
 import 'package:monitorlibrary/bloc/monitor_bloc.dart';
 import 'package:monitorlibrary/data/city.dart';
 import 'package:monitorlibrary/data/position.dart' as mon;
@@ -120,10 +121,12 @@ class _ProjectLocationMobileState extends State<ProjectLocationMobile>
         pm = placeMarks.first;
         pp('$mx Placemark for project location: ${pm.toString()}');
       }
+      var org = await Prefs.getUser();
       var loc = ProjectPosition(
           placemark: pm,
           projectName: widget.project.name,
           caption: 'tbd',
+          organizationId: org!.organizationId,
           created: DateTime.now().toIso8601String(),
           position: mon.Position(
               type: 'Point',

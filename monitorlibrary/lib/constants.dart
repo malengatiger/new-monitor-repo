@@ -3,6 +3,7 @@ class Constants {
       PROJECT = 'project',
       PROJECT_POSITION = 'projectPosition',
       COMMUNITY = 'community',
+      GEOFENCE_EVENT = 'geofenceEvent',
       ORGANIZATION = 'organization',
       ORG_MESSAGE = 'orgMessage',
       QUESTIONNAIRE = 'questionnaire',

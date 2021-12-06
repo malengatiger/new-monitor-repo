@@ -372,6 +372,32 @@ public class ListController {
                             new DateTime().toDateTimeISO().toString()));
         }
     }
+    @GetMapping("/getGeofenceEventsByUser")
+    public ResponseEntity<Object> getGeofenceEventsByUser(String userId) {
+        LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS)
+                .concat("getGeofenceEventsByUser: " + userId));
+        try {
+            return ResponseEntity.ok(listService.getGeofenceEventsByUser(userId));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(
+                    new CustomErrorResponse(400,
+                            "getGeofenceEventsByUser failed: " + e.getMessage(),
+                            new DateTime().toDateTimeISO().toString()));
+        }
+    }
+    @GetMapping("/getGeofenceEventsByProjectPosition")
+    public ResponseEntity<Object> getGeofenceEventsByProjectPosition(String projectPositionId) {
+        LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS)
+                .concat("getGeofenceEventsByProjectPosition: " + projectPositionId));
+        try {
+            return ResponseEntity.ok(listService.getGeofenceEventsByProjectPosition(projectPositionId));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(
+                    new CustomErrorResponse(400,
+                            "getGeofenceEventsByProjectPosition failed: " + e.getMessage(),
+                            new DateTime().toDateTimeISO().toString()));
+        }
+    }
 
     @GetMapping("/countPhotosByProject")
     public ResponseEntity<Object> countPhotosByProject(String projectId) {

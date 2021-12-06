@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:monitorlibrary/data/position.dart';
 
 class Photo {
-  String? url, thumbnailUrl, caption, created, photoId;
+  String? url, thumbnailUrl, caption, created, photoId, projectPositionId;
   String? userId, organizationId;
   String? userName;
   Position? projectPosition;
@@ -24,9 +24,11 @@ class Photo {
       required this.organizationId,
       required this.projectName,
       required this.height,
+        required this.projectPositionId,
       required this.width});
 
   Photo.fromJson(Map data) {
+    this.projectPositionId = data['projectPositionId'];
     this.url = data['url'];
     this.thumbnailUrl = data['thumbnailUrl'];
     this.caption = data['caption'];
@@ -53,6 +55,7 @@ class Photo {
   Map<String, dynamic> toJson() {
     Map<String, dynamic> map = {
       'url': url,
+      'projectPositionId': projectPositionId,
       'caption': caption,
       'created': created,
       'width': width,
@@ -65,47 +68,37 @@ class Photo {
       'projectId': projectId,
       'projectName': projectName,
       'thumbnailUrl': thumbnailUrl,
-      'projectPosition':
-          projectPosition == null ? null : projectPosition!.toJson()
+      'projectPosition': projectPosition == null ? null : projectPosition!.toJson()
     };
     return map;
   }
 }
 
 class Video {
-  String? url, caption, created, thumbnailUrl, videoId;
+  String? url, caption, created, thumbnailUrl, videoId, projectPositionId;
   String? userId, userName, organizationId;
   Position? projectPosition;
   double? distanceFromProjectPosition;
   String? projectId, projectName;
 
   Video(
-      {required
-          this.url,
+      {required this.url,
       this.caption,
-      required
-          this.created,
-      required
-          this.userId,
-      required
-          this.userName,
-      required
-          this.projectPosition,
-      required
-          this.distanceFromProjectPosition,
-      required
-          this.projectId,
-      required
-          this.thumbnailUrl,
-      required
-          this.videoId,
-      required
-          this.organizationId,
-      required
-          this.projectName}); // Video({required this.url, this.userId, required this.created});
+        required this.projectPositionId,
+      required this.created,
+      required this.userId,
+      required this.userName,
+      required this.projectPosition,
+      required this.distanceFromProjectPosition,
+      required this.projectId,
+      required this.thumbnailUrl,
+      required this.videoId,
+      required this.organizationId,
+      required this.projectName}); // Video({required this.url, this.userId, required this.created});
 
   Video.fromJson(Map data) {
     this.url = data['url'];
+    this.projectPositionId = data['projectPositionId'];
     this.caption = data['caption'];
     this.created = data['created'];
     this.userId = data['userId'];
@@ -123,6 +116,7 @@ class Video {
   Map<String, dynamic> toJson() {
     Map<String, dynamic> map = {
       'url': url,
+      'projectPositionId': projectPositionId,
       'caption': caption,
       'created': created,
       'userId': userId,
@@ -133,42 +127,35 @@ class Video {
       'distanceFromProjectPosition': distanceFromProjectPosition,
       'projectId': projectId,
       'projectName': projectName,
-      'projectPosition':
-          projectPosition == null ? null : projectPosition!.toJson()
+      'projectPosition': projectPosition == null ? null : projectPosition!.toJson()
     };
     return map;
   }
 }
 
 class Condition {
-  String? url, caption, created, conditionId;
+  String? url, caption, created, conditionId, projectPositionId;
   String? userId, userName;
   Position? projectPosition;
   int? rating;
   String? projectId, projectName;
 
   Condition(
-      {required
-          this.url,
+      {required this.url,
       this.caption,
-      required
-          this.created, required
-      this.conditionId,
-      required
-          this.userId,
-      required
-          this.userName,
-      required
-          this.projectPosition,
-      required
-          this.rating,
-      required
-          this.projectId,
-      required
-          this.projectName}); // Video({required this.url, this.userId, required this.created});
+      required this.created,
+      required this.conditionId,
+      required this.userId,
+      required this.userName,
+      required this.projectPosition,
+      required this.rating,
+        required this.projectPositionId,
+      required this.projectId,
+      required this.projectName}); // Video({required this.url, this.userId, required this.created});
 
   Condition.fromJson(Map data) {
     this.url = data['url'];
+    this.projectPositionId = data['projectPositionId'];
     this.caption = data['caption'];
     this.created = data['created'];
     this.userId = data['userId'];
@@ -185,6 +172,7 @@ class Condition {
   Map<String, dynamic> toJson() {
     Map<String, dynamic> map = {
       'url': url,
+      'projectPositionId': projectPositionId,
       'caption': caption,
       'conditionId': conditionId,
       'created': created,
@@ -193,20 +181,9 @@ class Condition {
       'rating': rating,
       'projectId': projectId,
       'projectName': projectName,
-      'projectPosition':
-          projectPosition == null ? null : projectPosition!.toJson()
+      'projectPosition': projectPosition == null ? null : projectPosition!.toJson()
     };
     return map;
   }
 }
 
-/*
-data class Condition(var _partitionKey: String?, @Id var _id: String?,
-                 var projectId: String,
-                 var projectName: String,
-                 var rating: Int,
-                 var caption: String?,
-                 var userId: String,
-                 var userName: String,
-                 var created: String) {}
- */

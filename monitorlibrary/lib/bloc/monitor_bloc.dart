@@ -154,7 +154,7 @@ class MonitorBloc {
       }
       _projController.sink.add(_projects);
       pp('💜 💜 💜 💜 MonitorBloc: OrganizationProjects found: 💜 ${_projects
-          .length} projects 💜');
+          .length} projects ; organizationId: $organizationId💜');
       _projects.forEach((project) {
         pp('💜 💜 💜 💜 Org PROJECT: ${project.name} 🍏 ${project
             .organizationName}  🍏 ${project.organizationId}');

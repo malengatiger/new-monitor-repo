@@ -2,16 +2,15 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart' as dot;
 import 'package:http/http.dart' as http;
-import 'package:monitorlibrary/api/local_db_api.dart';
 import 'package:monitorlibrary/auth/app_auth.dart';
 import 'package:monitorlibrary/data/city.dart';
 import 'package:monitorlibrary/data/community.dart';
 import 'package:monitorlibrary/data/counters.dart';
 import 'package:monitorlibrary/data/country.dart';
 import 'package:monitorlibrary/data/field_monitor_schedule.dart';
+import 'package:monitorlibrary/data/geofence_event.dart';
 import 'package:monitorlibrary/data/organization.dart';
 import 'package:monitorlibrary/data/photo.dart';
 import 'package:monitorlibrary/data/project.dart';
@@ -70,6 +69,25 @@ class DataAPI {
       throw e;
     }
   }
+
+
+  static Future<GeofenceEvent> addGeofenceEvent(
+      GeofenceEvent geofenceEvent) async {
+    String? mURL = await getUrl();
+    Map bag = geofenceEvent.toJson();
+
+    try {
+      var result =
+      await _callWebAPIPost(mURL! + 'addGeofenceEvent', bag);
+      var s = GeofenceEvent.fromJson(result);
+      await LocalMongo.addGeofenceEvent(geofenceEvent: s);
+      return s;
+    } catch (e) {
+      pp(e);
+      throw e;
+    }
+  }
+
 
   static Future<List<FieldMonitorSchedule>> getProjectFieldMonitorSchedules(
       String projectId) async {
@@ -398,6 +416,51 @@ class DataAPI {
     }
   }
 
+  static Future<List<GeofenceEvent>> getGeofenceEventsByProjectPosition(
+      String projectPositionId) async {
+    String? mURL = await getUrl();
+    var cmd = 'getGeofenceEventsByProjectPosition';
+    var url = '$mURL$cmd?projectPositionId=$projectPositionId';
+    try {
+      List result = await _sendHttpGET(url);
+      List<GeofenceEvent> list = [];
+      result.forEach((m) {
+        list.add(GeofenceEvent.fromJson(m));
+      });
+
+      for (var b in list) {
+        await LocalMongo.addGeofenceEvent(geofenceEvent: b);
+      }
+      return list;
+    } catch (e) {
+      pp('Houston, 😈😈😈😈😈 we have a problem! 😈😈😈😈😈');
+      print(e);
+      throw e;
+    }
+  }
+  static Future<List<GeofenceEvent>> getGeofenceEventsByUser(
+      String userId) async {
+    String? mURL = await getUrl();
+    var cmd = 'getGeofenceEventsByUser';
+    var url = '$mURL$cmd?userId=$userId';
+    try {
+      List result = await _sendHttpGET(url);
+      List<GeofenceEvent> list = [];
+      result.forEach((m) {
+        list.add(GeofenceEvent.fromJson(m));
+      });
+
+      for (var b in list) {
+        await LocalMongo.addGeofenceEvent(geofenceEvent: b);
+      }
+      return list;
+    } catch (e) {
+      pp('Houston, 😈😈😈😈😈 we have a problem! 😈😈😈😈😈');
+      print(e);
+      throw e;
+    }
+  }
+
   static Future<List<Project>> findProjectsByLocation(
       {required double latitude,
       required double longitude,
@@ -489,6 +552,20 @@ class DataAPI {
       throw e;
     }
   }
+
+  // static Future<GeofenceEvent> addGeofenceEvent(GeofenceEvent geofenceEvent) async {
+  //   String? mURL = await getUrl();
+  //   Map bag = geofenceEvent.toJson();
+  //   try {
+  //     var result = await _callWebAPIPost(mURL! + 'addGeofenceEvent', bag);
+  //     var c = GeofenceEvent.fromJson(result);
+  //     await LocalMongo.addGeofenceEvent(geofenceEvent: c);
+  //     return c;
+  //   } catch (e) {
+  //     pp(e);
+  //     throw e;
+  //   }
+  // }
 
   static Future addPointToPolygon(
       {required String communityId,
@@ -861,7 +938,6 @@ class DataAPI {
     if (bag != null) {
       mBag = json.encode(bag);
     }
-    pp('$xz http POST call: Bag after json decode call, check properties of mBag:  🏈 🏈 $mBag');
     var start = DateTime.now();
     var client = new http.Client();
     var token = await AppAuth.getAuthToken();
@@ -885,7 +961,6 @@ class DataAPI {
       }
       var end = DateTime.now();
       pp('$xz http POST call: 🔆 elapsed time: ${end.difference(start).inSeconds} seconds 🔆 \n\n');
-      pp(resp.body);
       try {
         var mJson = json.decode(resp.body);
         return mJson;

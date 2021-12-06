@@ -5,7 +5,7 @@ if command ; then
     echo '🌿 🌿 🌿 Deploy Monitor Backend Container on CloudRun ... 🌿 🌿 🌿 '
     gcloud run deploy monitor --image gcr.io/monitor-2021/monitor --platform managed
     if command ; then
-        echo '🐤 🐤 🐤 🐤 Monitor Backend Container deployed OK!! 🐤 🐤'
+        echo '🐤 🐤 🐤 🐤 🌿 🌿 🌿 Monitor Backend Container deployed OK!! 🌿 🌿 🌿 🐤 🐤'
     else
         echo "🔴 🔴 🔴 🔴 🔴 🔴 Deploy failed!"
     fi

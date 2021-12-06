@@ -481,6 +481,7 @@ class _FieldCameraState extends State<FieldCamera>
               thumbnailFile: thumbnailFile,
               project: widget.project,
               projectPosition: widget.projectPosition.position!,
+              projectPositionId: widget.projectPosition.projectPositionId!,
               isVideo: false);
 
           showToast(

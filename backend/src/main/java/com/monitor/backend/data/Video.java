@@ -8,7 +8,7 @@ public class Video {
     private String  _partitionKey;
     @Id
     private String  _id;
-    private String  projectId;
+    private String  projectId, projectPositionId;
     private String  projectName;
     private String  videoId;
     private String  organizationId;
@@ -24,10 +24,11 @@ public class Video {
     public Video() {
     }
 
-    public Video(String _partitionKey, String _id, String projectId, String projectName, String videoId, String organizationId, Position projectPosition, double distanceFromProjectPosition, String url, String thumbnailUrl, String caption, String userId, String userName, String created) {
+    public Video(String _partitionKey, String _id, String projectId, String projectPositionId, String projectName, String videoId, String organizationId, Position projectPosition, double distanceFromProjectPosition, String url, String thumbnailUrl, String caption, String userId, String userName, String created) {
         this._partitionKey = _partitionKey;
         this._id = _id;
         this.projectId = projectId;
+        this.projectPositionId = projectPositionId;
         this.projectName = projectName;
         this.videoId = videoId;
         this.organizationId = organizationId;
@@ -39,6 +40,14 @@ public class Video {
         this.userId = userId;
         this.userName = userName;
         this.created = created;
+    }
+
+    public String getProjectPositionId() {
+        return projectPositionId;
+    }
+
+    public void setProjectPositionId(String projectPositionId) {
+        this.projectPositionId = projectPositionId;
     }
 
     public String get_partitionKey() {

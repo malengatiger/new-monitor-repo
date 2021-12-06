@@ -168,6 +168,22 @@ public class DataController {
 
     }
 
+    @PostMapping("/addGeofenceEvent")
+    public ResponseEntity<Object> addGeofenceEvent(@RequestBody GeofenceEvent geofenceEvent)
+            throws Exception {
+        LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS).concat("Adding GeofenceEvent: "));
+        try {
+            return ResponseEntity.ok(dataService.addGeofenceEvent(geofenceEvent));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(
+                    new CustomErrorResponse(400,
+                            "addGeofenceEvent failed: " + e.getMessage(),
+                            new DateTime().toDateTimeISO().toString()));
+        }
+
+    }
+
+
 
     @PostMapping("/addPhoto")
     public ResponseEntity<Object> addPhoto(@RequestBody Photo photo) throws Exception {

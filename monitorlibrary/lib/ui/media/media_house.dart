@@ -95,6 +95,7 @@ class _MediaHouseState extends State<MediaHouse>
           file: imageFile!,
           thumbnailFile: thumbnailFile,
           project: widget.project,
+          projectPositionId: widget.projectPosition.projectPositionId!,
           projectPosition: widget.projectPosition.position!,
           isVideo: false);
 
@@ -125,6 +126,7 @@ class _MediaHouseState extends State<MediaHouse>
           thumbnailFile: videoFile!,
           project: widget.project,
           projectPosition: widget.projectPosition.position!,
+          projectPositionId: widget.projectPosition.projectPositionId!,
           isVideo: true);
     } on PlatformException catch (e) {
       pp("$mm 🌸 Failed to get or process video: ${e.message} ");

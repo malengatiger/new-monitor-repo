@@ -9,7 +9,7 @@ public class Photo {
     private String _partitionKey;
     @Id
     private String _id;
-    private String projectId;
+    private String projectId, projectPositionId;
     private String projectName;
     private String photoId;
     private String organizationId;
@@ -26,10 +26,11 @@ public class Photo {
     public Photo() {
     }
 
-    public Photo(String _partitionKey, String _id, String projectId, String projectName, String photoId, String organizationId, Position projectPosition, double distanceFromProjectPosition, String url, String thumbnailUrl, String caption, String userId, String userName, String created, int height, int width) {
+    public Photo(String _partitionKey, String _id, String projectId, String projectPositionId, String projectName, String photoId, String organizationId, Position projectPosition, double distanceFromProjectPosition, String url, String thumbnailUrl, String caption, String userId, String created, int height) {
         this._partitionKey = _partitionKey;
         this._id = _id;
         this.projectId = projectId;
+        this.projectPositionId = projectPositionId;
         this.projectName = projectName;
         this.photoId = photoId;
         this.organizationId = organizationId;
@@ -39,10 +40,16 @@ public class Photo {
         this.thumbnailUrl = thumbnailUrl;
         this.caption = caption;
         this.userId = userId;
-        this.userName = userName;
         this.created = created;
         this.height = height;
-        this.width = width;
+    }
+
+    public String getProjectPositionId() {
+        return projectPositionId;
+    }
+
+    public void setProjectPositionId(String projectPositionId) {
+        this.projectPositionId = projectPositionId;
     }
 
     public int getHeight() {

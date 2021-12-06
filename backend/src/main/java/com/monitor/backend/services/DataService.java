@@ -42,6 +42,8 @@ public class DataService {
     @Autowired
     private Environment env;
     @Autowired
+    GeofenceEventRepository geofenceEventRepository;
+    @Autowired
     ProjectRepository projectRepository;
     @Autowired
     CityRepository cityRepository;
@@ -193,15 +195,22 @@ public class DataService {
         LOGGER.info(Emoji.YELLOW_BIRD + Emoji.YELLOW_BIRD +
                 "ProjectPosition added to: " + m.getProjectName()
                 + " " + Emoji.RAIN_DROPS);
-        List<ProjectPosition> positions = projectPositionRepository
-                .findByProjectId(projectPosition.getProjectId());
 
-        LOGGER.info(Emoji.LEAF.concat(Emoji.LEAF)
-                .concat("ProjectPosition added: " + projectPosition.getProjectId()));
         return m;
     }
 
+    public GeofenceEvent addGeofenceEvent(GeofenceEvent geofenceEvent) throws Exception {
+        LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS).concat("addGeofenceEvent: "
+                .concat(Emoji.FLOWER_YELLOW)));
 
+        GeofenceEvent m = geofenceEventRepository.save(geofenceEvent);
+        LOGGER.info(Emoji.YELLOW_BIRD + Emoji.YELLOW_BIRD +
+                "GeofenceEvent added to: " + m.getProjectName()
+                + " " + Emoji.RAIN_DROPS);
+
+
+        return m;
+    }
     public String addProject(Project project) throws Exception {
         LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS).concat("addProject: "
                 .concat(project.getName()).concat(" ")

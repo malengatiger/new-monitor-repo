@@ -7,7 +7,7 @@ import java.util.List;
 @Document(collection = "projectPosition")
 public class ProjectPosition {
 
-    private String projectId, projectPositionId;
+    private String projectId, projectPositionId, organizationId;
     private Position position;
     private String projectName;
     private String caption;
@@ -28,6 +28,14 @@ public class ProjectPosition {
     }
 
     public ProjectPosition() {
+    }
+
+    public String getOrganizationId() {
+        return organizationId;
+    }
+
+    public void setOrganizationId(String organizationId) {
+        this.organizationId = organizationId;
     }
 
     public String getProjectPositionId() {

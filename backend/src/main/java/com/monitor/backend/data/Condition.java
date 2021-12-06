@@ -8,7 +8,7 @@ public class Condition {
     private String _partitionKey;
     @Id
     private String _id;
-    private String projectId, organizationId;
+    private String projectId, organizationId, projectPositionId;
     private String projectName;
     private Position projectPosition;
     private int rating;
@@ -21,9 +21,12 @@ public class Condition {
     public Condition() {
     }
 
-    public Condition(String projectId, String organizationId, String projectName, Position projectPosition, int rating, String caption, String userId, String userName, String created, String conditionId) {
+    public Condition(String _partitionKey, String _id, String projectId, String organizationId, String projectPositionId, String projectName, Position projectPosition, int rating, String caption, String userId, String userName, String created, String conditionId) {
+        this._partitionKey = _partitionKey;
+        this._id = _id;
         this.projectId = projectId;
         this.organizationId = organizationId;
+        this.projectPositionId = projectPositionId;
         this.projectName = projectName;
         this.projectPosition = projectPosition;
         this.rating = rating;
@@ -40,6 +43,14 @@ public class Condition {
 
     public void setConditionId(String conditionId) {
         this.conditionId = conditionId;
+    }
+
+    public String getProjectPositionId() {
+        return projectPositionId;
+    }
+
+    public void setProjectPositionId(String projectPositionId) {
+        this.projectPositionId = projectPositionId;
     }
 
     public String getOrganizationId() {
