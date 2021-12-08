@@ -24,7 +24,7 @@ class GeofencerTwo {
         accuracy: 100,
         loiteringDelayMs: 10000,
         statusChangeDelayMs: 10000,
-        useActivityRecognition: true,
+        useActivityRecognition: false,
         allowMockLocations: false,
         printDevLog: false,
         geofenceRadiusSortType: GeofenceRadiusSortType.DESC);
@@ -85,10 +85,11 @@ class GeofencerTwo {
           geofenceStatus: geofenceStatus,
           location: location);
     });
+
     try {
       pp('$mm  🔶  🔶 Starting GeofenceService ...... 🔶  🔶  🔶 ');
       await _geofenceService.start().onError((error, stackTrace) => {
-            pp('🔴 🔴 🔴 🔴 🔴 🔴 GeofenceService really failed to start, onError: 🔴 $error 🔴 }')
+            pp('\n\n\n🔴 🔴 🔴 🔴 🔴 🔴 GeofenceService failed to start, onError: 🔴 $error 🔴 \n\n\n')
           });
       pp('$mm  ✅ ✅ ✅ GeofenceService 🍐🍐🍐 STARTED 🍐🍐🍐; '
           '✅  🔆 🔆 🔆 🔆 🔆 🔆  ...... waiting for status change.... 🔵 🔵 🔵 🔵 🔵 ');
