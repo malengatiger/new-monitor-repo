@@ -359,13 +359,15 @@ public class ListController {
                             new DateTime().toDateTimeISO().toString()));
         }
     }
+
     @GetMapping("/getOrganizationProjectPositions")
     public ResponseEntity<Object> getOrganizationProjectPositions(String organizationId) {
         LOGGER.info(Emoji.RAIN_DROPS.concat(Emoji.RAIN_DROPS)
-                .concat("getOrganizationProjectPositions: " + organizationId));
+                .concat("getOrganizationProjectPositions, organizationId: " + organizationId));
         try {
             return ResponseEntity.ok(listService.getOrganizationProjectPositions(organizationId));
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.badRequest().body(
                     new CustomErrorResponse(400,
                             "getOrganizationProjectPositions failed: " + e.getMessage(),

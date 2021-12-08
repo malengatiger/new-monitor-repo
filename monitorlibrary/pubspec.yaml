@@ -11,37 +11,37 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  firebase_auth: ^3.1.0
-  firebase_messaging: ^10.0.6
-  firebase_core: ^1.6.0
-  firebase_storage: ^10.0.3
+  firebase_auth: ^3.3.0
+  firebase_messaging: ^11.2.0
+  firebase_core: ^1.10.2
+  firebase_storage: ^10.2.0
   permission_handler: ^8.3.0
   unicorndial: ^1.1.5
-  shared_preferences: ^2.0.7
-  path_provider: ^2.0.3
-  material_design_icons_flutter: ^4.0.5955
+  shared_preferences: ^2.0.9
+  path_provider: ^2.0.7
+  material_design_icons_flutter: ^5.0.6595
   flutter_google_places: ^0.3.0
   intl: ^0.17.0
-  http: ^0.13.3
-  google_maps_flutter: ^2.0.8
+  http: ^0.13.4
+  google_maps_flutter: ^2.1.1
   google_maps_webservice: ^0.0.19
   autocomplete_textfield: ^1.7.3
   mobmongo: ^0.0.15
   grouped_buttons: ^1.0.4
   path: ^1.8.0
-  cached_network_image: ^3.1.0
+  cached_network_image: ^3.2.0
   flutter_dotenv: ^5.0.2
-  page_transition: ^2.0.2
+  page_transition: ^2.0.4
   responsive_builder: ^0.4.1
   google_fonts: ^2.1.0
   geolocator: ^8.0.0
-  image: ^3.0.2
+  image: ^3.1.0
   intent: ^1.4.0
   video_thumbnail: ^0.4.3
   android_intent: ^2.0.2
-  flutter_credit_card: ^2.0.0
+  flutter_credit_card: ^3.0.1
   introduction_screen: ^2.1.0
-  uuid: ^3.0.4
+  uuid: ^3.0.5
   geocoding:
   chewie: ^1.2.2
   video_player: ^2.2.7
@@ -50,7 +50,7 @@ dependencies:
   focused_menu: ^1.0.5
   universal_platform: ^1.0.0+1
 #  flutter_local_notifications:
-  flutter_staggered_grid_view: ^0.4.0
+  flutter_staggered_grid_view: ^0.4.1
   transparent_image: ^2.0.0
   image_size_getter: ^1.0.0
   get:
@@ -59,6 +59,7 @@ dependencies:
   connectivity: ^3.0.6
   fluttertoast: ^8.0.8
   georange: ^1.0.0
+  geofence_service: ^3.4.5
 
 
 dev_dependencies:

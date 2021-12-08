@@ -76,7 +76,9 @@ class _CreditCardHandlerMobileState extends State<CreditCardHandlerMobile>
                     cvvCode: cvvCode,
                     textStyle: Styles.whiteSmall,
                     cardBgColor: Theme.of(context).primaryColor,
-                    showBackView: isCvvFocused),
+                    showBackView: isCvvFocused, onCreditCardWidgetChange: (creditCardBrand ) {
+                      pp('onCreditCardWidgetChange FIRED!! ${creditCardBrand.toString()}');
+                },),
                 // Expanded(
                 //   child: SingleChildScrollView(
                 //     child: CreditCardForm(
